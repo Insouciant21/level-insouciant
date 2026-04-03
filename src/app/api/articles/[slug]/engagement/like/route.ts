@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { attachBehaviorViewerCookie, getOrCreateBehaviorViewerId } from "@/lib/behavior-session"
+import { getCurrentUser } from "@/lib/auth"
 import { getArticleBySlug } from "@/lib/content"
 import { toggleLike } from "@/lib/behavior"
 
@@ -18,12 +18,12 @@ export async function POST(_request: Request, { params }: RouteProps) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 })
   }
 
-  const { viewerId, isNew } = await getOrCreateBehaviorViewerId()
-  const result = await toggleLike(slug, viewerId)
-  const response = NextResponse.json(result)
+  const user = await getCurrentUser()
 
-  return attachBehaviorViewerCookie(response, {
-    viewerId,
-    shouldSet: isNew,
-  })
+  if (!user) {
+    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 })
+  }
+
+  const result = await toggleLike(slug, user.id)
+  return NextResponse.json(result)
 }

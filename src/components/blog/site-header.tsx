@@ -1,9 +1,14 @@
 import Link from "next/link"
 
+import { logoutAction } from "@/app/actions/auth"
 import { ThemeToggle } from "@/components/blog/theme-toggle"
+import { Button } from "@/components/ui/button"
+import { getCurrentUser } from "@/lib/auth"
 import { siteConfig } from "@/lib/site"
 
-function SiteHeader() {
+async function SiteHeader() {
+  const user = await getCurrentUser()
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-5 py-4 sm:px-6 md:flex-row md:items-center md:justify-between">
@@ -31,6 +36,14 @@ function SiteHeader() {
               ))}
             </ul>
           </nav>
+          {user ? (
+            <form action={logoutAction}>
+              <input type="hidden" name="redirectTo" value="/" />
+              <Button type="submit" variant="outline" className="rounded-full">
+                注销
+              </Button>
+            </form>
+          ) : null}
           <div className="hidden md:block">
             <ThemeToggle />
           </div>

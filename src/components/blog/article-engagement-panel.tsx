@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { Eye, Heart, MessageSquare, SendHorizonal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,8 @@ type EngagementSnapshot = {
   likes: number
   commentsCount: number
   likedByViewer: boolean
+  isAuthenticated: boolean
+  currentUserName: string | null
 }
 
 type Comment = {
@@ -39,9 +42,10 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
     likes: 0,
     commentsCount: 0,
     likedByViewer: false,
+    isAuthenticated: false,
+    currentUserName: null,
   })
   const [comments, setComments] = React.useState<Comment[]>([])
-  const [authorName, setAuthorName] = React.useState("")
   const [content, setContent] = React.useState("")
   const [loading, setLoading] = React.useState(true)
   const [likePending, setLikePending] = React.useState(false)
@@ -123,6 +127,11 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
   }, [slug])
 
   async function handleToggleLike() {
+    if (!snapshot.isAuthenticated) {
+      setError("请先登录，再进行点赞。")
+      return
+    }
+
     setLikePending(true)
     setError(null)
 
@@ -132,6 +141,10 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
       })
 
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("AUTH_REQUIRED")
+        }
+
         throw new Error("LIKE_FAILED")
       }
 
@@ -145,8 +158,12 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         likes: payload.likes,
         likedByViewer: payload.likedByViewer,
       }))
-    } catch {
-      setError("点赞失败，请稍后再试。")
+    } catch (likeError) {
+      if (likeError instanceof Error && likeError.message === "AUTH_REQUIRED") {
+        setError("请先登录，再进行点赞。")
+      } else {
+        setError("点赞失败，请稍后再试。")
+      }
     } finally {
       setLikePending(false)
     }
@@ -164,12 +181,15 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          authorName,
           content,
         }),
       })
 
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("AUTH_REQUIRED")
+        }
+
         if (response.status === 503) {
           throw new Error("DATABASE_NOT_CONFIGURED")
         }
@@ -186,11 +206,16 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         ...current,
         commentsCount: current.commentsCount + 1,
       }))
-      setAuthorName("")
       setContent("")
     } catch (submitError) {
-      if (submitError instanceof Error && submitError.message === "DATABASE_NOT_CONFIGURED") {
-        setError("数据库还没有配置好，评论暂时无法提交。")
+      if (submitError instanceof Error) {
+        if (submitError.message === "AUTH_REQUIRED") {
+          setError("请先登录，再发表评论。")
+        } else if (submitError.message === "DATABASE_NOT_CONFIGURED") {
+          setError("数据库还没有配置好，评论暂时无法提交。")
+        } else {
+          setError("评论提交失败，请检查内容后重试。")
+        }
       } else {
         setError("评论提交失败，请检查内容后重试。")
       }
@@ -199,14 +224,16 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
     }
   }
 
+  const loginHref = `/login?next=${encodeURIComponent(`/articles/${slug}#article-engagement`)}`
+
   return (
-    <section className="surface-panel mx-auto w-full max-w-4xl px-6 py-6">
+    <section id="article-engagement" className="surface-panel mx-auto w-full max-w-4xl scroll-mt-28 px-6 py-6">
       <div className="flex flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Engagement</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">互动数据</h2>
           <p className="mt-2 text-sm leading-7 text-muted-foreground">
-            第一阶段先把浏览、点赞和评论沉淀进数据库，后续再继续扩展订阅和通知。
+            游客只读。登录后的普通用户可以点赞和评论，管理员额外拥有后台内容管理权限。
           </p>
         </div>
 
@@ -218,18 +245,27 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             </span>
           </div>
 
-          <Button
-            type="button"
-            variant={snapshot.likedByViewer ? "default" : "outline"}
-            className="rounded-full"
-            disabled={likePending}
-            onClick={() => {
-              void handleToggleLike()
-            }}
-          >
-            <Heart className="size-4" />
-            {snapshot.likes} 次点赞
-          </Button>
+          {snapshot.isAuthenticated ? (
+            <Button
+              type="button"
+              variant={snapshot.likedByViewer ? "default" : "outline"}
+              className="rounded-full"
+              disabled={likePending}
+              onClick={() => {
+                void handleToggleLike()
+              }}
+            >
+              <Heart className="size-4" />
+              {snapshot.likes} 次点赞
+            </Button>
+          ) : (
+            <div className="rounded-full border border-border/70 bg-muted/35 px-4 py-2 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-2">
+                <Heart className="size-4" />
+                {loading ? "..." : snapshot.likes} 次点赞
+              </span>
+            </div>
+          )}
 
           <div className="rounded-full border border-border/70 bg-muted/35 px-4 py-2 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
@@ -268,47 +304,56 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
           )}
         </div>
 
-        <div className="rounded-[1.75rem] border border-border/70 bg-background/45 px-5 py-5">
-          <h3 className="text-lg font-semibold tracking-tight">写一条评论</h3>
-          <p className="mt-2 text-sm leading-7 text-muted-foreground">
-            目前是匿名评论版，适合先验证数据流和互动路径。
-          </p>
+        {snapshot.isAuthenticated ? (
+          <div className="rounded-[1.75rem] border border-border/70 bg-background/45 px-5 py-5">
+            <h3 className="text-lg font-semibold tracking-tight">写一条评论</h3>
+            <p className="mt-2 text-sm leading-7 text-muted-foreground">
+              当前登录身份：{snapshot.currentUserName ?? "已登录用户"}。评论将以这个身份显示。
+            </p>
 
-          <form className="mt-5 grid gap-4" onSubmit={handleSubmitComment}>
-            <label className="grid gap-2">
-              <span className="text-sm font-medium">昵称</span>
-              <input
-                value={authorName}
-                onChange={(event) => setAuthorName(event.target.value)}
-                maxLength={40}
-                placeholder="怎么称呼你？"
-                className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
-              />
-            </label>
+            <form className="mt-5 grid gap-4" onSubmit={handleSubmitComment}>
+              <label className="grid gap-2">
+                <span className="text-sm font-medium">评论内容</span>
+                <textarea
+                  value={content}
+                  onChange={(event) => setContent(event.target.value)}
+                  maxLength={2000}
+                  rows={6}
+                  placeholder="欢迎分享你的想法、问题或者补充。"
+                  className="resize-y rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm leading-7 outline-none transition focus:border-primary/50"
+                />
+              </label>
 
-            <label className="grid gap-2">
-              <span className="text-sm font-medium">评论内容</span>
-              <textarea
-                value={content}
-                onChange={(event) => setContent(event.target.value)}
-                maxLength={2000}
-                rows={6}
-                placeholder="欢迎分享你的想法、问题或者补充。"
-                className="resize-y rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm leading-7 outline-none transition focus:border-primary/50"
-              />
-            </label>
+              {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm text-muted-foreground">{content.length}/2000</p>
+                <Button type="submit" className="rounded-full px-5" disabled={commentPending}>
+                  <SendHorizonal className="size-4" />
+                  {commentPending ? "提交中..." : "提交评论"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        ) : (
+          <div className="rounded-[1.75rem] border border-dashed border-border/80 bg-background/45 px-5 py-5">
+            <h3 className="text-lg font-semibold tracking-tight">登录后参与互动</h3>
+            <p className="mt-2 text-sm leading-7 text-muted-foreground">
+              游客只能查看评论、点赞数和阅读数。登录后的普通用户才能点赞与评论。
+            </p>
 
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm text-muted-foreground">{content.length}/2000</p>
-              <Button type="submit" className="rounded-full px-5" disabled={commentPending}>
-                <SendHorizonal className="size-4" />
-                {commentPending ? "提交中..." : "提交评论"}
+            {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button asChild className="rounded-full px-5">
+                <Link href={loginHref}>登录后评论</Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full">
+                <Link href={loginHref}>登录后点赞</Link>
               </Button>
             </div>
-          </form>
-        </div>
+          </div>
+        )}
       </div>
     </section>
   )

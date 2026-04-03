@@ -1,16 +1,10 @@
 "use server"
 
-import { CommentStatus, UserRole } from "@prisma/client"
+import { CommentStatus } from "@prisma/client"
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 
 import { deleteCommentForAdmin, setCommentStatus } from "@/lib/admin"
-import {
-  authenticateWithPassword,
-  createSessionForUser,
-  destroyCurrentSession,
-  requireAdmin,
-} from "@/lib/auth"
+import { requireAdmin } from "@/lib/auth"
 import {
   deleteArticleBySlug,
   removeTagAcrossArticles,
@@ -32,29 +26,6 @@ function revalidatePublicContent(slug?: string) {
   if (slug) {
     revalidatePath(`/articles/${slug}`)
   }
-}
-
-export async function loginAction(formData: FormData) {
-  const email = getString(formData, "email")
-  const password = getString(formData, "password")
-
-  const result = await authenticateWithPassword(email, password)
-
-  if (!result.ok) {
-    redirect(`/admin/login?error=${result.reason}`)
-  }
-
-  if (result.user.role !== UserRole.ADMIN) {
-    redirect("/admin/login?error=NO_ACCESS")
-  }
-
-  await createSessionForUser(result.user.id)
-  redirect("/admin")
-}
-
-export async function logoutAction() {
-  await destroyCurrentSession()
-  redirect("/admin/login")
 }
 
 export async function publishArticleAction(formData: FormData) {

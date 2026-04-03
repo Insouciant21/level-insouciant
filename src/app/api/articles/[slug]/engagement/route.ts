@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { getEngagementSnapshot } from "@/lib/behavior"
+import { getCurrentUser, getUserDisplayName } from "@/lib/auth"
 import { attachBehaviorViewerCookie, getOrCreateBehaviorViewerId } from "@/lib/behavior-session"
 import { getArticleBySlug } from "@/lib/content"
 
@@ -18,12 +19,16 @@ export async function GET(_request: Request, { params }: RouteProps) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 })
   }
 
-  const { viewerId, isNew } = await getOrCreateBehaviorViewerId()
-  const snapshot = await getEngagementSnapshot(slug, viewerId)
-  const response = NextResponse.json(snapshot)
+  const [user, session] = await Promise.all([getCurrentUser(), getOrCreateBehaviorViewerId()])
+  const snapshot = await getEngagementSnapshot(slug, user?.id)
+  const response = NextResponse.json({
+    ...snapshot,
+    isAuthenticated: Boolean(user),
+    currentUserName: user ? getUserDisplayName(user) : null,
+  })
 
   return attachBehaviorViewerCookie(response, {
-    viewerId,
-    shouldSet: isNew,
+    viewerId: session.viewerId,
+    shouldSet: session.isNew,
   })
 }

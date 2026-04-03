@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
-import { loginAction } from "@/app/admin/actions"
+import { adminLoginAction } from "@/app/actions/auth"
 import { getCurrentAdmin } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
 
@@ -42,7 +42,8 @@ export default async function AdminLoginPage({ searchParams }: AdminLoginPagePro
           只有管理员可以进入后台。普通用户和游客都只能在前台浏览、点赞与评论，无法进入内容管理区域。
         </p>
 
-        <form action={loginAction} className="mt-8 grid gap-4">
+        <form action={adminLoginAction} className="mt-8 grid gap-4">
+          <input type="hidden" name="redirectTo" value="/admin" />
           <label className="grid gap-2">
             <span className="text-sm font-medium">邮箱</span>
             <input

@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import type { ReactNode } from "react"
 
 import { AdminShell } from "@/components/admin/admin-shell"
-import { requireAdmin } from "@/lib/auth"
+import { getUserDisplayName, requireAdmin } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
 
 export const metadata: Metadata = createPageMetadata({
@@ -19,5 +19,5 @@ export default async function ProtectedAdminLayout({
 }>) {
   const admin = await requireAdmin()
 
-  return <AdminShell userName={admin.name ?? admin.email}>{children}</AdminShell>
+  return <AdminShell userName={getUserDisplayName(admin)}>{children}</AdminShell>
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 
+import { getCurrentUser, getUserDisplayName } from "@/lib/auth"
 import { createComment, isBehaviorStorageEnabled, listComments } from "@/lib/behavior"
 import { getArticleBySlug } from "@/lib/content"
 
@@ -33,14 +34,19 @@ export async function POST(request: Request, { params }: RouteProps) {
     return NextResponse.json({ error: "DATABASE_NOT_CONFIGURED" }, { status: 503 })
   }
 
+  const user = await getCurrentUser()
+
+  if (!user) {
+    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 })
+  }
+
   const body = (await request.json()) as {
-    authorName?: string
     content?: string
   }
 
   try {
     const comment = await createComment(slug, {
-      authorName: body.authorName ?? "",
+      authorName: getUserDisplayName(user),
       content: body.content ?? "",
     })
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
 
-import { logoutAction } from "@/app/admin/actions"
+import { logoutAction } from "@/app/actions/auth"
 import { Button } from "@/components/ui/button"
 
 type AdminShellProps = {
@@ -33,6 +33,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
           </div>
 
           <form action={logoutAction}>
+            <input type="hidden" name="redirectTo" value="/admin/login" />
             <Button type="submit" variant="outline" className="rounded-full">
               退出登录
             </Button>
