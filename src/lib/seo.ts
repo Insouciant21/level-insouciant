@@ -8,6 +8,7 @@ type SeoOptions = {
   description: string
   path: string
   type?: "website" | "article"
+  noIndex?: boolean
   publishedTime?: string
   modifiedTime?: string
   tags?: string[]
@@ -31,6 +32,7 @@ export function createPageMetadata({
   description,
   path,
   type = "website",
+  noIndex = false,
   publishedTime,
   modifiedTime,
   tags,
@@ -72,6 +74,12 @@ export function createPageMetadata({
       description,
       images: [image],
     },
+    robots: noIndex
+      ? {
+          index: false,
+          follow: false,
+        }
+      : undefined,
   }
 }
 

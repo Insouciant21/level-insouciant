@@ -3,12 +3,14 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { ArticleCard } from "@/components/blog/article-card"
+import { ArticleEngagementPanel } from "@/components/blog/article-engagement-panel"
 import { ArticleMeta } from "@/components/blog/article-meta"
 import { ArticlePaginationNav } from "@/components/blog/article-pagination-nav"
 import { ArticleTableOfContents } from "@/components/blog/article-table-of-contents"
 import { CategoryBadge } from "@/components/blog/category-badge"
 import { ContentProse } from "@/components/blog/content-prose"
 import { PageShell } from "@/components/blog/page-shell"
+import { ReadingProgressBar } from "@/components/blog/reading-progress-bar"
 import { TagList } from "@/components/blog/tag-list"
 import {
   getAllArticles,
@@ -63,12 +65,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <PageShell>
+      <ReadingProgressBar targetId="article-reading-root" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: createArticleJsonLd(article) }}
       />
       <div className="mx-auto grid w-full max-w-6xl gap-8 xl:grid-cols-[minmax(0,1fr)_260px] xl:items-start">
-        <article className="min-w-0">
+        <article id="article-reading-root" className="min-w-0">
           <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 xl:mx-0 xl:max-w-none">
             <Link href="/articles" className="text-sm text-muted-foreground transition hover:text-foreground">
               返回博客列表
@@ -93,6 +96,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <ArticleTableOfContents items={tocItems} className="sticky top-24" />
         </aside>
       </div>
+
+      <ArticleEngagementPanel slug={article.slug} />
 
       <ArticlePaginationNav previous={pagination?.previous ?? null} next={pagination?.next ?? null} />
 
