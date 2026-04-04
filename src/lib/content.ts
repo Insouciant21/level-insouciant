@@ -1,10 +1,8 @@
-import { promises as fs } from "node:fs"
-import path from "node:path"
-import matter from "gray-matter"
+import { Prisma } from "@prisma/client"
+import type { Article as ArticleRecord } from "@prisma/client"
 
-import type { ArchiveItem, Article, ArticleFrontmatter, ArticleSummary } from "@/types/blog"
-
-const articlesDirectory = path.join(process.cwd(), "content", "articles")
+import type { ArchiveItem, Article, ArticleSummary } from "@/types/blog"
+import { prisma } from "@/lib/prisma"
 
 function slugifySegment(value: string) {
   return value
@@ -14,105 +12,58 @@ function slugifySegment(value: string) {
     .replace(/^-+|-+$/g, "")
 }
 
-function assertFrontmatter(data: Record<string, unknown>, filePath: string): ArticleFrontmatter {
-  const requiredFields = [
-    "title",
-    "desc",
-    "date",
-    "tags",
-    "category",
-    "cover",
-    "draft",
-    "slug",
-  ] as const
-
-  for (const field of requiredFields) {
-    if (!(field in data)) {
-      throw new Error(`Missing frontmatter field "${field}" in ${filePath}`)
-    }
-  }
-
-  if (!Array.isArray(data.tags) || !data.tags.every((tag) => typeof tag === "string")) {
-    throw new Error(`Invalid "tags" frontmatter in ${filePath}`)
-  }
-
-  if (typeof data.category !== "string") {
-    throw new Error(`Invalid "category" frontmatter in ${filePath}`)
-  }
-
-  if (typeof data.draft !== "boolean") {
-    throw new Error(`Invalid "draft" frontmatter in ${filePath}`)
-  }
-
+function toArticleSummary(record: ArticleRecord): ArticleSummary {
   return {
-    title: String(data.title),
-    desc: String(data.desc),
-    date: String(data.date),
-    tags: data.tags,
-    category: data.category,
-    cover: String(data.cover),
-    draft: data.draft,
-    slug: String(data.slug),
+    title: record.title,
+    desc: record.desc,
+    date: record.publishedAt.toISOString(),
+    tags: record.tags,
+    category: record.category,
+    cover: record.cover,
+    draft: record.draft,
+    slug: record.slug,
   }
 }
 
-async function getArticleFiles() {
-  const files = await fs.readdir(articlesDirectory)
-  return files.filter((file) => file.endsWith(".mdx"))
-}
-
-async function readArticleFile(fileName: string): Promise<Article> {
-  const filePath = path.join(articlesDirectory, fileName)
-  const source = await fs.readFile(filePath, "utf8")
-  const { data, content } = matter(source)
-  const frontmatter = assertFrontmatter(data, filePath)
-
+function toArticle(record: ArticleRecord): Article {
   return {
-    ...frontmatter,
-    content,
+    ...toArticleSummary(record),
+    content: record.content,
   }
 }
 
-function sortArticlesByDate<T extends ArticleFrontmatter>(articles: T[]) {
-  return [...articles].sort((a, b) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime()
+async function listArticleRecords(options?: { includeDrafts?: boolean }) {
+  const includeDrafts = options?.includeDrafts ?? false
+
+  return prisma.article.findMany({
+    where: includeDrafts ? undefined : { draft: false },
+    orderBy: {
+      publishedAt: "desc",
+    },
   })
 }
 
-function toSummary(article: Article): ArticleSummary {
-  return {
-    title: article.title,
-    desc: article.desc,
-    date: article.date,
-    tags: article.tags,
-    category: article.category,
-    cover: article.cover,
-    draft: article.draft,
-    slug: article.slug,
-  }
-}
-
 export async function getAllArticles(options?: { includeDrafts?: boolean }) {
-  const includeDrafts = options?.includeDrafts ?? false
-  const files = await getArticleFiles()
-  const articles = await Promise.all(files.map(readArticleFile))
-  const filtered = includeDrafts ? articles : articles.filter((article) => !article.draft)
-
-  return sortArticlesByDate(filtered).map(toSummary)
+  const records = await listArticleRecords(options)
+  return records.map(toArticleSummary)
 }
 
-export async function getArticleBySlug(slug: string) {
-  const files = await getArticleFiles()
+export async function getArticleBySlug(slug: string, options?: { includeDrafts?: boolean }) {
+  const includeDrafts = options?.includeDrafts ?? false
 
-  for (const fileName of files) {
-    const article = await readArticleFile(fileName)
+  const record = await prisma.article.findUnique({
+    where: { slug },
+  })
 
-    if (article.slug === slug) {
-      return article.draft ? null : article
-    }
+  if (!record) {
+    return null
   }
 
-  return null
+  if (!includeDrafts && record.draft) {
+    return null
+  }
+
+  return toArticle(record)
 }
 
 function countArchiveItems(items: string[]) {
@@ -243,20 +194,63 @@ export async function searchArticles(query: string) {
     return []
   }
 
-  const articles = await getAllArticles()
+  const rows = await prisma.$queryRaw<
+    Array<{
+      id: string
+      slug: string
+      title: string
+      desc: string
+      category: string
+      tags: string[]
+      cover: string
+      draft: boolean
+      publishedAt: Date
+      rank: number
+      similarity: number
+    }>
+  >(Prisma.sql`
+    SELECT
+      "id",
+      "slug",
+      "title",
+      "desc",
+      "category",
+      "tags",
+      "cover",
+      "draft",
+      "publishedAt",
+      ts_rank_cd(to_tsvector('simple', "searchDocument"), plainto_tsquery('simple', ${normalizedQuery})) AS "rank",
+      similarity("searchDocument", ${normalizedQuery}) AS "similarity"
+    FROM "Article"
+    WHERE "draft" = false
+      AND (
+        to_tsvector('simple', "searchDocument") @@ plainto_tsquery('simple', ${normalizedQuery})
+        OR "searchDocument" ILIKE '%' || ${normalizedQuery} || '%'
+        OR similarity("searchDocument", ${normalizedQuery}) > 0.05
+      )
+    ORDER BY "rank" DESC, "similarity" DESC, "publishedAt" DESC
+    LIMIT 50
+  `)
 
-  return articles.filter((article) => {
-    const searchableText = [
-      article.title,
-      article.desc,
-      article.category,
-      ...article.tags,
-    ]
-      .join(" ")
-      .toLowerCase()
-
-    return searchableText.includes(normalizedQuery)
-  })
+  return rows.map((row) =>
+    toArticleSummary({
+      id: row.id,
+      slug: row.slug,
+      title: row.title,
+      desc: row.desc,
+      category: row.category,
+      tags: row.tags,
+      cover: row.cover,
+      draft: row.draft,
+      publishedAt: row.publishedAt,
+      content: "",
+      searchDocument: "",
+      legacySourcePath: null,
+      lastEditedByUserId: null,
+      createdAt: row.publishedAt,
+      updatedAt: row.publishedAt,
+    })
+  )
 }
 
 export function formatDisplayDate(date: string) {

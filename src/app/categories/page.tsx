@@ -27,7 +27,7 @@ export default async function CategoriesPage() {
       {categories.length > 0 ? (
         <ArchiveSection items={categories} title="全部分类" type="categories" />
       ) : (
-        <EmptyState title="暂时还没有分类" description="发布文章后，分类会自动从 frontmatter 中汇总出来。" />
+        <EmptyState title="暂时还没有分类" description="发布文章后，分类会自动从数据库中的文章记录里汇总出来。" />
       )}
     </PageShell>
   )

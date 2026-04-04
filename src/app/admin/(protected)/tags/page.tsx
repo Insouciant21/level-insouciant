@@ -11,7 +11,7 @@ export default async function AdminTagsPage() {
         <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Tag Operations</p>
         <h1 className="text-2xl font-semibold tracking-tight">标签管理</h1>
         <p className="text-sm leading-7 text-muted-foreground">
-          标签依然来自 MDX frontmatter。这里支持批量重命名标签，或者从所有文章里移除某个标签。
+          标签现在来自数据库中的文章记录。这里支持批量重命名标签，或者从所有文章里移除某个标签。
         </p>
       </div>
 

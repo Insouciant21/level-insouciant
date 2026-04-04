@@ -19,7 +19,7 @@ type SearchPageProps = {
 export const metadata: Metadata = {
   ...createPageMetadata({
     title: "搜索",
-    description: "按标题、摘要、分类和标签检索博客内容。",
+    description: "按标题、摘要、正文、分类和标签检索博客内容。",
     path: "/search",
   }),
   robots: {
@@ -41,7 +41,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <PageIntro
         eyebrow="Search"
         title="搜索"
-        description="可以按标题、摘要、分类和标签检索内容，适合快速回找已经写过的主题。"
+        description="可以按标题、摘要、正文、分类和标签检索内容，适合快速回找已经写过的主题。"
       />
 
       <section className="surface-panel px-6 py-6">
@@ -73,7 +73,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
         <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
           <span>{query ? `共找到 ${results.length} 条结果` : `当前共有 ${allArticles.length} 篇公开文章可检索`}</span>
-          <span>支持标题、摘要、分类、标签匹配</span>
+          <span>支持标题、摘要、正文、分类、标签匹配</span>
         </div>
       </section>
 

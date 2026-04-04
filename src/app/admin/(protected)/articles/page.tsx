@@ -10,12 +10,18 @@ export default async function AdminArticlesPage() {
 
   return (
     <section className="surface-panel px-6 py-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Article Control</p>
-        <h1 className="text-2xl font-semibold tracking-tight">草稿与文章管理</h1>
-        <p className="text-sm leading-7 text-muted-foreground">
-          这里直接操作 `content/articles` 里的 MDX 文件，可以发布、下线或删除文章。
-        </p>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-2">
+          <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Article Control</p>
+          <h1 className="text-2xl font-semibold tracking-tight">草稿与文章管理</h1>
+          <p className="text-sm leading-7 text-muted-foreground">
+            这里直接操作数据库中的文章记录，可以新建、编辑、发布、下线、查看修订历史或删除文章。
+          </p>
+        </div>
+
+        <Button asChild className="rounded-full">
+          <Link href="/admin/articles/new">新建文章</Link>
+        </Button>
       </div>
 
       <div className="mt-6 grid gap-4">
@@ -36,6 +42,7 @@ export default async function AdminArticlesPage() {
                   <span>日期：{formatDisplayDate(article.date)}</span>
                   <span>分类：{article.category}</span>
                   <span>Slug：{article.slug}</span>
+                  {article.legacySourcePath ? <span>导入来源：{article.legacySourcePath}</span> : null}
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -50,12 +57,27 @@ export default async function AdminArticlesPage() {
                 </div>
 
                 <div className="mt-4">
-                  <Link
-                    href={article.draft ? `/admin/articles` : `/articles/${article.slug}`}
-                    className="text-sm text-primary underline underline-offset-4"
-                  >
-                    {article.draft ? "当前为隐藏文章" : "查看前台文章"}
-                  </Link>
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <Link
+                      href={`/admin/articles/${article.slug}/edit`}
+                      className="text-primary underline underline-offset-4"
+                    >
+                      编辑文章
+                    </Link>
+                    <Link
+                      href={`/admin/articles/${article.slug}/history`}
+                      className="text-primary underline underline-offset-4"
+                    >
+                      修订历史
+                    </Link>
+                    {!article.draft ? (
+                      <Link href={`/articles/${article.slug}`} className="text-primary underline underline-offset-4">
+                        查看前台文章
+                      </Link>
+                    ) : (
+                      <span className="text-muted-foreground">当前为隐藏文章</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -86,6 +108,12 @@ export default async function AdminArticlesPage() {
             </div>
           </article>
         ))}
+
+        {articles.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">
+            数据库里还没有文章，先创建第一篇文章吧。
+          </div>
+        ) : null}
       </div>
     </section>
   )
