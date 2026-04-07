@@ -21,8 +21,8 @@ export default function OpenGraphImage() {
           justifyContent: "space-between",
           padding: "64px",
           background:
-            "radial-gradient(circle at top left, rgba(250, 210, 135, 0.45), transparent 34%), linear-gradient(135deg, #faf7f0 0%, #f5eee0 100%)",
-          color: "#31251f",
+            "radial-gradient(circle at top left, rgba(191, 203, 142, 0.42), transparent 34%), linear-gradient(135deg, #f4f1e5 0%, #e8e3cf 100%)",
+          color: "#3a3d2d",
         }}
       >
         <div
@@ -31,7 +31,7 @@ export default function OpenGraphImage() {
             fontSize: 24,
             letterSpacing: "0.28em",
             textTransform: "uppercase",
-            color: "#7a6553",
+            color: "#70745b",
           }}
         >
           {siteConfig.hero.eyebrow}
@@ -40,11 +40,11 @@ export default function OpenGraphImage() {
           <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.1, maxWidth: "85%" }}>
             {siteConfig.name}
           </div>
-          <div style={{ fontSize: 30, lineHeight: 1.5, color: "#5c4b40", maxWidth: "78%" }}>
+          <div style={{ fontSize: 30, lineHeight: 1.5, color: "#535741", maxWidth: "78%" }}>
             {siteConfig.description}
           </div>
         </div>
-        <div style={{ display: "flex", fontSize: 24, color: "#7a6553" }}>{siteConfig.url}</div>
+        <div style={{ display: "flex", fontSize: 24, color: "#70745b" }}>{siteConfig.url}</div>
       </div>
     ),
     size

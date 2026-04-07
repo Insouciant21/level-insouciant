@@ -36,8 +36,8 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
           justifyContent: "space-between",
           padding: "64px",
           background:
-            "radial-gradient(circle at top left, rgba(217, 150, 72, 0.32), transparent 34%), linear-gradient(135deg, #1f1814 0%, #2b211a 100%)",
-          color: "#f5efe1",
+            "radial-gradient(circle at top left, rgba(169, 186, 110, 0.26), transparent 34%), linear-gradient(135deg, #171a14 0%, #21251d 100%)",
+          color: "#f1f2e7",
         }}
       >
         <div
@@ -46,7 +46,7 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
             alignItems: "center",
             justifyContent: "space-between",
             fontSize: 24,
-            color: "#d2b690",
+            color: "#c7cfaa",
           }}
         >
           <div>{siteConfig.name}</div>
@@ -56,7 +56,7 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
           <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.08, maxWidth: "90%" }}>
             {article.title}
           </div>
-          <div style={{ fontSize: 28, lineHeight: 1.45, color: "#e6d8bc", maxWidth: "85%" }}>
+          <div style={{ fontSize: 28, lineHeight: 1.45, color: "#dde3c7", maxWidth: "85%" }}>
             {article.desc}
           </div>
         </div>
@@ -66,7 +66,7 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
             gap: 16,
             flexWrap: "wrap",
             fontSize: 22,
-            color: "#d2b690",
+            color: "#c7cfaa",
           }}
         >
           {article.tags.map((tag) => (
@@ -76,7 +76,7 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
                 display: "flex",
                 padding: "10px 18px",
                 borderRadius: 999,
-                border: "1px solid rgba(210, 182, 144, 0.3)",
+                border: "1px solid rgba(199, 207, 170, 0.32)",
               }}
             >
               {tag}

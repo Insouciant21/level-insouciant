@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
 
   return createPageMetadata({
     title: `标签: ${archive.name}`,
-    description: `${archive.name} 标签下的文章归档。`,
+    description: `${archive.name} 标签下的档案归档。`,
     path: `/tags/${tag}`,
   })
 }
@@ -52,7 +52,7 @@ export default async function TagDetailPage({ params }: TagPageProps) {
       <PageIntro
         eyebrow="Tag"
         title={archive.name}
-        description={`这里收录所有和“${archive.name}”相关的公开文章。`}
+        description={`这里收录所有和“${archive.name}”相关的公开档案。`}
       />
       <section className="grid gap-5">
         {archive.articles.map((article) => (

@@ -31,9 +31,9 @@ export default async function Page() {
   ])
 
   const heroStats = [
-    { label: "公开文章", value: String(allArticles.length).padStart(2, "0") },
-    { label: "标签主题", value: String(archiveOverview.tags.length).padStart(2, "0") },
-    { label: "内容分类", value: String(archiveOverview.categories.length).padStart(2, "0") },
+    { label: "公开记录", value: String(allArticles.length).padStart(2, "0") },
+    { label: "关键词索引", value: String(archiveOverview.tags.length).padStart(2, "0") },
+    { label: "分类层级", value: String(archiveOverview.categories.length).padStart(2, "0") },
   ]
 
   return (
@@ -54,17 +54,17 @@ export default async function Page() {
             <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                  Latest Posts
+                  Archive Index
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">最新文章</h2>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight">最新档案</h2>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  最近公开发布的内容，会优先展示在首页。
+                  最近整理完成的公开记录会优先陈列在入口区，方便先建立对这一层的基本印象。
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <p className="text-sm text-muted-foreground">{allArticles.length} 篇公开文章</p>
+                <p className="text-sm text-muted-foreground">{allArticles.length} 条公开记录</p>
                 <Button asChild variant="outline" size="sm" className="rounded-full">
-                  <Link href="/articles">查看全部</Link>
+                  <Link href="/articles">查看全部档案</Link>
                 </Button>
               </div>
             </div>
@@ -74,8 +74,8 @@ export default async function Page() {
                 featuredArticles.map((article) => <ArticleCard key={article.slug} article={article} />)
               ) : (
                 <EmptyState
-                  title="文章还在整理中"
-                  description="当前还没有公开文章，等我把第一批内容整理好再放出来。"
+                  title="档案仍在整理中"
+                  description="当前还没有公开记录，等第一批层级笔记整理完再开放。"
                 />
               )}
             </div>

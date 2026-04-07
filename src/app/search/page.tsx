@@ -19,7 +19,7 @@ type SearchPageProps = {
 export const metadata: Metadata = {
   ...createPageMetadata({
     title: "搜索",
-    description: "按标题、摘要、正文、分类和标签检索博客内容。",
+    description: "按标题、摘要、正文、分类和标签检索层级档案。",
     path: "/search",
   }),
   robots: {
@@ -41,7 +41,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <PageIntro
         eyebrow="Search"
         title="搜索"
-        description="可以按标题、摘要、正文、分类和标签检索内容，适合快速回找已经写过的主题。"
+        description="可以按标题、摘要、正文、分类和标签检索档案内容，适合快速回找已经留下的异常与主题。"
       />
 
       <section className="surface-panel px-6 py-6">
@@ -72,7 +72,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </form>
 
         <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-          <span>{query ? `共找到 ${results.length} 条结果` : `当前共有 ${allArticles.length} 篇公开文章可检索`}</span>
+          <span>{query ? `共找到 ${results.length} 条结果` : `当前共有 ${allArticles.length} 条公开记录可检索`}</span>
           <span>支持标题、摘要、正文、分类、标签匹配</span>
         </div>
       </section>
@@ -87,21 +87,21 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         ) : (
           <EmptyState
             title="没有找到匹配内容"
-            description={`暂时没有和“${query}”匹配的文章，可以换一个关键词继续试试。`}
+            description={`暂时没有和“${query}”匹配的档案，可以换一个关键词继续试试。`}
           />
         )
       ) : (
         <section className="grid gap-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold tracking-tight">最近文章</h2>
-            <p className="text-sm text-muted-foreground">还没输入关键词时，先从最新内容开始</p>
+            <h2 className="text-xl font-semibold tracking-tight">最近档案</h2>
+            <p className="text-sm text-muted-foreground">还没输入关键词时，先从最新记录开始</p>
           </div>
           {allArticles.length > 0 ? (
             allArticles.slice(0, 5).map((article) => <ArticleCard key={article.slug} article={article} />)
           ) : (
             <EmptyState
-              title="还没有可搜索的文章"
-              description="等公开文章增加后，这里会自动参与搜索结果。"
+              title="还没有可搜索的档案"
+              description="等公开记录增加后，这里会自动参与搜索结果。"
             />
           )}
         </section>

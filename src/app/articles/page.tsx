@@ -8,8 +8,8 @@ import { getAllArticles } from "@/lib/content"
 import { createPageMetadata } from "@/lib/seo"
 
 export const metadata: Metadata = createPageMetadata({
-  title: "博客",
-  description: "浏览所有已公开的技术文章与个人随笔。",
+  title: "层级档案",
+  description: "浏览所有已公开的层级记录、观察笔记与世界观档案。",
   path: "/articles",
 })
 
@@ -19,9 +19,9 @@ export default async function ArticlesPage() {
   return (
     <PageShell>
       <PageIntro
-        eyebrow="Articles"
-        title="博客"
-        description="所有公开文章都按照统一元数据组织，方便阅读、归档和后续扩展。"
+        eyebrow="Archive"
+        title="层级档案"
+        description="所有公开记录都按照统一元数据整理，方便沿关键词、分类和时间线继续向深处下潜。"
       />
 
       {articles.length > 0 ? (
@@ -32,8 +32,8 @@ export default async function ArticlesPage() {
         </section>
       ) : (
         <EmptyState
-          title="还没有可阅读的文章"
-          description="内容目录已经搭好，等第一篇文章正式发布后这里会显示列表。"
+          title="还没有可访问的档案"
+          description="入口已经搭好，等第一批层级记录完成整理后这里会显示列表。"
         />
       )}
     </PageShell>

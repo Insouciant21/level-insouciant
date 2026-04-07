@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 
   return createPageMetadata({
     title: `分类: ${archive.name}`,
-    description: `${archive.name} 分类下的文章归档。`,
+    description: `${archive.name} 分类下的档案归档。`,
     path: `/categories/${category}`,
   })
 }
@@ -52,7 +52,7 @@ export default async function CategoryDetailPage({ params }: CategoryPageProps) 
       <PageIntro
         eyebrow="Category"
         title={archive.name}
-        description={`这里收录所有属于“${archive.name}”分类的公开文章。`}
+        description={`这里收录所有属于“${archive.name}”分类的公开档案。`}
       />
       <section className="grid gap-5">
         {archive.articles.map((article) => (

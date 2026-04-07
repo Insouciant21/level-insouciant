@@ -11,8 +11,8 @@ function HomeTimeline({ articles }: HomeTimelineProps) {
   return (
     <section className="surface-panel px-6 py-6">
       <div className="mb-6">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Timeline</p>
-        <h2 className="mt-2 text-xl font-semibold tracking-tight">时间线</h2>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Observation Log</p>
+        <h2 className="mt-2 text-xl font-semibold tracking-tight">观测日志</h2>
       </div>
 
       {articles.length > 0 ? (
@@ -43,7 +43,7 @@ function HomeTimeline({ articles }: HomeTimelineProps) {
         </ol>
       ) : (
         <p className="text-sm leading-7 text-muted-foreground">
-          文章还在整理中，时间线会随着公开内容增加逐步完整起来。
+          更多记录整理后，这条时间线会继续向更深的走廊延伸。
         </p>
       )}
     </section>

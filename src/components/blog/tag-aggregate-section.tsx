@@ -20,7 +20,7 @@ function TagAggregateSection({ tag }: TagAggregateSectionProps) {
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Tag</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">{tag.name}</h2>
           <p className="mt-2 text-sm leading-7 text-muted-foreground">
-            {tag.count} 篇公开文章与这个主题相关。
+            {tag.count} 条公开档案与这个主题相关。
           </p>
         </div>
         <Link

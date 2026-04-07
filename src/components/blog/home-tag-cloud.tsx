@@ -40,8 +40,8 @@ function HomeTagCloud({ items }: HomeTagCloudProps) {
     <section className="surface-panel px-6 py-6">
       <div className="mb-5 flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Tag Cloud</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight">标签云</h2>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Index</p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight">关键词索引</h2>
         </div>
         <span className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
           {items.length} 项

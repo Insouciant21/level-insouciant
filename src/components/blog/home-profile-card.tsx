@@ -23,7 +23,7 @@ function HomeProfileCard({
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Profile</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Custodian Note</p>
             <h2 className="mt-2 text-xl font-semibold tracking-tight">{title}</h2>
           </div>
           <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
