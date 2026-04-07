@@ -231,6 +231,24 @@
   @apply text-muted-foreground;
 }
 
+.prose-block .katex {
+  color: inherit;
+  font-size: 1em;
+}
+
+.prose-block .katex-display {
+  @apply my-8 overflow-x-auto overflow-y-hidden py-2;
+  scrollbar-width: none;
+}
+
+.prose-block .katex-display::-webkit-scrollbar {
+  display: none;
+}
+
+.prose-block .katex-display > .katex {
+  @apply min-w-max;
+}
+
 .prose-block :not(pre) > code {
   @apply rounded-md bg-muted px-1.5 py-1 font-mono text-[0.92em] text-foreground;
 }

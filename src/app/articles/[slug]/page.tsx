@@ -1,15 +1,16 @@
 import type { Metadata } from "next"
+import dynamic from "next/dynamic"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { ArticleCard } from "@/components/blog/article-card"
-import { ArticleEngagementPanel } from "@/components/blog/article-engagement-panel"
 import { ArticleMeta } from "@/components/blog/article-meta"
 import { ArticlePaginationNav } from "@/components/blog/article-pagination-nav"
 import { ArticleTableOfContents } from "@/components/blog/article-table-of-contents"
 import { CategoryBadge } from "@/components/blog/category-badge"
 import { ContentProse } from "@/components/blog/content-prose"
 import { PageShell } from "@/components/blog/page-shell"
+import { ArticleEngagementPanelSkeleton } from "@/components/blog/page-skeletons"
 import { ReadingProgressBar } from "@/components/blog/reading-progress-bar"
 import { TagList } from "@/components/blog/tag-list"
 import {
@@ -20,6 +21,13 @@ import {
 } from "@/lib/content"
 import { createArticleJsonLd, createArticleMetadata, createPageMetadata } from "@/lib/seo"
 import { extractTableOfContents } from "@/lib/toc"
+
+const ArticleEngagementPanel = dynamic(
+  () => import("@/components/blog/article-engagement-panel").then((module) => module.ArticleEngagementPanel),
+  {
+    loading: () => <ArticleEngagementPanelSkeleton />,
+  }
+)
 
 type ArticlePageProps = {
   params: Promise<{

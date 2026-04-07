@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { IBM_Plex_Mono, Manrope } from "next/font/google"
 
+import "katex/dist/katex.min.css"
 import "./globals.css"
 import { SiteFooter } from "@/components/blog/site-footer"
 import { SiteHeader } from "@/components/blog/site-header"
