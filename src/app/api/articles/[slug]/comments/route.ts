@@ -46,6 +46,7 @@ export async function POST(request: Request, { params }: RouteProps) {
 
   try {
     const comment = await createComment(slug, {
+      userId: user.id,
       authorName: getUserDisplayName(user),
       content: body.content ?? "",
     })

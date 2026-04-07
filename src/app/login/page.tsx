@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { userLoginAction } from "@/app/actions/auth"
@@ -77,6 +78,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             登录
           </button>
         </form>
+
+        <p className="mt-6 text-sm text-muted-foreground">
+          还没有账号？
+          <Link href={`/register?next=${encodeURIComponent(next)}`} className="ml-2 text-primary underline underline-offset-4">
+            去注册
+          </Link>
+        </p>
       </section>
     </main>
   )

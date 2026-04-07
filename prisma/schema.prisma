@@ -20,12 +20,14 @@ model User {
   id                 String            @id @default(cuid())
   email              String            @unique
   name               String?
+  avatarUrl          String?
   passwordHash       String
   role               UserRole          @default(USER)
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @updatedAt
   lastEditedArticles Article[]         @relation("ArticleLastEditedBy")
   articleRevisions   ArticleRevision[] @relation("ArticleRevisionCreatedBy")
+  comments           Comment[]
 }
 
 model Article {
@@ -95,12 +97,15 @@ model ArticleLike {
 model Comment {
   id          String   @id @default(cuid())
   articleSlug String
+  userId      String?
   authorName  String
   content     String
   status      CommentStatus @default(APPROVED)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([articleSlug, createdAt])
   @@index([status, createdAt])
+  @@index([userId, createdAt])
 }

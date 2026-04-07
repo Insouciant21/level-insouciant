@@ -175,14 +175,16 @@ export async function listComments(articleSlug: string) {
 export async function createComment(
   articleSlug: string,
   input: {
+    userId: string
     authorName: string
     content: string
   }
 ) {
+  const userId = input.userId.trim()
   const authorName = input.authorName.trim().slice(0, 40)
   const content = input.content.trim().slice(0, 2000)
 
-  if (!authorName || !content) {
+  if (!userId || !authorName || !content) {
     throw new Error("INVALID_COMMENT")
   }
 
@@ -193,6 +195,7 @@ export async function createComment(
   const comment = await prisma.comment.create({
     data: {
       articleSlug,
+      userId,
       authorName,
       content,
     },

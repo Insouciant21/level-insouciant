@@ -11,11 +11,13 @@ declare module "next-auth" {
 
   interface User {
     role: UserRole
+    image?: string | null
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     role?: UserRole
+    image?: string | null
   }
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 import { adminLoginAction } from "@/app/actions/auth"
-import { getCurrentAdmin } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
 
 type AdminLoginPageProps = {
@@ -25,10 +25,14 @@ export const metadata: Metadata = createPageMetadata({
 })
 
 export default async function AdminLoginPage({ searchParams }: AdminLoginPageProps) {
-  const [admin, params] = await Promise.all([getCurrentAdmin(), searchParams])
+  const [user, params] = await Promise.all([getCurrentUser(), searchParams])
 
-  if (admin) {
-    redirect("/admin")
+  if (user?.role === "ADMIN") {
+    redirect("/admin/dashboard")
+  }
+
+  if (user) {
+    redirect("/account")
   }
 
   const error = params.error ? errorMessages[params.error] ?? "登录失败，请稍后重试。" : null

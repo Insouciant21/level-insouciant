@@ -100,8 +100,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </article>
 
-        <aside className="hidden xl:block">
-          <ArticleTableOfContents items={tocItems} className="sticky top-24" />
+        <aside className="hidden xl:sticky xl:top-24 xl:block xl:self-start">
+          <ArticleTableOfContents
+            items={tocItems}
+            className="xl:max-h-[calc(100svh-7rem)] xl:overflow-y-auto"
+          />
         </aside>
       </div>
 

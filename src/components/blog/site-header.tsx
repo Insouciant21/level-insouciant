@@ -1,8 +1,7 @@
 import Link from "next/link"
 
-import { logoutAction } from "@/app/actions/auth"
 import { ThemeToggle } from "@/components/blog/theme-toggle"
-import { Button } from "@/components/ui/button"
+import { UserMenu } from "@/components/blog/user-menu"
 import { getCurrentUser } from "@/lib/auth"
 import { siteConfig } from "@/lib/site"
 
@@ -36,14 +35,7 @@ async function SiteHeader() {
               ))}
             </ul>
           </nav>
-          {user ? (
-            <form action={logoutAction}>
-              <input type="hidden" name="redirectTo" value="/" />
-              <Button type="submit" variant="outline" className="rounded-full">
-                注销
-              </Button>
-            </form>
-          ) : null}
+          <UserMenu user={user} />
           <div className="hidden md:block">
             <ThemeToggle />
           </div>

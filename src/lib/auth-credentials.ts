@@ -110,3 +110,44 @@ export async function authorizePasswordUser(
 export function getUserDisplayName(user: Pick<User, "name" | "email">) {
   return user.name?.trim() || user.email
 }
+
+export async function registerPasswordUser(input: {
+  name: string
+  email: string
+  password: string
+}) {
+  if (!isAuthStorageEnabled()) {
+    throw new Error("DATABASE_NOT_CONFIGURED")
+  }
+
+  const name = input.name.trim().slice(0, 60)
+  const email = normalizeEmail(input.email)
+  const password = input.password
+  const bootstrapAdmin = getBootstrapAdminConfig()
+
+  if (!name || !email || password.length < 8) {
+    throw new Error("INVALID_REGISTRATION_INPUT")
+  }
+
+  if (bootstrapAdmin && email === bootstrapAdmin.email) {
+    throw new Error("RESERVED_EMAIL")
+  }
+
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true },
+  })
+
+  if (existingUser) {
+    throw new Error("EMAIL_TAKEN")
+  }
+
+  return prisma.user.create({
+    data: {
+      name,
+      email,
+      passwordHash: hashPassword(password),
+      role: UserRole.USER,
+    },
+  })
+}

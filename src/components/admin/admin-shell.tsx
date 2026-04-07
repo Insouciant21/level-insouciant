@@ -10,11 +10,12 @@ type AdminShellProps = {
 }
 
 const adminNav = [
-  { href: "/admin", label: "概览" },
+  { href: "/admin/dashboard", label: "概览" },
   { href: "/admin/articles", label: "文章" },
   { href: "/admin/comments", label: "评论" },
   { href: "/admin/tags", label: "标签" },
   { href: "/admin/stats", label: "统计" },
+  { href: "/account", label: "我的资料" },
 ]
 
 function AdminShell({ userName, children }: AdminShellProps) {
