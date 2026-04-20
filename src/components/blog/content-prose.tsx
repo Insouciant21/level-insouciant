@@ -62,10 +62,7 @@ function ContentProse({ source }: ContentProseProps) {
               [
                 rehypePrettyCode,
                 {
-                  theme: {
-                    light: "github-light",
-                    dark: "github-dark",
-                  },
+                  theme: "github-light",
                   keepBackground: false,
                   defaultLang: {
                     block: "text",

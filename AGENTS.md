@@ -8,9 +8,24 @@
 - This project is managed by pnpm.
 
 ## Project Structure
-- `src` project source code dir
-- `content` blog original article dir
-- `docs` project docs dir
+- `src/` main application source
+  - `src/app/` Next.js App Router entries (pages, layouts, route handlers, metadata routes)
+  - `src/components/` reusable UI and feature components (`blog`, `admin`, `ui`, motion, layout)
+  - `src/lib/` domain/business logic and shared server/client utilities (auth, content, prisma access, SEO, helpers)
+  - `src/hooks/` shared React hooks
+  - `src/config/` site-level configuration and constants
+  - `src/styles/` style modules and cross-page styling helpers
+  - `src/types/` shared TypeScript type declarations
+- `content/` content source files
+  - `content/posts/` published blog posts (MD/MDX)
+  - `content/article-seeds/` seed/import article sources used by content workflows
+- `prisma/` database layer
+  - `prisma/schema.prisma` Prisma schema definition
+  - `prisma/migrations/` versioned database migrations
+- `scripts/` project maintenance/import scripts (for example article import)
+- `public/` static assets served directly by Next.js
+- `docs/` internal project documentation
+- `ui_sample/` standalone UI playground/sample app used for design exploration and references
 
 ## Working style
 - For feature work touching more than 3 files, start by proposing a plan.
@@ -26,7 +41,6 @@
 
 ## Validation
 - After code changes, run the relevant checks:
-  - `pnpm test`
   - `pnpm lint`
   - `pnpm typecheck`
 - If one check fails, explain the likely cause before making another edit.

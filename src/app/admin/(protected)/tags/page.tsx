@@ -6,11 +6,11 @@ export default async function AdminTagsPage() {
   const tags = await getManagedTags()
 
   return (
-    <section className="surface-panel px-6 py-6">
+    <section className="admin-surface px-6 py-6">
       <div className="flex flex-col gap-2">
-        <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Tag Operations</p>
-        <h1 className="text-2xl font-semibold tracking-tight">标签管理</h1>
-        <p className="text-sm leading-7 text-muted-foreground">
+        <p className="admin-kicker">Tag Operations</p>
+        <h1 className="admin-title">标签管理</h1>
+        <p className="admin-copy">
           标签现在来自数据库中的文章记录。这里支持批量重命名标签，或者从所有文章里移除某个标签。
         </p>
       </div>
@@ -18,16 +18,16 @@ export default async function AdminTagsPage() {
       <div className="mt-6 grid gap-4">
         {tags.length > 0 ? (
           tags.map((tag) => (
-            <article key={tag.name} className="rounded-[1.75rem] border border-border/70 bg-background/50 px-5 py-5">
+            <article key={tag.name} className="admin-surface-muted px-5 py-5">
               <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="text-lg font-semibold tracking-tight">{tag.name}</h2>
-                    <span className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+                    <h2 className="text-lg font-semibold tracking-tight text-[#f1eadb]">{tag.name}</h2>
+                    <span className="admin-status-pill admin-status-muted">
                       {tag.count} 篇文章
                     </span>
                   </div>
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  <p className="admin-copy mt-3">
                     关联文章：{tag.articleSlugs.join("、")}
                   </p>
                 </div>
@@ -40,16 +40,16 @@ export default async function AdminTagsPage() {
                       name="targetTag"
                       required
                       placeholder={`将 ${tag.name} 改成...`}
-                      className="min-w-0 flex-1 rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                      className="admin-input min-w-0 flex-1"
                     />
-                    <Button type="submit" variant="outline" className="rounded-full">
+                    <Button type="submit" variant="outline">
                       重命名
                     </Button>
                   </form>
 
                   <form action={removeTagAction}>
                     <input type="hidden" name="sourceTag" value={tag.name} />
-                    <Button type="submit" variant="outline" className="rounded-full border-destructive/40 text-destructive">
+                    <Button type="submit" variant="destructive">
                       从所有文章中移除
                     </Button>
                   </form>
@@ -58,7 +58,7 @@ export default async function AdminTagsPage() {
             </article>
           ))
         ) : (
-          <div className="rounded-3xl border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">
+          <div className="admin-empty">
             当前还没有可管理的标签。
           </div>
         )}

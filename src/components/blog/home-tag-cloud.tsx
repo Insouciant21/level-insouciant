@@ -37,15 +37,13 @@ function HomeTagCloud({ items }: HomeTagCloudProps) {
   const max = Math.max(...counts)
 
   return (
-    <section className="surface-panel px-6 py-6">
-      <div className="mb-5 flex items-center justify-between gap-3">
+    <section className="surface-panel px-6 py-6 sm:px-7">
+      <div className="mb-6 flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Index</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight">关键词索引</h2>
+          <p className="utility-kicker">Index</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight">关键词索引</h2>
         </div>
-        <span className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
-          {items.length} 项
-        </span>
+        <span className="chrome-pill">{items.length} 项</span>
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -54,7 +52,7 @@ function HomeTagCloud({ items }: HomeTagCloudProps) {
             key={item.slug}
             href={getArchiveHref("tags", item)}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border border-border/70 bg-muted/35 px-4 py-2 font-medium text-foreground transition hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/10",
+              "inline-flex items-center gap-2 border border-border/80 bg-card/78 px-4 py-2 font-medium text-foreground transition hover:-translate-y-0.5 hover:border-foreground/18 hover:bg-card",
               getDensityClass(item.count, min, max)
             )}
           >

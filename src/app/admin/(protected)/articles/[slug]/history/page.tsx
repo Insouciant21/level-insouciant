@@ -66,65 +66,62 @@ export default async function AdminArticleHistoryPage({
   const message = getPageMessage(query)
 
   return (
-    <section className="surface-panel px-6 py-6">
-      <div className="flex flex-col gap-4 border-b border-border/60 pb-5">
+    <section className="admin-surface px-6 py-6">
+      <div className="flex flex-col gap-4 border-b border-white/10 pb-5">
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Revision History</p>
-          <span className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+          <p className="admin-kicker">Revision History</p>
+          <span className={`admin-status-pill ${article.draft ? "admin-status-draft" : "admin-status-live"}`}>
             {article.draft ? "草稿 / 已隐藏" : "已发布"}
           </span>
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{article.title}</h1>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">
+            <h1 className="admin-title">{article.title}</h1>
+            <p className="admin-copy mt-2">
               这里会保存每一次创建、编辑、发布、隐藏、标签变更和版本恢复后的快照。
             </p>
           </div>
 
           <div className="flex flex-wrap gap-4 text-sm">
-            <Link href={`/admin/articles/${article.slug}/edit`} className="text-primary underline underline-offset-4">
+            <Link href={`/admin/articles/${article.slug}/edit`} className="admin-link">
               返回编辑页
             </Link>
             {!article.draft ? (
-              <Link href={`/articles/${article.slug}`} className="text-primary underline underline-offset-4">
+              <Link href={`/articles/${article.slug}`} className="admin-link">
                 查看前台文章
               </Link>
             ) : null}
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c9482]">
           <span>Slug：{article.slug}</span>
           <span>分类：{article.category}</span>
           <span>发布日期：{formatDisplayDate(article.date)}</span>
           <span>当前修订数：{revisions.length}</span>
         </div>
 
-        {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
+        {message ? <p className="admin-copy">{message}</p> : null}
       </div>
 
       <div className="mt-6 grid gap-4">
         {revisions.length > 0 ? (
           revisions.map((revision) => (
-            <article
-              key={revision.id}
-              className="rounded-[1.75rem] border border-border/70 bg-background/50 px-5 py-5"
-            >
+            <article key={revision.id} className="admin-surface-muted px-5 py-5">
               <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="text-lg font-semibold tracking-tight">{revision.title}</h2>
-                    <span className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+                    <h2 className="text-lg font-semibold tracking-tight text-[#f1eadb]">{revision.title}</h2>
+                    <span className={`admin-status-pill ${revision.draft ? "admin-status-draft" : "admin-status-live"}`}>
                       {revision.draft ? "草稿 / 已隐藏" : "已发布"}
                     </span>
-                    <span className="text-sm text-muted-foreground">{formatRevisionDate(revision.createdAt)}</span>
+                    <span className="text-sm text-[#8c9482]">{formatRevisionDate(revision.createdAt)}</span>
                   </div>
 
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{revision.desc}</p>
+                  <p className="admin-copy mt-3">{revision.desc}</p>
 
-                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c9482]">
                     <span>编辑者：{revision.createdByName ?? "系统 / 未知用户"}</span>
                     <span>文章日期：{formatDisplayDate(revision.publishedAt)}</span>
                     {revision.reason ? <span>原因：{revision.reason}</span> : null}
@@ -132,18 +129,15 @@ export default async function AdminArticleHistoryPage({
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     {revision.tags.map((tag) => (
-                      <span
-                        key={`${revision.id}-${tag}`}
-                        className="rounded-full border border-border/70 bg-muted/35 px-3 py-1 text-xs text-muted-foreground"
-                      >
+                      <span key={`${revision.id}-${tag}`} className="admin-chip">
                         {tag}
                       </span>
                     ))}
                   </div>
 
-                  <details className="mt-4 rounded-2xl border border-border/60 bg-background/70 px-4 py-3">
-                    <summary className="cursor-pointer text-sm font-medium">查看此版本正文</summary>
-                    <pre className="mt-4 overflow-x-auto whitespace-pre-wrap font-mono text-sm leading-7 text-muted-foreground">
+                  <details className="mt-4 rounded-2xl border border-white/10 bg-[#0c0d0c] px-4 py-3">
+                    <summary className="cursor-pointer text-sm font-medium text-[#d8d1c1]">查看此版本正文</summary>
+                    <pre className="mt-4 overflow-x-auto whitespace-pre-wrap font-mono text-sm leading-7 text-[#8c9482]">
                       {revision.content}
                     </pre>
                   </details>
@@ -152,7 +146,7 @@ export default async function AdminArticleHistoryPage({
                 <form action={restoreArticleRevisionAction} className="xl:shrink-0">
                   <input type="hidden" name="slug" value={article.slug} />
                   <input type="hidden" name="revisionId" value={revision.id} />
-                  <Button type="submit" variant="outline" className="rounded-full">
+                  <Button type="submit" variant="outline">
                     恢复这个版本
                   </Button>
                 </form>
@@ -160,7 +154,7 @@ export default async function AdminArticleHistoryPage({
             </article>
           ))
         ) : (
-          <div className="rounded-3xl border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">
+          <div className="admin-empty">
             这篇文章暂时还没有修订历史。
           </div>
         )}

@@ -1,17 +1,28 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { IBM_Plex_Mono, Manrope } from "next/font/google"
+import { Barlow_Condensed, Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google"
 
 import "katex/dist/katex.min.css"
 import "./globals.css"
+import { SiteFrame } from "@/components/blog/site-frame"
 import { SiteFooter } from "@/components/blog/site-footer"
 import { SiteHeader } from "@/components/blog/site-header"
-import { ThemeProvider } from "@/components/theme-provider"
 import { createPageMetadata, createWebsiteJsonLdString } from "@/lib/seo"
 import { siteConfig } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" })
+const fontSans = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+})
+
+const fontSerif = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+})
 
 const fontMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -45,21 +56,22 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", manrope.variable)}
+      className={cn(
+        "antialiased",
+        fontSans.variable,
+        fontSerif.variable,
+        fontMono.variable,
+        "font-sans"
+      )}
     >
       <body className="min-h-svh">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: createWebsiteJsonLdString() }}
         />
-        <ThemeProvider>
-          <div className="flex min-h-svh flex-col">
-            <SiteHeader />
-            {children}
-            <SiteFooter />
-          </div>
-        </ThemeProvider>
+        <SiteFrame header={<SiteHeader />} footer={<SiteFooter />}>
+          {children}
+        </SiteFrame>
       </body>
     </html>
   )

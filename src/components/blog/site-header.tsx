@@ -1,6 +1,5 @@
 import Link from "next/link"
 
-import { ThemeToggle } from "@/components/blog/theme-toggle"
 import { UserMenu } from "@/components/blog/user-menu"
 import { getCurrentUser } from "@/lib/auth"
 import { siteConfig } from "@/lib/site"
@@ -9,35 +8,60 @@ async function SiteHeader() {
   const user = await getCurrentUser()
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-5 py-4 sm:px-6 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-start justify-between gap-4 md:flex-1">
-          <div className="space-y-1">
-            <Link href="/" className="text-base font-semibold tracking-tight">
-              {siteConfig.name}
-            </Link>
-            <p className="max-w-xl text-sm text-muted-foreground">{siteConfig.description}</p>
+    <header className="sticky top-0 z-40 border-b border-black/10 bg-background/88 backdrop-blur-md">
+      <div className="mx-auto w-full max-w-[88rem] px-5 py-5 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex items-start justify-between gap-4 lg:max-w-xl">
+            <div className="space-y-2">
+              <Link href="/" className="inline-flex items-center gap-3">
+                <span className="relative flex size-3 items-center justify-center">
+                  <span className="absolute size-3 animate-ping bg-primary/40" />
+                  <span className="relative size-2 bg-primary" />
+                </span>
+                <span className="text-[0.74rem] font-semibold uppercase tracking-[0.3em] text-foreground">
+                  {siteConfig.name}
+                </span>
+              </Link>
+              <p className="text-[0.68rem] uppercase tracking-[0.26em] text-muted-foreground">
+                Facility Hub // Archive Sync: Online
+              </p>
+              <p className="max-w-xl text-sm leading-7 text-muted-foreground">
+                {siteConfig.description}
+              </p>
+            </div>
           </div>
-          <div className="md:hidden">
-            <ThemeToggle />
-          </div>
-        </div>
 
-        <div className="flex items-center justify-between gap-4 md:justify-end">
-          <nav aria-label="主导航">
-            <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-              {siteConfig.nav.map((item) => (
-                <li key={item.href}>
-                  <Link className="transition hover:text-foreground" href={item.href}>
-                    {item.label}
+          <div className="flex flex-col gap-4 lg:items-end">
+            <nav aria-label="主导航">
+              <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[0.74rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                {siteConfig.nav.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      className="border-b border-transparent pb-1 hover:border-foreground/40 hover:text-foreground"
+                      href={item.href}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <Link
+                    href="/admin/login"
+                    className="border-b border-transparent pb-1 text-destructive hover:border-destructive/40"
+                  >
+                    Admin
                   </Link>
                 </li>
-              ))}
-            </ul>
-          </nav>
-          <UserMenu user={user} />
-          <div className="hidden md:block">
-            <ThemeToggle />
+              </ul>
+            </nav>
+
+            <div className="flex items-center justify-between gap-3 lg:justify-end">
+              <span className="chrome-pill hidden sm:inline-flex">
+                <span className="size-1.5 bg-primary" />
+                Node Stable
+              </span>
+              <UserMenu user={user} />
+            </div>
           </div>
         </div>
       </div>

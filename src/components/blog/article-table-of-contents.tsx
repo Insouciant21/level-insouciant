@@ -14,9 +14,9 @@ function ArticleTableOfContents({ items, className }: ArticleTableOfContentsProp
   }
 
   return (
-    <nav aria-label="文章目录" className={cn("surface-panel px-5 py-5", className)}>
+    <nav aria-label="文章目录" className={cn("dossier-paper px-5 py-5", className)}>
       <div className="space-y-1 border-b border-border/60 pb-4">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">TOC</p>
+        <p className="utility-kicker">TOC</p>
         <h2 className="text-lg font-semibold tracking-tight">目录</h2>
       </div>
 
@@ -26,7 +26,7 @@ function ArticleTableOfContents({ items, className }: ArticleTableOfContentsProp
             <Link
               href={`#${item.id}`}
               className={cn(
-                "block rounded-xl px-3 py-2 text-sm leading-6 text-muted-foreground transition hover:bg-muted/45 hover:text-foreground",
+                "block border-l border-transparent px-3 py-2 text-sm leading-6 text-muted-foreground transition hover:border-foreground/30 hover:bg-muted/30 hover:text-foreground",
                 item.depth === 3 ? "pl-6" : "pl-3"
               )}
             >

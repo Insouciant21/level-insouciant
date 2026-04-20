@@ -21,11 +21,9 @@ function PaginationItem({ article, label, direction }: PaginationItemProps) {
 
   if (!article) {
     return (
-      <div className="surface-panel flex min-h-40 flex-col justify-between px-6 py-6 opacity-65">
+      <div className="surface-panel flex min-h-40 flex-col justify-between px-6 py-6 opacity-70">
         <div className="space-y-3">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-            {label}
-          </p>
+          <p className="utility-kicker">{label}</p>
           <p className="text-lg font-semibold tracking-tight text-foreground/70">已经没有更多文章了</p>
           <p className="text-sm leading-7 text-muted-foreground">
             当前方向的导航已经到头，可以回到博客列表继续浏览。
@@ -39,13 +37,13 @@ function PaginationItem({ article, label, direction }: PaginationItemProps) {
     <Link
       href={`/articles/${article.slug}`}
       className={cn(
-        "surface-panel flex min-h-40 flex-col justify-between gap-5 px-6 py-6 transition duration-300 hover:-translate-y-1 hover:border-foreground/20",
+        "surface-panel flex min-h-40 flex-col justify-between gap-5 px-6 py-6 transition duration-300 hover:-translate-y-1 hover:border-foreground/15",
         isPrevious ? "text-left" : "text-left sm:text-right"
       )}
     >
       <div
         className={cn(
-          "flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground",
+          "flex items-center gap-2 text-[0.72rem] font-medium uppercase tracking-[0.24em] text-muted-foreground",
           isPrevious ? "justify-start" : "justify-start sm:justify-end"
         )}
       >

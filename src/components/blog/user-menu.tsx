@@ -23,25 +23,25 @@ function UserMenu({ user }: UserMenuProps) {
     <details className="group relative">
       <summary
         className={cn(
-          "flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-border/70 bg-background/70 text-foreground outline-none transition hover:border-foreground/20 hover:bg-muted/50 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40",
+          "flex size-10 cursor-pointer list-none items-center justify-center border border-border/80 bg-card/72 text-foreground outline-none transition hover:border-foreground/20 hover:bg-card focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
           "[&::-webkit-details-marker]:hidden"
         )}
         aria-label={user ? `${displayName} 的用户菜单` : "打开登录菜单"}
       >
         {user?.image ? (
           <span
-            className="size-9 rounded-full bg-cover bg-center"
+            className="size-9 bg-cover bg-center"
             style={{ backgroundImage: `url(${user.image})` }}
           />
         ) : (
-          <span className="flex size-9 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <span className="flex size-9 items-center justify-center bg-muted text-muted-foreground">
             <UserRound className="size-4" />
           </span>
         )}
       </summary>
 
-      <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-56 rounded-[1.5rem] border border-border/70 bg-card/95 p-2 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-        <div className="rounded-[1.1rem] px-3 py-3">
+      <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-60 border border-border/80 bg-card/94 p-2 shadow-[0_28px_70px_-30px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+        <div className="px-3 py-3">
           <p className="text-sm font-medium text-foreground">{displayName}</p>
           <p className="mt-1 text-xs text-muted-foreground">
             {user ? (isAdmin ? "管理员账号" : "普通用户账号") : "未登录"}
@@ -53,7 +53,7 @@ function UserMenu({ user }: UserMenuProps) {
             <>
               <Link
                 href={isAdmin ? "/admin" : "/account"}
-                className="rounded-[1rem] px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted/55 hover:text-foreground"
+                className="px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted/65 hover:text-foreground"
               >
                 {isAdmin ? "后台管理" : "用户管理"}
               </Link>
@@ -62,7 +62,7 @@ function UserMenu({ user }: UserMenuProps) {
                 <input type="hidden" name="redirectTo" value="/" />
                 <button
                   type="submit"
-                  className="w-full rounded-[1rem] px-3 py-2 text-left text-sm text-muted-foreground transition hover:bg-muted/55 hover:text-foreground"
+                  className="w-full px-3 py-2 text-left text-sm text-muted-foreground transition hover:bg-muted/65 hover:text-foreground"
                 >
                   注销
                 </button>
@@ -71,7 +71,7 @@ function UserMenu({ user }: UserMenuProps) {
           ) : (
             <Link
               href="/login"
-              className="rounded-[1rem] px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted/55 hover:text-foreground"
+              className="px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted/65 hover:text-foreground"
             >
               登录
             </Link>

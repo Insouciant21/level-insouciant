@@ -54,16 +54,49 @@ function AdminArticleEditorForm({
 
   const previewComponents = {
     h2: (props: React.ComponentPropsWithoutRef<"h2">) => (
-      <h2 {...props} className={cn("mt-12 text-2xl font-semibold tracking-tight", props.className)} />
+      <h2
+        {...props}
+        className={cn("mt-12 text-2xl font-semibold tracking-tight text-[#f1eadb]", props.className)}
+      />
     ),
     h3: (props: React.ComponentPropsWithoutRef<"h3">) => (
-      <h3 {...props} className={cn("mt-10 text-xl font-semibold tracking-tight", props.className)} />
+      <h3
+        {...props}
+        className={cn("mt-10 text-xl font-semibold tracking-tight text-[#e4dcca]", props.className)}
+      />
+    ),
+    p: (props: React.ComponentPropsWithoutRef<"p">) => (
+      <p {...props} className={cn("my-6 leading-8 text-[#c9c3b4]", props.className)} />
+    ),
+    a: (props: React.ComponentPropsWithoutRef<"a">) => (
+      <a
+        {...props}
+        className={cn(
+          "text-[#d7b47d] underline decoration-[#6f5b3b] underline-offset-4 transition-colors hover:text-[#ecd2a6]",
+          props.className
+        )}
+      />
+    ),
+    blockquote: (props: React.ComponentPropsWithoutRef<"blockquote">) => (
+      <blockquote
+        {...props}
+        className={cn(
+          "my-8 border-l-2 border-[#7c6541] bg-[#121311] px-5 py-4 text-[#e5dcc8]",
+          props.className
+        )}
+      />
+    ),
+    code: (props: React.ComponentPropsWithoutRef<"code">) => (
+      <code
+        {...props}
+        className={cn("rounded bg-[#171816] px-1.5 py-0.5 font-mono text-[0.95em] text-[#e6d7bc]", props.className)}
+      />
     ),
     pre: (props: React.ComponentPropsWithoutRef<"pre">) => (
       <pre
         {...props}
         className={cn(
-          "overflow-x-auto rounded-[1.75rem] border border-border/70 bg-muted/35 px-4 py-4 font-mono text-sm leading-7",
+          "my-8 overflow-x-auto rounded-[1.75rem] border border-white/10 bg-[#0c0d0c] px-4 py-4 font-mono text-sm leading-7 text-[#c9c3b4]",
           props.className
         )}
       />
@@ -121,41 +154,41 @@ function AdminArticleEditorForm({
   }
 
   return (
-    <section className="surface-panel px-6 py-6">
-      <div className="flex flex-col gap-3 border-b border-border/60 pb-5">
+    <section className="admin-surface px-6 py-6 sm:px-7">
+      <div className="flex flex-col gap-3 border-b border-white/10 pb-5">
         <div className="flex flex-wrap items-center gap-3">
-          <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+          <p className="admin-kicker-accent">
             {mode === "create" ? "New Article" : "Edit Article"}
           </p>
-          <span className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+          <span className="admin-status-pill admin-status-muted">
             {statusLabel}
           </span>
         </div>
         <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-2xl font-semibold tracking-tight text-[#f1eadb]">
               {mode === "create" ? "新建文章" : "在线编辑文章"}
             </h1>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">
+            <p className="admin-copy mt-2">
               使用结构化字段加原始 MDX 正文编辑，保存即生成修订记录。
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-3 text-sm text-[#9aa194]">
             {lastEditedByName ? <span>最近编辑：{lastEditedByName}</span> : null}
             {historyHref ? (
-              <Link href={historyHref} className="text-primary underline underline-offset-4">
+              <Link href={historyHref} className="admin-link">
                 查看修订历史
               </Link>
             ) : null}
             {previewHref ? (
-              <Link href={previewHref} className="text-primary underline underline-offset-4">
+              <Link href={previewHref} className="admin-link">
                 预览公开页
               </Link>
             ) : null}
           </div>
         </div>
-        {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
+        {message ? <p className="admin-copy">{message}</p> : null}
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-start">
@@ -164,19 +197,19 @@ function AdminArticleEditorForm({
 
           <div className="grid gap-5 lg:grid-cols-2">
             <label className="grid gap-2">
-              <span className="text-sm font-medium">标题</span>
+              <span className="text-sm font-medium text-[#d5d0c2]">标题</span>
               <input
                 type="text"
                 name="title"
                 required
                 value={draft.title}
                 onChange={handleFieldChange("title")}
-                className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                className="admin-input"
               />
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium">Slug</span>
+              <span className="text-sm font-medium text-[#d5d0c2]">Slug</span>
               <input
                 type="text"
                 name="slug"
@@ -184,52 +217,52 @@ function AdminArticleEditorForm({
                 readOnly={mode === "edit"}
                 value={draft.slug}
                 onChange={handleFieldChange("slug")}
-                className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50 read-only:bg-muted/35 read-only:text-muted-foreground"
+                className="admin-input read-only:bg-[#181919] read-only:text-[#7b8379]"
               />
             </label>
           </div>
 
           <label className="grid gap-2">
-            <span className="text-sm font-medium">摘要</span>
+            <span className="text-sm font-medium text-[#d5d0c2]">摘要</span>
             <textarea
               name="desc"
               required
               value={draft.desc}
               onChange={handleFieldChange("desc")}
               rows={3}
-              className="resize-y rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm leading-7 outline-none transition focus:border-primary/50"
+              className="admin-input leading-7"
             />
           </label>
 
           <div className="grid gap-5 lg:grid-cols-2">
             <label className="grid gap-2">
-              <span className="text-sm font-medium">分类</span>
+              <span className="text-sm font-medium text-[#d5d0c2]">分类</span>
               <input
                 type="text"
                 name="category"
                 required
                 value={draft.category}
                 onChange={handleFieldChange("category")}
-                className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                className="admin-input"
               />
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium">发布日期</span>
+              <span className="text-sm font-medium text-[#d5d0c2]">发布日期</span>
               <input
                 type="date"
                 name="publishedAt"
                 required
                 value={draft.publishedAt}
                 onChange={handleFieldChange("publishedAt")}
-                className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                className="admin-input"
               />
             </label>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-2">
             <label className="grid gap-2">
-              <span className="text-sm font-medium">标签</span>
+              <span className="text-sm font-medium text-[#d5d0c2]">标签</span>
               <input
                 type="text"
                 name="tags"
@@ -237,47 +270,47 @@ function AdminArticleEditorForm({
                 value={draft.tags}
                 onChange={handleFieldChange("tags")}
                 placeholder="用逗号分隔，例如：writing, systems"
-                className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                className="admin-input"
               />
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium">封面</span>
+              <span className="text-sm font-medium text-[#d5d0c2]">封面</span>
               <input
                 type="text"
                 name="cover"
                 required
                 value={draft.cover}
                 onChange={handleFieldChange("cover")}
-                className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                className="admin-input"
               />
             </label>
           </div>
 
           <label className="grid gap-2">
-            <span className="text-sm font-medium">正文 MDX</span>
+            <span className="text-sm font-medium text-[#d5d0c2]">正文 MDX</span>
             <textarea
               name="content"
               required
               value={draft.content}
               onChange={handleFieldChange("content")}
               rows={24}
-              className="min-h-[32rem] resize-y rounded-[1.75rem] border border-border/70 bg-background px-4 py-4 font-mono text-sm leading-7 outline-none transition focus:border-primary/50 xl:min-h-[44rem]"
+              className="admin-input min-h-[32rem] font-mono leading-7 xl:min-h-[44rem]"
             />
           </label>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-5">
-            <p className="text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
+            <p className="admin-copy">
               {mode === "create"
                 ? "创建后会立刻写入数据库并生成第一条修订记录。"
                 : "每次保存都会生成修订记录，便于后续回滚。"}
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <Button type="submit" name="intent" value="draft" variant="outline" className="rounded-full">
+              <Button type="submit" name="intent" value="draft" variant="outline">
                 保存草稿
               </Button>
-              <Button type="submit" name="intent" value="publish" className="rounded-full">
+              <Button type="submit" name="intent" value="publish">
                 发布更新
               </Button>
             </div>
@@ -285,20 +318,20 @@ function AdminArticleEditorForm({
         </form>
 
         <aside className="xl:sticky xl:top-24">
-          <section className="surface-panel min-h-[36rem] px-6 py-6">
-            <div className="flex flex-col gap-3 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <section className="admin-surface-muted px-6 py-6">
+            <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Live Preview</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">实时预览</h2>
+                <p className="admin-kicker-accent">Live Preview</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#f1eadb]">实时预览</h2>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="admin-copy">
                 {previewLoading ? "正在更新预览..." : "预览已同步"}
               </p>
             </div>
 
             <div className="mt-6">
               {previewError ? (
-                <div className="rounded-[1.75rem] border border-dashed border-destructive/40 px-5 py-8 text-sm text-destructive">
+                <div className="border border-dashed border-destructive/40 px-5 py-8 text-sm text-destructive">
                   {previewError}
                 </div>
               ) : previewLoading && !PreviewContent ? (
@@ -311,22 +344,22 @@ function AdminArticleEditorForm({
                   <Skeleton className="h-64 w-full rounded-[1.75rem]" />
                 </div>
               ) : (
-                <article className="mx-auto min-h-[30rem] w-full max-w-3xl">
-                  <header className="space-y-5 border-b border-border/60 pb-8">
-                    <span className="inline-flex rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
+                <article className="mx-auto min-h-[30rem] w-full max-w-3xl text-[#f1eadb]">
+                  <header className="space-y-5 border-b border-white/10 pb-8">
+                    <span className="admin-chip">
                       {draft.category.trim() || "未分类"}
                     </span>
                     <div className="space-y-3">
                       <h1 className="text-3xl font-semibold tracking-tight text-balance md:text-5xl">
                         {draft.title.trim() || "未命名文章"}
                       </h1>
-                      <p className="text-base leading-7 text-muted-foreground md:text-lg">
+                      <p className="admin-copy text-base md:text-lg">
                         {draft.desc.trim() || "这里会显示文章摘要预览。"}
                       </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#8c9482]">
                       <span>{draft.publishedAt || "发布日期未设置"}</span>
-                      <span className="text-border">/</span>
+                      <span className="text-white/16">/</span>
                       <span>{draft.category.trim() || "未分类"}</span>
                     </div>
                     <ul className="flex flex-wrap gap-2">
@@ -337,7 +370,7 @@ function AdminArticleEditorForm({
                         .map((tag) => (
                           <li
                             key={tag}
-                            className="inline-flex rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
+                            className="admin-chip"
                           >
                             {tag}
                           </li>
@@ -347,11 +380,11 @@ function AdminArticleEditorForm({
 
                   <div className="mt-8">
                     {PreviewContent ? (
-                      <div className="prose-block">
+                      <div className="text-base leading-8 text-[#c9c3b4] [&_hr]:my-10 [&_hr]:border-white/10 [&_img]:rounded-[1.75rem] [&_img]:border [&_img]:border-white/10 [&_img]:bg-[#121311] [&_li]:my-2 [&_ol]:my-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-[#f1eadb] [&_table]:my-8 [&_table]:w-full [&_table]:border-collapse [&_tbody_td]:border [&_tbody_td]:border-white/10 [&_tbody_td]:px-3 [&_tbody_td]:py-2 [&_thead_th]:border [&_thead_th]:border-white/10 [&_thead_th]:bg-[#151614] [&_thead_th]:px-3 [&_thead_th]:py-2 [&_ul]:my-6 [&_ul]:list-disc [&_ul]:pl-6">
                         <PreviewContent components={previewComponents} />
                       </div>
                     ) : (
-                      <div className="rounded-[1.75rem] border border-dashed border-border px-5 py-12 text-sm text-muted-foreground">
+                      <div className="admin-empty px-5 py-12 text-sm">
                         开始输入正文后，这里会实时显示 MDX 预览，包括数学公式。
                       </div>
                     )}

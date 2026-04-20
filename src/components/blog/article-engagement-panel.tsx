@@ -230,7 +230,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
     <section id="article-engagement" className="surface-panel mx-auto w-full max-w-4xl scroll-mt-28 px-6 py-6">
       <div className="flex flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Engagement</p>
+          <p className="utility-kicker">Engagement</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">互动数据</h2>
           <p className="mt-2 text-sm leading-7 text-muted-foreground">
             游客只读。登录后的普通用户可以点赞和评论，管理员额外拥有后台内容管理权限。
@@ -238,7 +238,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <div className="rounded-full border border-border/70 bg-muted/35 px-4 py-2 text-sm text-muted-foreground">
+          <div className="rounded-full border border-border/70 bg-card/62 px-4 py-2 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
               <Eye className="size-4" />
               {loading ? "..." : snapshot.views} 次阅读
@@ -259,7 +259,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               {snapshot.likes} 次点赞
             </Button>
           ) : (
-            <div className="rounded-full border border-border/70 bg-muted/35 px-4 py-2 text-sm text-muted-foreground">
+            <div className="rounded-full border border-border/70 bg-card/62 px-4 py-2 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-2">
                 <Heart className="size-4" />
                 {loading ? "..." : snapshot.likes} 次点赞
@@ -267,7 +267,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             </div>
           )}
 
-          <div className="rounded-full border border-border/70 bg-muted/35 px-4 py-2 text-sm text-muted-foreground">
+          <div className="rounded-full border border-border/70 bg-card/62 px-4 py-2 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
               <MessageSquare className="size-4" />
               {loading ? "..." : snapshot.commentsCount} 条评论
@@ -286,7 +286,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
           {comments.length > 0 ? (
             <div className="grid gap-3">
               {comments.map((comment) => (
-                <article key={comment.id} className="rounded-2xl bg-muted/35 px-4 py-4">
+                <article key={comment.id} className="rounded-[1.45rem] border border-border/70 bg-card/62 px-4 py-4">
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                     <p className="font-medium text-foreground">{comment.authorName}</p>
                     <p className="text-sm text-muted-foreground">{formatCommentDate(comment.createdAt)}</p>
@@ -320,7 +320,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
                   maxLength={2000}
                   rows={6}
                   placeholder="欢迎分享你的想法、问题或者补充。"
-                  className="resize-y rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm leading-7 outline-none transition focus:border-primary/50"
+                  className="field-textarea"
                 />
               </label>
 

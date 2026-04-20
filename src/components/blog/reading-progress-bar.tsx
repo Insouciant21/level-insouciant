@@ -39,7 +39,10 @@ function ReadingProgressBar({ targetId }: ReadingProgressBarProps) {
   })
 
   React.useEffect(() => {
-    let frame = 0
+    let frame = window.requestAnimationFrame(() => {
+      updateProgress()
+      frame = 0
+    })
 
     function onScroll() {
       if (frame) {
@@ -52,7 +55,6 @@ function ReadingProgressBar({ targetId }: ReadingProgressBarProps) {
       })
     }
 
-    updateProgress()
     window.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("resize", onScroll)
 
@@ -69,7 +71,7 @@ function ReadingProgressBar({ targetId }: ReadingProgressBarProps) {
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-50 h-1 bg-transparent">
       <div
-        className="h-full origin-left bg-primary/90 shadow-[0_0_24px_rgba(214,133,44,0.35)] transition-transform duration-150 ease-out"
+        className="h-full origin-left bg-primary/85 shadow-[0_0_28px_rgba(154,90,62,0.26)] transition-transform duration-150 ease-out"
         style={{ transform: `scaleX(${progress})` }}
       />
     </div>

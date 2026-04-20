@@ -5,7 +5,15 @@ type SkeletonProps = {
 }
 
 function Skeleton({ className }: SkeletonProps) {
-  return <div className={cn("animate-pulse rounded-md bg-muted/70", className)} aria-hidden="true" />
+  return (
+    <div
+      className={cn(
+        "animate-pulse border border-black/8 bg-black/9 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]",
+        className
+      )}
+      aria-hidden="true"
+    />
+  )
 }
 
 export { Skeleton }

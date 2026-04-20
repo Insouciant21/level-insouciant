@@ -86,10 +86,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
   return (
     <PageShell>
-      <section className="surface-panel px-6 py-6">
+      <section className="dossier-paper px-6 py-6 sm:px-7">
         <div className="flex flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Account Center</p>
+            <p className="utility-kicker">Account Center</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight">我的资料</h1>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
               普通用户会从 <span className="font-medium text-foreground">/admin</span> 自动跳转到这里；管理员也可以在这里管理自己的头像、昵称、邮箱、密码和评论。
@@ -97,7 +97,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           </div>
 
           {user.role === "ADMIN" ? (
-            <Button asChild variant="outline" className="rounded-full">
+            <Button asChild variant="outline" size="sm" className="justify-center">
               <Link href="/admin/dashboard">返回后台</Link>
             </Button>
           ) : null}
@@ -107,10 +107,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
           <div className="grid gap-6">
-            <section className="rounded-[1.75rem] border border-border/70 bg-background/50 px-5 py-5">
+            <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
               <div className="flex items-start gap-4">
                 <div
-                  className="flex size-16 shrink-0 items-center justify-center rounded-full border border-border/70 bg-muted text-lg font-semibold text-foreground"
+                  className="flex size-16 shrink-0 items-center justify-center border border-border/70 bg-muted text-lg font-semibold text-foreground"
                   style={profile.avatarUrl ? { backgroundImage: `url(${profile.avatarUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
                 >
                   {!profile.avatarUrl ? initials : null}
@@ -126,9 +126,9 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               </div>
             </section>
 
-            <section className="rounded-[1.75rem] border border-border/70 bg-background/50 px-5 py-5">
+            <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
               <div className="mb-5">
-                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Profile</p>
+                <p className="utility-kicker">Profile</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight">基本信息</h2>
               </div>
 
@@ -140,7 +140,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     name="name"
                     defaultValue={profile.name ?? ""}
                     placeholder="输入显示给其他人的昵称"
-                    className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                    className="field-input"
                   />
                 </label>
 
@@ -151,7 +151,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     name="email"
                     required
                     defaultValue={profile.email}
-                    className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                    className="field-input"
                   />
                 </label>
 
@@ -162,19 +162,19 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     name="avatarUrl"
                     defaultValue={profile.avatarUrl ?? ""}
                     placeholder="https://example.com/avatar.jpg"
-                    className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                    className="field-input"
                   />
                 </label>
 
-                <Button type="submit" className="mt-2 rounded-full">
+                <Button type="submit" className="mt-2 w-full justify-center sm:w-fit">
                   保存资料
                 </Button>
               </form>
             </section>
 
-            <section className="rounded-[1.75rem] border border-border/70 bg-background/50 px-5 py-5">
+            <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
               <div className="mb-5">
-                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Security</p>
+                <p className="utility-kicker">Security</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight">修改密码</h2>
               </div>
 
@@ -185,7 +185,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     type="password"
                     name="currentPassword"
                     required
-                    className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                    className="field-input"
                   />
                 </label>
 
@@ -196,7 +196,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     name="nextPassword"
                     required
                     minLength={8}
-                    className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                    className="field-input"
                   />
                 </label>
 
@@ -207,24 +207,24 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     name="confirmPassword"
                     required
                     minLength={8}
-                    className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+                    className="field-input"
                   />
                 </label>
 
-                <Button type="submit" variant="outline" className="mt-2 rounded-full">
+                <Button type="submit" className="mt-2 w-full justify-center sm:w-fit">
                   更新密码
                 </Button>
               </form>
             </section>
           </div>
 
-          <section className="rounded-[1.75rem] border border-border/70 bg-background/50 px-5 py-5">
+          <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">My Comments</p>
+                <p className="utility-kicker">My Comments</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight">我的评论</h2>
               </div>
-              <span className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+              <span className="border border-border/70 px-3 py-1 text-xs text-muted-foreground">
                 {comments.length} 条
               </span>
             </div>
@@ -234,7 +234,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                 comments.map((comment) => (
                   <article
                     key={comment.id}
-                    className="rounded-[1.5rem] border border-border/70 bg-card/70 px-4 py-4"
+                    className="border border-border/70 bg-card/70 px-4 py-4"
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
@@ -246,10 +246,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                         </p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+                        <span className="border border-border/70 px-3 py-1 text-xs text-muted-foreground">
                           {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
                         </span>
-                        <Button asChild variant="outline" size="sm" className="rounded-full">
+                        <Button asChild variant="outline" size="sm" className="justify-center">
                           <Link href={`/articles/${comment.articleSlug}#article-engagement`}>查看文章</Link>
                         </Button>
                       </div>
@@ -261,7 +261,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
                     <form action={deleteOwnCommentAction} className="mt-4">
                       <input type="hidden" name="commentId" value={comment.id} />
-                      <Button type="submit" variant="outline" className="rounded-full border-destructive/40 text-destructive">
+                      <Button type="submit" variant="destructive" size="sm" className="justify-center">
                         删除这条评论
                       </Button>
                     </form>

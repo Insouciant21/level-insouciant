@@ -19,14 +19,14 @@ function HomeProfileCard({
   email,
 }: HomeProfileCardProps) {
   return (
-    <section className="surface-panel px-6 py-6">
-      <div className="space-y-4">
+    <section className="surface-panel px-6 py-6 sm:px-7">
+      <div className="space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Custodian Note</p>
-            <h2 className="mt-2 text-xl font-semibold tracking-tight">{title}</h2>
+            <p className="utility-kicker">Custodian Note</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">{title}</h2>
           </div>
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+          <span className="chrome-pill border-primary/20 bg-primary/8 text-primary">
             {status}
           </span>
         </div>
@@ -40,7 +40,7 @@ function HomeProfileCard({
 
         <ul className="grid gap-3 text-sm leading-7 text-muted-foreground">
           {focuses.map((focus) => (
-            <li key={focus} className="rounded-2xl bg-muted/35 px-4 py-3">
+            <li key={focus} className="border border-border/70 bg-card/72 px-4 py-3">
               {focus}
             </li>
           ))}

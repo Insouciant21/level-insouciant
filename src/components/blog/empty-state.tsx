@@ -5,10 +5,11 @@ type EmptyStateProps = {
 
 function EmptyState({ title, description }: EmptyStateProps) {
   return (
-    <section className="surface-panel border-dashed px-6 py-10 text-center">
-      <div className="mx-auto max-w-lg space-y-3">
-        <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-        <p className="text-sm leading-7 text-muted-foreground">{description}</p>
+    <section className="surface-panel border-dashed px-6 py-12 text-center sm:px-8">
+      <div className="mx-auto max-w-2xl space-y-4">
+        <p className="utility-kicker">No Public Record Yet</p>
+        <h2 className="text-2xl font-semibold tracking-tight text-balance">{title}</h2>
+        <p className="text-sm leading-8 text-muted-foreground sm:text-base">{description}</p>
       </div>
     </section>
   )

@@ -16,7 +16,7 @@ function CategoryBadge({ category }: CategoryBadgeProps) {
   return (
     <Link
       href={`/categories/${toCategorySlug(category)}`}
-      className="inline-flex rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+      className="inline-flex border border-border/90 bg-background/85 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground transition hover:border-foreground/25 hover:text-foreground"
     >
       {category}
     </Link>

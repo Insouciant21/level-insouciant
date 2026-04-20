@@ -19,7 +19,7 @@ function TagList({ tags }: TagListProps) {
         <li key={tag}>
           <Link
             href={`/tags/${toTagSlug(tag)}`}
-            className="inline-flex rounded-full border border-border px-3 py-1 text-xs text-muted-foreground transition hover:border-foreground hover:text-foreground"
+            className="inline-flex border border-border/80 bg-card/78 px-3 py-1 text-[0.66rem] font-semibold uppercase tracking-[0.26em] text-muted-foreground transition hover:border-foreground/25 hover:text-foreground"
           >
             {tag}
           </Link>

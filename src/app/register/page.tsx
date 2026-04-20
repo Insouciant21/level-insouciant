@@ -3,6 +3,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { userRegisterAction } from "@/app/actions/auth"
+import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
 
@@ -38,15 +39,25 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const error = params.error ? errorMessages[params.error] ?? "注册失败，请稍后再试。" : null
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 items-center px-5 py-16 sm:px-6">
-      <section className="surface-panel w-full px-6 py-8 sm:px-8">
-        <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Create Account</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">注册账号</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-          输入用户名、邮箱和密码即可注册。注册成功后会自动登录，你就可以参与点赞、评论并管理自己的资料。
-        </p>
+    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-16 sm:px-6 lg:px-8">
+      <section className="dossier-paper grid w-full gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+        <div className="space-y-4">
+          <p className="utility-kicker">Create Account</p>
+          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+            注册账号
+          </h1>
+          <p className="max-w-xl text-sm leading-8 text-muted-foreground sm:text-base">
+            输入用户名、邮箱和密码即可注册。注册成功后会自动登录，你就可以参与点赞、评论并管理自己的资料。
+          </p>
+          <div className="border border-dashed border-border/80 bg-card/60 px-5 py-5">
+            <p className="utility-kicker">Account</p>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              普通账号默认拥有前台互动权限，管理员能力仍然只通过后台入口开放。
+            </p>
+          </div>
+        </div>
 
-        <form action={userRegisterAction} className="mt-8 grid gap-4">
+        <form action={userRegisterAction} className="grid gap-4">
           <input type="hidden" name="redirectTo" value={next} />
 
           <label className="grid gap-2">
@@ -56,7 +67,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               name="name"
               required
               placeholder="例如：insouciant"
-              className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+              className="field-input"
             />
           </label>
 
@@ -67,7 +78,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               name="email"
               required
               placeholder="you@example.com"
-              className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+              className="field-input"
             />
           </label>
 
@@ -79,26 +90,28 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               required
               minLength={8}
               placeholder="至少 8 位字符"
-              className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+              className="field-input"
             />
           </label>
 
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-          <button
-            type="submit"
-            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-          >
+          <Button type="submit" className="justify-center">
             注册并登录
-          </button>
-        </form>
+          </Button>
 
-        <p className="mt-6 text-sm text-muted-foreground">
-          已经有账号了？
-          <Link href={`/login?next=${encodeURIComponent(next)}`} className="ml-2 text-primary underline underline-offset-4">
-            去登录
-          </Link>
-        </p>
+          <div className="h-px bg-border/70" />
+
+          <p className="text-sm text-muted-foreground">
+            已经有账号了？
+            <Link
+              href={`/login?next=${encodeURIComponent(next)}`}
+              className="ml-2 text-primary underline underline-offset-4"
+            >
+              去登录
+            </Link>
+          </p>
+        </form>
       </section>
     </main>
   )

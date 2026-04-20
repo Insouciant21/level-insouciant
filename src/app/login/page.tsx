@@ -3,6 +3,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { userLoginAction } from "@/app/actions/auth"
+import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
 
@@ -36,15 +37,25 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const error = params.error ? errorMessages[params.error] ?? "登录失败，请稍后再试。" : null
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 items-center px-5 py-16 sm:px-6">
-      <section className="surface-panel w-full px-6 py-8 sm:px-8">
-        <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Sign In</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">登录后参与互动</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-          游客只能浏览文章、阅读评论和查看互动数据。登录后的普通用户才可以点赞与评论，管理员则额外拥有后台权限。
-        </p>
+    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-16 sm:px-6 lg:px-8">
+      <section className="dossier-paper grid w-full gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+        <div className="space-y-4">
+          <p className="utility-kicker">Sign In</p>
+          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+            登录后参与互动
+          </h1>
+          <p className="max-w-xl text-sm leading-8 text-muted-foreground sm:text-base">
+            游客只能浏览文章、阅读评论和查看互动数据。登录后的普通用户才可以点赞与评论，管理员则额外拥有后台权限。
+          </p>
+          <div className="border border-dashed border-border/80 bg-card/60 px-5 py-5">
+            <p className="utility-kicker">Permission</p>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              登录后会回到你原本访问的页面，评论与点赞入口会直接解锁。
+            </p>
+          </div>
+        </div>
 
-        <form action={userLoginAction} className="mt-8 grid gap-4">
+        <form action={userLoginAction} className="grid gap-4">
           <input type="hidden" name="redirectTo" value={next} />
 
           <label className="grid gap-2">
@@ -54,7 +65,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               name="email"
               required
               placeholder="you@example.com"
-              className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+              className="field-input"
             />
           </label>
 
@@ -65,26 +76,28 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               name="password"
               required
               placeholder="输入你的密码"
-              className="rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50"
+              className="field-input"
             />
           </label>
 
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-          <button
-            type="submit"
-            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-          >
+          <Button type="submit" className="justify-center">
             登录
-          </button>
-        </form>
+          </Button>
 
-        <p className="mt-6 text-sm text-muted-foreground">
-          还没有账号？
-          <Link href={`/register?next=${encodeURIComponent(next)}`} className="ml-2 text-primary underline underline-offset-4">
-            去注册
-          </Link>
-        </p>
+          <div className="h-px bg-border/70" />
+
+          <p className="text-sm text-muted-foreground">
+            还没有账号？
+            <Link
+              href={`/register?next=${encodeURIComponent(next)}`}
+              className="ml-2 text-primary underline underline-offset-4"
+            >
+              去注册
+            </Link>
+          </p>
+        </form>
       </section>
     </main>
   )

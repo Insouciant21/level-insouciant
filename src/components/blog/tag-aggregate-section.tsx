@@ -14,11 +14,11 @@ type TagAggregateSectionProps = {
 
 function TagAggregateSection({ tag }: TagAggregateSectionProps) {
   return (
-    <section id={tag.slug} className="surface-panel scroll-mt-28 px-6 py-6">
+    <section id={tag.slug} className="surface-panel scroll-mt-28 px-6 py-6 sm:px-7">
       <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Tag</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight">{tag.name}</h2>
+          <p className="utility-kicker">Tag</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight">{tag.name}</h2>
           <p className="mt-2 text-sm leading-7 text-muted-foreground">
             {tag.count} 条公开档案与这个主题相关。
           </p>
@@ -36,7 +36,7 @@ function TagAggregateSection({ tag }: TagAggregateSectionProps) {
           <Link
             key={article.slug}
             href={`/articles/${article.slug}`}
-            className="rounded-2xl border border-transparent bg-muted/35 px-4 py-4 transition hover:border-border hover:bg-muted/55"
+            className="border border-border/70 bg-card/72 px-4 py-4 transition hover:border-foreground/15 hover:bg-card"
           >
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div className="space-y-2">
