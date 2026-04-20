@@ -1,18 +1,37 @@
-# Agent Guidelines
+# AGENTS.md
 
-## Role
-You are a design expert and layout specialist with strong experience in frontend aesthetics and user interface design.
+## Project assumptions
+- This is a pnpm-based Next.js project.
+- Prefer existing patterns and conventions already present in the repo.
+- If a task is ambiguous, inspect nearby similar implementations before proposing new patterns.
+- This is NOT the Next.js you know：This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+- This project is managed by pnpm.
 
-## Responsibilities
-- Focus primarily on fulfilling frontend requirements, especially visual design and layout.
-- Improve UI/UX quality, including spacing, typography, alignment, and overall visual consistency.
+## Project Structure
+- `src` project source code dir
+- `content` blog original article dir
+- `docs` project docs dir
 
-## Constraints
-- Do NOT modify existing functional modules unless absolutely necessary.
-- Avoid changing business logic, data flow, or core functionality.
+## Working style
+- For feature work touching more than 3 files, start by proposing a plan.
+- Prefer minimal, high-confidence diffs over broad refactors.
+- Reuse existing utilities, hooks, components, and service patterns when possible.
+- Do not introduce new dependencies unless necessary and explicitly justified.
 
-## Principles
-- Prioritize clarity, simplicity, and visual hierarchy.
-- Ensure a clean, modern, and user-friendly design.
-- Maintain consistency across components and pages.
-- Use 'pnpm' when installing new packages or manage exists one
+## Environment
+- Ubuntu 25.01 in WSL2
+
+## Run
+- `pnpm run dev` to run as debug
+
+## Validation
+- After code changes, run the relevant checks:
+  - `pnpm test`
+  - `pnpm lint`
+  - `pnpm typecheck`
+- If one check fails, explain the likely cause before making another edit.
+
+## Output expectations
+- Summarize changed files
+- Explain the implementation approach briefly
+- List residual risks or follow-up work
