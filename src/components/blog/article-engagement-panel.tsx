@@ -238,7 +238,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <div className="rounded-full border border-border/70 bg-card/62 px-4 py-2 text-sm text-muted-foreground">
+          <div className="chrome-pill">
             <span className="inline-flex items-center gap-2">
               <Eye className="size-4" />
               {loading ? "..." : snapshot.views} 次阅读
@@ -249,7 +249,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             <Button
               type="button"
               variant={snapshot.likedByViewer ? "default" : "outline"}
-              className="rounded-full"
+              size="sm"
               disabled={likePending}
               onClick={() => {
                 void handleToggleLike()
@@ -259,7 +259,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               {snapshot.likes} 次点赞
             </Button>
           ) : (
-            <div className="rounded-full border border-border/70 bg-card/62 px-4 py-2 text-sm text-muted-foreground">
+            <div className="chrome-pill">
               <span className="inline-flex items-center gap-2">
                 <Heart className="size-4" />
                 {loading ? "..." : snapshot.likes} 次点赞
@@ -267,7 +267,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             </div>
           )}
 
-          <div className="rounded-full border border-border/70 bg-card/62 px-4 py-2 text-sm text-muted-foreground">
+          <div className="chrome-pill">
             <span className="inline-flex items-center gap-2">
               <MessageSquare className="size-4" />
               {loading ? "..." : snapshot.commentsCount} 条评论
@@ -278,38 +278,51 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
         <div className="grid gap-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold tracking-tight">最新评论</h3>
-            <span className="text-sm text-muted-foreground">{comments.length} 条已加载</span>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="utility-kicker">Field Notes</p>
+              <h3 className="mt-2 text-lg font-semibold tracking-tight">最新评论</h3>
+            </div>
+            <span className="chrome-pill">{comments.length} 条已加载</span>
           </div>
 
           {comments.length > 0 ? (
             <div className="grid gap-3">
               {comments.map((comment) => (
-                <article key={comment.id} className="rounded-[1.45rem] border border-border/70 bg-card/62 px-4 py-4">
-                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="font-medium text-foreground">{comment.authorName}</p>
+                <article key={comment.id} className="dossier-paper px-5 py-5">
+                  <div className="flex flex-col gap-3 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-foreground/88">
+                        {comment.authorName}
+                      </p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                        Comment Entry
+                      </p>
+                    </div>
                     <p className="text-sm text-muted-foreground">{formatCommentDate(comment.createdAt)}</p>
                   </div>
-                  <p className="mt-3 whitespace-pre-line text-sm leading-7 text-muted-foreground">
+                  <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-foreground/78">
                     {comment.content}
                   </p>
                 </article>
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">
+            <div className="dossier-paper border-dashed px-5 py-8 text-sm text-muted-foreground">
               还没有评论，欢迎留下第一条反馈。
             </div>
           )}
         </div>
 
         {snapshot.isAuthenticated ? (
-          <div className="rounded-[1.75rem] border border-border/70 bg-background/45 px-5 py-5">
-            <h3 className="text-lg font-semibold tracking-tight">写一条评论</h3>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">
-              当前登录身份：{snapshot.currentUserName ?? "已登录用户"}。评论将以这个身份显示。
-            </p>
+          <div className="dossier-paper px-5 py-5">
+            <div className="border-b border-border/60 pb-4">
+              <p className="utility-kicker">Transmission</p>
+              <h3 className="mt-2 text-lg font-semibold tracking-tight">写一条评论</h3>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                当前登录身份：{snapshot.currentUserName ?? "已登录用户"}。评论将以这个身份显示。
+              </p>
+            </div>
 
             <form className="mt-5 grid gap-4" onSubmit={handleSubmitComment}>
               <label className="grid gap-2">
@@ -324,11 +337,15 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
                 />
               </label>
 
-              {error ? <p className="text-sm text-destructive">{error}</p> : null}
+              {error ? (
+                <div className="border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
+                  {error}
+                </div>
+              ) : null}
 
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm text-muted-foreground">{content.length}/2000</p>
-                <Button type="submit" className="rounded-full px-5" disabled={commentPending}>
+                <span className="chrome-pill">{content.length}/2000</span>
+                <Button type="submit" size="sm" disabled={commentPending}>
                   <SendHorizonal className="size-4" />
                   {commentPending ? "提交中..." : "提交评论"}
                 </Button>
@@ -336,19 +353,26 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             </form>
           </div>
         ) : (
-          <div className="rounded-[1.75rem] border border-dashed border-border/80 bg-background/45 px-5 py-5">
-            <h3 className="text-lg font-semibold tracking-tight">登录后参与互动</h3>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">
-              游客只能查看评论、点赞数和阅读数。登录后的普通用户才能点赞与评论。
-            </p>
+          <div className="dossier-paper border-dashed px-5 py-5">
+            <div className="border-b border-border/60 pb-4">
+              <p className="utility-kicker">Access Gate</p>
+              <h3 className="mt-2 text-lg font-semibold tracking-tight">登录后参与互动</h3>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                游客只能查看评论、点赞数和阅读数。登录后的普通用户才能点赞与评论。
+              </p>
+            </div>
 
-            {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
+            {error ? (
+              <div className="mt-4 border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
+                {error}
+              </div>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap gap-3">
-              <Button asChild className="rounded-full px-5">
+              <Button asChild size="sm">
                 <Link href={loginHref}>登录后评论</Link>
               </Button>
-              <Button asChild variant="outline" className="rounded-full">
+              <Button asChild variant="outline" size="sm">
                 <Link href={loginHref}>登录后点赞</Link>
               </Button>
             </div>

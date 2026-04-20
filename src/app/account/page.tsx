@@ -91,9 +91,6 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           <div>
             <p className="utility-kicker">Account Center</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight">我的资料</h1>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-              普通用户会从 <span className="font-medium text-foreground">/admin</span> 自动跳转到这里；管理员也可以在这里管理自己的头像、昵称、邮箱、密码和评论。
-            </p>
           </div>
 
           {user.role === "ADMIN" ? (

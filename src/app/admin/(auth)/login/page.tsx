@@ -36,7 +36,7 @@ export default async function AdminLoginPage({ searchParams }: AdminLoginPagePro
             登录后台控制台
           </h1>
           <p className="max-w-xl text-sm leading-8 text-[#9aa194] sm:text-base">
-            这里只有管理员能进入。普通用户和游客都只能在前台浏览、点赞与评论，无法触碰归档控制台。
+            这里只有管理员能进入
           </p>
           <div className="admin-surface-muted px-5 py-5 text-sm leading-7 text-[#9aa194]">
             <p className="admin-kicker-accent">Bootstrap</p>

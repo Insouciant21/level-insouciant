@@ -19,7 +19,7 @@ export default async function AdminDashboardPage() {
             <div>
               <h1 className="text-4xl font-semibold tracking-tight text-[#f2eadb]">后台概览</h1>
               <p className="admin-copy mt-2">
-                这里汇总公开记录、草稿、互动数据和用户规模，方便你快速判断站点现在处于什么状态。
+                这里汇总公开记录、草稿、互动数据和用户规模
               </p>
             </div>
             <span className="admin-status-pill admin-status-live">

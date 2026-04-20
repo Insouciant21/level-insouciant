@@ -82,11 +82,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: createArticleJsonLd(article) }}
       />
-      <div className="mx-auto grid w-full max-w-7xl gap-8 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-start">
+      <div className="mx-auto grid w-full max-w-7xl gap-6 md:gap-8 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-start">
         <MotionReveal variant="left">
           <article id="article-reading-root" className="min-w-0">
-            <div className="dossier-paper mx-auto w-full max-w-4xl px-6 py-8 sm:px-8 md:px-12">
-              <Link href="/articles" className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.22em] text-muted-foreground transition hover:text-foreground">
+            <div className="dossier-paper mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:px-12">
+              <Link
+                href="/articles"
+                className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.22em] text-muted-foreground transition hover:text-foreground"
+              >
                 <ArrowLeft className="size-4" />
                 返回档案索引
               </Link>
@@ -97,7 +100,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   <span>{formatDisplayDate(article.date)}</span>
                 </div>
 
-                <h1 className="mt-5 text-4xl font-semibold leading-[0.95] tracking-tight text-balance md:text-6xl">
+                <h1 className="mt-5 break-words text-3xl font-semibold leading-[0.95] tracking-tight text-balance sm:text-4xl md:text-6xl">
                   {article.title}
                 </h1>
                 <p className="mt-5 max-w-3xl text-base leading-8 text-foreground/78 md:text-lg">
@@ -124,7 +127,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     width={1600}
                     height={880}
                     sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 896px"
-                    className="h-[22rem] w-full object-cover grayscale-[0.15] sepia-[0.22]"
+                    className="h-[14rem] w-full object-cover grayscale-[0.15] sepia-[0.22] sm:h-[18rem] md:h-[22rem]"
                   />
                 </div>
               ) : null}
@@ -138,14 +141,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </article>
         </MotionReveal>
 
-        <MotionReveal variant="right" delay={0.3} className="hidden xl:grid">
-          <aside className="hidden xl:sticky xl:top-32 xl:grid xl:self-start">
+        <aside className="hidden xl:sticky xl:top-32 xl:grid xl:self-start">
+          <MotionReveal variant="right" delay={0.3}>
             <ArticleTableOfContents
               items={tocItems}
               className="xl:max-h-[calc(100svh-9rem)] xl:overflow-y-auto"
             />
-          </aside>
-        </MotionReveal>
+          </MotionReveal>
+        </aside>
       </div>
 
       <MotionReveal delay={0.2}>
@@ -159,7 +162,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       {relatedArticles.length > 0 ? (
         <MotionReveal delay={0.3}>
           <section className="grid gap-5">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-xl font-semibold tracking-tight">相关文章</h2>
               <p className="text-sm text-muted-foreground">根据标签与分类自动关联</p>
             </div>

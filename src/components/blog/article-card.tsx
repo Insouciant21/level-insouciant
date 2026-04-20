@@ -19,7 +19,7 @@ function ArticleCard({ article }: ArticleCardProps) {
       <div className="absolute inset-0 shadow-[inset_0_0_42px_rgba(0,0,0,0.14)]" />
       <Link href={`/articles/${article.slug}`} className="absolute inset-0 z-20" aria-label={article.title} />
 
-      <div className="relative z-10 flex min-h-[18rem] flex-col justify-between px-6 py-6">
+      <div className="relative z-10 flex min-h-[18rem] min-w-0 flex-col justify-between px-5 py-5 sm:px-6 sm:py-6">
         <div className="flex items-start gap-4 text-[0.68rem] font-semibold uppercase tracking-[0.26em]">
           <span className="bg-[#171613] px-2 py-1 text-[#f3efe2]">{signal.designation}</span>
         </div>
@@ -28,10 +28,10 @@ function ArticleCard({ article }: ArticleCardProps) {
           <CategoryBadge category={article.category} />
           <div className="border border-black/12 bg-[#f8f4eb]/70 px-4 py-4 backdrop-blur-sm transition duration-500 group-hover:-translate-y-1">
             <div className="space-y-3">
-              <h2 className="text-2xl font-semibold leading-tight tracking-tight text-balance sm:text-[2rem]">
+              <h2 className="break-words text-2xl font-semibold leading-tight tracking-tight text-balance sm:text-[2rem]">
                 <span className="transition group-hover:text-primary">{article.title}</span>
               </h2>
-              <p className="max-w-2xl text-sm leading-8 text-foreground/72 sm:text-[0.96rem]">
+              <p className="max-w-2xl break-words text-sm leading-8 text-foreground/72 sm:text-[0.96rem]">
                 {article.desc}
               </p>
             </div>

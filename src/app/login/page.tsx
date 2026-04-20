@@ -45,7 +45,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             登录后参与互动
           </h1>
           <p className="max-w-xl text-sm leading-8 text-muted-foreground sm:text-base">
-            游客只能浏览文章、阅读评论和查看互动数据。登录后的普通用户才可以点赞与评论，管理员则额外拥有后台权限。
+            游客只能浏览文章、阅读评论和查看互动数据。登录后才可以点赞与评论。
           </p>
           <div className="border border-dashed border-border/80 bg-card/60 px-5 py-5">
             <p className="utility-kicker">Permission</p>

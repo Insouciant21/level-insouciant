@@ -49,12 +49,6 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           <p className="max-w-xl text-sm leading-8 text-muted-foreground sm:text-base">
             输入用户名、邮箱和密码即可注册。注册成功后会自动登录，你就可以参与点赞、评论并管理自己的资料。
           </p>
-          <div className="border border-dashed border-border/80 bg-card/60 px-5 py-5">
-            <p className="utility-kicker">Account</p>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              普通账号默认拥有前台互动权限，管理员能力仍然只通过后台入口开放。
-            </p>
-          </div>
         </div>
 
         <form action={userRegisterAction} className="grid gap-4">

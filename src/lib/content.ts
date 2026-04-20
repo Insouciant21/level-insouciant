@@ -12,6 +12,18 @@ function slugifySegment(value: string) {
     .replace(/^-+|-+$/g, "")
 }
 
+function decodeRouteSegment(value: string) {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
+export function toArchiveSlug(value: string) {
+  return slugifySegment(decodeRouteSegment(value))
+}
+
 function toArticleSummary(record: ArticleRecord): ArticleSummary {
   return {
     title: record.title,
@@ -76,7 +88,7 @@ function countArchiveItems(items: string[]) {
   return [...counts.entries()]
     .map(([name, count]) => ({
       name,
-      slug: slugifySegment(name),
+      slug: toArchiveSlug(name),
       count,
     }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
@@ -96,13 +108,14 @@ async function filterArticlesByArchive(
   archiveType: "tag" | "category",
   slug: string
 ): Promise<{ name: string; articles: ArticleSummary[] } | null> {
+  const normalizedSlug = toArchiveSlug(slug)
   const articles = await getAllArticles()
   const matched = articles.filter((article) => {
     if (archiveType === "tag") {
-      return article.tags.some((tag) => slugifySegment(tag) === slug)
+      return article.tags.some((tag) => toArchiveSlug(tag) === normalizedSlug)
     }
 
-    return slugifySegment(article.category) === slug
+    return toArchiveSlug(article.category) === normalizedSlug
   })
 
   if (matched.length === 0) {
@@ -111,7 +124,7 @@ async function filterArticlesByArchive(
 
   const name =
     archiveType === "tag"
-      ? matched.flatMap((article) => article.tags).find((tag) => slugifySegment(tag) === slug)
+      ? matched.flatMap((article) => article.tags).find((tag) => toArchiveSlug(tag) === normalizedSlug)
       : matched[0]?.category
 
   if (!name) {

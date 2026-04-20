@@ -65,6 +65,39 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-svh">
+        {process.env.NODE_ENV === "development" ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function () {
+                  if (typeof window === "undefined" || !window.performance || typeof window.performance.measure !== "function") {
+                    return;
+                  }
+
+                  if (window.__insousMeasureGuardInstalled) {
+                    return;
+                  }
+
+                  window.__insousMeasureGuardInstalled = true;
+
+                  var originalMeasure = window.performance.measure.bind(window.performance);
+
+                  window.performance.measure = function () {
+                    try {
+                      return originalMeasure.apply(this, arguments);
+                    } catch (error) {
+                      if (error instanceof TypeError && /cannot have a negative time stamp/.test(error.message)) {
+                        return;
+                      }
+
+                      throw error;
+                    }
+                  };
+                })();
+              `,
+            }}
+          />
+        ) : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: createWebsiteJsonLdString() }}

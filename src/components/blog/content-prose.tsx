@@ -51,7 +51,7 @@ function ContentProse({ source }: ContentProseProps) {
   const normalizedSource = normalizeMdxSource(source)
 
   return (
-    <div className="prose-block">
+    <div className="prose-block min-w-0">
       <MDXRemote
         source={normalizedSource}
         options={{

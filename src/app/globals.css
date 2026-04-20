@@ -326,6 +326,7 @@
 
   .admin-copy {
     @apply text-sm leading-7 text-[#9aa194];
+    overflow-wrap: anywhere;
   }
 
   .admin-link {
@@ -430,8 +431,9 @@
 }
 
 .prose-block {
-  @apply text-[1.06rem] leading-9 text-foreground;
+  @apply max-w-full min-w-0 text-[1rem] leading-8 text-foreground sm:text-[1.06rem] sm:leading-9;
   font-family: var(--font-serif), "Noto Serif SC", "Songti SC", Georgia, serif;
+  overflow-wrap: anywhere;
 }
 
 .prose-block > * + * {
@@ -450,6 +452,13 @@
 .prose-block ul,
 .prose-block ol {
   @apply text-foreground/84;
+}
+
+.prose-block p,
+.prose-block li,
+.prose-block blockquote,
+.prose-block a {
+  overflow-wrap: anywhere;
 }
 
 .prose-block ol {
@@ -475,7 +484,7 @@
 }
 
 .prose-block .katex-display {
-  @apply my-8 overflow-x-auto overflow-y-hidden py-2;
+  @apply my-8 max-w-full overflow-x-auto overflow-y-hidden py-2;
   scrollbar-width: none;
 }
 
@@ -484,7 +493,36 @@
 }
 
 .prose-block .katex-display > .katex {
-  @apply min-w-max;
+  @apply inline-block min-w-max;
+}
+
+.prose-block .code-block {
+  @apply w-full max-w-full;
+}
+
+.prose-block .code-block-toolbar {
+  @apply max-w-full;
+}
+
+.prose-block table {
+  @apply my-8 block max-w-full overflow-x-auto border-collapse;
+}
+
+.prose-block th,
+.prose-block td {
+  @apply min-w-[8rem] border border-border/60 px-3 py-2 text-left align-top;
+}
+
+.prose-block img,
+.prose-block video,
+.prose-block iframe,
+.prose-block svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose-block iframe {
+  width: 100%;
 }
 
 .prose-block :not(pre) > code {
@@ -496,9 +534,10 @@
 }
 
 .code-block pre {
-  @apply m-0 overflow-x-auto px-4 py-4;
+  @apply m-0 block w-full max-w-full overflow-x-auto px-4 py-4;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  overscroll-behavior-x: contain;
 }
 
 .code-block pre::-webkit-scrollbar {
@@ -530,7 +569,7 @@
 }
 
 .code-block pre code {
-  @apply grid min-w-max font-mono text-[0.92rem] leading-7;
+  @apply grid min-w-full max-w-none w-max font-mono text-[0.85rem] leading-6 sm:text-[0.92rem] sm:leading-7;
 }
 
 .code-block pre,
@@ -541,7 +580,7 @@
 }
 
 .code-block pre [data-line] {
-  @apply px-1;
+  @apply min-w-full px-1;
 }
 
 .code-block pre [data-highlighted-line] {

@@ -6,14 +6,16 @@ function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
     <article
       className={[
         "relative overflow-hidden border-[3px] bg-[#d8d1bd]",
-        featured ? "min-h-[24rem] border-black/30 md:col-span-2 md:row-span-2" : "min-h-[18rem] border-black/20",
+        featured
+          ? "min-h-[16rem] border-black/30 sm:min-h-[18rem] lg:col-span-2 lg:row-span-2 lg:min-h-[24rem]"
+          : "min-h-[16rem] border-black/20 sm:min-h-[18rem]",
       ].join(" ")}
     >
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),transparent_38%,rgba(0,0,0,0.08))]" />
       <div className="absolute inset-0 shadow-[inset_0_0_44px_rgba(0,0,0,0.16)]" />
 
-      <div className="relative z-10 flex h-full flex-col px-6 py-6">
-        <div className="flex items-start gap-4">
+      <div className="relative z-10 flex h-full flex-col px-4 py-4 sm:px-6 sm:py-6">
+        <div className="flex items-start gap-3 sm:gap-4">
           <Skeleton className="h-5 w-16 border-black/15 bg-black/80 shadow-none" />
         </div>
 
@@ -200,12 +202,12 @@ function HomePageSkeleton() {
           <Skeleton className="mt-2 h-5 w-5/6 max-w-2xl" />
         </div>
 
-        <div className="grid auto-rows-[18rem] gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid auto-rows-[16rem] gap-4 sm:auto-rows-[18rem] sm:gap-6 md:grid-cols-2 lg:grid-cols-4 xl:gap-10">
           {Array.from({ length: 6 }).map((_, index) => (
             <DoorCardSkeleton key={index} featured={index === 0 || index === 3} />
           ))}
 
-          <div className="relative flex min-h-[18rem] flex-col items-center justify-center overflow-hidden border-[3px] border-[#2d2d2d] bg-[#181715] shadow-[inset_0_0_60px_rgba(0,0,0,0.7)]">
+          <div className="relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden border-[3px] border-[#2d2d2d] bg-[#181715] px-4 shadow-[inset_0_0_60px_rgba(0,0,0,0.7)] sm:min-h-[18rem]">
             <Skeleton className="h-4 w-28 border-[#5e312e] bg-[#7f2f26] shadow-none" />
             <Skeleton className="absolute bottom-4 left-4 h-3 w-24 border-none bg-white/10 shadow-none" />
           </div>
@@ -221,7 +223,7 @@ function HomePageSkeleton() {
             <Skeleton className="h-5 w-5/6 max-w-2xl" />
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Skeleton className="h-8 w-28" />
             <Skeleton className="h-9 w-28 border-[#6f7b83] bg-[#69747c] shadow-none" />
           </div>
@@ -328,21 +330,39 @@ function ArticleEngagementPanelSkeleton() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
         <div className="grid gap-3">
-          <Skeleton className="h-6 w-32" />
+          <div className="flex items-center justify-between gap-4">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-6 w-24" />
+            </div>
+            <Skeleton className="h-8 w-24" />
+          </div>
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="border border-border/70 bg-card/70 px-4 py-4">
-              <Skeleton className="h-5 w-28" />
-              <Skeleton className="mt-3 h-4 w-full" />
+            <div key={index} className="dossier-paper px-5 py-5">
+              <div className="flex items-center justify-between gap-4 border-b border-border/60 pb-4">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <Skeleton className="h-4 w-28" />
+              </div>
+              <Skeleton className="mt-4 h-4 w-full" />
               <Skeleton className="mt-2 h-4 w-5/6" />
             </div>
           ))}
         </div>
 
-        <div className="border border-border/70 bg-background/45 px-5 py-5">
-          <Skeleton className="h-6 w-28" />
-          <Skeleton className="mt-3 h-5 w-full" />
+        <div className="dossier-paper px-5 py-5">
+          <div className="space-y-2 border-b border-border/60 pb-4">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-6 w-28" />
+            <Skeleton className="h-5 w-full" />
+          </div>
           <Skeleton className="mt-5 h-40 w-full" />
-          <Skeleton className="mt-4 h-10 w-28 border-[#3e9256] bg-[#2f7c4a]/75 shadow-none" />
+          <div className="mt-4 flex items-center justify-between gap-3">
+            <Skeleton className="h-8 w-20" />
+            <Skeleton className="h-9 w-28 border-[#3e9256] bg-[#2f7c4a]/75 shadow-none" />
+          </div>
         </div>
       </div>
     </section>
@@ -372,9 +392,9 @@ function TocPanelSkeleton({ terminal = false }: { terminal?: boolean }) {
 function ArticlePageSkeleton() {
   return (
     <PageShell>
-      <div className="mx-auto grid w-full max-w-7xl gap-8 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-start">
+      <div className="mx-auto grid w-full max-w-7xl gap-6 md:gap-8 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-start">
         <article className="min-w-0">
-          <div className="dossier-paper mx-auto w-full max-w-4xl px-6 py-8 sm:px-8 md:px-12">
+          <div className="dossier-paper mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:px-12">
             <Skeleton className="h-4 w-36" />
 
             <header className="mt-6 border-b-4 border-foreground pb-8">
@@ -401,7 +421,7 @@ function ArticlePageSkeleton() {
             </header>
 
             <div className="mt-8 overflow-hidden border-[4px] border-black/10 bg-[#b8b0a2]">
-              <Skeleton className="h-[22rem] w-full border-none bg-black/14 shadow-none" />
+              <Skeleton className="h-[14rem] w-full border-none bg-black/14 shadow-none sm:h-[18rem] md:h-[22rem]" />
             </div>
 
             <div className="mt-8 xl:hidden">

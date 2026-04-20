@@ -54,11 +54,11 @@ export default async function Page() {
       <section className="grid gap-6">
         <div className="max-w-3xl border-l-[3px] border-foreground/18 pl-5">
           <p className="utility-kicker">Facility Hub // Entry Node</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-            入口不像首页，更像一段分叉走廊。
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight sm:text-4xl">
+            分叉走廊
           </h2>
           <p className="mt-4 text-sm leading-8 text-muted-foreground sm:text-base">
-            最新档案被重新布置成门、封存面板和可进入的通道。你不需要先看完整列表，可以先凭直觉挑一扇门，然后继续向里走。
+            挑一扇门，继续向里走
           </p>
         </div>
 
@@ -77,11 +77,8 @@ export default async function Page() {
           <div className="max-w-3xl">
             <p className="utility-kicker">Archive Index</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">最新档案</h2>
-            <p className="mt-4 text-sm leading-8 text-muted-foreground sm:text-base">
-              如果你更习惯传统列表，也可以从这里按条目继续浏览。首页的门板负责气氛，这一段负责把公开记录讲清楚。
-            </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="chrome-pill">{allArticles.length} 条公开记录</span>
             <Button asChild variant="outline" size="sm">
               <Link href="/articles">查看全部档案</Link>
