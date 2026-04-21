@@ -232,9 +232,6 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         <div>
           <p className="utility-kicker">Engagement</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">互动数据</h2>
-          <p className="mt-2 text-sm leading-7 text-muted-foreground">
-            游客只读。登录后的普通用户可以点赞和评论，管理员额外拥有后台内容管理权限。
-          </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
@@ -358,7 +355,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               <p className="utility-kicker">Access Gate</p>
               <h3 className="mt-2 text-lg font-semibold tracking-tight">登录后参与互动</h3>
               <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                游客只能查看评论、点赞数和阅读数。登录后的普通用户才能点赞与评论。
+                游客只能查看评论、点赞数和阅读数。登录后才能点赞与评论。
               </p>
             </div>
 
