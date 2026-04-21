@@ -261,6 +261,107 @@ function ArticlesPageSkeleton() {
   )
 }
 
+function ArchiveDirectoryPageSkeleton() {
+  return (
+    <PageShell>
+      <PageIntroSkeleton />
+      <section className="surface-panel space-y-6 px-6 py-6 sm:px-7">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-8 w-32" />
+          <Skeleton className="h-8 w-20" />
+        </div>
+
+        <div className="grid gap-3">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div key={index} className="flex items-center justify-between border border-border/70 bg-card/72 px-4 py-3.5">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-4 w-10" />
+            </div>
+          ))}
+        </div>
+      </section>
+    </PageShell>
+  )
+}
+
+function ArchiveDetailPageSkeleton() {
+  return (
+    <PageShell>
+      <PageIntroSkeleton />
+      <section className="grid gap-5">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <ArticleCardSkeleton key={index} />
+        ))}
+      </section>
+    </PageShell>
+  )
+}
+
+function TagAggregateBlockSkeleton() {
+  return (
+    <section className="surface-panel px-6 py-6 sm:px-7">
+      <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="mt-2 h-10 w-40" />
+          <Skeleton className="mt-2 h-5 w-full max-w-sm" />
+        </div>
+        <Skeleton className="h-4 w-28" />
+      </div>
+
+      <div className="mt-6 grid gap-3">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="border border-border/70 bg-card/72 px-4 py-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-2">
+                <Skeleton className="h-7 w-2/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+              <Skeleton className="h-4 w-24" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function TagsPageSkeleton() {
+  return (
+    <PageShell>
+      <PageIntroSkeleton />
+
+      <div className="grid gap-6">
+        <section className="surface-panel px-6 py-6">
+          <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="mt-2 h-8 w-32" />
+            </div>
+            <Skeleton className="h-4 w-24" />
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <Skeleton
+                key={index}
+                className={index % 3 === 0 ? "h-10 w-28" : index % 3 === 1 ? "h-10 w-24" : "h-10 w-20"}
+              />
+            ))}
+          </div>
+        </section>
+
+        <div className="grid gap-6">
+          {Array.from({ length: 2 }).map((_, index) => (
+            <TagAggregateBlockSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    </PageShell>
+  )
+}
+
 function SearchPageSkeleton() {
   return (
     <PageShell className="gap-0 py-0">
@@ -305,6 +406,197 @@ function SearchPageSkeleton() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+    </PageShell>
+  )
+}
+
+function AboutPageSkeleton() {
+  return (
+    <PageShell>
+      <section className="grid gap-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
+        <aside className="grid gap-8 lg:sticky lg:top-28">
+          <div className="space-y-4 border-r-4 border-foreground/80 pr-6">
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-16 w-40" />
+            <Skeleton className="h-4 w-44" />
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-4 w-36" />
+          </div>
+
+          <div className="flex h-56 items-center justify-center bg-[#171613] shadow-[inset_0_0_36px_rgba(0,0,0,0.72)]">
+            <Skeleton className="size-24 border-none bg-white/8 shadow-none" />
+          </div>
+
+          <div className="grid gap-4">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div key={index} className="flex items-center justify-between border-b border-border/70 pb-2">
+                <Skeleton className="h-4 w-36" />
+                <Skeleton className="size-4" />
+              </div>
+            ))}
+          </div>
+        </aside>
+
+        <article className="dossier-paper px-7 py-8 sm:px-10 sm:py-10">
+          <Skeleton className="h-24 w-full" />
+
+          <div className="mt-8 space-y-4">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-5/6" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-4/5" />
+            <Skeleton className="h-5 w-full" />
+          </div>
+
+          <div className="mt-12">
+            <div className="flex items-center gap-3 border-b-2 border-foreground/80 pb-3">
+              <Skeleton className="size-5" />
+              <Skeleton className="h-6 w-56" />
+            </div>
+
+            <div className="mt-6 grid gap-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className={index === 3 ? "bg-[#2d1715] px-5 py-4" : "bg-[#ddd5bf] px-5 py-4"}>
+                  <div className="grid gap-2 md:grid-cols-[180px_minmax(0,1fr)]">
+                    <Skeleton className={index === 3 ? "h-4 w-28 border-none bg-white/15 shadow-none" : "h-4 w-28"} />
+                    <div className="space-y-2">
+                      <Skeleton className={index === 3 ? "h-4 w-full border-none bg-white/12 shadow-none" : "h-4 w-full"} />
+                      <Skeleton className={index === 3 ? "h-4 w-5/6 border-none bg-white/12 shadow-none" : "h-4 w-5/6"} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 border-t border-border/60 pt-5 space-y-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-40" />
+            </div>
+          </div>
+        </article>
+      </section>
+    </PageShell>
+  )
+}
+
+function AuthPageSkeleton() {
+  return (
+    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-16 sm:px-6 lg:px-8">
+      <section className="dossier-paper grid w-full gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+        <div className="space-y-4">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-14 w-full max-w-xl" />
+          <Skeleton className="h-14 w-4/5 max-w-lg" />
+          <Skeleton className="h-5 w-full max-w-xl" />
+          <Skeleton className="h-5 w-5/6 max-w-lg" />
+          <div className="border border-dashed border-border/80 bg-card/60 px-5 py-5">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="mt-3 h-4 w-full" />
+            <Skeleton className="mt-2 h-4 w-5/6" />
+          </div>
+        </div>
+
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <Skeleton className="h-4 w-12" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <div className="grid gap-2">
+            <Skeleton className="h-4 w-12" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <div className="grid gap-2">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-px w-full border-none bg-border/70 shadow-none" />
+          <Skeleton className="h-4 w-40" />
+        </div>
+      </section>
+    </main>
+  )
+}
+
+function AccountPageSkeleton() {
+  return (
+    <PageShell>
+      <section className="dossier-paper px-6 py-6 sm:px-7">
+        <div className="flex flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="mt-2 h-10 w-40" />
+          </div>
+          <Skeleton className="h-9 w-28" />
+        </div>
+
+        <Skeleton className="mt-5 h-4 w-40" />
+
+        <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+          <div className="grid gap-6">
+            <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+              <div className="flex items-start gap-4">
+                <Skeleton className="size-16" />
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-28" />
+                  <Skeleton className="h-4 w-40" />
+                  <Skeleton className="h-4 w-28" />
+                </div>
+              </div>
+            </section>
+
+            {Array.from({ length: 2 }).map((_, index) => (
+              <section key={index} className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+                <div className="mb-5">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="mt-2 h-8 w-32" />
+                </div>
+
+                <div className="grid gap-4">
+                  {Array.from({ length: 3 }).map((_, fieldIndex) => (
+                    <div key={fieldIndex} className="grid gap-2">
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-12 w-full" />
+                    </div>
+                  ))}
+                  <Skeleton className="mt-2 h-10 w-full sm:w-28" />
+                </div>
+              </section>
+            ))}
+          </div>
+
+          <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="mt-2 h-8 w-32" />
+              </div>
+              <Skeleton className="h-7 w-14" />
+            </div>
+
+            <div className="mt-5 grid gap-4">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <article key={index} className="border border-border/70 bg-card/70 px-4 py-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="space-y-2">
+                      <Skeleton className="h-5 w-40" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="h-7 w-16" />
+                      <Skeleton className="h-8 w-24" />
+                    </div>
+                  </div>
+
+                  <Skeleton className="mt-4 h-4 w-full" />
+                  <Skeleton className="mt-2 h-4 w-5/6" />
+                  <Skeleton className="mt-4 h-8 w-24" />
+                </article>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
     </PageShell>
@@ -534,12 +826,50 @@ function AdminPageSkeleton() {
   )
 }
 
+function AdminLoginPageSkeleton() {
+  return (
+    <main className="admin-console flex min-h-svh flex-1 items-center justify-center bg-[#0e0e0e] px-5 py-16 sm:px-6 lg:px-8">
+      <section className="terminal-panel grid w-full max-w-6xl gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+        <div className="relative z-10 space-y-4">
+          <Skeleton className="h-4 w-24 border-none bg-[#ff6d61]/25 shadow-none" />
+          <Skeleton className="h-14 w-full max-w-xl border-none bg-white/12 shadow-none" />
+          <Skeleton className="h-5 w-4/5 max-w-md border-none bg-white/8 shadow-none" />
+          <div className="admin-surface-muted px-5 py-5">
+            <Skeleton className="h-4 w-24 border-none bg-[#ff6d61]/18 shadow-none" />
+            <Skeleton className="mt-3 h-4 w-full border-none bg-white/8 shadow-none" />
+            <Skeleton className="mt-2 h-4 w-5/6 border-none bg-white/8 shadow-none" />
+          </div>
+        </div>
+
+        <div className="relative z-10 grid gap-4">
+          <div className="grid gap-2">
+            <Skeleton className="h-4 w-12 border-none bg-white/10 shadow-none" />
+            <Skeleton className="h-12 w-full border-none bg-[#77d490]/10 shadow-none" />
+          </div>
+          <div className="grid gap-2">
+            <Skeleton className="h-4 w-12 border-none bg-white/10 shadow-none" />
+            <Skeleton className="h-12 w-full border-none bg-[#77d490]/10 shadow-none" />
+          </div>
+          <Skeleton className="h-10 w-full border-[#2b7748] bg-[#152116] shadow-none" />
+        </div>
+      </section>
+    </main>
+  )
+}
+
 export {
+  AboutPageSkeleton,
   AdminPageSkeleton,
+  AdminLoginPageSkeleton,
+  ArchiveDetailPageSkeleton,
+  ArchiveDirectoryPageSkeleton,
+  AuthPageSkeleton,
+  AccountPageSkeleton,
   ArticleCardSkeleton,
   ArticleEngagementPanelSkeleton,
   ArticlePageSkeleton,
   ArticlesPageSkeleton,
   HomePageSkeleton,
   SearchPageSkeleton,
+  TagsPageSkeleton,
 }
