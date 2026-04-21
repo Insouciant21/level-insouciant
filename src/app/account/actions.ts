@@ -8,18 +8,20 @@ import {
   deleteOwnComment,
   updateOwnProfile,
 } from "@/lib/account"
+import { getAccountPath } from "@/lib/account-page"
 import { requireUser } from "@/lib/auth"
 
 function getString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim()
 }
 
-function redirectWithError(error: string) {
-  redirect(`/account?error=${encodeURIComponent(error)}`)
+function redirectWithError(accountPath: string, error: string) {
+  redirect(`${accountPath}?error=${encodeURIComponent(error)}`)
 }
 
 export async function updateProfileAction(formData: FormData) {
   const user = await requireUser()
+  const accountPath = getAccountPath(user.role)
 
   try {
     await updateOwnProfile(user.id, {
@@ -29,7 +31,7 @@ export async function updateProfileAction(formData: FormData) {
     })
   } catch (error) {
     if (error instanceof Error) {
-      redirectWithError(error.message)
+      redirectWithError(accountPath, error.message)
     }
 
     throw error
@@ -37,12 +39,14 @@ export async function updateProfileAction(formData: FormData) {
 
   revalidatePath("/")
   revalidatePath("/account")
+  revalidatePath("/admin/account")
   revalidatePath("/admin/dashboard")
-  redirect("/account?profile=1")
+  redirect(`${accountPath}?profile=1`)
 }
 
 export async function changePasswordAction(formData: FormData) {
   const user = await requireUser()
+  const accountPath = getAccountPath(user.role)
 
   try {
     await changeOwnPassword(user.id, {
@@ -52,33 +56,36 @@ export async function changePasswordAction(formData: FormData) {
     })
   } catch (error) {
     if (error instanceof Error) {
-      redirectWithError(error.message)
+      redirectWithError(accountPath, error.message)
     }
 
     throw error
   }
 
   revalidatePath("/account")
-  redirect("/account?password=1")
+  revalidatePath("/admin/account")
+  redirect(`${accountPath}?password=1`)
 }
 
 export async function deleteOwnCommentAction(formData: FormData) {
   const user = await requireUser()
+  const accountPath = getAccountPath(user.role)
   const commentId = getString(formData, "commentId")
 
   try {
     const result = await deleteOwnComment(user.id, commentId)
     revalidatePath("/account")
+    revalidatePath("/admin/account")
     revalidatePath(`/articles/${result.articleSlug}`)
     revalidatePath("/admin/comments")
     revalidatePath("/admin/stats")
   } catch (error) {
     if (error instanceof Error) {
-      redirectWithError(error.message)
+      redirectWithError(accountPath, error.message)
     }
 
     throw error
   }
 
-  redirect("/account?comment=1")
+  redirect(`${accountPath}?comment=1`)
 }

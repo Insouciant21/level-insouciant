@@ -39,11 +39,16 @@
 ## Run
 - `pnpm run dev` to run as debug
 
+## Clean
+- After code changes, you should check whether there are codes no more functions and clear them.
+
 ## Validation
-- After code changes, run the relevant checks:
+- After clean, run the relevant checks:
   - `pnpm lint`
   - `pnpm typecheck`
 - If one check fails, explain the likely cause before making another edit.
+
+
 
 ## Output expectations
 - Summarize changed files

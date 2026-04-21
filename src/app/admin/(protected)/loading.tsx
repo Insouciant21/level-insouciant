@@ -1,5 +1,5 @@
-import { AdminPageSkeleton } from "@/components/blog/page-skeletons"
+import { AdminProtectedPageSkeleton } from "@/components/admin/admin-page-skeletons"
 
 export default function Loading() {
-  return <AdminPageSkeleton />
+  return <AdminProtectedPageSkeleton />
 }

@@ -1,3 +1,6 @@
+"use client"
+
+import * as React from "react"
 import Link from "next/link"
 import { UserRound } from "lucide-react"
 
@@ -18,10 +21,75 @@ type UserMenuProps = {
 function UserMenu({ user }: UserMenuProps) {
   const isAdmin = user?.role === "ADMIN"
   const displayName = user?.name?.trim() || user?.email || "游客"
+  const detailsRef = React.useRef<HTMLDetailsElement>(null)
+  const summaryRef = React.useRef<HTMLElement>(null)
+
+  const closeMenu = React.useEffectEvent((focusTrigger = false) => {
+    const details = detailsRef.current
+
+    if (!details?.open) {
+      return
+    }
+
+    details.open = false
+
+    if (focusTrigger) {
+      summaryRef.current?.focus()
+    }
+  })
+
+  React.useEffect(() => {
+    function onPointerDown(event: PointerEvent) {
+      const details = detailsRef.current
+
+      if (!details?.open) {
+        return
+      }
+
+      if (event.target instanceof Node && details.contains(event.target)) {
+        return
+      }
+
+      closeMenu()
+    }
+
+    function onFocusIn(event: FocusEvent) {
+      const details = detailsRef.current
+
+      if (!details?.open) {
+        return
+      }
+
+      if (event.target instanceof Node && details.contains(event.target)) {
+        return
+      }
+
+      closeMenu()
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") {
+        return
+      }
+
+      closeMenu(true)
+    }
+
+    document.addEventListener("pointerdown", onPointerDown)
+    document.addEventListener("focusin", onFocusIn)
+    document.addEventListener("keydown", onKeyDown)
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown)
+      document.removeEventListener("focusin", onFocusIn)
+      document.removeEventListener("keydown", onKeyDown)
+    }
+  }, [])
 
   return (
-    <details className="group relative">
+    <details ref={detailsRef} className="group relative">
       <summary
+        ref={summaryRef}
         className={cn(
           "flex size-10 cursor-pointer list-none items-center justify-center border border-border/80 bg-card/72 text-foreground outline-none transition hover:border-foreground/20 hover:bg-card focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
           "[&::-webkit-details-marker]:hidden"
@@ -44,7 +112,7 @@ function UserMenu({ user }: UserMenuProps) {
         <div className="px-3 py-3">
           <p className="text-sm font-medium text-foreground">{displayName}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {user ? (isAdmin ? "管理员账号" : "普通用户账号") : "未登录"}
+            {user ? (isAdmin ? "管理员" : "用户") : "未登录"}
           </p>
         </div>
 

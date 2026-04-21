@@ -1,4 +1,4 @@
-import { AdminLoginPageSkeleton } from "@/components/blog/page-skeletons"
+import { AdminLoginPageSkeleton } from "@/components/admin/admin-page-skeletons"
 
 export default function Loading() {
   return <AdminLoginPageSkeleton />

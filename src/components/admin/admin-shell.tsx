@@ -20,14 +20,10 @@ const adminNav = [
   { href: "/admin/comments", label: "评论" },
   { href: "/admin/tags", label: "标签" },
   { href: "/admin/stats", label: "统计" },
-  { href: "/account", label: "我的资料" },
+  { href: "/admin/account", label: "我的资料" },
 ]
 
 function isActiveNavItem(pathname: string, href: string) {
-  if (href === "/account") {
-    return pathname === href
-  }
-
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
