@@ -45,12 +45,7 @@ async function SiteHeader() {
                   </li>
                 ))}
                 <li>
-                  <Link
-                    href="/admin/login"
-                    className="border-b border-transparent pb-1 text-destructive hover:border-destructive/40"
-                  >
-                    Admin
-                  </Link>
+                  <UserMenu user={user} />
                 </li>
               </ul>
             </nav>
@@ -60,7 +55,6 @@ async function SiteHeader() {
                 <span className="size-1.5 bg-primary" />
                 Node Stable
               </span>
-              <UserMenu user={user} />
             </div>
           </div>
         </div>

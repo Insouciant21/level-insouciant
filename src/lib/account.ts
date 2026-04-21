@@ -24,6 +24,25 @@ export type AccountCommentItem = {
   authorName: string
   status: "APPROVED" | "HIDDEN"
   createdAt: string
+  parentId: string | null
+  replyToAuthorName: string | null
+  repliesCount: number
+}
+
+type AccountCommentRecord = {
+  id: string
+  articleSlug: string
+  content: string
+  authorName: string
+  status: "APPROVED" | "HIDDEN"
+  createdAt: Date
+  parentId: string | null
+  parent: {
+    authorName: string
+  } | null
+  _count: {
+    replies: number
+  }
 }
 
 export async function getAccountProfile(userId: string) {
@@ -167,7 +186,7 @@ export async function getOwnComments(userId: string) {
     return [] as AccountCommentItem[]
   }
 
-  const comments = await prisma.comment.findMany({
+  const comments: AccountCommentRecord[] = await prisma.comment.findMany({
     where: {
       userId,
     },
@@ -181,6 +200,17 @@ export async function getOwnComments(userId: string) {
       authorName: true,
       status: true,
       createdAt: true,
+      parentId: true,
+      parent: {
+        select: {
+          authorName: true,
+        },
+      },
+      _count: {
+        select: {
+          replies: true,
+        },
+      },
     },
   })
 
@@ -202,9 +232,16 @@ export async function getOwnComments(userId: string) {
   const titleMap = new Map(articles.map((article) => [article.slug, article.title]))
 
   return comments.map((comment) => ({
-    ...comment,
+    id: comment.id,
+    articleSlug: comment.articleSlug,
     articleTitle: titleMap.get(comment.articleSlug) ?? null,
+    content: comment.content,
+    authorName: comment.authorName,
+    status: comment.status,
     createdAt: comment.createdAt.toISOString(),
+    parentId: comment.parentId,
+    replyToAuthorName: comment.parent?.authorName ?? null,
+    repliesCount: comment._count.replies,
   })) satisfies AccountCommentItem[]
 }
 
@@ -219,6 +256,11 @@ export async function deleteOwnComment(userId: string, commentId: string) {
       id: true,
       userId: true,
       articleSlug: true,
+      _count: {
+        select: {
+          replies: true,
+        },
+      },
     },
   })
 
@@ -228,6 +270,10 @@ export async function deleteOwnComment(userId: string, commentId: string) {
 
   if (comment.userId !== userId) {
     throw new Error("FORBIDDEN")
+  }
+
+  if (comment._count.replies > 0) {
+    throw new Error("COMMENT_HAS_REPLIES")
   }
 
   await prisma.comment.delete({

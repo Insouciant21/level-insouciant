@@ -21,7 +21,7 @@ export default async function AdminCommentsPage() {
         <p className="admin-kicker">Comment Moderation</p>
         <h1 className="admin-title">评论管理</h1>
         <p className="admin-copy">
-          可以隐藏、恢复或删除评论。被隐藏的评论不会出现在文章页，也不会计入前台评论数。
+          可以隐藏、恢复或删除评论。对某条评论执行操作时，会同步作用到它下面的所有楼中楼回复。
         </p>
       </div>
 
@@ -36,6 +36,20 @@ export default async function AdminCommentsPage() {
                     <span className={`admin-status-pill ${comment.status === "HIDDEN" ? "admin-status-draft" : "admin-status-live"}`}>
                       {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
                     </span>
+                    {comment.parentAuthorName ? (
+                      <span className="border border-[#4a5244] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c9482]">
+                        回复 {comment.parentAuthorName}
+                      </span>
+                    ) : (
+                      <span className="border border-[#4a5244] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c9482]">
+                        主评论
+                      </span>
+                    )}
+                    {comment.repliesCount > 0 ? (
+                      <span className="border border-[#4a5244] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c9482]">
+                        {comment.repliesCount} 条回复
+                      </span>
+                    ) : null}
                     <span className="text-sm text-[#8c9482]">{formatCommentDate(comment.createdAt)}</span>
                   </div>
 

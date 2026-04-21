@@ -4,7 +4,7 @@ export type ArticleFrontmatter = {
   date: string
   tags: string[]
   category: string
-  cover: string
+  cover: string | null
   draft: boolean
   slug: string
 }

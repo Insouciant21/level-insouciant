@@ -215,7 +215,7 @@ export async function searchArticles(query: string) {
       desc: string
       category: string
       tags: string[]
-      cover: string
+      cover: string | null
       draft: boolean
       publishedAt: Date
       rank: number

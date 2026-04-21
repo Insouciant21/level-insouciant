@@ -33,7 +33,7 @@ export type ManagedArticleRevision = {
   desc: string
   category: string
   tags: string[]
-  cover: string
+  cover: string | null
   draft: boolean
   publishedAt: string
   content: string
@@ -119,12 +119,12 @@ function normalizeArticleInput(input: ManagedArticleInput, options?: { requireSl
   const desc = input.desc.trim()
   const content = input.content.trim()
   const category = input.category.trim()
-  const cover = input.cover.trim()
+  const cover = input.cover.trim() || null
   const tags = normalizeTags(input.tags)
   const slug = input.slug?.trim() ?? ""
   const publishedAt = new Date(input.publishedAt)
 
-  if (!title || !desc || !content || !category || !cover || tags.length === 0 || Number.isNaN(publishedAt.getTime())) {
+  if (!title || !desc || !content || !category || tags.length === 0 || Number.isNaN(publishedAt.getTime())) {
     throw new Error("INVALID_ARTICLE_INPUT")
   }
 

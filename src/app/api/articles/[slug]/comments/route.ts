@@ -42,6 +42,7 @@ export async function POST(request: Request, { params }: RouteProps) {
 
   const body = (await request.json()) as {
     content?: string
+    parentId?: string | null
   }
 
   try {
@@ -49,12 +50,17 @@ export async function POST(request: Request, { params }: RouteProps) {
       userId: user.id,
       authorName: getUserDisplayName(user),
       content: body.content ?? "",
+      parentId: body.parentId ?? null,
     })
 
     return NextResponse.json({ comment }, { status: 201 })
   } catch (error) {
     if (error instanceof Error && error.message === "INVALID_COMMENT") {
       return NextResponse.json({ error: "INVALID_COMMENT" }, { status: 400 })
+    }
+
+    if (error instanceof Error && error.message === "INVALID_REPLY_TARGET") {
+      return NextResponse.json({ error: "INVALID_REPLY_TARGET" }, { status: 400 })
     }
 
     return NextResponse.json({ error: "FAILED_TO_CREATE_COMMENT" }, { status: 500 })

@@ -24,6 +24,22 @@ type Comment = {
   authorName: string
   content: string
   createdAt: string
+  parentId: string | null
+  replyToAuthorName: string | null
+  replies: Comment[]
+}
+
+type CommentCardProps = {
+  comment: Comment
+  canReply: boolean
+  activeReplyId: string | null
+  replyContent: string
+  replyPending: boolean
+  replyError: string | null
+  onReplyStart: (commentId: string) => void
+  onReplyCancel: () => void
+  onReplyContentChange: (value: string) => void
+  onReplySubmit: (commentId: string) => Promise<void>
 }
 
 function formatCommentDate(value: string) {
@@ -34,6 +50,174 @@ function formatCommentDate(value: string) {
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(value))
+}
+
+function countComments(comments: Comment[]): number {
+  return comments.reduce((total, comment) => total + 1 + countComments(comment.replies), 0)
+}
+
+function insertComment(comments: Comment[], incoming: Comment): Comment[] {
+  if (!incoming.parentId) {
+    return [incoming, ...comments]
+  }
+
+  const [nextComments, inserted] = insertReply(comments, incoming.parentId, incoming)
+  return inserted ? nextComments : [incoming, ...comments]
+}
+
+function insertReply(
+  comments: Comment[],
+  parentId: string,
+  incoming: Comment
+): [Comment[], boolean] {
+  let inserted = false
+
+  const nextComments = comments.map((comment) => {
+    if (comment.id === parentId) {
+      inserted = true
+      return {
+        ...comment,
+        replies: [...comment.replies, incoming],
+      }
+    }
+
+    const [nextReplies, replyInserted] = insertReply(comment.replies, parentId, incoming)
+
+    if (!replyInserted) {
+      return comment
+    }
+
+    inserted = true
+    return {
+      ...comment,
+      replies: nextReplies,
+    }
+  })
+
+  return [nextComments, inserted]
+}
+
+function getCommentErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    if (error.message === "AUTH_REQUIRED") {
+      return "请先登录，再发表评论。"
+    }
+
+    if (error.message === "DATABASE_NOT_CONFIGURED") {
+      return "数据库还没有配置好，评论暂时无法提交。"
+    }
+
+    if (error.message === "INVALID_REPLY_TARGET") {
+      return "这条评论当前无法回复，请刷新页面后再试。"
+    }
+  }
+
+  return "评论提交失败，请检查内容后重试。"
+}
+
+function CommentCard({
+  comment,
+  canReply,
+  activeReplyId,
+  replyContent,
+  replyPending,
+  replyError,
+  onReplyStart,
+  onReplyCancel,
+  onReplyContentChange,
+  onReplySubmit,
+}: CommentCardProps) {
+  const isReplying = activeReplyId === comment.id
+
+  return (
+    <article className="dossier-paper px-5 py-5">
+      <div className="flex flex-col gap-3 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-foreground/88">
+            {comment.authorName}
+          </p>
+          <p className="mt-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            {comment.replyToAuthorName ? `Reply To ${comment.replyToAuthorName}` : "Comment Entry"}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <p className="text-sm text-muted-foreground">{formatCommentDate(comment.createdAt)}</p>
+          {canReply ? (
+            isReplying ? (
+              <Button type="button" variant="outline" size="sm" onClick={onReplyCancel}>
+                取消回复
+              </Button>
+            ) : (
+              <Button type="button" variant="outline" size="sm" onClick={() => onReplyStart(comment.id)}>
+                回复
+              </Button>
+            )
+          ) : null}
+        </div>
+      </div>
+
+      <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-foreground/78">
+        {comment.content}
+      </p>
+
+      {isReplying ? (
+        <form
+          className="mt-4 grid gap-4 border-t border-border/60 pt-4"
+          onSubmit={(event) => {
+            event.preventDefault()
+            void onReplySubmit(comment.id)
+          }}
+        >
+          <label className="grid gap-2">
+            <span className="text-sm font-medium">回复 {comment.authorName}</span>
+            <textarea
+              value={replyContent}
+              onChange={(event) => onReplyContentChange(event.target.value)}
+              maxLength={2000}
+              rows={4}
+              placeholder={`回复 ${comment.authorName}...`}
+              className="field-textarea"
+            />
+          </label>
+
+          {replyError ? (
+            <div className="border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
+              {replyError}
+            </div>
+          ) : null}
+
+          <div className="flex items-center justify-between gap-3">
+            <span className="chrome-pill">{replyContent.length}/2000</span>
+            <Button type="submit" size="sm" disabled={replyPending}>
+              <SendHorizonal className="size-4" />
+              {replyPending ? "提交中..." : "发送回复"}
+            </Button>
+          </div>
+        </form>
+      ) : null}
+
+      {comment.replies.length > 0 ? (
+        <div className="mt-4 grid gap-3 border-l border-border/60 pl-4 sm:pl-5">
+          {comment.replies.map((reply) => (
+            <CommentCard
+              key={reply.id}
+              comment={reply}
+              canReply={canReply}
+              activeReplyId={activeReplyId}
+              replyContent={replyContent}
+              replyPending={replyPending}
+              replyError={replyError}
+              onReplyStart={onReplyStart}
+              onReplyCancel={onReplyCancel}
+              onReplyContentChange={onReplyContentChange}
+              onReplySubmit={onReplySubmit}
+            />
+          ))}
+        </div>
+      ) : null}
+    </article>
+  )
 }
 
 function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
@@ -47,10 +231,14 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
   })
   const [comments, setComments] = React.useState<Comment[]>([])
   const [content, setContent] = React.useState("")
+  const [replyContent, setReplyContent] = React.useState("")
+  const [activeReplyId, setActiveReplyId] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [likePending, setLikePending] = React.useState(false)
   const [commentPending, setCommentPending] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
+  const [replyPending, setReplyPending] = React.useState(false)
+  const [commentError, setCommentError] = React.useState<string | null>(null)
+  const [replyError, setReplyError] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     let active = true
@@ -128,12 +316,13 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
 
   async function handleToggleLike() {
     if (!snapshot.isAuthenticated) {
-      setError("请先登录，再进行点赞。")
+      setCommentError("请先登录，再进行点赞。")
       return
     }
 
     setLikePending(true)
-    setError(null)
+    setCommentError(null)
+    setReplyError(null)
 
     try {
       const response = await fetch(`/api/articles/${slug}/engagement/like`, {
@@ -160,71 +349,89 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
       }))
     } catch (likeError) {
       if (likeError instanceof Error && likeError.message === "AUTH_REQUIRED") {
-        setError("请先登录，再进行点赞。")
+        setCommentError("请先登录，再进行点赞。")
       } else {
-        setError("点赞失败，请稍后再试。")
+        setCommentError("点赞失败，请稍后再试。")
       }
     } finally {
       setLikePending(false)
     }
   }
 
+  async function submitComment(input: { content: string; parentId?: string | null }) {
+    const response = await fetch(`/api/articles/${slug}/comments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(input),
+    })
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("AUTH_REQUIRED")
+      }
+
+      if (response.status === 400) {
+        throw new Error("INVALID_REPLY_TARGET")
+      }
+
+      if (response.status === 503) {
+        throw new Error("DATABASE_NOT_CONFIGURED")
+      }
+
+      throw new Error("COMMENT_FAILED")
+    }
+
+    return (await response.json()) as { comment: Comment }
+  }
+
   async function handleSubmitComment(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setCommentPending(true)
-    setError(null)
+    setCommentError(null)
 
     try {
-      const response = await fetch(`/api/articles/${slug}/comments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content,
-        }),
-      })
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("AUTH_REQUIRED")
-        }
-
-        if (response.status === 503) {
-          throw new Error("DATABASE_NOT_CONFIGURED")
-        }
-
-        throw new Error("COMMENT_FAILED")
-      }
-
-      const payload = (await response.json()) as {
-        comment: Comment
-      }
-
-      setComments((current) => [payload.comment, ...current])
+      const payload = await submitComment({ content })
+      setComments((current) => insertComment(current, payload.comment))
       setSnapshot((current) => ({
         ...current,
         commentsCount: current.commentsCount + 1,
       }))
       setContent("")
     } catch (submitError) {
-      if (submitError instanceof Error) {
-        if (submitError.message === "AUTH_REQUIRED") {
-          setError("请先登录，再发表评论。")
-        } else if (submitError.message === "DATABASE_NOT_CONFIGURED") {
-          setError("数据库还没有配置好，评论暂时无法提交。")
-        } else {
-          setError("评论提交失败，请检查内容后重试。")
-        }
-      } else {
-        setError("评论提交失败，请检查内容后重试。")
-      }
+      setCommentError(getCommentErrorMessage(submitError))
     } finally {
       setCommentPending(false)
     }
   }
 
+  async function handleSubmitReply(commentId: string) {
+    setReplyPending(true)
+    setReplyError(null)
+
+    try {
+      const payload = await submitComment({
+        content: replyContent,
+        parentId: commentId,
+      })
+
+      setComments((current) => insertComment(current, payload.comment))
+      setSnapshot((current) => ({
+        ...current,
+        commentsCount: current.commentsCount + 1,
+      }))
+      setReplyContent("")
+      setActiveReplyId(null)
+    } catch (submitError) {
+      setReplyError(getCommentErrorMessage(submitError))
+    } finally {
+      setReplyPending(false)
+    }
+  }
+
   const loginHref = `/login?next=${encodeURIComponent(`/articles/${slug}#article-engagement`)}`
+  const loadedCommentsCount = countComments(comments)
 
   return (
     <section id="article-engagement" className="surface-panel mx-auto w-full max-w-4xl scroll-mt-28 px-6 py-6">
@@ -280,28 +487,39 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               <p className="utility-kicker">Field Notes</p>
               <h3 className="mt-2 text-lg font-semibold tracking-tight">最新评论</h3>
             </div>
-            <span className="chrome-pill">{comments.length} 条已加载</span>
+            <span className="chrome-pill">{loadedCommentsCount} 条已加载</span>
           </div>
 
           {comments.length > 0 ? (
             <div className="grid gap-3">
               {comments.map((comment) => (
-                <article key={comment.id} className="dossier-paper px-5 py-5">
-                  <div className="flex flex-col gap-3 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-foreground/88">
-                        {comment.authorName}
-                      </p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                        Comment Entry
-                      </p>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{formatCommentDate(comment.createdAt)}</p>
-                  </div>
-                  <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-foreground/78">
-                    {comment.content}
-                  </p>
-                </article>
+                <CommentCard
+                  key={comment.id}
+                  comment={comment}
+                  canReply={snapshot.isAuthenticated}
+                  activeReplyId={activeReplyId}
+                  replyContent={replyContent}
+                  replyPending={replyPending}
+                  replyError={replyError}
+                  onReplyStart={(commentId) => {
+                    setActiveReplyId(commentId)
+                    setReplyContent("")
+                    setReplyError(null)
+                    setCommentError(null)
+                  }}
+                  onReplyCancel={() => {
+                    setActiveReplyId(null)
+                    setReplyContent("")
+                    setReplyError(null)
+                  }}
+                  onReplyContentChange={(value) => {
+                    setReplyContent(value)
+                    if (replyError) {
+                      setReplyError(null)
+                    }
+                  }}
+                  onReplySubmit={handleSubmitReply}
+                />
               ))}
             </div>
           ) : (
@@ -326,7 +544,12 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
                 <span className="text-sm font-medium">评论内容</span>
                 <textarea
                   value={content}
-                  onChange={(event) => setContent(event.target.value)}
+                  onChange={(event) => {
+                    setContent(event.target.value)
+                    if (commentError) {
+                      setCommentError(null)
+                    }
+                  }}
                   maxLength={2000}
                   rows={6}
                   placeholder="欢迎分享你的想法、问题或者补充。"
@@ -334,9 +557,9 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
                 />
               </label>
 
-              {error ? (
+              {commentError ? (
                 <div className="border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
-                  {error}
+                  {commentError}
                 </div>
               ) : null}
 
@@ -359,9 +582,9 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               </p>
             </div>
 
-            {error ? (
+            {commentError ? (
               <div className="mt-4 border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
-                {error}
+                {commentError}
               </div>
             ) : null}
 

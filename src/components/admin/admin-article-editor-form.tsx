@@ -275,13 +275,13 @@ function AdminArticleEditorForm({
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#d5d0c2]">封面</span>
+              <span className="text-sm font-medium text-[#d5d0c2]">封面（可选）</span>
               <input
                 type="text"
                 name="cover"
-                required
                 value={draft.cover}
                 onChange={handleFieldChange("cover")}
+                placeholder="留空则不显示封面"
                 className="admin-input"
               />
             </label>

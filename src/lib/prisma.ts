@@ -8,9 +8,12 @@ declare global {
   var __insousPrismaSignature__: string | undefined
 }
 
-const prismaClientSignature = Prisma.dmmf.datamodel.models
-  .map((model) => `${model.name}:${model.fields.map((field) => field.name).join(",")}`)
-  .join("|")
+const prismaClientSignature = [
+  process.env.DATABASE_URL ?? "DATABASE_URL:missing",
+  Prisma.dmmf.datamodel.models
+    .map((model) => `${model.name}:${model.fields.map((field) => field.name).join(",")}`)
+    .join("|"),
+].join("|")
 
 function createPool() {
   return new Pool({

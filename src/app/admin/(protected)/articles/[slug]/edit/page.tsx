@@ -19,7 +19,7 @@ type AdminEditArticlePageProps = {
 
 const errorMessages: Record<string, string> = {
   ARTICLE_NOT_FOUND: "没有找到这篇文章。",
-  INVALID_ARTICLE_INPUT: "文章信息不完整，请把表单内容补全后再保存。",
+  INVALID_ARTICLE_INPUT: "文章信息不完整，请把必填内容补全后再保存。",
 }
 
 export const metadata: Metadata = createPageMetadata({
@@ -63,7 +63,7 @@ export default async function AdminEditArticlePage({ params, searchParams }: Adm
         desc: article.desc,
         category: article.category,
         tags: article.tags.join(", "),
-        cover: article.cover,
+        cover: article.cover ?? "",
         publishedAt: article.date.slice(0, 10),
         content: article.content,
       }}

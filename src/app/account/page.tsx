@@ -30,6 +30,7 @@ const errorMessages: Record<string, string> = {
   INVALID_CURRENT_PASSWORD: "原密码验证失败。",
   COMMENT_NOT_FOUND: "这条评论不存在或已经被删除。",
   FORBIDDEN: "你只能管理自己发出的评论。",
+  COMMENT_HAS_REPLIES: "这条评论下还有回复，暂时不能直接删除。",
 }
 
 export const metadata: Metadata = createPageMetadata({
@@ -238,6 +239,11 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                         <p className="font-medium">
                           {comment.articleTitle ?? comment.articleSlug}
                         </p>
+                        {comment.replyToAuthorName ? (
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            回复给 {comment.replyToAuthorName}
+                          </p>
+                        ) : null}
                         <p className="mt-1 text-sm text-muted-foreground">
                           {formatCommentDate(comment.createdAt)}
                         </p>
@@ -246,6 +252,11 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                         <span className="border border-border/70 px-3 py-1 text-xs text-muted-foreground">
                           {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
                         </span>
+                        {comment.repliesCount > 0 ? (
+                          <span className="border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+                            {comment.repliesCount} 条回复
+                          </span>
+                        ) : null}
                         <Button asChild variant="outline" size="sm" className="justify-center">
                           <Link href={`/articles/${comment.articleSlug}#article-engagement`}>查看文章</Link>
                         </Button>
@@ -258,8 +269,14 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
                     <form action={deleteOwnCommentAction} className="mt-4">
                       <input type="hidden" name="commentId" value={comment.id} />
-                      <Button type="submit" variant="destructive" size="sm" className="justify-center">
-                        删除这条评论
+                      <Button
+                        type="submit"
+                        variant={comment.repliesCount > 0 ? "outline" : "destructive"}
+                        size="sm"
+                        className="justify-center"
+                        disabled={comment.repliesCount > 0}
+                      >
+                        {comment.repliesCount > 0 ? "已有回复，暂不可删除" : "删除这条评论"}
                       </Button>
                     </form>
                   </article>

@@ -1,10 +1,9 @@
 "use server"
 
-import { CommentStatus } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-import { deleteCommentForAdmin, setCommentStatus } from "@/lib/admin"
+import { COMMENT_STATUS, deleteCommentForAdmin, setCommentStatus } from "@/lib/admin"
 import { requireAdmin } from "@/lib/auth"
 import {
   createManagedArticle,
@@ -161,7 +160,7 @@ export async function hideCommentAction(formData: FormData) {
   await requireAdmin()
   const commentId = getString(formData, "commentId")
   const slug = getString(formData, "slug")
-  await setCommentStatus(commentId, CommentStatus.HIDDEN)
+  await setCommentStatus(commentId, COMMENT_STATUS.HIDDEN)
   revalidatePublicContent(slug)
   revalidatePath("/admin")
   revalidatePath("/admin/comments")
@@ -172,7 +171,7 @@ export async function approveCommentAction(formData: FormData) {
   await requireAdmin()
   const commentId = getString(formData, "commentId")
   const slug = getString(formData, "slug")
-  await setCommentStatus(commentId, CommentStatus.APPROVED)
+  await setCommentStatus(commentId, COMMENT_STATUS.APPROVED)
   revalidatePublicContent(slug)
   revalidatePath("/admin")
   revalidatePath("/admin/comments")

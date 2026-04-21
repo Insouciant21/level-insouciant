@@ -12,7 +12,7 @@ type AdminNewArticlePageProps = {
 
 const errorMessages: Record<string, string> = {
   ARTICLE_SLUG_TAKEN: "这个 slug 已经存在了，请换一个新的。",
-  INVALID_ARTICLE_INPUT: "文章信息不完整，请补全标题、摘要、分类、标签、封面、发布日期和正文。",
+  INVALID_ARTICLE_INPUT: "文章信息不完整，请补全标题、摘要、分类、标签、发布日期和正文。",
 }
 
 export const metadata: Metadata = createPageMetadata({

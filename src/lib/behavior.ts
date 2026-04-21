@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma"
 
 export const BEHAVIOR_VISITOR_COOKIE = "insous_behavior_id"
 
+const APPROVED_COMMENT_STATUS = "APPROVED" as const
+
 export type EngagementSnapshot = {
   views: number
   likes: number
@@ -14,13 +16,42 @@ export type PublicComment = {
   authorName: string
   content: string
   createdAt: string
+  parentId: string | null
+  replyToAuthorName: string | null
+  replies: PublicComment[]
+}
+
+type PublicCommentRecord = {
+  id: string
+  authorName: string
+  content: string
+  createdAt: Date
+  parentId: string | null
+  parent: {
+    id: string
+    authorName: string
+  } | null
+}
+
+type CreatedCommentRecord = {
+  id: string
+  authorName: string
+  content: string
+  createdAt: Date
+  parentId: string | null
+  parent: {
+    authorName: string
+  } | null
 }
 
 export function isBehaviorStorageEnabled() {
   return Boolean(process.env.DATABASE_URL)
 }
 
-export async function getEngagementSnapshot(articleSlug: string, viewerId?: string) {
+export async function getEngagementSnapshot(
+  articleSlug: string,
+  viewerId?: string
+): Promise<EngagementSnapshot> {
   if (!isBehaviorStorageEnabled()) {
     return emptySnapshot()
   }
@@ -36,7 +67,7 @@ export async function getEngagementSnapshot(articleSlug: string, viewerId?: stri
       prisma.comment.count({
         where: {
           articleSlug,
-          status: "APPROVED",
+          status: APPROVED_COMMENT_STATUS,
         },
       }),
       viewerId
@@ -65,7 +96,7 @@ export async function getEngagementSnapshot(articleSlug: string, viewerId?: stri
   }
 }
 
-export async function recordPageView(articleSlug: string, viewerId: string) {
+export async function recordPageView(articleSlug: string, viewerId: string): Promise<{ views: number }> {
   if (!isBehaviorStorageEnabled()) {
     return { views: 0 }
   }
@@ -88,7 +119,10 @@ export async function recordPageView(articleSlug: string, viewerId: string) {
   }
 }
 
-export async function toggleLike(articleSlug: string, viewerId: string) {
+export async function toggleLike(
+  articleSlug: string,
+  viewerId: string
+): Promise<{ likes: number; likedByViewer: boolean }> {
   if (!isBehaviorStorageEnabled()) {
     return {
       likes: 0,
@@ -143,30 +177,34 @@ export async function toggleLike(articleSlug: string, viewerId: string) {
   }
 }
 
-export async function listComments(articleSlug: string) {
+export async function listComments(articleSlug: string): Promise<PublicComment[]> {
   if (!isBehaviorStorageEnabled()) {
     return [] as PublicComment[]
   }
 
   try {
-    const comments = await prisma.comment.findMany({
+    const comments: PublicCommentRecord[] = await prisma.comment.findMany({
       where: {
         articleSlug,
-        status: "APPROVED",
+        status: APPROVED_COMMENT_STATUS,
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
       select: {
         id: true,
         authorName: true,
         content: true,
         createdAt: true,
+        parentId: true,
+        parent: {
+          select: {
+            id: true,
+            authorName: true,
+          },
+        },
       },
     })
 
-    return comments.map((comment) => ({
-      ...comment,
-      createdAt: comment.createdAt.toISOString(),
-    }))
+    return buildCommentTree(comments)
   } catch {
     return [] as PublicComment[]
   }
@@ -178,11 +216,13 @@ export async function createComment(
     userId: string
     authorName: string
     content: string
+    parentId?: string | null
   }
-) {
+): Promise<PublicComment> {
   const userId = input.userId.trim()
   const authorName = input.authorName.trim().slice(0, 40)
   const content = input.content.trim().slice(0, 2000)
+  const parentId = input.parentId?.trim() || null
 
   if (!userId || !authorName || !content) {
     throw new Error("INVALID_COMMENT")
@@ -192,25 +232,89 @@ export async function createComment(
     throw new Error("DATABASE_NOT_CONFIGURED")
   }
 
-  const comment = await prisma.comment.create({
+  if (parentId) {
+    const parent = await prisma.comment.findUnique({
+      where: { id: parentId },
+      select: {
+        id: true,
+        articleSlug: true,
+        status: true,
+      },
+    })
+
+    if (!parent || parent.articleSlug !== articleSlug || parent.status !== APPROVED_COMMENT_STATUS) {
+      throw new Error("INVALID_REPLY_TARGET")
+    }
+  }
+
+  const comment: CreatedCommentRecord = await prisma.comment.create({
     data: {
       articleSlug,
       userId,
       authorName,
       content,
+      parentId,
     },
     select: {
       id: true,
       authorName: true,
       content: true,
       createdAt: true,
+      parentId: true,
+      parent: {
+        select: {
+          authorName: true,
+        },
+      },
     },
   })
 
+  return toPublicComment(comment)
+}
+
+function buildCommentTree(records: PublicCommentRecord[]): PublicComment[] {
+  const nodes = new Map<string, PublicComment>()
+
+  for (const record of records) {
+    nodes.set(record.id, toPublicComment(record))
+  }
+
+  const roots: PublicComment[] = []
+
+  for (const record of records) {
+    const node = nodes.get(record.id)
+
+    if (!node) {
+      continue
+    }
+
+    if (record.parentId) {
+      const parent = nodes.get(record.parentId)
+
+      if (parent) {
+        parent.replies.push(node)
+        continue
+      }
+    }
+
+    roots.push(node)
+  }
+
+  return roots.sort(
+    (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
+  )
+}
+
+function toPublicComment(record: PublicCommentRecord | CreatedCommentRecord): PublicComment {
   return {
-    ...comment,
-    createdAt: comment.createdAt.toISOString(),
-  } satisfies PublicComment
+    id: record.id,
+    authorName: record.authorName,
+    content: record.content,
+    createdAt: record.createdAt.toISOString(),
+    parentId: record.parentId,
+    replyToAuthorName: record.parent?.authorName ?? null,
+    replies: [],
+  }
 }
 
 function emptySnapshot(): EngagementSnapshot {

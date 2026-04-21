@@ -3,7 +3,7 @@ export const siteConfig = {
   description: "记录从容、回声与失真的秩序",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://level-insouciant.local",
   author: "Insouciant21",
-  email: "tom2964318290@gmail.com",
+  email: "insouciant21@outlook.com",
   locale: "zh_CN",
   language: "zh-CN",
   nav: [
