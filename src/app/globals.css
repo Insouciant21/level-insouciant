@@ -37,10 +37,12 @@
   --sidebar-border: rgb(255 255 255 / 9%);
   --sidebar-ring: rgb(63 180 107 / 25%);
   --hero-glow: rgb(213 159 50 / 16%);
-  --hero-grid: rgb(34 29 23 / 10%);
   --surface-shadow: 58 50 37;
   --surface-highlight: rgb(255 255 255 / 54%);
   --surface-outline: rgb(33 27 19 / 9%);
+  --paper-speck: rgb(78 63 43 / 6%);
+  --paper-wash: rgb(121 100 70 / 6%);
+  --paper-crease: rgb(255 255 255 / 34%);
   --field-background: rgb(247 243 232 / 88%);
   --field-shadow: rgb(67 55 40 / 8%);
   --code-block-bg: #f4ecdd;
@@ -132,10 +134,21 @@
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.1;
+    opacity: 0.24;
     background-image:
-      repeating-linear-gradient(0deg, transparent 0, transparent 22px, rgb(22 18 11 / 8%) 23px, transparent 24px),
-      repeating-linear-gradient(90deg, transparent 0, transparent 22px, rgb(22 18 11 / 6%) 23px, transparent 24px);
+      radial-gradient(circle at 18% 22%, var(--paper-speck) 0 1px, transparent 1.6px),
+      radial-gradient(circle at 79% 18%, rgb(78 63 43 / 5%) 0 1.1px, transparent 1.7px),
+      radial-gradient(circle at 28% 72%, rgb(78 63 43 / 5%) 0 1.2px, transparent 1.8px),
+      radial-gradient(circle at 72% 76%, rgb(78 63 43 / 4%) 0 1px, transparent 1.5px),
+      linear-gradient(118deg, transparent 0, var(--paper-crease) 17%, transparent 39%),
+      linear-gradient(12deg, transparent 0, var(--paper-wash) 28%, transparent 54%, rgb(255 255 255 / 10%) 72%, transparent 100%);
+    background-size:
+      190px 190px,
+      230px 230px,
+      210px 210px,
+      250px 250px,
+      100% 100%,
+      100% 100%;
     mix-blend-mode: multiply;
   }
 
@@ -208,11 +221,14 @@
 
 @layer components {
   .surface-panel {
-    @apply relative isolate overflow-hidden border border-border/90 bg-card/90;
+    @apply relative isolate overflow-hidden border border-border/80 bg-card/95;
     box-shadow:
-      inset 0 1px 0 var(--surface-highlight),
-      0 0 0 1px var(--surface-outline),
-      0 30px 60px -44px rgb(var(--surface-shadow) / 0.3);
+      inset 0 1px 0 rgb(255 255 255 / 62%),
+      inset 0 -1px 0 rgb(76 62 42 / 8%),
+      0 0 0 1px rgb(76 62 42 / 4%),
+      0 26px 54px -42px rgb(var(--surface-shadow) / 0.28);
+    background:
+      linear-gradient(180deg, rgb(249 244 233 / 96%), rgb(239 231 214 / 94%));
   }
 
   .surface-panel::before {
@@ -220,18 +236,27 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image:
-      linear-gradient(to right, var(--hero-grid) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--hero-grid) 1px, transparent 1px);
-    background-size: 28px 28px;
-    opacity: 0.3;
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 38%), transparent 7rem),
+      radial-gradient(circle at 15% 20%, var(--paper-speck) 0 1px, transparent 1.4px),
+      radial-gradient(circle at 82% 27%, rgb(78 63 43 / 5%) 0 1.1px, transparent 1.5px),
+      radial-gradient(circle at 42% 78%, rgb(78 63 43 / 4%) 0 1.2px, transparent 1.6px),
+      linear-gradient(112deg, transparent 0, rgb(255 255 255 / 24%) 24%, transparent 48%, rgb(108 88 61 / 3%) 74%, transparent 100%);
+    background-size:
+      auto,
+      180px 180px,
+      220px 220px,
+      210px 210px,
+      100% 100%;
+    opacity: 0.72;
   }
 
   .surface-grid {
     background-image:
-      linear-gradient(to right, var(--hero-grid) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--hero-grid) 1px, transparent 1px);
-    background-size: 24px 24px;
+      radial-gradient(circle at 18% 18%, var(--paper-speck) 0 1px, transparent 1.6px),
+      radial-gradient(circle at 80% 32%, rgb(78 63 43 / 5%) 0 1.1px, transparent 1.7px),
+      linear-gradient(115deg, transparent 0, rgb(255 255 255 / 22%) 20%, transparent 40%, rgb(109 87 57 / 4%) 70%, transparent 100%);
+    background-size: 180px 180px, 220px 220px, 100% 100%;
   }
 
   .utility-kicker {
@@ -239,10 +264,10 @@
   }
 
   .chrome-pill {
-    @apply inline-flex items-center gap-2 border border-border/90 bg-background/80 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-muted-foreground;
+    @apply inline-flex items-center gap-2 border border-border/80 bg-[#f1e9d7]/88 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-foreground/70;
     box-shadow:
-      inset 0 1px 0 var(--surface-highlight),
-      0 1px 2px var(--field-shadow);
+      inset 0 1px 0 rgb(255 255 255 / 72%),
+      0 10px 16px -18px rgb(var(--surface-shadow) / 0.3);
   }
 
   .field-input {
@@ -256,10 +281,13 @@
   }
 
   .dossier-paper {
-    @apply relative overflow-hidden border border-border/85 bg-card/95;
+    @apply relative overflow-hidden border border-border/80 bg-card/95;
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 56%),
-      0 18px 50px -36px rgb(var(--surface-shadow) / 0.35);
+      inset 0 -1px 0 rgb(82 67 46 / 7%),
+      0 20px 50px -36px rgb(var(--surface-shadow) / 0.3);
+    background:
+      linear-gradient(180deg, rgb(249 244 234 / 98%), rgb(237 229 212 / 96%));
   }
 
   .dossier-paper::before {
@@ -268,9 +296,18 @@
     inset: 0;
     pointer-events: none;
     background:
-      linear-gradient(to bottom, rgb(255 255 255 / 22%), transparent 8rem),
+      linear-gradient(to bottom, rgb(255 255 255 / 28%), transparent 8rem),
+      radial-gradient(circle at 14% 18%, var(--paper-speck) 0 1px, transparent 1.4px),
+      radial-gradient(circle at 83% 12%, rgb(0 0 0 / 5%) 0 1.1px, transparent 1.6px),
+      radial-gradient(circle at 58% 72%, rgb(0 0 0 / 4%) 0 1.2px, transparent 1.7px),
       radial-gradient(circle at 100% 0, rgb(0 0 0 / 6%), transparent 15rem);
-    opacity: 0.7;
+    background-size:
+      auto,
+      180px 180px,
+      240px 240px,
+      210px 210px,
+      auto;
+    opacity: 0.74;
   }
 
   .terminal-panel {
