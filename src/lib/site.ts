@@ -15,7 +15,7 @@ export const siteConfig = {
     { href: "/about", label: "须知" },
   ],
   hero: {
-    eyebrow: "Backrooms Level / Archive Notes",
+    eyebrow: "Archive Notes",
     title: "Level Insouciant",
     description:
       "这里收集关于技术、日常与学习的记录，也把经验压进同一份档案里。",

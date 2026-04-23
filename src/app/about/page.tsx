@@ -32,10 +32,8 @@ export default function AboutPage() {
           <aside className="grid gap-8 lg:sticky lg:top-28">
             <div className="space-y-4 border-r-4 border-foreground/80 pr-6">
               <p className="utility-kicker">Official Designation</p>
-              <h1 className="text-5xl font-semibold uppercase tracking-tight">M.E.G.</h1>
+              <h1 className="text-5xl font-semibold uppercase tracking-tight">Moeblue</h1>
               <p className="font-mono text-xs leading-7 text-muted-foreground">
-                Major Explorer Group
-                <br />
                 Archive Node: Level Insouciant
                 <br />
                 Status: Operational
@@ -68,10 +66,7 @@ export default function AboutPage() {
             <div className="mt-8 space-y-6 text-base leading-8 text-foreground/84">
               <p>{siteConfig.about.intro}</p>
               <p>
-                我把这座站点当成一份会持续演化的开放档案，而不是一次性的个人展示页。写作、前端和世界观记录会被放进同一套秩序里，因为它们本质上都在处理同一个问题：如何给后来者留下可信的路径标记。
-              </p>
-              <p>
-                我不太相信夸张的传奇，也不太喜欢把异常讲成噱头。更可靠的方式，是把边界、证据、命名和可复查的结构先讲清楚，再决定哪些故事值得继续深入。
+                我把这座站点当成一份会持续演化的开放档案，技术与经验会被放进同一套秩序里，因为它们本质上都在处理同一个问题：如何给后来者留下可信的路径标记。
               </p>
             </div>
 
