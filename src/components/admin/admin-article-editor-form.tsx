@@ -56,23 +56,23 @@ function AdminArticleEditorForm({
     h2: (props: React.ComponentPropsWithoutRef<"h2">) => (
       <h2
         {...props}
-        className={cn("mt-12 text-2xl font-semibold tracking-tight text-[#f1eadb]", props.className)}
+        className={cn("mt-12 text-2xl font-semibold tracking-tight text-[#e0e0e0]", props.className)}
       />
     ),
     h3: (props: React.ComponentPropsWithoutRef<"h3">) => (
       <h3
         {...props}
-        className={cn("mt-10 text-xl font-semibold tracking-tight text-[#e4dcca]", props.className)}
+        className={cn("mt-10 text-xl font-semibold tracking-tight text-[#d1d5db]", props.className)}
       />
     ),
     p: (props: React.ComponentPropsWithoutRef<"p">) => (
-      <p {...props} className={cn("my-6 leading-8 text-[#c9c3b4]", props.className)} />
+      <p {...props} className={cn("my-6 leading-8 text-[#c9c9c3]", props.className)} />
     ),
     a: (props: React.ComponentPropsWithoutRef<"a">) => (
       <a
         {...props}
         className={cn(
-          "text-[#d7b47d] underline decoration-[#6f5b3b] underline-offset-4 transition-colors hover:text-[#ecd2a6]",
+          "text-amber-400 underline decoration-amber-700 underline-offset-4 transition-colors hover:text-amber-200",
           props.className
         )}
       />
@@ -81,7 +81,7 @@ function AdminArticleEditorForm({
       <blockquote
         {...props}
         className={cn(
-          "my-8 border-l-2 border-[#7c6541] bg-[#121311] px-5 py-4 text-[#e5dcc8]",
+          "my-8 border-l-2 border-green-500 bg-[#111111] px-5 py-4 text-[#e5e7eb]",
           props.className
         )}
       />
@@ -89,14 +89,14 @@ function AdminArticleEditorForm({
     code: (props: React.ComponentPropsWithoutRef<"code">) => (
       <code
         {...props}
-        className={cn("rounded bg-[#171816] px-1.5 py-0.5 font-mono text-[0.95em] text-[#e6d7bc]", props.className)}
+        className={cn("rounded bg-[#111111] px-1.5 py-0.5 font-mono text-[0.95em] text-amber-300", props.className)}
       />
     ),
     pre: (props: React.ComponentPropsWithoutRef<"pre">) => (
       <pre
         {...props}
         className={cn(
-          "my-8 overflow-x-auto rounded-[1.75rem] border border-white/10 bg-[#0c0d0c] px-4 py-4 font-mono text-sm leading-7 text-[#c9c3b4]",
+          "my-8 overflow-x-auto rounded-[1.75rem] border border-[#333333] bg-[#111111] px-4 py-4 font-mono text-sm leading-7 text-[#d1d5db]",
           props.className
         )}
       />
@@ -166,7 +166,7 @@ function AdminArticleEditorForm({
         </div>
         <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#f1eadb]">
+            <h1 className="admin-title">
               {mode === "create" ? "新建文章" : "在线编辑文章"}
             </h1>
             <p className="admin-copy mt-2">
@@ -174,7 +174,7 @@ function AdminArticleEditorForm({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3 text-sm text-[#9aa194]">
+          <div className="flex flex-wrap gap-3 text-sm text-[#8c8c8c]">
             {lastEditedByName ? <span>最近编辑：{lastEditedByName}</span> : null}
             {historyHref ? (
               <Link href={historyHref} className="admin-link">
@@ -197,7 +197,7 @@ function AdminArticleEditorForm({
 
           <div className="grid gap-5 lg:grid-cols-2">
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#d5d0c2]">标题</span>
+              <span className="text-sm font-medium text-[#e0e0e0]">标题</span>
               <input
                 type="text"
                 name="title"
@@ -209,7 +209,7 @@ function AdminArticleEditorForm({
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#d5d0c2]">Slug</span>
+              <span className="text-sm font-medium text-[#e0e0e0]">Slug</span>
               <input
                 type="text"
                 name="slug"
@@ -217,13 +217,13 @@ function AdminArticleEditorForm({
                 readOnly={mode === "edit"}
                 value={draft.slug}
                 onChange={handleFieldChange("slug")}
-                className="admin-input read-only:bg-[#181919] read-only:text-[#7b8379]"
+                className="admin-input read-only:bg-[#0a0a0a] read-only:text-[#6b7280]"
               />
             </label>
           </div>
 
           <label className="grid gap-2">
-            <span className="text-sm font-medium text-[#d5d0c2]">摘要</span>
+            <span className="text-sm font-medium text-[#e0e0e0]">摘要</span>
             <textarea
               name="desc"
               required
@@ -236,7 +236,7 @@ function AdminArticleEditorForm({
 
           <div className="grid gap-5 lg:grid-cols-2">
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#d5d0c2]">分类</span>
+              <span className="text-sm font-medium text-[#e0e0e0]">分类</span>
               <input
                 type="text"
                 name="category"
@@ -248,7 +248,7 @@ function AdminArticleEditorForm({
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#d5d0c2]">发布日期</span>
+              <span className="text-sm font-medium text-[#e0e0e0]">发布日期</span>
               <input
                 type="date"
                 name="publishedAt"
@@ -262,7 +262,7 @@ function AdminArticleEditorForm({
 
           <div className="grid gap-5 lg:grid-cols-2">
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#d5d0c2]">标签</span>
+              <span className="text-sm font-medium text-[#e0e0e0]">标签</span>
               <input
                 type="text"
                 name="tags"
@@ -275,7 +275,7 @@ function AdminArticleEditorForm({
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#d5d0c2]">封面（可选）</span>
+              <span className="text-sm font-medium text-[#e0e0e0]">封面（可选）</span>
               <input
                 type="text"
                 name="cover"
@@ -288,7 +288,7 @@ function AdminArticleEditorForm({
           </div>
 
           <label className="grid gap-2">
-            <span className="text-sm font-medium text-[#d5d0c2]">正文 MDX</span>
+            <span className="text-sm font-medium text-[#e0e0e0]">正文 MDX</span>
             <textarea
               name="content"
               required
@@ -322,7 +322,7 @@ function AdminArticleEditorForm({
             <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="admin-kicker-accent">Live Preview</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#f1eadb]">实时预览</h2>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#4ade80]">实时预览</h2>
               </div>
               <p className="admin-copy">
                 {previewLoading ? "正在更新预览..." : "预览已同步"}
@@ -344,7 +344,7 @@ function AdminArticleEditorForm({
                   <Skeleton className="h-64 w-full rounded-[1.75rem]" />
                 </div>
               ) : (
-                <article className="mx-auto min-h-[30rem] w-full max-w-3xl text-[#f1eadb]">
+                <article className="mx-auto min-h-[30rem] w-full max-w-3xl text-[#e0e0e0]">
                   <header className="space-y-5 border-b border-white/10 pb-8">
                     <span className="admin-chip">
                       {draft.category.trim() || "未分类"}
@@ -357,7 +357,7 @@ function AdminArticleEditorForm({
                         {draft.desc.trim() || "这里会显示文章摘要预览。"}
                       </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#8c9482]">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#8c8c8c]">
                       <span>{draft.publishedAt || "发布日期未设置"}</span>
                       <span className="text-white/16">/</span>
                       <span>{draft.category.trim() || "未分类"}</span>
@@ -380,7 +380,7 @@ function AdminArticleEditorForm({
 
                   <div className="mt-8">
                     {PreviewContent ? (
-                      <div className="text-base leading-8 text-[#c9c3b4] [&_hr]:my-10 [&_hr]:border-white/10 [&_img]:rounded-[1.75rem] [&_img]:border [&_img]:border-white/10 [&_img]:bg-[#121311] [&_li]:my-2 [&_ol]:my-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-[#f1eadb] [&_table]:my-8 [&_table]:w-full [&_table]:border-collapse [&_tbody_td]:border [&_tbody_td]:border-white/10 [&_tbody_td]:px-3 [&_tbody_td]:py-2 [&_thead_th]:border [&_thead_th]:border-white/10 [&_thead_th]:bg-[#151614] [&_thead_th]:px-3 [&_thead_th]:py-2 [&_ul]:my-6 [&_ul]:list-disc [&_ul]:pl-6">
+                      <div className="text-base leading-8 text-[#d1d5db] [&_hr]:my-10 [&_hr]:border-white/10 [&_img]:rounded-[1.75rem] [&_img]:border [&_img]:border-[#333333] [&_img]:bg-[#0a0a0a] [&_li]:my-2 [&_ol]:my-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-[#e0e0e0] [&_table]:my-8 [&_table]:w-full [&_table]:border-collapse [&_tbody_td]:border [&_tbody_td]:border-white/10 [&_tbody_td]:px-3 [&_tbody_td]:py-2 [&_thead_th]:border [&_thead_th]:border-white/10 [&_thead_th]:bg-[#141414] [&_thead_th]:px-3 [&_thead_th]:py-2 [&_ul]:my-6 [&_ul]:list-disc [&_ul]:pl-6">
                         <PreviewContent components={previewComponents} />
                       </div>
                     ) : (

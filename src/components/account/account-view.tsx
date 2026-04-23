@@ -16,12 +16,21 @@ type AccountViewProps = {
   notice: string | null
 }
 
+const accountPanelClass =
+  "public-summary-panel-document px-6 py-6 sm:px-7"
+const accountCardClass =
+  "public-summary-card-muted bg-[#aaa891]/28 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_14px_28px_-28px_rgba(0,0,0,0.26)]"
+const accountEntryClass =
+  "public-summary-card-muted px-4 py-4 transition duration-700 hover:border-foreground/20 hover:bg-[#d9d1ad]/46"
+const accountChipClass =
+  "public-summary-chip px-3 py-1 text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
+
 export function UserAccountView({ profile, comments, notice }: AccountViewProps) {
   const initials = (profile.name || profile.email).slice(0, 1).toUpperCase()
 
   return (
     <PageShell>
-      <section className="dossier-paper px-6 py-6 sm:px-7">
+      <section className={accountPanelClass}>
         <div className="flex flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="utility-kicker">Account Center</p>
@@ -33,10 +42,10 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
           <div className="grid gap-6">
-            <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+            <section className={accountCardClass}>
               <div className="flex items-start gap-4">
                 <div
-                  className="flex size-16 shrink-0 items-center justify-center border border-border/70 bg-muted text-lg font-semibold text-foreground"
+                  className="flex size-16 shrink-0 items-center justify-center border border-[#73766f]/48 bg-[#d9d1ad]/52 text-lg font-semibold text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)]"
                   style={profile.avatarUrl ? { backgroundImage: `url(${profile.avatarUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
                 >
                   {!profile.avatarUrl ? initials : null}
@@ -50,7 +59,7 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
               </div>
             </section>
 
-            <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+            <section className={accountCardClass}>
               <div className="mb-5">
                 <p className="utility-kicker">Profile</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight">基本信息</h2>
@@ -96,7 +105,7 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
               </form>
             </section>
 
-            <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+            <section className={accountCardClass}>
               <div className="mb-5">
                 <p className="utility-kicker">Security</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight">修改密码</h2>
@@ -142,13 +151,13 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
             </section>
           </div>
 
-          <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+          <section className={accountCardClass}>
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="utility-kicker">My Comments</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight">我的评论</h2>
               </div>
-              <span className="border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+              <span className={accountChipClass}>
                 {comments.length} 条
               </span>
             </div>
@@ -158,7 +167,7 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
                 comments.map((comment) => (
                   <article
                     key={comment.id}
-                    className="border border-border/70 bg-card/70 px-4 py-4"
+                    className={accountEntryClass}
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
@@ -174,12 +183,12 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
                           {formatAccountCommentDate(comment.createdAt)}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <span className="border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className={accountChipClass}>
                           {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
                         </span>
                         {comment.repliesCount > 0 ? (
-                          <span className="border border-border/70 px-3 py-1 text-xs text-muted-foreground">
+                          <span className={accountChipClass}>
                             {comment.repliesCount} 条回复
                           </span>
                         ) : null}
@@ -208,7 +217,7 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
                   </article>
                 ))
               ) : (
-                <div className="rounded-3xl border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">
+                <div className="rounded-3xl border border-dashed border-[#73766f]/48 bg-[#d9d1ad]/24 px-4 py-8 text-sm text-muted-foreground">
                   你还没有发出过评论。
                 </div>
               )}
@@ -228,13 +237,13 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
       <div className="flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="admin-kicker-accent">Account Console</p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[#f2eadb]">我的资料</h1>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[#4ade80]">我的资料</h1>
           <p className="admin-copy mt-2">管理管理员账号资料、密码，以及你在站内留下的评论记录。</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <span className="admin-status-pill admin-status-live">
-            <span className="size-1.5 bg-[#77d490]" />
+            <span className="size-1.5 bg-[#4ade80]" />
             Admin Session
           </span>
         </div>
@@ -247,15 +256,15 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
           <section className="admin-surface-muted px-5 py-5">
             <div className="flex items-start gap-4">
               <div
-                className="flex size-16 shrink-0 items-center justify-center border border-[#4a5244] bg-[#1a1d1a] text-lg font-semibold text-[#f1eadb]"
+                className="flex size-16 shrink-0 items-center justify-center border border-[#333333] bg-[#1a1a1a] text-lg font-semibold text-[#e0e0e0]"
                 style={profile.avatarUrl ? { backgroundImage: `url(${profile.avatarUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
               >
                 {!profile.avatarUrl ? initials : null}
               </div>
 
               <div className="min-w-0">
-                <p className="text-lg font-semibold text-[#f1eadb]">{profile.name || "未设置昵称"}</p>
-                <p className="mt-1 break-all text-sm text-[#8c9482]">{profile.email}</p>
+                <p className="text-lg font-semibold text-[#e0e0e0]">{profile.name || "未设置昵称"}</p>
+                <p className="mt-1 break-all text-sm text-[#8c8c8c]">{profile.email}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className="admin-status-pill admin-status-live">管理员</span>
                   <span className="admin-status-pill admin-status-muted">资料中心</span>
@@ -267,12 +276,12 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
           <section className="admin-surface-muted px-5 py-5">
             <div className="mb-5">
               <p className="admin-kicker">Profile</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#f1eadb]">基本信息</h2>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">基本信息</h2>
             </div>
 
             <form action={updateProfileAction} className="grid gap-4">
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#d5d0c2]">昵称</span>
+                <span className="text-sm font-medium text-[#e0e0e0]">昵称</span>
                 <input
                   type="text"
                   name="name"
@@ -283,7 +292,7 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#d5d0c2]">邮箱</span>
+                <span className="text-sm font-medium text-[#e0e0e0]">邮箱</span>
                 <input
                   type="email"
                   name="email"
@@ -294,7 +303,7 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#d5d0c2]">头像链接</span>
+                <span className="text-sm font-medium text-[#e0e0e0]">头像链接</span>
                 <input
                   type="url"
                   name="avatarUrl"
@@ -313,12 +322,12 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
           <section className="admin-surface-muted px-5 py-5">
             <div className="mb-5">
               <p className="admin-kicker">Security</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#f1eadb]">修改密码</h2>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">修改密码</h2>
             </div>
 
             <form action={changePasswordAction} className="grid gap-4">
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#d5d0c2]">原密码</span>
+                <span className="text-sm font-medium text-[#e0e0e0]">原密码</span>
                 <input
                   type="password"
                   name="currentPassword"
@@ -328,7 +337,7 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#d5d0c2]">新密码</span>
+                <span className="text-sm font-medium text-[#e0e0e0]">新密码</span>
                 <input
                   type="password"
                   name="nextPassword"
@@ -339,7 +348,7 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
               </label>
 
               <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#d5d0c2]">确认新密码</span>
+                <span className="text-sm font-medium text-[#e0e0e0]">确认新密码</span>
                 <input
                   type="password"
                   name="confirmPassword"
@@ -360,7 +369,7 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
           <div className="flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="admin-kicker">My Comments</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#f1eadb]">我的评论</h2>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">我的评论</h2>
             </div>
             <span className="admin-status-pill admin-status-muted">{comments.length} 条记录</span>
           </div>
@@ -372,27 +381,27 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
                   <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-3">
-                        <p className="font-semibold text-[#f1eadb]">
+                        <p className="font-semibold text-[#e0e0e0]">
                           {comment.articleTitle ?? comment.articleSlug}
                         </p>
                         <span className={`admin-status-pill ${comment.status === "HIDDEN" ? "admin-status-draft" : "admin-status-live"}`}>
                           {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
                         </span>
                         {comment.replyToAuthorName ? (
-                          <span className="border border-[#4a5244] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c9482]">
+                          <span className="border border-[#333333] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c8c8c]">
                             回复 {comment.replyToAuthorName}
                           </span>
                         ) : null}
                         {comment.repliesCount > 0 ? (
-                          <span className="border border-[#4a5244] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c9482]">
+                          <span className="border border-[#333333] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c8c8c]">
                             {comment.repliesCount} 条回复
                           </span>
                         ) : null}
-                        <span className="text-sm text-[#8c9482]">{formatAccountCommentDate(comment.createdAt)}</span>
+                        <span className="text-sm text-[#8c8c8c]">{formatAccountCommentDate(comment.createdAt)}</span>
                       </div>
 
-                      <p className="mt-3 text-sm text-[#8c9482]">文章：{comment.articleSlug}</p>
-                      <p className="mt-4 whitespace-pre-line text-sm leading-7 text-[#e7e0d0]">
+                      <p className="mt-3 text-sm text-[#8c8c8c]">文章：{comment.articleSlug}</p>
+                      <p className="mt-4 whitespace-pre-line text-sm leading-7 text-[#d1d5db]">
                         {comment.content}
                       </p>
                     </div>

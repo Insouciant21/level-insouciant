@@ -24,6 +24,11 @@ type HomeHeroProps = {
   stats: HeroStat[]
 }
 
+const heroPanelClass =
+  "public-summary-panel"
+const heroStatCardClass =
+  "public-summary-card px-5 py-5"
+
 function HomeHero({
   eyebrow,
   title,
@@ -66,7 +71,7 @@ function HomeHero({
           </div>
 
           <aside className="flex lg:justify-end">
-            <div className="dossier-paper w-full max-w-md px-5 py-5">
+            <div className={`${heroPanelClass} w-full max-w-md px-5 py-5`}>
               <p className="utility-kicker">Entry Note</p>
               <p className="mt-4 text-sm leading-8 text-muted-foreground">{note}</p>
             </div>
@@ -76,7 +81,7 @@ function HomeHero({
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(340px,0.8fr)] xl:items-end">
           <div className="grid gap-4 sm:grid-cols-3">
             {stats.map((stat) => (
-              <div key={stat.label} className="surface-panel px-5 py-5">
+              <div key={stat.label} className={heroStatCardClass}>
                 <p className="text-[0.68rem] uppercase tracking-[0.24em] text-muted-foreground">
                   {stat.label}
                 </p>

@@ -8,6 +8,11 @@ import { TagAggregateSection } from "@/components/blog/tag-aggregate-section"
 import { getTagAggregates } from "@/lib/content"
 import { createPageMetadata } from "@/lib/seo"
 
+const tagOverviewPanelClass =
+  "public-summary-panel"
+const tagOverviewLinkClass =
+  "public-summary-card-muted inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition duration-500 hover:border-foreground/20 hover:bg-[#d9d1ad]/46 hover:text-foreground"
+
 export const metadata: Metadata = createPageMetadata({
   title: "标签",
   description: "按主题查看文章归档。",
@@ -27,7 +32,7 @@ export default async function TagsPage() {
 
       {tags.length > 0 ? (
         <div className="grid gap-6">
-          <section className="surface-panel px-6 py-6">
+          <section className={`${tagOverviewPanelClass} px-6 py-6`}>
             <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Overview</p>
@@ -41,7 +46,7 @@ export default async function TagsPage() {
                 <Link
                   key={tag.slug}
                   href={`#${tag.slug}`}
-                  className="inline-flex items-center gap-2 border border-border/70 bg-muted/35 px-4 py-2 text-sm font-medium transition hover:border-primary/40 hover:bg-primary/10"
+                  className={tagOverviewLinkClass}
                 >
                   <span>{tag.name}</span>
                   <span className="text-xs text-muted-foreground">{tag.count}</span>

@@ -32,6 +32,8 @@
 - Prefer minimal, high-confidence diffs over broad refactors.
 - Reuse existing utilities, hooks, components, and service patterns when possible.
 - Do not introduce new dependencies unless necessary and explicitly justified.
+- If you are uncertain about something (requirement), you should ask instead of assuming.
+- Test your solutions before implementing it.
 
 ## Environment
 - Ubuntu 25.01 in WSL2
@@ -47,8 +49,6 @@
   - `pnpm lint`
   - `pnpm typecheck`
 - If one check fails, explain the likely cause before making another edit.
-
-
 
 ## Output expectations
 - Summarize changed files

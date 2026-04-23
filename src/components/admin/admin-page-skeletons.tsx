@@ -10,11 +10,11 @@ function AdminSkeleton({ className }: AdminSkeletonProps) {
 }
 
 function AdminAccentSkeleton({ className }: AdminSkeletonProps) {
-  return <Skeleton className={cn("border-none bg-[#77d490]/18 shadow-none", className)} />
+  return <Skeleton className={cn("border-none bg-[#4ade80]/18 shadow-none", className)} />
 }
 
 function AdminWarmSkeleton({ className }: AdminSkeletonProps) {
-  return <Skeleton className={cn("border-none bg-[#ff6d61]/20 shadow-none", className)} />
+  return <Skeleton className={cn("border-none bg-red-500/18 shadow-none", className)} />
 }
 
 function AdminMetricCardSkeleton() {
@@ -78,7 +78,7 @@ function AdminListCardSkeleton({
           ) : null}
 
           {showDetails ? (
-            <div className="mt-4 rounded-2xl border border-white/10 bg-[#0c0d0c] px-4 py-3">
+            <div className="mt-4 rounded-2xl border border-white/10 bg-[#111111] px-4 py-3">
               <AdminSkeleton className="h-4 w-28 bg-white/10" />
               <AdminSkeleton className="mt-4 h-4 w-full bg-white/8" />
               <AdminSkeleton className="mt-2 h-4 w-full bg-white/8" />
@@ -93,7 +93,7 @@ function AdminListCardSkeleton({
               key={index}
               className={cn(
                 "h-10 w-24",
-                index === actionCount - 1 ? "bg-[#152116]" : "bg-white/10"
+                index === actionCount - 1 ? "bg-[#1a2e1a]" : "bg-white/10"
               )}
             />
           ))}
@@ -126,7 +126,7 @@ function AdminPageHeaderSkeleton({
         <AdminSkeleton className={cn("mt-2 h-4 w-full bg-white/8", descWidth)} />
       </div>
 
-      {action ? <AdminSkeleton className="h-10 w-28 bg-[#152116]" /> : null}
+      {action ? <AdminSkeleton className="h-10 w-28 bg-[#1a2e1a]" /> : null}
     </div>
   )
 }
@@ -150,14 +150,14 @@ function AdminEditorFieldSkeleton({
 
 function AdminLoginPageSkeleton() {
   return (
-    <main className="admin-console flex min-h-svh flex-1 items-center justify-center bg-[#0e0e0e] px-5 py-16 sm:px-6 lg:px-8">
+    <main className="admin-console flex min-h-svh flex-1 items-center justify-center bg-[#111111] px-5 py-16 sm:px-6 lg:px-8">
       <section className="terminal-panel grid w-full max-w-6xl gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <div className="relative z-10 space-y-4">
           <AdminWarmSkeleton className="h-4 w-24" />
           <AdminSkeleton className="h-14 w-full max-w-xl bg-white/12" />
           <AdminSkeleton className="h-5 w-4/5 max-w-md bg-white/8" />
           <div className="admin-surface-muted px-5 py-5">
-            <AdminWarmSkeleton className="h-4 w-24 bg-[#ff6d61]/16" />
+            <AdminWarmSkeleton className="h-4 w-24" />
             <AdminSkeleton className="mt-3 h-4 w-full bg-white/8" />
             <AdminSkeleton className="mt-2 h-4 w-5/6 bg-white/8" />
           </div>
@@ -166,7 +166,7 @@ function AdminLoginPageSkeleton() {
         <div className="relative z-10 grid gap-4">
           <AdminEditorFieldSkeleton labelWidth="w-12" />
           <AdminEditorFieldSkeleton labelWidth="w-12" />
-          <AdminSkeleton className="h-10 w-full bg-[#152116]" />
+          <AdminSkeleton className="h-10 w-full bg-[#1a2e1a]" />
         </div>
       </section>
     </main>
@@ -183,7 +183,7 @@ function AdminDashboardPageSkeleton() {
             <AdminSkeleton className="h-12 w-64 bg-white/14" />
             <AdminSkeleton className="mt-3 h-5 w-full max-w-2xl bg-white/8" />
           </div>
-          <AdminAccentSkeleton className="h-8 w-32 bg-[#152116]" />
+          <AdminAccentSkeleton className="h-8 w-32 bg-[#1a2e1a]" />
         </div>
       </header>
 
@@ -240,7 +240,7 @@ function AdminArticlesPageSkeleton() {
           <AdminSkeleton className="h-10 w-56 bg-white/14" />
           <AdminSkeleton className="h-4 w-full max-w-3xl bg-white/8" />
         </div>
-        <AdminSkeleton className="h-10 w-28 bg-[#152116]" />
+        <AdminSkeleton className="h-10 w-28 bg-[#1a2e1a]" />
       </div>
 
       <div className="mt-6 grid gap-4">
@@ -297,7 +297,7 @@ function AdminTagsPageSkeleton() {
                   <AdminSkeleton className="h-12 min-w-0 flex-1 bg-white/10" />
                   <AdminSkeleton className="h-10 w-full bg-white/10 sm:w-24" />
                 </div>
-                <AdminSkeleton className="h-10 w-40 bg-[#4d1f1b]" />
+                <AdminSkeleton className="h-10 w-40 bg-red-900/45" />
               </div>
             </div>
           </article>
@@ -317,35 +317,37 @@ function AdminStatsPageSkeleton() {
       </div>
 
       <div className="mt-6 overflow-x-auto">
-        <table className="min-w-full border-separate border-spacing-y-3">
-          <thead>
-            <tr className="text-left">
-              {Array.from({ length: 7 }).map((_, index) => (
-                <th key={index} className="px-4 py-2">
-                  <AdminSkeleton className="h-4 w-16 bg-white/8" />
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <tr key={index} className="admin-table-row rounded-3xl">
-                <td className="rounded-l-3xl px-4 py-4">
-                  <AdminSkeleton className="h-5 w-36 bg-white/12" />
-                  <AdminSkeleton className="mt-2 h-4 w-24 bg-white/8" />
-                </td>
-                {Array.from({ length: 5 }).map((_, cellIndex) => (
-                  <td key={cellIndex} className="px-4 py-4">
+        <div className="overflow-hidden border border-[#333333] bg-[#111111] shadow-[0_24px_48px_-36px_rgba(0,0,0,0.72)]">
+          <table className="min-w-full border-collapse">
+            <thead className="bg-[#0a0a0a]">
+              <tr className="text-left">
+                {Array.from({ length: 7 }).map((_, index) => (
+                  <th key={index} className="px-4 py-2">
+                    <AdminSkeleton className="h-4 w-16 bg-white/8" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#222222]">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <tr key={index}>
+                  <td className="px-4 py-4">
+                    <AdminSkeleton className="h-5 w-36 bg-white/12" />
+                    <AdminSkeleton className="mt-2 h-4 w-24 bg-white/8" />
+                  </td>
+                  {Array.from({ length: 5 }).map((_, cellIndex) => (
+                    <td key={cellIndex} className="px-4 py-4">
+                      <AdminSkeleton className="h-4 w-16 bg-white/8" />
+                    </td>
+                  ))}
+                  <td className="px-4 py-4">
                     <AdminSkeleton className="h-4 w-16 bg-white/8" />
                   </td>
-                ))}
-                <td className="rounded-r-3xl px-4 py-4">
-                  <AdminSkeleton className="h-4 w-16 bg-white/8" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   )
@@ -365,7 +367,7 @@ function AdminAccountPageSkeleton() {
                 <AdminSkeleton className="h-6 w-28 bg-white/14" />
                 <AdminSkeleton className="mt-2 h-4 w-44 bg-white/8" />
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <AdminAccentSkeleton className="h-7 w-16 bg-[#152116]" />
+                  <AdminAccentSkeleton className="h-7 w-16 bg-[#1a2e1a]" />
                   <AdminSkeleton className="h-7 w-20 bg-white/8" />
                 </div>
               </div>
@@ -381,7 +383,7 @@ function AdminAccountPageSkeleton() {
               <AdminEditorFieldSkeleton />
               <AdminEditorFieldSkeleton />
               <AdminEditorFieldSkeleton labelWidth="w-20" />
-              <AdminSkeleton className="mt-2 h-10 w-full bg-[#152116] sm:w-28" />
+              <AdminSkeleton className="mt-2 h-10 w-full bg-[#1a2e1a] sm:w-28" />
             </div>
           </section>
 
@@ -394,7 +396,7 @@ function AdminAccountPageSkeleton() {
               <AdminEditorFieldSkeleton labelWidth="w-16" />
               <AdminEditorFieldSkeleton labelWidth="w-16" />
               <AdminEditorFieldSkeleton labelWidth="w-20" />
-              <AdminSkeleton className="mt-2 h-10 w-full bg-[#152116] sm:w-28" />
+              <AdminSkeleton className="mt-2 h-10 w-full bg-[#1a2e1a] sm:w-28" />
             </div>
           </section>
         </div>
@@ -457,7 +459,7 @@ function AdminArticleEditorPageSkeleton() {
           </div>
           <AdminEditorFieldSkeleton labelWidth="w-12" multiline className="min-h-[24rem]" />
           <div className="flex flex-wrap gap-3">
-            <AdminSkeleton className="h-10 w-28 bg-[#152116]" />
+            <AdminSkeleton className="h-10 w-28 bg-[#1a2e1a]" />
             <AdminSkeleton className="h-10 w-28 bg-white/10" />
           </div>
         </div>

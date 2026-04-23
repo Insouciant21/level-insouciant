@@ -10,16 +10,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border-[#3e9256] bg-primary text-primary-foreground shadow-[inset_0_0_18px_rgba(0,0,0,0.2)] hover:border-[#5eb475] hover:bg-[#368c54]",
+          "border-primary/65 bg-primary text-primary-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18),0_16px_28px_-22px_rgba(0,0,0,0.28)] hover:border-primary/80 hover:bg-primary/85",
         outline:
-          "border-[#6f7b83] bg-secondary text-secondary-foreground shadow-[inset_0_0_18px_rgba(0,0,0,0.18)] hover:border-[#87939b] hover:bg-[#717d86]",
+          "border-[#73766f]/55 bg-[#d9d1ad]/52 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_14px_26px_-24px_rgba(0,0,0,0.32)] hover:border-foreground/22 hover:bg-[#c6bd99]/62",
         secondary:
-          "border-[#d0a54d] bg-accent text-accent-foreground shadow-[inset_0_0_18px_rgba(0,0,0,0.15)] hover:border-[#e1b25a] hover:bg-[#dfaa38]",
+          "border-accent/60 bg-accent text-accent-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18),0_16px_28px_-22px_rgba(0,0,0,0.24)] hover:border-accent/75 hover:bg-accent/88",
         ghost:
-          "border-transparent bg-transparent text-muted-foreground shadow-none hover:border-border/80 hover:bg-card/70 hover:text-foreground aria-expanded:bg-card aria-expanded:text-foreground",
+          "border-transparent bg-transparent text-muted-foreground shadow-none hover:border-[#73766f]/45 hover:bg-[#d9d1ad]/36 hover:text-foreground aria-expanded:border-[#73766f]/45 aria-expanded:bg-[#d9d1ad]/42 aria-expanded:text-foreground",
         destructive:
-          "border-[#9d463a] bg-destructive text-destructive-foreground shadow-[inset_0_0_18px_rgba(0,0,0,0.2)] hover:border-[#b65f52] hover:bg-[#924034] focus-visible:border-destructive/60 focus-visible:ring-destructive/25",
-        link: "text-primary underline-offset-4 hover:underline",
+          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.12),0_16px_28px_-22px_rgba(0,0,0,0.28)] hover:border-destructive/85 hover:bg-destructive/88 focus-visible:border-destructive/60 focus-visible:ring-destructive/25",
+        link:
+          "text-[#8a4f34] underline-offset-4 hover:text-[#6f3f28] hover:underline",
       },
       size: {
         default:

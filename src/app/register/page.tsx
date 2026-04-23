@@ -20,6 +20,8 @@ const errorMessages: Record<string, string> = {
   EMAIL_TAKEN: "这个邮箱已经注册过了。",
   RESERVED_EMAIL: "这个邮箱已被保留，请使用其他邮箱注册。",
 }
+const authPanelClass =
+  "public-summary-panel-document px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]"
 
 export const metadata: Metadata = createPageMetadata({
   title: "账号注册",
@@ -40,7 +42,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-16 sm:px-6 lg:px-8">
-      <section className="dossier-paper grid w-full gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+      <section className={`grid w-full gap-8 ${authPanelClass}`}>
         <div className="space-y-4">
           <p className="utility-kicker">Create Account</p>
           <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
@@ -100,7 +102,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             已经有账号了？
             <Link
               href={`/login?next=${encodeURIComponent(next)}`}
-              className="ml-2 text-primary underline underline-offset-4"
+              className="ml-2 text-[#8a4f34] underline underline-offset-4 transition hover:text-[#6f3f28]"
             >
               去登录
             </Link>

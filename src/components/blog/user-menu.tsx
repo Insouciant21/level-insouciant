@@ -18,6 +18,15 @@ type UserMenuProps = {
     | null
 }
 
+const userMenuTriggerClass =
+  "flex size-10 cursor-pointer list-none items-center justify-center border border-[#73766f]/52 bg-[#d9d1ad]/56 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.2),0_12px_24px_-20px_rgba(0,0,0,0.22)] outline-none transition duration-500 hover:border-foreground/20 hover:bg-[#c6bd99]/62 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
+const userMenuAvatarFallbackClass =
+  "flex size-9 items-center justify-center bg-[#aaa891]/42 text-muted-foreground"
+const userMenuPanelClass =
+  "absolute right-0 top-[calc(100%+0.75rem)] z-50 w-60 border border-[#73766f]/52 bg-[#d9d1ad]/94 p-2 shadow-[inset_0_1px_0_rgba(255,252,225,0.24),0_28px_70px_-30px_rgba(0,0,0,0.3)] backdrop-blur-xl"
+const userMenuItemClass =
+  "px-3 py-2 text-sm text-muted-foreground transition duration-500 hover:bg-[#c6bd99]/48 hover:text-foreground"
+
 function UserMenu({ user }: UserMenuProps) {
   const isAdmin = user?.role === "ADMIN"
   const displayName = user?.name?.trim() || user?.email || "游客"
@@ -91,7 +100,7 @@ function UserMenu({ user }: UserMenuProps) {
       <summary
         ref={summaryRef}
         className={cn(
-          "flex size-10 cursor-pointer list-none items-center justify-center border border-border/80 bg-card/72 text-foreground outline-none transition hover:border-foreground/20 hover:bg-card focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
+          userMenuTriggerClass,
           "[&::-webkit-details-marker]:hidden"
         )}
         aria-label={user ? `${displayName} 的用户菜单` : "打开登录菜单"}
@@ -102,13 +111,13 @@ function UserMenu({ user }: UserMenuProps) {
             style={{ backgroundImage: `url(${user.image})` }}
           />
         ) : (
-          <span className="flex size-9 items-center justify-center bg-muted text-muted-foreground">
+          <span className={userMenuAvatarFallbackClass}>
             <UserRound className="size-4" />
           </span>
         )}
       </summary>
 
-      <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-60 border border-border/80 bg-card/94 p-2 shadow-[0_28px_70px_-30px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+      <div className={userMenuPanelClass}>
         <div className="px-3 py-3">
           <p className="text-sm font-medium text-foreground">{displayName}</p>
           <p className="mt-1 text-xs text-muted-foreground">
@@ -121,7 +130,7 @@ function UserMenu({ user }: UserMenuProps) {
             <>
               <Link
                 href={isAdmin ? "/admin" : "/account"}
-                className="px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted/65 hover:text-foreground"
+                className={userMenuItemClass}
               >
                 {isAdmin ? "后台管理" : "用户管理"}
               </Link>
@@ -130,7 +139,7 @@ function UserMenu({ user }: UserMenuProps) {
                 <input type="hidden" name="redirectTo" value="/" />
                 <button
                   type="submit"
-                  className="w-full px-3 py-2 text-left text-sm text-muted-foreground transition hover:bg-muted/65 hover:text-foreground"
+                  className={cn("w-full text-left", userMenuItemClass)}
                 >
                   注销
                 </button>
@@ -139,7 +148,7 @@ function UserMenu({ user }: UserMenuProps) {
           ) : (
             <Link
               href="/login"
-              className="px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted/65 hover:text-foreground"
+              className={userMenuItemClass}
             >
               登录
             </Link>

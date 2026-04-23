@@ -22,15 +22,27 @@ import {
   getRelatedArticles,
 } from "@/lib/content"
 import { formatDisplayDate } from "@/lib/content"
-import { createArticleJsonLd, createArticleMetadata, createPageMetadata } from "@/lib/seo"
+import {
+  createArticleJsonLd,
+  createArticleMetadata,
+  createPageMetadata,
+} from "@/lib/seo"
 import { extractTableOfContents } from "@/lib/toc"
 
 const ArticleEngagementPanel = dynamic(
-  () => import("@/components/blog/article-engagement-panel").then((module) => module.ArticleEngagementPanel),
+  () =>
+    import("@/components/blog/article-engagement-panel").then(
+      (module) => module.ArticleEngagementPanel
+    ),
   {
     loading: () => <ArticleEngagementPanelSkeleton />,
   }
 )
+
+const articleDocumentPanelClass =
+  "public-summary-panel-document"
+const articleHeaderBadgeClass =
+  "public-summary-chip border-[#73766f]/55 bg-[#d9d1ad]/58 px-3 py-1.5 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
 
 type ArticlePageProps = {
   params: Promise<{
@@ -45,7 +57,9 @@ export async function generateStaticParams() {
   }))
 }
 
-export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params
   const article = await getArticleBySlug(slug)
 
@@ -82,25 +96,31 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: createArticleJsonLd(article) }}
       />
-      <div className="mx-auto grid w-full max-w-7xl gap-6 md:gap-8 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-start">
+      <div className="pointer-events-none fixed inset-0 opacity-[0.02]">
+        <div className="h-full w-full bg-[radial-gradient(ellipse_at_top,#ffbf00_0%,transparent_60%)]" />
+      </div>
+
+      <div className="mx-auto grid w-full max-w-[1200px] gap-8 md:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
         <MotionReveal variant="left">
           <article id="article-reading-root" className="min-w-0">
-            <div className="dossier-paper mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:px-12">
+            <div
+              className={`${articleDocumentPanelClass} mx-auto w-full max-w-4xl px-4 py-6 sm:px-8 sm:py-8 md:px-16 md:py-12`}
+            >
               <Link
                 href="/articles"
-                className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.22em] text-muted-foreground transition hover:text-foreground"
+                className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground transition duration-500 hover:text-foreground"
               >
                 <ArrowLeft className="size-4" />
                 返回档案索引
               </Link>
 
-              <header className="mt-6 border-b-4 border-foreground pb-8">
-                <div className="flex flex-wrap items-center justify-between gap-4 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-                  <span>Archive File // {signal.designation}</span>
+              <header className="mt-6 border-b border-[#181b17]/72 pb-8 shadow-[0_1px_0_rgba(255,252,225,0.14)]">
+                <div className="flex flex-wrap items-center justify-between gap-4 text-[0.72rem] font-bold uppercase tracking-[0.28em] text-muted-foreground">
+                  <span>M.E.G. Database // Archive File</span>
                   <span>{formatDisplayDate(article.date)}</span>
                 </div>
 
-                <h1 className="mt-5 break-words text-3xl font-semibold leading-[0.95] tracking-tight text-balance sm:text-4xl md:text-6xl">
+                <h1 className="mt-5 break-words font-serif text-4xl font-bold leading-[0.95] tracking-tight text-foreground text-balance sm:text-5xl md:text-7xl">
                   {article.title}
                 </h1>
                 <p className="mt-5 max-w-3xl text-base leading-8 text-foreground/78 md:text-lg">
@@ -108,8 +128,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.26em]">
-                  <span className="bg-[#171613] px-3 py-1.5 text-[#f3efe2]">Code: {signal.designation}</span>
-                  <span className="border border-border/80 bg-background/80 px-3 py-1.5 text-muted-foreground">
+                  <span className="border border-[#181b17] bg-[#181b17] px-3 py-1.5 text-[#d9d1ad]">
+                    Code: {signal.designation}
+                  </span>
+                  <span className={articleHeaderBadgeClass}>
                     Category: {article.category}
                   </span>
                 </div>
@@ -120,19 +142,22 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </header>
 
               {article.cover ? (
-                <div className="mt-8 overflow-hidden border-[4px] border-black/10 bg-[#b8b0a2]">
+                <div className="group relative mt-8 overflow-hidden border-[4px] border-[#73766f]/38 bg-[#c6bd99] grayscale-[0.24] sepia-[0.22] shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_18px_42px_-34px_rgba(0,0,0,0.34)]">
                   <Image
                     src={article.cover}
                     alt={article.title}
                     width={1600}
                     height={880}
                     sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 896px"
-                    className="h-[14rem] w-full object-cover grayscale-[0.15] sepia-[0.22] sm:h-[18rem] md:h-[22rem]"
+                    className="h-[14rem] w-full object-cover mix-blend-multiply opacity-85 transition duration-[3000ms] group-hover:scale-105 group-hover:opacity-100 sm:h-[18rem] md:h-[22rem]"
                   />
                 </div>
               ) : null}
 
-              <ArticleTableOfContents items={tocItems} className="mt-8 xl:hidden" />
+              <ArticleTableOfContents
+                items={tocItems}
+                className="mt-8 xl:hidden"
+              />
 
               <div className="mt-10">
                 <ContentProse source={article.content} />
@@ -156,7 +181,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </MotionReveal>
 
       <MotionReveal delay={0.25}>
-        <ArticlePaginationNav previous={pagination?.previous ?? null} next={pagination?.next ?? null} />
+        <ArticlePaginationNav
+          previous={pagination?.previous ?? null}
+          next={pagination?.next ?? null}
+        />
       </MotionReveal>
 
       {relatedArticles.length > 0 ? (
@@ -164,7 +192,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <section className="grid gap-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-xl font-semibold tracking-tight">相关文章</h2>
-              <p className="text-sm text-muted-foreground">根据标签与分类自动关联</p>
+              <p className="text-sm text-muted-foreground">
+                根据标签与分类自动关联
+              </p>
             </div>
             {relatedArticles.map((entry) => (
               <ArticleCard key={entry.slug} article={entry} />

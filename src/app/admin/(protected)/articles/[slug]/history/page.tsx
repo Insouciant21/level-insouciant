@@ -95,7 +95,7 @@ export default async function AdminArticleHistoryPage({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c9482]">
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c8c8c]">
           <span>Slug：{article.slug}</span>
           <span>分类：{article.category}</span>
           <span>发布日期：{formatDisplayDate(article.date)}</span>
@@ -112,16 +112,16 @@ export default async function AdminArticleHistoryPage({
               <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="text-lg font-semibold tracking-tight text-[#f1eadb]">{revision.title}</h2>
+                    <h2 className="text-lg font-semibold tracking-tight text-[#e0e0e0]">{revision.title}</h2>
                     <span className={`admin-status-pill ${revision.draft ? "admin-status-draft" : "admin-status-live"}`}>
                       {revision.draft ? "草稿 / 已隐藏" : "已发布"}
                     </span>
-                    <span className="text-sm text-[#8c9482]">{formatRevisionDate(revision.createdAt)}</span>
+                    <span className="text-sm text-[#8c8c8c]">{formatRevisionDate(revision.createdAt)}</span>
                   </div>
 
                   <p className="admin-copy mt-3">{revision.desc}</p>
 
-                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c9482]">
+                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c8c8c]">
                     <span>编辑者：{revision.createdByName ?? "系统 / 未知用户"}</span>
                     <span>文章日期：{formatDisplayDate(revision.publishedAt)}</span>
                     {revision.reason ? <span>原因：{revision.reason}</span> : null}
@@ -135,9 +135,9 @@ export default async function AdminArticleHistoryPage({
                     ))}
                   </div>
 
-                  <details className="mt-4 rounded-2xl border border-white/10 bg-[#0c0d0c] px-4 py-3">
-                    <summary className="cursor-pointer text-sm font-medium text-[#d8d1c1]">查看此版本正文</summary>
-                    <pre className="mt-4 overflow-x-auto whitespace-pre-wrap font-mono text-sm leading-7 text-[#8c9482]">
+                  <details className="mt-4 rounded-2xl border border-[#333333] bg-[#111111] px-4 py-3">
+                    <summary className="cursor-pointer text-sm font-medium text-[#d1d5db]">查看此版本正文</summary>
+                    <pre className="mt-4 overflow-x-auto whitespace-pre-wrap font-mono text-sm leading-7 text-[#8c8c8c]">
                       {revision.content}
                     </pre>
                   </details>

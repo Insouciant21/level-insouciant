@@ -32,20 +32,20 @@ function AdminShell({ userName, children }: AdminShellProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   return (
-    <div className="admin-console relative flex min-h-svh flex-1 flex-col bg-[#101010] text-[#e7e0d0] md:flex-row selection:bg-[#3fb46b]/30">
-      <div className="pointer-events-none fixed inset-0 z-10 opacity-[0.05] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.05),rgba(0,255,0,0.02),rgba(0,0,255,0.05))] bg-[length:100%_4px,3px_100%]" />
+    <div className="admin-console relative flex min-h-svh flex-1 flex-col bg-[#111111] text-[#e0e0e0] md:flex-row selection:bg-green-500/30">
+      <div className="pointer-events-none fixed inset-0 z-10 opacity-[0.05] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]" />
 
-      <aside className="sticky top-0 z-30 flex w-full flex-col border-b border-white/10 bg-[#0a0a0a] md:z-20 md:h-svh md:w-72 md:shrink-0 md:self-start md:overflow-y-auto md:border-b-0 md:border-r">
-        <div className="border-b border-white/10 px-4 py-4 sm:px-5 sm:py-5">
+      <aside className="sticky top-0 z-30 flex w-full flex-col border-b border-[#333333] bg-[#0a0a0a] md:z-20 md:h-svh md:w-72 md:shrink-0 md:self-start md:overflow-y-auto md:border-b-0 md:border-r">
+        <div className="border-b border-[#333333] px-4 py-4 sm:px-5 sm:py-5">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-[#ff6d61]">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-red-500">
                 M.E.G. Secure
               </p>
-              <h1 className="mt-3 text-xl font-semibold tracking-tight text-[#f3ecdb] sm:text-2xl">
+              <h1 className="mt-3 text-xl font-semibold tracking-tight text-[#e0e0e0] sm:text-2xl">
                 Admin Console
               </h1>
-              <p className="mt-2 break-words text-xs uppercase tracking-[0.24em] text-[#8c9482]">
+              <p className="mt-2 break-words text-xs uppercase tracking-[0.24em] text-gray-500">
                 Auth Level: Alpha // {userName}
               </p>
             </div>
@@ -70,7 +70,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
           className={cn("px-4 py-5", mobileNavOpen ? "block" : "hidden", "md:block")}
           aria-label="后台导航"
         >
-          <p className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[#687166]">
+          <p className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-gray-600">
             Systems
           </p>
           <ul className="grid gap-2">
@@ -82,12 +82,12 @@ function AdminShell({ userName, children }: AdminShellProps) {
                   className={cn(
                     "flex items-center justify-between border px-3 py-2 text-sm uppercase tracking-[0.22em] transition",
                     isActiveNavItem(pathname, item.href)
-                      ? "border-[#2b7748] bg-[#162117] text-[#8fe0a8]"
-                      : "border-transparent text-[#c9c3b4] hover:border-[#2b7748] hover:bg-[#162117] hover:text-[#8fe0a8]"
+                      ? "border-green-900 bg-[#1a2e1a] text-green-400 shadow-[inset_2px_0_0_#4ade80]"
+                      : "border-transparent text-gray-400 hover:bg-[#1a1a1a] hover:text-gray-200"
                   )}
                 >
                   <span>{item.label}</span>
-                  <span className="text-[#4a5148]">&gt;</span>
+                  <span className="text-[#4a4a4a]">&gt;</span>
                 </Link>
               </li>
             ))}
@@ -96,7 +96,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
 
         <div
           className={cn(
-            "mt-auto grid gap-3 border-t border-white/10 px-4 py-5",
+            "mt-auto grid gap-3 border-t border-[#333333] px-4 py-5",
             mobileNavOpen ? "grid" : "hidden",
             "md:grid"
           )}
@@ -104,7 +104,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
           <Link
             href="/"
             onClick={() => setMobileNavOpen(false)}
-            className="text-xs uppercase tracking-[0.24em] text-[#8c9482] transition hover:text-[#d8d1c1]"
+            className="text-xs uppercase tracking-[0.24em] text-gray-500 transition hover:text-gray-300"
           >
             Exit Console
           </Link>
@@ -122,7 +122,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
         </div>
       </aside>
 
-      <main className="relative z-20 flex-1 bg-[#131313]">
+      <main className="relative z-20 flex-1 bg-[#141414]">
         <div className="mx-auto flex w-full max-w-6xl min-w-0 flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
           {children}
         </div>

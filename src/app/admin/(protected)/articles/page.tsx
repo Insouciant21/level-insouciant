@@ -13,7 +13,7 @@ export default async function AdminArticlesPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex flex-col gap-2">
           <p className="admin-kicker">Article Control</p>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#f1eadb]">草稿与文章管理</h1>
+          <h1 className="admin-title">草稿与文章管理</h1>
           <p className="admin-copy">
             这里直接操作数据库中的文章记录，可以新建、编辑、发布、下线、查看修订历史或删除文章。
           </p>
@@ -30,7 +30,7 @@ export default async function AdminArticlesPage() {
             <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="text-xl font-semibold tracking-tight text-[#f1eadb]">{article.title}</h2>
+                  <h2 className="text-xl font-semibold tracking-tight text-[#e0e0e0]">{article.title}</h2>
                   <span className={`admin-status-pill ${article.draft ? "admin-status-draft" : "admin-status-live"}`}>
                     {article.draft ? "草稿 / 已隐藏" : "已发布"}
                   </span>
@@ -38,7 +38,7 @@ export default async function AdminArticlesPage() {
 
                 <p className="admin-copy mt-3">{article.desc}</p>
 
-                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c9482]">
+                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c8c8c]">
                   <span>日期：{formatDisplayDate(article.date)}</span>
                   <span>分类：{article.category}</span>
                   <span>Slug：{article.slug}</span>
@@ -66,7 +66,7 @@ export default async function AdminArticlesPage() {
                         查看前台文章
                       </Link>
                     ) : (
-                      <span className="text-[#8c9482]">当前为隐藏文章</span>
+                      <span className="text-[#8c8c8c]">当前为隐藏文章</span>
                     )}
                   </div>
                 </div>

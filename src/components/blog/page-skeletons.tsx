@@ -1,18 +1,27 @@
 import { PageShell } from "@/components/blog/page-shell"
 import { Skeleton } from "@/components/ui/skeleton"
 
+const skeletonPanelClass =
+  "public-summary-panel"
+const skeletonDocumentClass =
+  "public-summary-panel-document"
+const skeletonCardClass =
+  "public-summary-card"
+const skeletonSoftCardClass =
+  "public-summary-card-muted border-[#73766f]/46 bg-[#aaa891]/28 shadow-[inset_0_1px_0_rgba(255,252,225,0.12),0_14px_28px_-28px_rgba(0,0,0,0.26)]"
+
 function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
   return (
     <article
       className={[
-        "relative overflow-hidden border-[3px] bg-[#d8d1bd]",
+        "door-card relative overflow-hidden border-[3px]",
         featured
-          ? "min-h-[16rem] border-black/30 sm:min-h-[18rem] lg:col-span-2 lg:row-span-2 lg:min-h-[24rem]"
-          : "min-h-[16rem] border-black/20 sm:min-h-[18rem]",
+          ? "min-h-[16rem] border-[#73766f]/60 sm:min-h-[18rem] lg:col-span-2 lg:row-span-2 lg:min-h-[24rem]"
+          : "min-h-[16rem] border-[#73766f]/50 sm:min-h-[18rem]",
       ].join(" ")}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),transparent_38%,rgba(0,0,0,0.08))]" />
-      <div className="absolute inset-0 shadow-[inset_0_0_44px_rgba(0,0,0,0.16)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,252,225,0.12),transparent_38%,rgba(24,27,23,0.08))]" />
+      <div className="absolute inset-0 shadow-[inset_0_0_44px_rgba(24,27,23,0.16)]" />
 
       <div className="relative z-10 flex h-full flex-col px-4 py-4 sm:px-6 sm:py-6">
         <div className="flex items-start gap-3 sm:gap-4">
@@ -20,7 +29,7 @@ function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
         </div>
 
         <div className="mt-auto space-y-4">
-          <div className="border border-black/12 bg-[#f8f4eb]/68 px-4 py-4 backdrop-blur-sm">
+          <div className={`${skeletonSoftCardClass} px-4 py-4 backdrop-blur-sm`}>
             <Skeleton className="h-3 w-32" />
             <Skeleton className="mt-4 h-10 w-full max-w-lg" />
             <Skeleton className="mt-2 h-10 w-4/5 max-w-md" />
@@ -70,13 +79,13 @@ function HomeHeroSkeleton() {
               <Skeleton className="h-6 w-4/5 max-w-xl" />
             </div>
             <div className="flex flex-wrap gap-3">
-              <Skeleton className="h-11 w-40 border-[#3e9256] bg-[#2f7c4a] shadow-none" />
-              <Skeleton className="h-11 w-36 border-[#6f7b83] bg-[#69747c] shadow-none" />
+              <Skeleton className="h-11 w-40 border-primary/40 bg-primary/70 shadow-none" />
+              <Skeleton className="h-11 w-36 border-[#73766f]/32 bg-[#d9d1ad]/52 shadow-none" />
             </div>
           </div>
 
           <aside className="flex lg:justify-end">
-            <div className="dossier-paper w-full max-w-md px-5 py-5">
+            <div className={`${skeletonPanelClass} w-full max-w-md px-5 py-5`}>
               <Skeleton className="h-4 w-24" />
               <Skeleton className="mt-4 h-5 w-full" />
               <Skeleton className="mt-2 h-5 w-5/6" />
@@ -88,14 +97,14 @@ function HomeHeroSkeleton() {
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(340px,0.8fr)] xl:items-end">
           <div className="grid gap-4 sm:grid-cols-3">
             {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="surface-panel px-5 py-5">
+              <div key={index} className={`${skeletonCardClass} relative isolate overflow-hidden px-5 py-5`}>
                 <Skeleton className="h-4 w-20" />
                 <Skeleton className="mt-4 h-8 w-16" />
               </div>
             ))}
           </div>
 
-          <div className="dossier-paper border-dashed px-5 py-4">
+          <div className={`${skeletonPanelClass} border-dashed px-5 py-4`}>
             <Skeleton className="h-4 w-28" />
             <Skeleton className="mt-3 h-5 w-full" />
             <Skeleton className="mt-2 h-5 w-4/5" />
@@ -108,7 +117,7 @@ function HomeHeroSkeleton() {
 
 function TimelinePanelSkeleton() {
   return (
-    <section className="surface-panel px-6 py-6 sm:px-7">
+    <section className={`${skeletonPanelClass} px-6 py-6 sm:px-7`}>
       <Skeleton className="h-4 w-28" />
       <Skeleton className="mt-2 h-8 w-36" />
 
@@ -117,10 +126,10 @@ function TimelinePanelSkeleton() {
           <div key={index} className="grid grid-cols-[auto_1fr] gap-4">
             <div className="flex flex-col items-center pt-1">
               <Skeleton className="size-3 border-black/15 bg-primary shadow-none" />
-              {index < 3 ? <div className="mt-2 h-full w-px bg-border" /> : null}
+              {index < 3 ? <div className="mt-2 h-full w-px bg-[#73766f]/42" /> : null}
             </div>
 
-            <div className="space-y-2 border-b border-border/50 pb-5 last:border-b-0 last:pb-1">
+            <div className={`${skeletonSoftCardClass} space-y-2 px-4 py-4`}>
               <Skeleton className="h-4 w-28" />
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-full" />
@@ -135,7 +144,7 @@ function TimelinePanelSkeleton() {
 
 function TagCloudPanelSkeleton() {
   return (
-    <section className="surface-panel px-6 py-6 sm:px-7">
+    <section className={`${skeletonPanelClass} px-6 py-6 sm:px-7`}>
       <div className="mb-6 flex items-center justify-between gap-3">
         <div>
           <Skeleton className="h-4 w-20" />
@@ -158,14 +167,14 @@ function TagCloudPanelSkeleton() {
 
 function ProfilePanelSkeleton() {
   return (
-    <section className="surface-panel px-6 py-6 sm:px-7">
+    <section className={`${skeletonPanelClass} px-6 py-6 sm:px-7`}>
       <div className="space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <Skeleton className="h-4 w-28" />
             <Skeleton className="mt-2 h-8 w-40" />
           </div>
-          <Skeleton className="h-8 w-20 border-primary/25 bg-primary/15 shadow-none" />
+          <Skeleton className="h-8 w-20 border-[#73766f]/32 bg-[#d9d1ad]/48 shadow-none" />
         </div>
 
         <Skeleton className="h-5 w-full" />
@@ -207,9 +216,9 @@ function HomePageSkeleton() {
             <DoorCardSkeleton key={index} featured={index === 0 || index === 3} />
           ))}
 
-          <div className="relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden border-[3px] border-[#2d2d2d] bg-[#181715] px-4 shadow-[inset_0_0_60px_rgba(0,0,0,0.7)] sm:min-h-[18rem]">
-            <Skeleton className="h-4 w-28 border-[#5e312e] bg-[#7f2f26] shadow-none" />
-            <Skeleton className="absolute bottom-4 left-4 h-3 w-24 border-none bg-white/10 shadow-none" />
+          <div className="relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden border-[3px] border-[#2d2d2d] bg-[#1a1a1a] px-4 shadow-[inset_0_0_60px_rgba(0,0,0,0.7)] sm:min-h-[18rem]">
+            <Skeleton className="h-4 w-28 border-[#8a4f34]/70 bg-[#8a4f34]/70 shadow-none" />
+            <Skeleton className="absolute bottom-4 left-4 h-3 w-24 border-none bg-[#73766f]/26 shadow-none" />
           </div>
         </div>
       </section>
@@ -225,7 +234,7 @@ function HomePageSkeleton() {
 
           <div className="flex flex-wrap items-center gap-3">
             <Skeleton className="h-8 w-28" />
-            <Skeleton className="h-9 w-28 border-[#6f7b83] bg-[#69747c] shadow-none" />
+            <Skeleton className="h-9 w-28 border-[#73766f]/32 bg-[#d9d1ad]/52 shadow-none" />
           </div>
         </div>
 
@@ -265,7 +274,7 @@ function ArchiveDirectoryPageSkeleton() {
   return (
     <PageShell>
       <PageIntroSkeleton />
-      <section className="surface-panel space-y-6 px-6 py-6 sm:px-7">
+      <section className={`${skeletonPanelClass} space-y-6 px-6 py-6 sm:px-7`}>
         <div className="flex items-center justify-between">
           <Skeleton className="h-8 w-32" />
           <Skeleton className="h-8 w-20" />
@@ -273,7 +282,7 @@ function ArchiveDirectoryPageSkeleton() {
 
         <div className="grid gap-3">
           {Array.from({ length: 8 }).map((_, index) => (
-            <div key={index} className="flex items-center justify-between border border-border/70 bg-card/72 px-4 py-3.5">
+            <div key={index} className={`${skeletonCardClass} flex items-center justify-between px-4 py-3.5`}>
               <Skeleton className="h-5 w-40" />
               <Skeleton className="h-4 w-10" />
             </div>
@@ -299,7 +308,7 @@ function ArchiveDetailPageSkeleton() {
 
 function TagAggregateBlockSkeleton() {
   return (
-    <section className="surface-panel px-6 py-6 sm:px-7">
+    <section className={`${skeletonPanelClass} px-6 py-6 sm:px-7`}>
       <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <Skeleton className="h-4 w-16" />
@@ -311,7 +320,7 @@ function TagAggregateBlockSkeleton() {
 
       <div className="mt-6 grid gap-3">
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="border border-border/70 bg-card/72 px-4 py-4">
+          <div key={index} className={`${skeletonCardClass} px-4 py-4`}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div className="space-y-2">
                 <Skeleton className="h-7 w-2/3" />
@@ -333,7 +342,7 @@ function TagsPageSkeleton() {
       <PageIntroSkeleton />
 
       <div className="grid gap-6">
-        <section className="surface-panel px-6 py-6">
+        <section className={`${skeletonPanelClass} px-6 py-6`}>
           <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <Skeleton className="h-4 w-20" />
@@ -366,42 +375,42 @@ function SearchPageSkeleton() {
   return (
     <PageShell className="gap-0 py-0">
       <section className="mx-auto w-full max-w-[800px] px-6 py-20">
-        <div className="relative overflow-hidden border-4 border-[#2d2d2d] bg-[#1a1a1a] px-8 py-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] md:px-12 md:py-12">
+        <div className="terminal-panel relative overflow-hidden border-[3px] px-8 py-8 md:px-12 md:py-12">
           <div className="absolute inset-0 opacity-[0.05] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,1)_50%)] bg-[length:100%_4px]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.4)_100%)]" />
 
-          <header className="relative z-10 flex items-center justify-between border-b-2 border-[#4ade80]/20 pb-4">
+          <header className="relative z-10 flex items-center justify-between border-b-2 border-primary/20 pb-4">
             <div className="flex items-center gap-4">
-              <Skeleton className="size-5 border-none bg-[#4ade80]/35 shadow-none" />
-              <Skeleton className="h-4 w-44 border-none bg-[#4ade80]/20 shadow-none" />
+              <Skeleton className="size-5 border-none bg-primary/35 shadow-none" />
+              <Skeleton className="h-4 w-44 border-none bg-primary/20 shadow-none" />
             </div>
             <Skeleton className="size-5 border-none bg-white/12 shadow-none" />
           </header>
 
           <div className="relative z-10 mt-12 grid gap-6">
-            <Skeleton className="h-4 w-60 border-none bg-[#4ade80]/20 shadow-none" />
+            <Skeleton className="h-4 w-60 border-none bg-primary/20 shadow-none" />
 
-            <div className="flex items-center gap-4 border-l-4 border-[#4ade80] bg-[#030213] px-4 py-4">
-              <Skeleton className="size-6 border-none bg-[#4ade80]/22 shadow-none" />
-              <Skeleton className="h-12 w-full border-none bg-[#4ade80]/14 shadow-none" />
+            <div className="flex items-center gap-4 border-l-4 border-primary bg-[#12140f] px-4 py-4">
+              <Skeleton className="size-6 border-none bg-primary/22 shadow-none" />
+              <Skeleton className="h-12 w-full border-none bg-primary/14 shadow-none" />
             </div>
 
-            <Skeleton className="ml-auto h-12 w-44 border-[#4ade80]/40 bg-[#4ade80] shadow-none" />
+            <Skeleton className="ml-auto h-12 w-44 border-primary/40 bg-primary/70 shadow-none" />
           </div>
 
           <div className="relative z-10 mt-12 min-h-[200px] space-y-4">
             <Skeleton className="h-4 w-48 border-none bg-white/10 shadow-none" />
             <Skeleton className="h-4 w-44 border-none bg-white/10 shadow-none" />
             <div className="pt-4">
-              <Skeleton className="h-px w-full border-none bg-[#4ade80]/20 shadow-none" />
+              <Skeleton className="h-px w-full border-none bg-primary/20 shadow-none" />
             </div>
 
             <div className="grid gap-4 pt-4">
               {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="flex items-center gap-4 border border-[#4ade80]/10 p-4">
-                  <Skeleton className="h-4 w-8 border-none bg-[#4ade80]/18 shadow-none" />
-                  <Skeleton className="h-4 w-full border-none bg-[#4ade80]/16 shadow-none" />
-                  <Skeleton className="h-4 w-8 border-none bg-[#4ade80]/16 shadow-none" />
+                <div key={index} className="flex items-center gap-4 border border-primary/10 p-4">
+                  <Skeleton className="h-4 w-8 border-none bg-primary/18 shadow-none" />
+                  <Skeleton className="h-4 w-full border-none bg-primary/16 shadow-none" />
+                  <Skeleton className="h-4 w-8 border-none bg-primary/16 shadow-none" />
                 </div>
               ))}
             </div>
@@ -425,7 +434,7 @@ function AboutPageSkeleton() {
             <Skeleton className="h-4 w-36" />
           </div>
 
-          <div className="flex h-56 items-center justify-center bg-[#171613] shadow-[inset_0_0_36px_rgba(0,0,0,0.72)]">
+          <div className="flex h-56 items-center justify-center bg-[#1a1a1a] shadow-[inset_0_0_36px_rgba(0,0,0,0.72)]">
             <Skeleton className="size-24 border-none bg-white/8 shadow-none" />
           </div>
 
@@ -439,7 +448,7 @@ function AboutPageSkeleton() {
           </div>
         </aside>
 
-        <article className="dossier-paper px-7 py-8 sm:px-10 sm:py-10">
+        <article className={`${skeletonDocumentClass} px-7 py-8 sm:px-10 sm:py-10`}>
           <Skeleton className="h-24 w-full" />
 
           <div className="mt-8 space-y-4">
@@ -458,7 +467,14 @@ function AboutPageSkeleton() {
 
             <div className="mt-6 grid gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className={index === 3 ? "bg-[#2d1715] px-5 py-4" : "bg-[#ddd5bf] px-5 py-4"}>
+                <div
+                  key={index}
+                  className={
+                    index === 3
+                      ? "border border-[#8a4f34]/70 bg-[#181b17] px-5 py-4"
+                      : `${skeletonCardClass} px-5 py-4`
+                  }
+                >
                   <div className="grid gap-2 md:grid-cols-[180px_minmax(0,1fr)]">
                     <Skeleton className={index === 3 ? "h-4 w-28 border-none bg-white/15 shadow-none" : "h-4 w-28"} />
                     <div className="space-y-2">
@@ -484,14 +500,14 @@ function AboutPageSkeleton() {
 function AuthPageSkeleton() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-16 sm:px-6 lg:px-8">
-      <section className="dossier-paper grid w-full gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+      <section className={`${skeletonDocumentClass} grid w-full gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]`}>
         <div className="space-y-4">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-14 w-full max-w-xl" />
           <Skeleton className="h-14 w-4/5 max-w-lg" />
           <Skeleton className="h-5 w-full max-w-xl" />
           <Skeleton className="h-5 w-5/6 max-w-lg" />
-          <div className="border border-dashed border-border/80 bg-card/60 px-5 py-5">
+          <div className={`${skeletonSoftCardClass} border-dashed px-5 py-5`}>
             <Skeleton className="h-4 w-24" />
             <Skeleton className="mt-3 h-4 w-full" />
             <Skeleton className="mt-2 h-4 w-5/6" />
@@ -523,7 +539,7 @@ function AuthPageSkeleton() {
 function AccountPageSkeleton() {
   return (
     <PageShell>
-      <section className="dossier-paper px-6 py-6 sm:px-7">
+      <section className={`${skeletonDocumentClass} px-6 py-6 sm:px-7`}>
         <div className="flex flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
           <div>
             <Skeleton className="h-4 w-28" />
@@ -536,7 +552,7 @@ function AccountPageSkeleton() {
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
           <div className="grid gap-6">
-            <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+            <section className={`${skeletonSoftCardClass} px-5 py-5`}>
               <div className="flex items-start gap-4">
                 <Skeleton className="size-16" />
                 <div className="space-y-2">
@@ -548,7 +564,7 @@ function AccountPageSkeleton() {
             </section>
 
             {Array.from({ length: 2 }).map((_, index) => (
-              <section key={index} className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+              <section key={index} className={`${skeletonSoftCardClass} px-5 py-5`}>
                 <div className="mb-5">
                   <Skeleton className="h-4 w-20" />
                   <Skeleton className="mt-2 h-8 w-32" />
@@ -567,7 +583,7 @@ function AccountPageSkeleton() {
             ))}
           </div>
 
-          <section className="border border-border/70 bg-background/50 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+          <section className={`${skeletonSoftCardClass} px-5 py-5`}>
             <div className="flex items-center justify-between gap-4">
               <div>
                 <Skeleton className="h-4 w-24" />
@@ -578,7 +594,7 @@ function AccountPageSkeleton() {
 
             <div className="mt-5 grid gap-4">
               {Array.from({ length: 3 }).map((_, index) => (
-                <article key={index} className="border border-border/70 bg-card/70 px-4 py-4">
+                <article key={index} className={`${skeletonCardClass} px-4 py-4`}>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="space-y-2">
                       <Skeleton className="h-5 w-40" />
@@ -605,7 +621,7 @@ function AccountPageSkeleton() {
 
 function ArticleEngagementPanelSkeleton() {
   return (
-    <section className="surface-panel mx-auto w-full max-w-4xl px-6 py-6">
+    <section className={`${skeletonPanelClass} mx-auto w-full max-w-4xl px-6 py-6`}>
       <div className="flex flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
         <div className="space-y-3">
           <Skeleton className="h-4 w-28" />
@@ -615,8 +631,8 @@ function ArticleEngagementPanelSkeleton() {
 
         <div className="flex flex-wrap gap-3">
           <Skeleton className="h-10 w-28" />
-          <Skeleton className="h-10 w-28 border-[#3e9256] bg-[#2f7c4a]/75 shadow-none" />
-          <Skeleton className="h-10 w-28 border-[#6f7b83] bg-[#69747c]/75 shadow-none" />
+          <Skeleton className="h-10 w-28 border-primary/40 bg-primary/70 shadow-none" />
+          <Skeleton className="h-10 w-28 border-[#73766f]/32 bg-[#d9d1ad]/52 shadow-none" />
         </div>
       </div>
 
@@ -630,7 +646,7 @@ function ArticleEngagementPanelSkeleton() {
             <Skeleton className="h-8 w-24" />
           </div>
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="dossier-paper px-5 py-5">
+            <div key={index} className={`${skeletonCardClass} relative isolate overflow-hidden px-5 py-5`}>
               <div className="flex items-center justify-between gap-4 border-b border-border/60 pb-4">
                 <div className="space-y-2">
                   <Skeleton className="h-4 w-24" />
@@ -644,7 +660,7 @@ function ArticleEngagementPanelSkeleton() {
           ))}
         </div>
 
-        <div className="dossier-paper px-5 py-5">
+        <div className={`${skeletonCardClass} relative isolate overflow-hidden px-5 py-5`}>
           <div className="space-y-2 border-b border-border/60 pb-4">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-6 w-28" />
@@ -653,7 +669,7 @@ function ArticleEngagementPanelSkeleton() {
           <Skeleton className="mt-5 h-40 w-full" />
           <div className="mt-4 flex items-center justify-between gap-3">
             <Skeleton className="h-8 w-20" />
-            <Skeleton className="h-9 w-28 border-[#3e9256] bg-[#2f7c4a]/75 shadow-none" />
+            <Skeleton className="h-9 w-28 border-primary/40 bg-primary/70 shadow-none" />
           </div>
         </div>
       </div>
@@ -663,9 +679,9 @@ function ArticleEngagementPanelSkeleton() {
 
 function TocPanelSkeleton({ terminal = false }: { terminal?: boolean }) {
   return (
-    <section className={terminal ? "terminal-panel px-5 py-5" : "dossier-paper px-5 py-5"}>
+    <section className={terminal ? "terminal-panel px-5 py-5" : "article-sidecard px-5 py-5"}>
       <div className="space-y-1 border-b border-border/60 pb-4">
-        <Skeleton className={terminal ? "h-4 w-20 border-none bg-[#77d490]/20 shadow-none" : "h-4 w-20"} />
+        <Skeleton className={terminal ? "h-4 w-20 border-none bg-primary/20 shadow-none" : "h-4 w-20"} />
         <Skeleton className={terminal ? "mt-2 h-6 w-24 border-none bg-white/10 shadow-none" : "mt-2 h-6 w-24"} />
       </div>
 
@@ -686,7 +702,7 @@ function ArticlePageSkeleton() {
     <PageShell>
       <div className="mx-auto grid w-full max-w-7xl gap-6 md:gap-8 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-start">
         <article className="min-w-0">
-          <div className="dossier-paper mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:px-12">
+          <div className={`${skeletonDocumentClass} mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8 md:px-12`}>
             <Skeleton className="h-4 w-36" />
 
             <header className="mt-6 border-b-4 border-foreground pb-8">
@@ -712,7 +728,7 @@ function ArticlePageSkeleton() {
               </div>
             </header>
 
-            <div className="mt-8 overflow-hidden border-[4px] border-black/10 bg-[#b8b0a2]">
+            <div className="mt-8 overflow-hidden border-[4px] border-[#73766f]/38 bg-[#c6bd99]">
               <Skeleton className="h-[14rem] w-full border-none bg-black/14 shadow-none sm:h-[18rem] md:h-[22rem]" />
             </div>
 
@@ -741,7 +757,7 @@ function ArticlePageSkeleton() {
 
       <section className="grid gap-5 md:grid-cols-2">
         {Array.from({ length: 2 }).map((_, index) => (
-          <div key={index} className="surface-panel min-h-40 px-6 py-6">
+          <div key={index} className="article-sidecard min-h-40 px-6 py-6">
             <Skeleton className="h-4 w-20" />
             <Skeleton className="mt-5 h-7 w-3/4" />
             <Skeleton className="mt-4 h-5 w-full" />

@@ -22,7 +22,7 @@ export default async function AdminTagsPage() {
               <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="text-lg font-semibold tracking-tight text-[#f1eadb]">{tag.name}</h2>
+                    <h2 className="text-lg font-semibold tracking-tight text-[#e0e0e0]">{tag.name}</h2>
                     <span className="admin-status-pill admin-status-muted">
                       {tag.count} 篇文章
                     </span>

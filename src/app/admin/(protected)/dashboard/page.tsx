@@ -17,13 +17,13 @@ export default async function AdminDashboardPage() {
           <p className="admin-kicker-accent">Operations Console</p>
           <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="text-4xl font-semibold tracking-tight text-[#f2eadb]">后台概览</h1>
+              <h1 className="text-4xl font-semibold tracking-tight text-[#4ade80]">后台概览</h1>
               <p className="admin-copy mt-2">
                 这里汇总公开记录、草稿、互动数据和用户规模
               </p>
             </div>
             <span className="admin-status-pill admin-status-live">
-              <span className="size-1.5 bg-[#77d490]" />
+              <span className="size-1.5 bg-[#4ade80]" />
               System Nominal
             </span>
           </div>
@@ -51,7 +51,7 @@ export default async function AdminDashboardPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="admin-kicker">Draft Queue</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#f1eadb]">草稿队列</h2>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">草稿队列</h2>
               </div>
               <Link href="/admin/articles" className="admin-link">
                 查看全部
@@ -64,14 +64,14 @@ export default async function AdminDashboardPage() {
                   <div key={article.slug} className="admin-surface-muted px-4 py-4">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="font-medium text-[#f1eadb]">{article.title}</p>
+                        <p className="font-medium text-[#e0e0e0]">{article.title}</p>
                         <p className="admin-copy mt-2">{article.desc}</p>
                       </div>
                       <span className="admin-status-pill admin-status-draft">
                         草稿
                       </span>
                     </div>
-                    <p className="mt-3 text-sm text-[#8c9482]">{formatDisplayDate(article.date)}</p>
+                    <p className="mt-3 text-sm text-[#8c8c8c]">{formatDisplayDate(article.date)}</p>
                   </div>
                 ))
               ) : (
@@ -88,7 +88,7 @@ export default async function AdminDashboardPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="admin-kicker">Top Content</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#f1eadb]">热门文章</h2>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">热门文章</h2>
               </div>
               <Link href="/admin/stats" className="admin-link">
                 查看统计详情
@@ -100,7 +100,7 @@ export default async function AdminDashboardPage() {
                 <div key={article.slug} className="admin-surface px-4 py-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-medium text-[#f1eadb]">{article.title}</p>
+                      <p className="font-medium text-[#e0e0e0]">{article.title}</p>
                       <p className="admin-copy mt-2">
                         {article.views} 阅读 · {article.likes} 点赞 · {article.comments} 评论
                       </p>

@@ -36,8 +36,8 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
           justifyContent: "space-between",
           padding: "64px",
           background:
-            "radial-gradient(circle at top left, rgba(169, 186, 110, 0.26), transparent 34%), linear-gradient(135deg, #171a14 0%, #21251d 100%)",
-          color: "#f1f2e7",
+            "radial-gradient(circle at top left, rgba(255,191,0,0.22), transparent 34%), linear-gradient(135deg, #f5f5f0 0%, #e8e3d3 100%)",
+          color: "#1a1a1a",
         }}
       >
         <div
@@ -46,7 +46,7 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
             alignItems: "center",
             justifyContent: "space-between",
             fontSize: 24,
-            color: "#c7cfaa",
+            color: "#4a4a4a",
           }}
         >
           <div>{siteConfig.name}</div>
@@ -56,7 +56,7 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
           <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.08, maxWidth: "90%" }}>
             {article.title}
           </div>
-          <div style={{ fontSize: 28, lineHeight: 1.45, color: "#dde3c7", maxWidth: "85%" }}>
+          <div style={{ fontSize: 28, lineHeight: 1.45, color: "#4a4a4a", maxWidth: "85%" }}>
             {article.desc}
           </div>
         </div>
@@ -66,7 +66,7 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
             gap: 16,
             flexWrap: "wrap",
             fontSize: 22,
-            color: "#c7cfaa",
+            color: "#1a1a1a",
           }}
         >
           {article.tags.map((tag) => (
@@ -76,7 +76,8 @@ export default async function ArticleOpenGraphImage({ params }: ArticleOgImagePr
                 display: "flex",
                 padding: "10px 18px",
                 borderRadius: 999,
-                border: "1px solid rgba(199, 207, 170, 0.32)",
+                border: "1px solid rgba(0, 0, 0, 0.16)",
+                background: "rgba(245,245,240,0.82)",
               }}
             >
               {tag}

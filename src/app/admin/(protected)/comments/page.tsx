@@ -32,29 +32,29 @@ export default async function AdminCommentsPage() {
               <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-3">
-                    <p className="font-semibold text-[#f1eadb]">{comment.authorName}</p>
+                    <p className="font-semibold text-[#e0e0e0]">{comment.authorName}</p>
                     <span className={`admin-status-pill ${comment.status === "HIDDEN" ? "admin-status-draft" : "admin-status-live"}`}>
                       {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
                     </span>
                     {comment.parentAuthorName ? (
-                      <span className="border border-[#4a5244] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c9482]">
+                      <span className="border border-[#333333] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c8c8c]">
                         回复 {comment.parentAuthorName}
                       </span>
                     ) : (
-                      <span className="border border-[#4a5244] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c9482]">
+                      <span className="border border-[#333333] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c8c8c]">
                         主评论
                       </span>
                     )}
                     {comment.repliesCount > 0 ? (
-                      <span className="border border-[#4a5244] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c9482]">
+                      <span className="border border-[#333333] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c8c8c]">
                         {comment.repliesCount} 条回复
                       </span>
                     ) : null}
-                    <span className="text-sm text-[#8c9482]">{formatCommentDate(comment.createdAt)}</span>
+                    <span className="text-sm text-[#8c8c8c]">{formatCommentDate(comment.createdAt)}</span>
                   </div>
 
-                  <p className="mt-3 text-sm text-[#8c9482]">文章：{comment.articleSlug}</p>
-                  <p className="mt-4 whitespace-pre-line text-sm leading-7 text-[#e7e0d0]">{comment.content}</p>
+                  <p className="mt-3 text-sm text-[#8c8c8c]">文章：{comment.articleSlug}</p>
+                  <p className="mt-4 whitespace-pre-line text-sm leading-7 text-[#d1d5db]">{comment.content}</p>
                 </div>
 
                 <div className="flex flex-wrap gap-3 xl:max-w-xs xl:justify-end">

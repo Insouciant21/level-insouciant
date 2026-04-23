@@ -3,9 +3,12 @@ type EmptyStateProps = {
   description: string
 }
 
+const emptyStatePanelClass =
+  "public-summary-panel border-dashed px-6 py-12 text-center sm:px-8"
+
 function EmptyState({ title, description }: EmptyStateProps) {
   return (
-    <section className="surface-panel border-dashed px-6 py-12 text-center sm:px-8">
+    <section className={emptyStatePanelClass}>
       <div className="mx-auto max-w-2xl space-y-4">
         <p className="utility-kicker">No Public Record Yet</p>
         <h2 className="text-2xl font-semibold tracking-tight text-balance">{title}</h2>

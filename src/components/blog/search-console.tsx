@@ -17,6 +17,15 @@ type SearchResponse = {
   error?: string
 }
 
+const searchConsoleClass =
+  "terminal-panel relative overflow-hidden border-[3px] p-8 md:p-12"
+const searchInputRowClass =
+  "flex items-center gap-4 border-l-4 border-primary bg-[#12140f] p-4"
+const searchActionClass =
+  "self-end border border-primary/65 bg-primary px-8 py-3 font-sans text-sm font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:border-primary/80 hover:bg-primary/85"
+const searchResultClass =
+  "flex cursor-crosshair items-center gap-4 border border-transparent p-4 text-primary transition-all hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
+
 function formatRecordLabel(article: ArticleSummary) {
   const signal = getArchiveSignal(article)
   const normalizedTitle = article.title
@@ -101,17 +110,17 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden border-4 border-[#2d2d2d] bg-[#1a1a1a] p-8 text-[#4ade80] shadow-[0_0_50px_rgba(0,0,0,0.5)] md:p-12"
+        className={searchConsoleClass}
       >
         <div className="pointer-events-none absolute inset-0 opacity-[0.05] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,1)_50%)] bg-[length:100%_4px]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.4)_100%)]" />
 
-        <header className="relative z-10 mb-12 flex items-center justify-between border-b-2 border-[#4ade80]/20 pb-4">
+        <header className="relative z-10 mb-12 flex items-center justify-between border-b-2 border-primary/20 pb-4">
           <div className="flex items-center gap-4 text-xs font-sans font-bold uppercase tracking-[0.3em]">
-            <Terminal className="h-5 w-5 animate-pulse text-[#4ade80]" />
+            <Terminal className="h-5 w-5 animate-pulse text-primary" />
             Lookup Console v2.4
           </div>
-          <Cpu className="h-5 w-5 text-[#8c8c8c]" />
+          <Cpu className="h-5 w-5 text-[#73766f]" />
         </header>
 
         <form
@@ -129,11 +138,11 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
           }}
           className="relative z-10 flex flex-col gap-6"
         >
-          <label className="text-sm font-bold uppercase tracking-widest text-[#4ade80]/70">
+          <label className="text-sm font-bold uppercase tracking-widest text-primary/70">
             Enter Entity/Level Designation
           </label>
-          <div className="flex items-center gap-4 border-l-4 border-[#4ade80] bg-[#030213] p-4">
-            <DatabaseZap className="h-6 w-6 text-[#4ade80]/50" />
+          <div className={searchInputRowClass}>
+            <DatabaseZap className="h-6 w-6 text-primary/50" />
             <input
               autoFocus
               type="text"
@@ -145,13 +154,13 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
                   window.history.replaceState(null, "", "/search")
                 }
               }}
-              className="w-full bg-transparent text-xl text-[#4ade80] caret-[#4ade80] outline-none placeholder:text-[#4ade80]/20 md:text-3xl"
+              className="w-full bg-transparent text-xl text-primary caret-primary outline-none placeholder:text-primary/20 md:text-3xl"
               placeholder="_"
             />
           </div>
           <button
             type="submit"
-            className="self-end bg-[#4ade80] px-8 py-3 font-sans text-sm font-bold uppercase tracking-widest text-[#1a1a1a] transition-colors hover:bg-[#39ff14]"
+            className={searchActionClass}
           >
             {isSearching ? "Querying Database..." : "Execute Search"}
           </button>
@@ -167,7 +176,7 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
 
           {isSearching && (
             <div className="flex flex-col gap-2">
-              <div className="text-amber-500">&gt; PROCESSING QUERY: {activeQuery}</div>
+              <div className="text-accent">&gt; PROCESSING QUERY: {activeQuery}</div>
               <div className="animate-pulse">&gt; ACCESSING DEEP STORAGE...</div>
             </div>
           )}
@@ -176,16 +185,16 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
             <Motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex flex-col gap-4 border-t-2 border-[#4ade80]/20 pt-8"
+              className="flex flex-col gap-4 border-t-2 border-primary/20 pt-8"
             >
               {error ? (
-                <div className="text-[#d07b61]">&gt; CONSOLE ERROR: {error}</div>
+                <div className="text-destructive">&gt; CONSOLE ERROR: {error}</div>
               ) : (
-                <div className="text-[#8c8c8c]">&gt; FOUND {results.length} MATCHES</div>
+                <div className="text-[#73766f]">&gt; FOUND {results.length} MATCHES</div>
               )}
 
               {!error && results.length === 0 ? (
-                <div className="text-[#8c8c8c]">&gt; NO RECORDS FOUND FOR THIS QUERY</div>
+                <div className="text-[#73766f]">&gt; NO RECORDS FOUND FOR THIS QUERY</div>
               ) : null}
 
               {!error
@@ -193,7 +202,7 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
                     <Link
                       key={article.slug}
                       href={`/articles/${article.slug}`}
-                      className="flex cursor-crosshair items-center gap-4 border border-transparent p-4 text-[#4ade80] transition-all hover:border-[#4ade80]/30 hover:bg-[#4ade80]/10 hover:text-[#39ff14]"
+                      className={searchResultClass}
                     >
                       <span className="opacity-50">[{index}]</span>
                       <span>{formatRecordLabel(article)}</span>

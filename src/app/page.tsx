@@ -40,7 +40,7 @@ export default async function Page() {
   ]
 
   return (
-    <PageShell className="gap-12 lg:gap-16">
+    <PageShell className="gap-12 pt-8 sm:pt-10 lg:gap-16 lg:pt-10">
       <HomeHero
         eyebrow={siteConfig.hero.eyebrow}
         title={siteConfig.hero.title}
