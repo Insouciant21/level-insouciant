@@ -129,7 +129,7 @@ function UserMenu({ user }: UserMenuProps) {
           {user ? (
             <>
               <Link
-                href={isAdmin ? "/admin" : "/account"}
+                href={isAdmin ? "/admin/dashboard" : "/account"}
                 className={userMenuItemClass}
               >
                 {isAdmin ? "后台管理" : "用户管理"}

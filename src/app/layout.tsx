@@ -7,6 +7,7 @@ import "./globals.css"
 import { SiteFrame } from "@/components/blog/site-frame"
 import { SiteFooter } from "@/components/blog/site-footer"
 import { SiteHeader } from "@/components/blog/site-header"
+import { MessageProvider } from "@/components/ui/message-provider"
 import { createPageMetadata, createWebsiteJsonLdString } from "@/lib/seo"
 import { siteConfig } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -103,9 +104,11 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: createWebsiteJsonLdString() }}
         />
-        <SiteFrame header={<SiteHeader />} footer={<SiteFooter />}>
-          {children}
-        </SiteFrame>
+        <MessageProvider>
+          <SiteFrame header={<SiteHeader />} footer={<SiteFooter />}>
+            {children}
+          </SiteFrame>
+        </MessageProvider>
       </body>
     </html>
   )

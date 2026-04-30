@@ -34,6 +34,7 @@
 - Do not introduce new dependencies unless necessary and explicitly justified.
 - If you are uncertain about something (requirement), you should ask instead of assuming.
 - Test your solutions before implementing it.
+- If there are uncommitted changes before your response, commit them with your commit message.
 
 ## Environment
 - Ubuntu 25.01 in WSL2

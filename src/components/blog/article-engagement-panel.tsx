@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Eye, Heart, MessageSquare, SendHorizonal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { useMessage } from "@/components/ui/message-provider"
 
 type ArticleEngagementPanelProps = {
   slug: string
@@ -133,6 +134,10 @@ function getCommentErrorMessage(error: unknown) {
 
     if (error.message === "INVALID_REPLY_TARGET") {
       return "这条评论当前无法回复，请刷新页面后再试。"
+    }
+
+    if (error.message === "INVALID_COMMENT") {
+      return "评论内容不能为空，请补充后再提交。"
     }
   }
 
@@ -270,6 +275,7 @@ function CommentCard({
 }
 
 function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
+  const { showMessage } = useMessage()
   const [snapshot, setSnapshot] = React.useState<EngagementSnapshot>({
     views: 0,
     likes: 0,
@@ -366,7 +372,13 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
 
   async function handleToggleLike() {
     if (!snapshot.isAuthenticated) {
-      setCommentError("请先登录，再进行点赞。")
+      const message = "请先登录，再进行点赞。"
+      setCommentError(message)
+      showMessage({
+        title: "互动未发送",
+        description: message,
+        tone: "warning",
+      })
       return
     }
 
@@ -397,11 +409,28 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         likes: payload.likes,
         likedByViewer: payload.likedByViewer,
       }))
+      showMessage({
+        title: payload.likedByViewer ? "已记录点赞" : "已取消点赞",
+        description: "互动数据已经同步。",
+        tone: payload.likedByViewer ? "success" : "info",
+      })
     } catch (likeError) {
       if (likeError instanceof Error && likeError.message === "AUTH_REQUIRED") {
-        setCommentError("请先登录，再进行点赞。")
+        const message = "请先登录，再进行点赞。"
+        setCommentError(message)
+        showMessage({
+          title: "互动未发送",
+          description: message,
+          tone: "warning",
+        })
       } else {
-        setCommentError("点赞失败，请稍后再试。")
+        const message = "点赞失败，请稍后再试。"
+        setCommentError(message)
+        showMessage({
+          title: "互动失败",
+          description: message,
+          tone: "error",
+        })
       }
     } finally {
       setLikePending(false)
@@ -421,12 +450,16 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
     })
 
     if (!response.ok) {
+      const payload = (await response.json().catch(() => null)) as {
+        error?: string
+      } | null
+
       if (response.status === 401) {
         throw new Error("AUTH_REQUIRED")
       }
 
-      if (response.status === 400) {
-        throw new Error("INVALID_REPLY_TARGET")
+      if (payload?.error) {
+        throw new Error(payload.error)
       }
 
       if (response.status === 503) {
@@ -452,8 +485,19 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         commentsCount: current.commentsCount + 1,
       }))
       setContent("")
+      showMessage({
+        title: "评论已提交",
+        description: "评论已经写入当前文章的互动记录。",
+        tone: "success",
+      })
     } catch (submitError) {
-      setCommentError(getCommentErrorMessage(submitError))
+      const message = getCommentErrorMessage(submitError)
+      setCommentError(message)
+      showMessage({
+        title: "评论未提交",
+        description: message,
+        tone: "error",
+      })
     } finally {
       setCommentPending(false)
     }
@@ -476,8 +520,19 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
       }))
       setReplyContent("")
       setActiveReplyId(null)
+      showMessage({
+        title: "回复已提交",
+        description: "回复已经加入当前评论线程。",
+        tone: "success",
+      })
     } catch (submitError) {
-      setReplyError(getCommentErrorMessage(submitError))
+      const message = getCommentErrorMessage(submitError)
+      setReplyError(message)
+      showMessage({
+        title: "回复未提交",
+        description: message,
+        tone: "error",
+      })
     } finally {
       setReplyPending(false)
     }

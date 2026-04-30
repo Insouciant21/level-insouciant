@@ -68,8 +68,18 @@ function revalidateAdminContent(slug?: string) {
   }
 }
 
+function redirectWithQuery(path: string, params: Record<string, string>) {
+  const searchParams = new URLSearchParams(params)
+
+  redirect(`${path}?${searchParams.toString()}`)
+}
+
 function redirectWithError(path: string, error: string) {
-  redirect(`${path}?error=${encodeURIComponent(error)}`)
+  redirectWithQuery(path, { error })
+}
+
+function redirectWithNotice(path: string, notice: string) {
+  redirectWithQuery(path, { notice })
 }
 
 export async function createArticleAction(formData: FormData) {
@@ -89,7 +99,10 @@ export async function createArticleAction(formData: FormData) {
 
   revalidatePublicContent(article.slug)
   revalidateAdminContent(article.slug)
-  redirect(`/admin/articles/${article.slug}/edit?created=1`)
+  redirectWithQuery(`/admin/articles/${article.slug}/edit`, {
+    created: "1",
+    notice: article.draft ? "article-draft-created" : "article-created",
+  })
 }
 
 export async function updateArticleAction(formData: FormData) {
@@ -109,7 +122,10 @@ export async function updateArticleAction(formData: FormData) {
 
   revalidatePublicContent(slug)
   revalidateAdminContent(slug)
-  redirect(`/admin/articles/${slug}/edit?saved=1`)
+  redirectWithQuery(`/admin/articles/${slug}/edit`, {
+    saved: "1",
+    notice: payload.draft ? "article-draft-saved" : "article-published",
+  })
 }
 
 export async function restoreArticleRevisionAction(formData: FormData) {
@@ -129,79 +145,170 @@ export async function restoreArticleRevisionAction(formData: FormData) {
 
   revalidatePublicContent(slug)
   revalidateAdminContent(slug)
-  redirect(`/admin/articles/${slug}/history?restored=1`)
+  redirectWithQuery(`/admin/articles/${slug}/history`, {
+    restored: "1",
+    notice: "revision-restored",
+  })
 }
 
 export async function publishArticleAction(formData: FormData) {
   const admin = await requireAdmin()
   const slug = getString(formData, "slug")
-  await setArticleDraftState(slug, false, admin.id)
+
+  try {
+    await setArticleDraftState(slug, false, admin.id)
+  } catch (error) {
+    if (error instanceof Error) {
+      redirectWithError("/admin/articles", error.message)
+    }
+
+    throw error
+  }
+
   revalidatePublicContent(slug)
   revalidateAdminContent(slug)
+  redirectWithNotice("/admin/articles", "article-published")
 }
 
 export async function hideArticleAction(formData: FormData) {
   const admin = await requireAdmin()
   const slug = getString(formData, "slug")
-  await setArticleDraftState(slug, true, admin.id)
+
+  try {
+    await setArticleDraftState(slug, true, admin.id)
+  } catch (error) {
+    if (error instanceof Error) {
+      redirectWithError("/admin/articles", error.message)
+    }
+
+    throw error
+  }
+
   revalidatePublicContent(slug)
   revalidateAdminContent(slug)
+  redirectWithNotice("/admin/articles", "article-hidden")
 }
 
 export async function deleteArticleAction(formData: FormData) {
   await requireAdmin()
   const slug = getString(formData, "slug")
-  await deleteArticleBySlug(slug)
+
+  try {
+    await deleteArticleBySlug(slug)
+  } catch (error) {
+    if (error instanceof Error) {
+      redirectWithError("/admin/articles", error.message)
+    }
+
+    throw error
+  }
+
   revalidatePublicContent(slug)
   revalidateAdminContent()
+  redirectWithNotice("/admin/articles", "article-deleted")
 }
 
 export async function hideCommentAction(formData: FormData) {
   await requireAdmin()
   const commentId = getString(formData, "commentId")
   const slug = getString(formData, "slug")
-  await setCommentStatus(commentId, COMMENT_STATUS.HIDDEN)
+
+  try {
+    await setCommentStatus(commentId, COMMENT_STATUS.HIDDEN)
+  } catch (error) {
+    if (error instanceof Error) {
+      redirectWithError("/admin/comments", error.message)
+    }
+
+    throw error
+  }
+
   revalidatePublicContent(slug)
   revalidatePath("/admin")
   revalidatePath("/admin/comments")
   revalidatePath("/admin/stats")
+  redirectWithNotice("/admin/comments", "comment-hidden")
 }
 
 export async function approveCommentAction(formData: FormData) {
   await requireAdmin()
   const commentId = getString(formData, "commentId")
   const slug = getString(formData, "slug")
-  await setCommentStatus(commentId, COMMENT_STATUS.APPROVED)
+
+  try {
+    await setCommentStatus(commentId, COMMENT_STATUS.APPROVED)
+  } catch (error) {
+    if (error instanceof Error) {
+      redirectWithError("/admin/comments", error.message)
+    }
+
+    throw error
+  }
+
   revalidatePublicContent(slug)
   revalidatePath("/admin")
   revalidatePath("/admin/comments")
   revalidatePath("/admin/stats")
+  redirectWithNotice("/admin/comments", "comment-approved")
 }
 
 export async function deleteCommentAction(formData: FormData) {
   await requireAdmin()
   const commentId = getString(formData, "commentId")
   const slug = getString(formData, "slug")
-  await deleteCommentForAdmin(commentId)
+
+  try {
+    await deleteCommentForAdmin(commentId)
+  } catch (error) {
+    if (error instanceof Error) {
+      redirectWithError("/admin/comments", error.message)
+    }
+
+    throw error
+  }
+
   revalidatePublicContent(slug)
   revalidatePath("/admin")
   revalidatePath("/admin/comments")
   revalidatePath("/admin/stats")
+  redirectWithNotice("/admin/comments", "comment-deleted")
 }
 
 export async function renameTagAction(formData: FormData) {
   const admin = await requireAdmin()
   const sourceTag = getString(formData, "sourceTag")
   const targetTag = getString(formData, "targetTag")
-  await renameTagAcrossArticles(sourceTag, targetTag, admin.id)
+
+  try {
+    await renameTagAcrossArticles(sourceTag, targetTag, admin.id)
+  } catch (error) {
+    if (error instanceof Error) {
+      redirectWithError("/admin/tags", error.message)
+    }
+
+    throw error
+  }
+
   revalidatePublicContent()
   revalidateAdminContent()
+  redirectWithNotice("/admin/tags", "tag-renamed")
 }
 
 export async function removeTagAction(formData: FormData) {
   const admin = await requireAdmin()
   const sourceTag = getString(formData, "sourceTag")
-  await removeTagAcrossArticles(sourceTag, admin.id)
+
+  try {
+    await removeTagAcrossArticles(sourceTag, admin.id)
+  } catch (error) {
+    if (error instanceof Error) {
+      redirectWithError("/admin/tags", error.message)
+    }
+
+    throw error
+  }
+
   revalidatePublicContent()
   revalidateAdminContent()
+  redirectWithNotice("/admin/tags", "tag-removed")
 }
