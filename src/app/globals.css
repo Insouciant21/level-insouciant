@@ -705,6 +705,60 @@
     color: var(--maintenance-cream);
   }
 
+  .insous-skeleton {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .insous-skeleton::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      110deg,
+      transparent 0%,
+      rgb(255 252 225 / 0%) 32%,
+      rgb(255 252 225 / 42%) 48%,
+      rgb(162 201 87 / 18%) 54%,
+      rgb(255 252 225 / 0%) 68%,
+      transparent 100%
+    );
+    mix-blend-mode: screen;
+    transform: translateX(-120%) skewX(-10deg);
+    animation: insous-skeleton-scan 1.7s cubic-bezier(0.18, 0.82, 0.16, 1) infinite;
+  }
+
+  .insous-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgb(27 27 22 / 0%), rgb(27 27 22 / 7%));
+    opacity: 0.55;
+  }
+
+  @keyframes insous-skeleton-scan {
+    0%,
+    18% {
+      opacity: 0;
+      transform: translateX(-120%) skewX(-10deg);
+    }
+
+    42% {
+      opacity: 0.8;
+    }
+
+    72%,
+    100% {
+      opacity: 0;
+      transform: translateX(120%) skewX(-10deg);
+    }
+  }
+
   @keyframes utility-soft-flicker {
     0%,
     100% {
@@ -795,6 +849,11 @@
     .signal-beacon__halo,
     .signal-beacon__core {
       animation: none;
+    }
+
+    .insous-skeleton::before {
+      animation: none;
+      opacity: 0;
     }
 
     .door-card,

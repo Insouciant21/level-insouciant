@@ -1,4 +1,6 @@
-import { getManagedArticles, getManagedTags } from "@/lib/content-admin"
+import { cache } from "react"
+
+import { getManagedArticles } from "@/lib/content-admin"
 import { prisma } from "@/lib/prisma"
 
 export const COMMENT_STATUS = {
@@ -65,16 +67,17 @@ type CommentCountGroupRecord = CountGroupRecord & {
   status: CommentStatus
 }
 
-export async function getDashboardOverview(): Promise<DashboardOverview> {
-  const [articles, tags] = await Promise.all([getManagedArticles(), getManagedTags()])
+export const getDashboardOverview = cache(async function getDashboardOverview(): Promise<DashboardOverview> {
+  const articles = await getManagedArticles()
   const publishedCount = articles.filter((article) => !article.draft).length
   const draftCount = articles.length - publishedCount
+  const tagsCount = new Set(articles.flatMap((article) => article.tags)).size
 
   if (!process.env.DATABASE_URL) {
     return {
       publishedCount,
       draftCount,
-      tagsCount: tags.length,
+      tagsCount,
       totalViews: 0,
       totalLikes: 0,
       totalComments: 0,
@@ -83,35 +86,33 @@ export async function getDashboardOverview(): Promise<DashboardOverview> {
     }
   }
 
-  const [totalViews, totalLikes, totalComments, hiddenComments, usersCount] = await Promise.all([
+  const [totalViews, totalLikes, commentGroups, usersCount] = await Promise.all([
     prisma.pageView.count(),
     prisma.articleLike.count(),
-    prisma.comment.count({
-      where: {
-        status: COMMENT_STATUS.APPROVED,
-      },
-    }),
-    prisma.comment.count({
-      where: {
-        status: COMMENT_STATUS.HIDDEN,
+    prisma.comment.groupBy({
+      by: ["status"],
+      _count: {
+        _all: true,
       },
     }),
     prisma.user.count(),
   ])
+  const totalComments = commentGroups.find((entry) => entry.status === COMMENT_STATUS.APPROVED)?._count._all ?? 0
+  const hiddenComments = commentGroups.find((entry) => entry.status === COMMENT_STATUS.HIDDEN)?._count._all ?? 0
 
   return {
     publishedCount,
     draftCount,
-    tagsCount: tags.length,
+    tagsCount,
     totalViews,
     totalLikes,
     totalComments,
     hiddenComments,
     usersCount,
   }
-}
+})
 
-export async function getArticleStats(): Promise<ArticleStatItem[]> {
+export const getArticleStats = cache(async function getArticleStats(): Promise<ArticleStatItem[]> {
   const articles = await getManagedArticles()
 
   if (!process.env.DATABASE_URL) {
@@ -171,9 +172,9 @@ export async function getArticleStats(): Promise<ArticleStatItem[]> {
       hiddenComments: hiddenCommentsMap.get(article.slug) ?? 0,
     }))
     .sort((left, right) => right.views - left.views || right.likes - left.likes || left.title.localeCompare(right.title))
-}
+})
 
-export async function getAdminComments(): Promise<AdminCommentItem[]> {
+export const getAdminComments = cache(async function getAdminComments(): Promise<AdminCommentItem[]> {
   if (!process.env.DATABASE_URL) {
     return [] as AdminCommentItem[]
   }
@@ -214,7 +215,7 @@ export async function getAdminComments(): Promise<AdminCommentItem[]> {
     parentAuthorName: comment.parent?.authorName ?? null,
     repliesCount: comment._count.replies,
   })) satisfies AdminCommentItem[]
-}
+})
 
 export async function setCommentStatus(commentId: string, status: CommentStatus) {
   if (!process.env.DATABASE_URL) {

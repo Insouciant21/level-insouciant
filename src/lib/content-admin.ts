@@ -1,4 +1,5 @@
-import type { Article, ArticleRevision, Prisma, User } from "@prisma/client"
+import type { Article, Prisma, User } from "@prisma/client"
+import { cache } from "react"
 
 import type { ArticleSummary } from "@/types/blog"
 import { prisma } from "@/lib/prisma"
@@ -27,7 +28,7 @@ export type ManagedArticleInput = {
   slug?: string
 }
 
-export type ManagedArticleRevision = {
+export type ManagedArticleRevisionSummary = {
   id: string
   title: string
   desc: string
@@ -36,11 +37,80 @@ export type ManagedArticleRevision = {
   cover: string | null
   draft: boolean
   publishedAt: string
-  content: string
   createdAt: string
   reason: string | null
   createdByName: string | null
 }
+
+export type ManagedArticleRevisionHistory = {
+  article: ManagedArticleSummary
+  revisions: ManagedArticleRevisionSummary[]
+}
+
+const userNameSelect = {
+  name: true,
+  email: true,
+} satisfies Prisma.UserSelect
+
+const managedArticleSummarySelect = {
+  id: true,
+  slug: true,
+  title: true,
+  desc: true,
+  publishedAt: true,
+  tags: true,
+  category: true,
+  cover: true,
+  draft: true,
+  createdAt: true,
+  updatedAt: true,
+  legacySourcePath: true,
+} satisfies Prisma.ArticleSelect
+
+const managedArticleTagSelect = {
+  slug: true,
+  tags: true,
+} satisfies Prisma.ArticleSelect
+
+const managedArticleDetailSelect = {
+  ...managedArticleSummarySelect,
+  content: true,
+  lastEditedBy: {
+    select: userNameSelect,
+  },
+} satisfies Prisma.ArticleSelect
+
+const managedArticleRevisionSummarySelect = {
+  id: true,
+  title: true,
+  desc: true,
+  category: true,
+  tags: true,
+  cover: true,
+  draft: true,
+  publishedAt: true,
+  createdAt: true,
+  reason: true,
+  createdBy: {
+    select: userNameSelect,
+  },
+} satisfies Prisma.ArticleRevisionSelect
+
+type ManagedArticleSummaryRecord = Prisma.ArticleGetPayload<{
+  select: typeof managedArticleSummarySelect
+}>
+
+type ManagedArticleDetailRecord = Prisma.ArticleGetPayload<{
+  select: typeof managedArticleDetailSelect
+}>
+
+type ManagedArticleTagRecord = Prisma.ArticleGetPayload<{
+  select: typeof managedArticleTagSelect
+}>
+
+type ManagedArticleRevisionSummaryRecord = Prisma.ArticleRevisionGetPayload<{
+  select: typeof managedArticleRevisionSummarySelect
+}>
 
 function formatUserName(user: Pick<User, "name" | "email"> | null | undefined) {
   if (!user) {
@@ -50,7 +120,7 @@ function formatUserName(user: Pick<User, "name" | "email"> | null | undefined) {
   return user.name?.trim() || user.email
 }
 
-function toManagedArticleSummary(record: Article): ManagedArticleSummary {
+function toManagedArticleSummary(record: ManagedArticleSummaryRecord): ManagedArticleSummary {
   return {
     id: record.id,
     slug: record.slug,
@@ -67,11 +137,7 @@ function toManagedArticleSummary(record: Article): ManagedArticleSummary {
   }
 }
 
-function toManagedArticleDetail(
-  record: Article & {
-    lastEditedBy: Pick<User, "name" | "email"> | null
-  }
-): ManagedArticleDetail {
+function toManagedArticleDetail(record: ManagedArticleDetailRecord): ManagedArticleDetail {
   return {
     ...toManagedArticleSummary(record),
     content: record.content,
@@ -79,11 +145,30 @@ function toManagedArticleDetail(
   }
 }
 
-function toManagedArticleRevision(
-  record: ArticleRevision & {
-    createdBy: Pick<User, "name" | "email"> | null
+function buildManagedTagsFromArticles(articles: ManagedArticleTagRecord[]) {
+  const counts = new Map<string, { count: number; articleSlugs: string[] }>()
+
+  for (const article of articles) {
+    for (const tag of article.tags) {
+      const entry = counts.get(tag) ?? { count: 0, articleSlugs: [] }
+      entry.count += 1
+      entry.articleSlugs.push(article.slug)
+      counts.set(tag, entry)
+    }
   }
-): ManagedArticleRevision {
+
+  return [...counts.entries()]
+    .map(([name, entry]) => ({
+      name,
+      count: entry.count,
+      articleSlugs: entry.articleSlugs,
+    }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)) satisfies ManagedTagSummary[]
+}
+
+function toManagedArticleRevisionSummary(
+  record: ManagedArticleRevisionSummaryRecord
+): ManagedArticleRevisionSummary {
   return {
     id: record.id,
     title: record.title,
@@ -93,7 +178,6 @@ function toManagedArticleRevision(
     cover: record.cover,
     draft: record.draft,
     publishedAt: record.publishedAt.toISOString(),
-    content: record.content,
     createdAt: record.createdAt.toISOString(),
     reason: record.reason,
     createdByName: formatUserName(record.createdBy),
@@ -169,27 +253,21 @@ async function createRevisionSnapshot(
   })
 }
 
-export async function getManagedArticles() {
+export const getManagedArticles = cache(async function getManagedArticles() {
   const articles = await prisma.article.findMany({
     orderBy: {
       publishedAt: "desc",
     },
+    select: managedArticleSummarySelect,
   })
 
   return articles.map(toManagedArticleSummary)
-}
+})
 
-export async function getManagedArticleBySlug(slug: string) {
+export const getManagedArticleBySlug = cache(async function getManagedArticleBySlug(slug: string) {
   const article = await prisma.article.findUnique({
     where: { slug },
-    include: {
-      lastEditedBy: {
-        select: {
-          name: true,
-          email: true,
-        },
-      },
-    },
+    select: managedArticleDetailSelect,
   })
 
   if (!article) {
@@ -197,7 +275,7 @@ export async function getManagedArticleBySlug(slug: string) {
   }
 
   return toManagedArticleDetail(article)
-}
+})
 
 export async function createManagedArticle(input: ManagedArticleInput, editorUserId: string) {
   const normalized = normalizeArticleInput(input, { requireSlug: true })
@@ -321,33 +399,13 @@ export type ManagedTagSummary = {
   articleSlugs: string[]
 }
 
-export async function getManagedTags() {
+export const getManagedTags = cache(async function getManagedTags() {
   const articles = await prisma.article.findMany({
-    select: {
-      slug: true,
-      tags: true,
-    },
+    select: managedArticleTagSelect,
   })
 
-  const counts = new Map<string, { count: number; articleSlugs: string[] }>()
-
-  for (const article of articles) {
-    for (const tag of article.tags) {
-      const entry = counts.get(tag) ?? { count: 0, articleSlugs: [] }
-      entry.count += 1
-      entry.articleSlugs.push(article.slug)
-      counts.set(tag, entry)
-    }
-  }
-
-  return [...counts.entries()]
-    .map(([name, entry]) => ({
-      name,
-      count: entry.count,
-      articleSlugs: entry.articleSlugs,
-    }))
-    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)) satisfies ManagedTagSummary[]
-}
+  return buildManagedTagsFromArticles(articles)
+})
 
 export async function renameTagAcrossArticles(fromTag: string, toTag: string, editorUserId: string) {
   const sourceTag = fromTag.trim()
@@ -425,35 +483,49 @@ export async function removeTagAcrossArticles(tagToRemove: string, editorUserId:
   })
 }
 
-export async function getArticleRevisions(slug: string) {
+export const getArticleRevisionHistory = cache(async function getArticleRevisionHistory(
+  slug: string
+): Promise<ManagedArticleRevisionHistory | null> {
   const article = await prisma.article.findUnique({
     where: { slug },
-    select: { id: true },
+    select: {
+      ...managedArticleSummarySelect,
+      revisions: {
+        select: managedArticleRevisionSummarySelect,
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
   })
 
   if (!article) {
     return null
   }
 
-  const revisions = await prisma.articleRevision.findMany({
+  return {
+    article: toManagedArticleSummary(article),
+    revisions: article.revisions.map(toManagedArticleRevisionSummary),
+  }
+})
+
+export const getArticleRevisionBody = cache(async function getArticleRevisionBody(slug: string, revisionId: string) {
+  const revision = await prisma.articleRevision.findFirst({
     where: {
-      articleId: article.id,
-    },
-    include: {
-      createdBy: {
-        select: {
-          name: true,
-          email: true,
+      id: revisionId,
+      article: {
+        is: {
+          slug,
         },
       },
     },
-    orderBy: {
-      createdAt: "desc",
+    select: {
+      content: true,
     },
   })
 
-  return revisions.map(toManagedArticleRevision)
-}
+  return revision
+})
 
 export async function restoreArticleRevision(slug: string, revisionId: string, editorUserId: string) {
   const article = await prisma.article.findUnique({

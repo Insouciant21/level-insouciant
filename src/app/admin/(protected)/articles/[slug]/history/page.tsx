@@ -3,8 +3,9 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { restoreArticleRevisionAction } from "@/app/admin/actions"
+import { AdminRevisionBodyDetails } from "@/components/admin/admin-revision-body-details"
 import { Button } from "@/components/ui/button"
-import { getArticleRevisions, getManagedArticleBySlug } from "@/lib/content-admin"
+import { getArticleRevisionHistory } from "@/lib/content-admin"
 import { formatDisplayDate } from "@/lib/content"
 import { createPageMetadata } from "@/lib/seo"
 
@@ -57,12 +58,13 @@ export default async function AdminArticleHistoryPage({
   searchParams,
 }: AdminArticleHistoryPageProps) {
   const [{ slug }, query] = await Promise.all([params, searchParams])
-  const [article, revisions] = await Promise.all([getManagedArticleBySlug(slug), getArticleRevisions(slug)])
+  const history = await getArticleRevisionHistory(slug)
 
-  if (!article || !revisions) {
+  if (!history) {
     notFound()
   }
 
+  const { article, revisions } = history
   const message = getPageMessage(query)
 
   return (
@@ -135,12 +137,9 @@ export default async function AdminArticleHistoryPage({
                     ))}
                   </div>
 
-                  <details className="mt-4 rounded-2xl border border-[#333333] bg-[#111111] px-4 py-3">
-                    <summary className="cursor-pointer text-sm font-medium text-[#d1d5db]">查看此版本正文</summary>
-                    <pre className="mt-4 overflow-x-auto whitespace-pre-wrap font-mono text-sm leading-7 text-[#8c8c8c]">
-                      {revision.content}
-                    </pre>
-                  </details>
+                  <AdminRevisionBodyDetails
+                    contentUrl={`/api/admin/articles/${encodeURIComponent(article.slug)}/revisions/${encodeURIComponent(revision.id)}`}
+                  />
                 </div>
 
                 <form action={restoreArticleRevisionAction} className="xl:shrink-0">

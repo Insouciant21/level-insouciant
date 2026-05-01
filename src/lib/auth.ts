@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation"
+import { cache } from "react"
 
 import { auth } from "@/auth"
 import { getUserDisplayName as getCredentialsUserDisplayName } from "@/lib/auth-credentials"
 import { prisma } from "@/lib/prisma"
 
-export async function getCurrentUser() {
+export const getCurrentUser = cache(async function getCurrentUser() {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -40,7 +41,7 @@ export async function getCurrentUser() {
     image: freshUser.avatarUrl,
     role: freshUser.role,
   }
-}
+})
 
 export function getUserDisplayName(user: { name?: string | null; email?: string | null }) {
   return getCredentialsUserDisplayName({

@@ -1,12 +1,18 @@
 "use client"
 
 import type { ReactNode } from "react"
-import type { TargetAndTransition, Variant } from "motion/react"
+import type { TargetAndTransition, Transition, Variant } from "motion/react"
 import { motion as Motion, useReducedMotion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
-type TransitionVariant = "fade" | "fadeUp" | "left" | "right" | "scale"
+type TransitionVariant = "fade" | "fadeUp" | "left" | "right" | "scale" | "panel" | "terminal" | "wipe"
+type TransitionState = {
+  initial: TargetAndTransition
+  animate: TargetAndTransition
+  duration: number
+  ease?: Transition["ease"]
+}
 
 type MotionRevealProps = {
   children: ReactNode
@@ -24,7 +30,9 @@ type MotionStaggerProps = {
   stagger?: number
 }
 
-const transitionStates: Record<TransitionVariant, { initial: TargetAndTransition; animate: TargetAndTransition; duration: number }> = {
+const industrialEase: [number, number, number, number] = [0.18, 0.82, 0.16, 1]
+
+const transitionStates: Record<TransitionVariant, TransitionState> = {
   fade: {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
@@ -50,6 +58,55 @@ const transitionStates: Record<TransitionVariant, { initial: TargetAndTransition
     animate: { opacity: 1, scale: 1 },
     duration: 0.6,
   },
+  panel: {
+    initial: {
+      opacity: 0,
+      y: 18,
+      clipPath: "polygon(0 0, 82% 0, 68% 100%, 0 100%)",
+      filter: "brightness(0.94) contrast(1.04)",
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+      filter: "brightness(1) contrast(1)",
+      transitionEnd: { clipPath: "none", filter: "none" },
+    },
+    duration: 0.75,
+    ease: industrialEase,
+  },
+  terminal: {
+    initial: {
+      opacity: 0,
+      x: -16,
+      clipPath: "inset(0 100% 0 0)",
+      filter: "brightness(0.92) contrast(1.08)",
+    },
+    animate: {
+      opacity: 1,
+      x: 0,
+      clipPath: "inset(0 0% 0 0)",
+      filter: "brightness(1) contrast(1)",
+      transitionEnd: { clipPath: "none", filter: "none" },
+    },
+    duration: 0.62,
+    ease: industrialEase,
+  },
+  wipe: {
+    initial: {
+      opacity: 0,
+      clipPath: "inset(0 0 100% 0)",
+      filter: "brightness(0.96)",
+    },
+    animate: {
+      opacity: 1,
+      clipPath: "inset(0 0 0% 0)",
+      filter: "brightness(1)",
+      transitionEnd: { clipPath: "none", filter: "none" },
+    },
+    duration: 0.68,
+    ease: industrialEase,
+  },
 }
 
 function MotionReveal({
@@ -69,7 +126,7 @@ function MotionReveal({
       transition={{
         duration: reducedMotion ? 0 : (duration ?? state.duration),
         delay: reducedMotion ? 0 : delay,
-        ease: "easeOut",
+        ease: state.ease ?? "easeOut",
       }}
       className={className}
     >
@@ -127,7 +184,7 @@ function MotionStaggerItem({
       }}
       transition={{
         duration: reducedMotion ? 0 : state.duration,
-        ease: "easeOut",
+        ease: state.ease ?? "easeOut",
       }}
       className={cn(className)}
     >
