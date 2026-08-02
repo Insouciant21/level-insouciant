@@ -126,7 +126,7 @@ function HomeDoorGrid({ articles }: HomeDoorGridProps) {
           duration: reducedMotion ? 0 : 1.15,
           delay: reducedMotion ? 0 : 0.28 + articles.length * 0.13,
         }}
-        className="relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden rounded-md border border-[#73766f]/42 bg-[#181b17] px-4 text-center text-[#8a4f34] shadow-[inset_0_0_60px_rgba(0,0,0,0.82)] sm:min-h-[18rem]"
+        className="relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden rounded-md border border-[#b42318]/52 bg-[#181b17] px-4 text-center text-[#b42318] shadow-[inset_0_0_60px_rgba(0,0,0,0.82)] sm:min-h-[18rem]"
       >
         <p className="text-sm font-semibold tracking-[0.34em] uppercase">
           Dead End

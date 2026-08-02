@@ -25,14 +25,14 @@ function ArticleCard({ article }: ArticleCardProps) {
       />
 
       <div className="relative z-10 flex min-h-[18rem] min-w-0 flex-col justify-between px-5 py-5 sm:px-6 sm:py-6">
-        <div className="flex items-start gap-4 text-[0.68rem] font-semibold tracking-[0.26em] uppercase">
+        <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold tracking-[0.26em] uppercase">
           <span className="utility-charcoal-chip px-2 py-1">
             {signal.designation}
           </span>
+          <CategoryBadge category={article.category} />
         </div>
 
         <div className="space-y-4">
-          <CategoryBadge category={article.category} />
           <div className="rounded-md border border-[#73766f]/42 bg-[#d9d1ad]/52 px-4 py-4 shadow-[0_16px_30px_-26px_rgba(0,0,0,0.34)] backdrop-blur-sm transition duration-700 group-hover:-translate-y-1 group-hover:bg-[#d9d1ad]/62 group-hover:shadow-[0_24px_42px_-30px_rgba(0,0,0,0.4)]">
             <div className="space-y-3">
               <h2 className="text-2xl leading-tight font-semibold tracking-tight text-balance break-words sm:text-[2rem]">

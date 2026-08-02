@@ -21,8 +21,9 @@ function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
       <div className="absolute inset-0 shadow-[inset_0_0_44px_rgba(24,27,23,0.16)]" />
 
       <div className="relative z-10 flex h-full flex-col px-4 py-4 sm:px-5 sm:py-5">
-        <div className="flex items-start gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <Skeleton className="h-5 w-16 border-black/15 bg-black/80 shadow-none" />
+          <Skeleton className="h-7 w-20" />
         </div>
 
         <div className="mt-auto space-y-4">
@@ -66,7 +67,7 @@ function PageIntroSkeleton() {
 function HomeHeroSkeleton() {
   return (
     <section className="grid gap-6">
-      <div className="site-section-header items-start gap-8 lg:items-end">
+      <div className="site-section-header items-start">
         <div className="max-w-4xl min-w-0 space-y-5">
           <Skeleton className="h-4 w-36" />
           <div className="space-y-4">
@@ -80,17 +81,6 @@ function HomeHeroSkeleton() {
           </div>
         </div>
 
-        <aside className="w-full lg:max-w-sm">
-          <div className={`${skeletonPanelClass} px-5 py-5`}>
-            <div className="flex items-center justify-between gap-3">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-7 w-20" />
-            </div>
-            <Skeleton className="mt-4 h-5 w-full" />
-            <Skeleton className="mt-2 h-5 w-5/6" />
-            <Skeleton className="mt-2 h-5 w-4/5" />
-          </div>
-        </aside>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
@@ -226,7 +216,7 @@ function HomePageSkeleton() {
           ))}
 
           <div className="relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden rounded-md border border-[#2d2d2d] bg-[#1a1a1a] px-4 shadow-[inset_0_0_60px_rgba(0,0,0,0.7)] sm:min-h-[18rem]">
-            <Skeleton className="h-4 w-28 border-[#8a4f34]/70 bg-[#8a4f34]/70 shadow-none" />
+            <Skeleton className="h-4 w-28 border-[#b42318]/70 bg-[#b42318]/70 shadow-none" />
             <Skeleton className="absolute bottom-4 left-4 h-3 w-24 border-none bg-[#73766f]/26 shadow-none" />
           </div>
         </div>

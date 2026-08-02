@@ -15,6 +15,7 @@ import {
   getArchiveOverview,
   getFeaturedArticles,
 } from "@/lib/content"
+import { getHitokotoQuotes } from "@/lib/hitokoto"
 import { createPageMetadata } from "@/lib/seo"
 import { siteConfig } from "@/lib/site"
 
@@ -30,11 +31,13 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-  const [featuredArticles, archiveOverview, allArticles] = await Promise.all([
-    getFeaturedArticles(),
-    getArchiveOverview(),
-    getAllArticles(),
-  ])
+  const [featuredArticles, archiveOverview, allArticles, hitokotoQuotes] =
+    await Promise.all([
+      getFeaturedArticles(),
+      getArchiveOverview(),
+      getAllArticles(),
+      getHitokotoQuotes(),
+    ])
   const doorArticles = allArticles.slice(0, 6)
 
   const heroStats = [
@@ -55,7 +58,6 @@ export default async function Page() {
         eyebrow={siteConfig.hero.eyebrow}
         title={siteConfig.hero.title}
         description={siteConfig.hero.description}
-        note={siteConfig.hero.note}
         primaryAction={siteConfig.hero.primaryAction}
         secondaryAction={siteConfig.hero.secondaryAction}
         stats={heroStats}
@@ -72,7 +74,9 @@ export default async function Page() {
               挑一扇门，继续向里走
             </p>
           </div>
-          <span className="site-status-pill">{doorArticles.length} 个入口</span>
+          <span className="site-status-pill self-center">
+            {doorArticles.length} 个入口
+          </span>
         </header>
 
         {doorArticles.length > 0 ? (
@@ -120,7 +124,7 @@ export default async function Page() {
             summary={siteConfig.profile.summary}
             status={siteConfig.profile.status}
             location={siteConfig.profile.location}
-            focuses={siteConfig.profile.focuses}
+            quotes={hitokotoQuotes}
             email={siteConfig.email}
           />
         </div>

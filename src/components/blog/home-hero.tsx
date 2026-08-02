@@ -12,7 +12,6 @@ type HomeHeroProps = {
   eyebrow: string
   title: string
   description: string
-  note: string
   primaryAction: {
     href: string
     label: string
@@ -24,21 +23,19 @@ type HomeHeroProps = {
   stats: HeroStat[]
 }
 
-const heroPanelClass = "public-summary-panel"
 const heroStatCardClass = "site-metric-card px-5 py-5"
 
 function HomeHero({
   eyebrow,
   title,
   description,
-  note,
   primaryAction,
   secondaryAction,
   stats,
 }: HomeHeroProps) {
   return (
     <section className="grid gap-6">
-      <div className="site-section-header items-start gap-8 lg:items-end">
+      <div className="site-section-header items-start">
         <div className="max-w-4xl min-w-0 space-y-5">
           <p className="inline-flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.3em] text-muted-foreground uppercase">
             <Sparkles className="size-3.5 text-primary" />
@@ -66,18 +63,6 @@ function HomeHero({
             </Button>
           </div>
         </div>
-
-        <aside className="w-full lg:max-w-sm">
-          <div className={`${heroPanelClass} px-5 py-5`}>
-            <div className="flex items-center justify-between gap-3">
-              <p className="utility-kicker">Entry Note</p>
-              <span className="site-status-pill">Online</span>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-muted-foreground">
-              {note}
-            </p>
-          </div>
-        </aside>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">

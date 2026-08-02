@@ -6,7 +6,7 @@ type HomeProfileCardProps = {
   summary: string
   status: string
   location: string
-  focuses: readonly string[]
+  quotes: readonly string[]
   email: string
 }
 
@@ -21,7 +21,7 @@ function HomeProfileCard({
   summary,
   status,
   location,
-  focuses,
+  quotes,
   email,
 }: HomeProfileCardProps) {
   return (
@@ -45,9 +45,9 @@ function HomeProfileCard({
         </div>
 
         <ul className="grid gap-3 text-sm leading-7 text-muted-foreground">
-          {focuses.map((focus) => (
-            <li key={focus} className={profileFocusClass}>
-              {focus}
+          {quotes.map((quote) => (
+            <li key={quote} className={`${profileFocusClass} break-words`}>
+              <blockquote>{quote}</blockquote>
             </li>
           ))}
         </ul>
