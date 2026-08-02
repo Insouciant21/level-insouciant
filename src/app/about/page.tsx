@@ -155,11 +155,6 @@ export default function AboutPage() {
                   )
                 })}
               </ul>
-
-              <div className="mt-8 border-t border-border/60 pt-5 text-sm text-muted-foreground">
-                <p>{siteConfig.author}</p>
-                <p>{siteConfig.email}</p>
-              </div>
             </div>
           </article>
         </MotionReveal>
