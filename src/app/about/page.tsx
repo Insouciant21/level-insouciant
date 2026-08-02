@@ -1,6 +1,15 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Anchor, Contact, FileStack, Zap } from "lucide-react"
+import {
+  Anchor,
+  Contact,
+  ExternalLink,
+  FileStack,
+  Gamepad2,
+  Github,
+  Mail,
+  Zap,
+} from "lucide-react"
 
 import { MotionReveal } from "@/components/motion/page-transition"
 import { PageShell } from "@/components/blog/page-shell"
@@ -17,7 +26,29 @@ const aboutWarningHighlightClass =
   "border border-[#8a4f34]/70 bg-[#181b17] px-5 py-4 text-[#d9d1ad] shadow-[inset_0_1px_0_rgba(255,252,225,0.08),0_18px_38px_-30px_rgba(0,0,0,0.46)]"
 const aboutAccessLinkClass =
   "flex items-center justify-between border-b border-[#73766f]/42 pb-2 transition duration-500 hover:border-[#8a4f34]/48 hover:text-destructive"
-const contactLabels = ["github", "email", "steam"] as const
+const contactItems = [
+  {
+    label: "GitHub",
+    value: "github.com/Insouciant21",
+    href: "https://github.com/Insouciant21",
+    icon: Github,
+    external: true,
+  },
+  {
+    label: "Email",
+    value: siteConfig.email,
+    href: `mailto:${siteConfig.email}`,
+    icon: Mail,
+    external: false,
+  },
+  {
+    label: "Steam",
+    value: "https://steamcommunity.com/id/insouciant21/",
+    href: "https://steamcommunity.com/id/insouciant21/",
+    icon: Gamepad2,
+    external: true,
+  },
+] as const
 
 export const metadata: Metadata = createPageMetadata({
   title: "生存须知",
@@ -78,38 +109,47 @@ export default function AboutPage() {
               </h2>
 
               <ul className="mt-6 grid gap-4">
-                {siteConfig.about.highlights.map((item, index) => {
+                {contactItems.map((contact, index) => {
                   const isWarning =
-                    index === siteConfig.about.highlights.length - 1
+                    index === contactItems.length - 1
+                  const Icon = contact.icon
 
                   return (
                     <li
-                      key={item}
+                      key={contact.label}
                       className={
                         isWarning
                           ? aboutWarningHighlightClass
                           : aboutHighlightClass
                       }
                     >
-                      <div className="grid gap-2 md:grid-cols-[180px_minmax(0,1fr)] md:items-start">
-                        <p
+                      <div className="grid gap-3 md:grid-cols-[180px_minmax(0,1fr)] md:items-center">
+                        <div
                           className={
                             isWarning
-                              ? "text-sm font-semibold tracking-[0.24em] text-[#d9d1ad]"
-                              : "text-sm font-semibold tracking-[0.24em] text-foreground/80"
-                          }
+                              ? "flex items-center gap-2 text-sm font-semibold tracking-[0.16em] text-[#d9d1ad]"
+                              : "flex items-center gap-2 text-sm font-semibold tracking-[0.16em] text-foreground/80"
+                            }
                         >
-                          {contactLabels[index]}
-                        </p>
-                        <p
+                          <Icon className="size-4 shrink-0" aria-hidden="true" />
+                          <span>{contact.label}</span>
+                        </div>
+                        <a
+                          href={contact.href}
+                          target={contact.external ? "_blank" : undefined}
+                          rel={contact.external ? "noreferrer" : undefined}
                           className={
                             isWarning
-                              ? "text-sm leading-7 text-[#d9d1ad]/78"
-                              : "text-sm leading-7 text-foreground/76"
-                          }
+                              ? "inline-flex min-w-0 items-center gap-2 break-all text-sm leading-7 text-[#d9d1ad]/90 underline decoration-[#d9d1ad]/40 underline-offset-4 transition hover:text-white"
+                              : "inline-flex min-w-0 items-center gap-2 break-all text-sm leading-7 text-foreground/76 underline decoration-foreground/25 underline-offset-4 transition hover:text-destructive"
+                            }
                         >
-                          {item}
-                        </p>
+                          <span>{contact.value}</span>
+                          <ExternalLink
+                            className="size-3.5 shrink-0"
+                            aria-hidden="true"
+                          />
+                        </a>
                       </div>
                     </li>
                   )
