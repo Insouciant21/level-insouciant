@@ -9,7 +9,7 @@ async function SiteHeader() {
   const user = await getCurrentUser()
 
   return (
-    <header className="site-header-shell sticky top-0 z-40 overflow-visible border-b border-border/70 bg-background/92 backdrop-blur-md">
+    <header className="site-header-shell sticky top-0 z-40 overflow-visible border-b backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-[88rem] items-center justify-between gap-5 px-5 py-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-4">
           <Link href="/" className="utility-brand-link shrink-0">
