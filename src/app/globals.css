@@ -1063,7 +1063,7 @@
   }
 
   .admin-status-pill {
-    @apply inline-flex w-fit items-center gap-2 border px-2.5 py-1 text-[0.65rem] font-semibold uppercase;
+    @apply inline-flex w-fit shrink-0 items-center gap-2 border px-2.5 py-1 text-[0.65rem] font-semibold whitespace-nowrap uppercase;
     border-radius: 999px;
     letter-spacing: 0.1em;
   }
