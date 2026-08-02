@@ -25,7 +25,7 @@ function ArticleCard({ article }: ArticleCardProps) {
       />
 
       <div className="relative z-10 flex min-h-[18rem] min-w-0 flex-col justify-between px-5 py-5 sm:px-6 sm:py-6">
-        <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold tracking-[0.26em] uppercase">
+        <div className="flex flex-wrap items-center gap-5 text-[0.68rem] font-semibold tracking-[0.26em] uppercase">
           <span className="utility-charcoal-chip px-2 py-1">
             {signal.designation}
           </span>

@@ -60,7 +60,7 @@ function HomeDoorCard({
       <div className="absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(255,252,225,0.12),transparent)] opacity-80" />
       <div className="door-card__shade absolute inset-0 shadow-[inset_0_0_44px_rgba(24,27,23,0.16)]" />
 
-      <div className="relative z-10 flex h-full min-w-0 flex-col px-4 py-4 sm:px-5 sm:py-5">
+      <div className="relative z-10 flex h-full min-w-0 flex-col gap-5 px-4 py-4 sm:px-5 sm:py-5">
         <div className="flex items-start justify-between gap-3 text-[0.66rem] font-semibold tracking-[0.28em] uppercase sm:gap-4 sm:text-[0.68rem] sm:tracking-[0.3em]">
           <span className="utility-charcoal-chip px-2.5 py-1 shadow-md">
             {signal.designation}
