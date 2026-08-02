@@ -18,6 +18,22 @@ type HomeDoorCardProps = {
   reducedMotion: boolean
 }
 
+function getDoorTitleClass(title: string, featured: boolean) {
+  const titleLength = Array.from(title.trim()).length
+
+  if (titleLength >= 24) {
+    return "text-xl sm:text-2xl lg:text-3xl"
+  }
+
+  if (titleLength >= 14) {
+    return "text-xl sm:text-2xl lg:text-4xl"
+  }
+
+  return featured
+    ? "text-2xl sm:text-3xl lg:text-5xl"
+    : "text-2xl sm:text-3xl lg:text-4xl"
+}
+
 function HomeDoorCard({
   article,
   featured,
@@ -78,9 +94,7 @@ function HomeDoorCard({
             <h2
               className={cn(
                 "mt-3 leading-[0.95] font-semibold tracking-tight text-balance break-words",
-                featured
-                  ? "text-2xl sm:text-3xl lg:text-5xl"
-                  : "text-2xl sm:text-3xl lg:text-4xl"
+                getDoorTitleClass(article.title, featured)
               )}
             >
               {article.title}

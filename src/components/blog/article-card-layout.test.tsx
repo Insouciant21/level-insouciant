@@ -60,4 +60,15 @@ describe("article card spacing", () => {
 
     expect(classNames(contentWrapper)).toContain("gap-5")
   })
+
+  it("uses compact title sizing for long home card titles", () => {
+    const longTitle = "用极简约束搭建长期可维护的个人系统"
+
+    render(<HomeDoorGrid articles={[{ ...article, title: longTitle }]} />)
+
+    const heading = screen.getByRole("heading", { name: longTitle })
+
+    expect(classNames(heading)).toContain("lg:text-4xl")
+    expect(classNames(heading)).not.toContain("lg:text-5xl")
+  })
 })
