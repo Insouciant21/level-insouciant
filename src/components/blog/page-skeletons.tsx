@@ -1,4 +1,5 @@
 import { PageShell } from "@/components/blog/page-shell"
+import { PageIntro } from "@/components/blog/page-intro"
 import { Skeleton } from "@/components/ui/skeleton"
 
 const skeletonPanelClass = "public-summary-panel"
@@ -264,7 +265,11 @@ function HomePageSkeleton() {
 function ArticlesPageSkeleton() {
   return (
     <PageShell>
-      <PageIntroSkeleton action />
+      <PageIntro
+        eyebrow="Archive"
+        title="层级档案"
+        description="所有公开记录都按照统一元数据整理，方便沿关键词、分类和时间线继续向深处下潜。"
+      />
       <section className="grid min-w-0 gap-5">
         {Array.from({ length: 5 }).map((_, index) => (
           <ArticleCardSkeleton key={index} />

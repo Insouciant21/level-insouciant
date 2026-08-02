@@ -46,6 +46,18 @@ describe("public page skeleton compositions", () => {
     expect(container.querySelector(".max-w-\\[1200px\\]")).not.toBeNull()
   })
 
+  it("keeps the archive intro copy visible while the records load", () => {
+    const { container } = render(<ArticlesPageSkeleton />)
+    const intro = container.querySelector(".site-section-header")
+
+    expect(intro?.querySelector("[aria-hidden=\"true\"]")).toBeNull()
+    expect(intro?.querySelector("h1")?.textContent).toBe("层级档案")
+    expect(intro?.querySelector("p")?.textContent).toBe("Archive")
+    expect(intro?.textContent).toContain(
+      "所有公开记录都按照统一元数据整理，方便沿关键词、分类和时间线继续向深处下潜。"
+    )
+  })
+
   it.each([
     ["articles", <ArticlesPageSkeleton key="articles" />],
     [
