@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { ZodError } from "zod"
 
 import {
   changeOwnPassword,
@@ -10,6 +11,10 @@ import {
 } from "@/lib/account"
 import { getAccountPath } from "@/lib/account-page"
 import { requireUser } from "@/lib/auth"
+import {
+  parsePasswordChangeFormData,
+  parseProfileFormData,
+} from "@/lib/validation/form-data"
 
 function getString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim()
@@ -24,12 +29,12 @@ export async function updateProfileAction(formData: FormData) {
   const accountPath = getAccountPath(user.role)
 
   try {
-    await updateOwnProfile(user.id, {
-      name: getString(formData, "name"),
-      email: getString(formData, "email"),
-      avatarUrl: getString(formData, "avatarUrl"),
-    })
+    await updateOwnProfile(user.id, parseProfileFormData(formData))
   } catch (error) {
+    if (error instanceof ZodError) {
+      redirectWithError(accountPath, "INVALID_PROFILE_INPUT")
+    }
+
     if (error instanceof Error) {
       redirectWithError(accountPath, error.message)
     }
@@ -49,12 +54,12 @@ export async function changePasswordAction(formData: FormData) {
   const accountPath = getAccountPath(user.role)
 
   try {
-    await changeOwnPassword(user.id, {
-      currentPassword: getString(formData, "currentPassword"),
-      nextPassword: getString(formData, "nextPassword"),
-      confirmPassword: getString(formData, "confirmPassword"),
-    })
+    await changeOwnPassword(user.id, parsePasswordChangeFormData(formData))
   } catch (error) {
+    if (error instanceof ZodError) {
+      redirectWithError(accountPath, "INVALID_PASSWORD_INPUT")
+    }
+
     if (error instanceof Error) {
       redirectWithError(accountPath, error.message)
     }

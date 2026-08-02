@@ -3,9 +3,12 @@ import {
   getUserDisplayName,
   hashPassword,
   isAuthStorageEnabled,
-  normalizeEmail,
   verifyPassword,
 } from "@/lib/auth-credentials"
+import {
+  passwordChangeInputSchema,
+  profileInputSchema,
+} from "@/lib/validation/auth"
 
 export type AccountProfile = {
   id: string
@@ -84,13 +87,13 @@ export async function updateOwnProfile(
     throw new Error("DATABASE_NOT_CONFIGURED")
   }
 
-  const name = input.name.trim().slice(0, 60)
-  const email = normalizeEmail(input.email)
-  const avatarUrl = input.avatarUrl.trim()
+  const profileResult = profileInputSchema.safeParse(input)
 
-  if (!email) {
+  if (!profileResult.success) {
     throw new Error("INVALID_PROFILE_INPUT")
   }
+
+  const { name, email, avatarUrl } = profileResult.data
 
   const currentUser = await prisma.user.findUnique({
     where: { id: userId },
@@ -146,17 +149,21 @@ export async function changeOwnPassword(
     throw new Error("DATABASE_NOT_CONFIGURED")
   }
 
-  const currentPassword = input.currentPassword
-  const nextPassword = input.nextPassword
-  const confirmPassword = input.confirmPassword
+  const passwordResult = passwordChangeInputSchema.safeParse(input)
 
-  if (!currentPassword || !nextPassword || nextPassword.length < 8) {
-    throw new Error("INVALID_PASSWORD_INPUT")
+  if (!passwordResult.success) {
+    const onlyConfirmationFailed = passwordResult.error.issues.every(
+      (issue) => issue.path[0] === "confirmPassword"
+    )
+
+    throw new Error(
+      onlyConfirmationFailed
+        ? "PASSWORD_CONFIRM_MISMATCH"
+        : "INVALID_PASSWORD_INPUT"
+    )
   }
 
-  if (nextPassword !== confirmPassword) {
-    throw new Error("PASSWORD_CONFIRM_MISMATCH")
-  }
+  const { currentPassword, nextPassword } = passwordResult.data
 
   const user = await prisma.user.findUnique({
     where: { id: userId },

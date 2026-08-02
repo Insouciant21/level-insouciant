@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { ZodError } from "zod"
 
 import { COMMENT_STATUS, deleteCommentForAdmin, setCommentStatus } from "@/lib/admin"
 import { requireAdmin } from "@/lib/auth"
@@ -14,33 +15,21 @@ import {
   setArticleDraftState,
   updateManagedArticle,
 } from "@/lib/content-admin"
+import { parseManagedArticleFormData } from "@/lib/validation/form-data"
 
 function getString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim()
 }
 
-function getTags(formData: FormData, key: string) {
-  return getString(formData, key)
-    .split(/[,\n]/)
-    .map((tag) => tag.trim())
-    .filter(Boolean)
-}
-
-function getDraftValue(formData: FormData) {
-  return getString(formData, "intent") !== "publish"
-}
-
 function getArticlePayload(formData: FormData) {
-  return {
-    slug: getString(formData, "slug"),
-    title: getString(formData, "title"),
-    desc: getString(formData, "desc"),
-    category: getString(formData, "category"),
-    tags: getTags(formData, "tags"),
-    cover: getString(formData, "cover"),
-    publishedAt: getString(formData, "publishedAt"),
-    content: getString(formData, "content"),
-    draft: getDraftValue(formData),
+  try {
+    return parseManagedArticleFormData(formData)
+  } catch (error) {
+    if (error instanceof ZodError) {
+      throw new Error("INVALID_ARTICLE_INPUT")
+    }
+
+    throw error
   }
 }
 
@@ -84,10 +73,10 @@ function redirectWithNotice(path: string, notice: string) {
 
 export async function createArticleAction(formData: FormData) {
   const admin = await requireAdmin()
-  const payload = getArticlePayload(formData)
   let article
 
   try {
+    const payload = getArticlePayload(formData)
     article = await createManagedArticle(payload, admin.id)
   } catch (error) {
     if (error instanceof Error) {
@@ -108,9 +97,11 @@ export async function createArticleAction(formData: FormData) {
 export async function updateArticleAction(formData: FormData) {
   const admin = await requireAdmin()
   const slug = getString(formData, "slug")
-  const payload = getArticlePayload(formData)
+  let draft = true
 
   try {
+    const payload = getArticlePayload(formData)
+    draft = payload.draft
     await updateManagedArticle(slug, payload, admin.id)
   } catch (error) {
     if (error instanceof Error) {
@@ -124,7 +115,7 @@ export async function updateArticleAction(formData: FormData) {
   revalidateAdminContent(slug)
   redirectWithQuery(`/admin/articles/${slug}/edit`, {
     saved: "1",
-    notice: payload.draft ? "article-draft-saved" : "article-published",
+    notice: draft ? "article-draft-saved" : "article-published",
   })
 }
 

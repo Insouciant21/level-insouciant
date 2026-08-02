@@ -2,9 +2,14 @@
 
 import { AuthError } from "next-auth"
 import { redirect } from "next/navigation"
+import { ZodError } from "zod"
 
 import { signIn, signOut } from "@/auth"
 import { isAuthStorageEnabled, registerPasswordUser } from "@/lib/auth-credentials"
+import {
+  parseLoginFormData,
+  parseRegistrationFormData,
+} from "@/lib/validation/form-data"
 
 function getString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim()
@@ -25,14 +30,23 @@ export async function userLoginAction(formData: FormData) {
     redirect("/login?error=DATABASE_NOT_CONFIGURED")
   }
 
-  const email = getString(formData, "email")
-  const password = getString(formData, "password")
   const redirectTo = getRedirectTarget(formData, "/")
+  let credentials
+
+  try {
+    credentials = parseLoginFormData(formData)
+  } catch (error) {
+    if (error instanceof ZodError) {
+      redirect(`/login?error=INVALID_CREDENTIALS&next=${encodeURIComponent(redirectTo)}`)
+    }
+
+    throw error
+  }
 
   try {
     await signIn("credentials", {
-      email,
-      password,
+      email: credentials.email,
+      password: credentials.password,
       redirectTo,
     })
   } catch (error) {
@@ -49,13 +63,22 @@ export async function adminLoginAction(formData: FormData) {
     redirect("/admin/login?error=DATABASE_NOT_CONFIGURED")
   }
 
-  const email = getString(formData, "email")
-  const password = getString(formData, "password")
+  let credentials
+
+  try {
+    credentials = parseLoginFormData(formData)
+  } catch (error) {
+    if (error instanceof ZodError) {
+      redirect("/admin/login?error=INVALID_CREDENTIALS")
+    }
+
+    throw error
+  }
 
   try {
     await signIn("admin-credentials", {
-      email,
-      password,
+      email: credentials.email,
+      password: credentials.password,
       redirectTo: "/admin/dashboard",
     })
   } catch (error) {
@@ -72,17 +95,23 @@ export async function userRegisterAction(formData: FormData) {
     redirect("/register?error=DATABASE_NOT_CONFIGURED")
   }
 
-  const name = getString(formData, "name")
-  const email = getString(formData, "email")
-  const password = getString(formData, "password")
   const redirectTo = getRedirectTarget(formData, "/")
+  let registration
 
   try {
-    await registerPasswordUser({
-      name,
-      email,
-      password,
-    })
+    registration = parseRegistrationFormData(formData)
+  } catch (error) {
+    if (error instanceof ZodError) {
+      redirect(
+        `/register?error=INVALID_REGISTRATION_INPUT&next=${encodeURIComponent(redirectTo)}`
+      )
+    }
+
+    throw error
+  }
+
+  try {
+    await registerPasswordUser(registration)
   } catch (error) {
     if (error instanceof Error) {
       redirect(`/register?error=${encodeURIComponent(error.message)}&next=${encodeURIComponent(redirectTo)}`)
@@ -93,8 +122,8 @@ export async function userRegisterAction(formData: FormData) {
 
   try {
     await signIn("credentials", {
-      email,
-      password,
+      email: registration.email,
+      password: registration.password,
       redirectTo,
     })
   } catch (error) {

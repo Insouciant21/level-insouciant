@@ -3,6 +3,10 @@ import { cache } from "react"
 
 import type { ArticleSummary } from "@/types/blog"
 import { prisma } from "@/lib/prisma"
+import {
+  managedArticleInputSchema,
+  type ManagedArticleInput,
+} from "@/lib/validation/article"
 
 export type ManagedArticleSummary = ArticleSummary & {
   id: string
@@ -16,17 +20,7 @@ export type ManagedArticleDetail = ManagedArticleSummary & {
   lastEditedByName: string | null
 }
 
-export type ManagedArticleInput = {
-  title: string
-  desc: string
-  content: string
-  category: string
-  tags: string[]
-  cover: string
-  publishedAt: string
-  draft: boolean
-  slug?: string
-}
+export type { ManagedArticleInput }
 
 export type ManagedArticleRevisionSummary = {
   id: string
@@ -184,10 +178,6 @@ function toManagedArticleRevisionSummary(
   }
 }
 
-function normalizeTags(tags: string[]) {
-  return [...new Set(tags.map((tag) => tag.trim()).filter(Boolean))]
-}
-
 function buildSearchDocument(input: {
   title: string
   desc: string
@@ -198,35 +188,34 @@ function buildSearchDocument(input: {
   return [input.title, input.desc, input.category, input.tags.join(" "), input.content].join(" ").trim()
 }
 
-function normalizeArticleInput(input: ManagedArticleInput, options?: { requireSlug?: boolean }) {
-  const title = input.title.trim()
-  const desc = input.desc.trim()
-  const content = input.content.trim()
-  const category = input.category.trim()
-  const cover = input.cover.trim() || null
-  const tags = normalizeTags(input.tags)
-  const slug = input.slug?.trim() ?? ""
-  const publishedAt = new Date(input.publishedAt)
+function deduplicateTags(tags: string[]) {
+  return [...new Set(tags.map((tag) => tag.trim()).filter(Boolean))]
+}
 
-  if (!title || !desc || !content || !category || tags.length === 0 || Number.isNaN(publishedAt.getTime())) {
+function normalizeArticleInput(input: ManagedArticleInput, options?: { requireSlug?: boolean }) {
+  const result = managedArticleInputSchema.safeParse(input)
+
+  if (!result.success) {
     throw new Error("INVALID_ARTICLE_INPUT")
   }
 
-  if (options?.requireSlug && !slug) {
+  const normalized = result.data
+
+  if (options?.requireSlug && !normalized.slug) {
     throw new Error("INVALID_ARTICLE_INPUT")
   }
 
   return {
-    title,
-    desc,
-    content,
-    category,
-    cover,
-    tags,
-    searchDocument: buildSearchDocument({ title, desc, category, tags, content }),
-    draft: input.draft,
-    slug,
-    publishedAt,
+    title: normalized.title,
+    desc: normalized.desc,
+    content: normalized.content,
+    category: normalized.category,
+    cover: normalized.cover || null,
+    tags: normalized.tags,
+    searchDocument: buildSearchDocument(normalized),
+    draft: normalized.draft,
+    slug: normalized.slug,
+    publishedAt: new Date(normalized.publishedAt),
   }
 }
 
@@ -425,7 +414,9 @@ export async function renameTagAcrossArticles(fromTag: string, toTag: string, ed
 
   await prisma.$transaction(async (tx) => {
     for (const article of articles) {
-      const nextTags = normalizeTags(article.tags.map((tag) => (tag === sourceTag ? targetTag : tag)))
+      const nextTags = deduplicateTags(
+        article.tags.map((tag) => (tag === sourceTag ? targetTag : tag))
+      )
       const updated = await tx.article.update({
         where: { id: article.id },
         data: {

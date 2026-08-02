@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server"
+import { ZodError } from "zod"
 
 import { getCurrentUser, getUserDisplayName } from "@/lib/auth"
 import { createComment, isBehaviorStorageEnabled, listComments } from "@/lib/behavior"
 import { getArticleBySlug } from "@/lib/content"
+import { parseCommentRequestBody } from "@/lib/validation/form-data"
 
 type RouteProps = {
   params: Promise<{
@@ -40,9 +42,16 @@ export async function POST(request: Request, { params }: RouteProps) {
     return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 })
   }
 
-  const body = (await request.json()) as {
-    content?: string
-    parentId?: string | null
+  let body
+
+  try {
+    body = parseCommentRequestBody(await request.json())
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json({ error: "INVALID_COMMENT" }, { status: 400 })
+    }
+
+    throw error
   }
 
   try {

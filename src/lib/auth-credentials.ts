@@ -4,6 +4,7 @@ import type { User } from "@prisma/client"
 import { UserRole } from "@prisma/client"
 
 import { prisma } from "@/lib/prisma"
+import { registrationInputSchema } from "@/lib/validation/auth"
 
 export function isAuthStorageEnabled() {
   return Boolean(process.env.DATABASE_URL)
@@ -120,14 +121,14 @@ export async function registerPasswordUser(input: {
     throw new Error("DATABASE_NOT_CONFIGURED")
   }
 
-  const name = input.name.trim().slice(0, 60)
-  const email = normalizeEmail(input.email)
-  const password = input.password
-  const bootstrapAdmin = getBootstrapAdminConfig()
+  const result = registrationInputSchema.safeParse(input)
 
-  if (!name || !email || password.length < 8) {
+  if (!result.success) {
     throw new Error("INVALID_REGISTRATION_INPUT")
   }
+
+  const { name, email, password } = result.data
+  const bootstrapAdmin = getBootstrapAdminConfig()
 
   if (bootstrapAdmin && email === bootstrapAdmin.email) {
     throw new Error("RESERVED_EMAIL")
