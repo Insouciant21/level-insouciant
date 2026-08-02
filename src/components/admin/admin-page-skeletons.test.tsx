@@ -71,7 +71,13 @@ describe("admin page skeleton compositions", () => {
         ".xl\\:grid-cols-\\[minmax\\(0\\,1fr\\)_minmax\\(0\\,1fr\\)\\]"
       )
     ).not.toBeNull()
-    expect(container.querySelector(".min-h-\\[24rem\\]")).not.toBeNull()
+    const largeField = container.querySelector(".min-h-\\[24rem\\]")
+    expect(largeField).not.toBeNull()
+    expect(
+      Array.from(
+        largeField?.querySelectorAll('[aria-hidden="true"]') ?? []
+      ).some((node) => node.className.includes("min-h-[24rem]"))
+    ).toBe(true)
   })
 
   it.each([

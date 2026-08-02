@@ -182,16 +182,22 @@ function AdminEditorFieldSkeleton({
   labelWidth = "w-16",
   multiline = false,
   className,
+  contentClassName,
 }: {
   labelWidth?: string
   multiline?: boolean
   className?: string
+  contentClassName?: string
 }) {
   return (
     <div className={cn("grid min-w-0 gap-2", className)}>
       <AdminSkeleton tone="soft" className={cn("h-4", labelWidth)} />
       <AdminSkeleton
-        className={cn("min-w-0", multiline ? "h-28 min-h-[7rem]" : "h-12")}
+        className={cn(
+          "min-w-0",
+          multiline ? "h-28 min-h-[7rem]" : "h-12",
+          contentClassName
+        )}
       />
     </div>
   )
@@ -581,6 +587,7 @@ function AdminArticleEditorPageSkeleton() {
             labelWidth="w-12"
             multiline
             className="min-h-[24rem]"
+            contentClassName="min-h-[24rem]"
           />
           <div className="flex min-w-0 flex-wrap gap-3">
             <AdminSkeleton tone="soft" className="h-10 w-28" />
