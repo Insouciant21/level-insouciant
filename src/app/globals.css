@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 @source inline(
   "public-summary-panel public-summary-panel-document public-summary-card public-summary-card-muted public-summary-chip"
@@ -71,9 +72,9 @@
   --code-block-line-highlight: rgb(27 27 22 / 8%);
   --code-block-char-highlight: rgb(27 27 22 / 13%);
   --code-block-char-highlight-ring: rgb(27 27 22 / 11%);
-  --scrollbar-thumb: rgb(86 84 71 / 30%);
-  --scrollbar-thumb-hover: rgb(86 84 71 / 44%);
-  --scrollbar-track: rgb(27 27 22 / 5%);
+  --scrollbar-thumb: rgb(86 84 71 / 34%);
+  --scrollbar-thumb-hover: rgb(86 84 71 / 52%);
+  --scrollbar-track: transparent;
 }
 
 @theme inline {
@@ -262,16 +263,16 @@
   }
 
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background-color: var(--scrollbar-track);
+    background-color: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     border-radius: 999px;
     background-color: var(--scrollbar-thumb);
     background-clip: padding-box;
@@ -283,6 +284,42 @@
 }
 
 @layer components {
+  .perfect-scrollbar.ps {
+    position: relative;
+    overscroll-behavior: contain;
+  }
+
+  .perfect-scrollbar.ps > .ps__rail-x,
+  .perfect-scrollbar.ps > .ps__thumb-x {
+    display: none;
+  }
+
+  .perfect-scrollbar.ps > .ps__rail-y {
+    width: 9px;
+    background-color: transparent;
+  }
+
+  .perfect-scrollbar.ps > .ps__thumb-y {
+    right: 3px;
+    width: 3px;
+    border-radius: 999px;
+    background-color: var(--scrollbar-thumb);
+  }
+
+  .perfect-scrollbar.ps:hover > .ps__rail-y,
+  .perfect-scrollbar.ps.ps--focus > .ps__rail-y,
+  .perfect-scrollbar.ps.ps--scrolling-y > .ps__rail-y {
+    background-color: transparent;
+    opacity: 1;
+  }
+
+  .perfect-scrollbar.ps > .ps__rail-y:hover > .ps__thumb-y,
+  .perfect-scrollbar.ps > .ps__rail-y:focus > .ps__thumb-y,
+  .perfect-scrollbar.ps > .ps__rail-y.ps--clicking > .ps__thumb-y {
+    width: 5px;
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
   body:has(.site-console)::before,
   body:has(.site-console)::after {
     display: none;

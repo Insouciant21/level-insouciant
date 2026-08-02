@@ -9,6 +9,7 @@ import { ArticleCard } from "@/components/blog/article-card"
 import { ArticlePaginationNav } from "@/components/blog/article-pagination-nav"
 import { ArticleTableOfContents } from "@/components/blog/article-table-of-contents"
 import { ContentProse } from "@/components/blog/content-prose"
+import { PerfectScrollbar } from "@/components/ui/perfect-scrollbar"
 import { MotionReveal } from "@/components/motion/page-transition"
 import { PageShell } from "@/components/blog/page-shell"
 import { ArticleEngagementPanelSkeleton } from "@/components/blog/page-skeletons"
@@ -168,10 +169,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <aside className="hidden xl:sticky xl:top-32 xl:grid xl:self-start">
           <MotionReveal variant="right" delay={0.3}>
-            <ArticleTableOfContents
-              items={tocItems}
-              className="xl:max-h-[calc(100svh-9rem)] xl:overflow-y-auto"
-            />
+            <PerfectScrollbar
+              aria-label="文章目录"
+              tabIndex={0}
+              className="xl:max-h-[calc(100svh-9rem)]"
+            >
+              <ArticleTableOfContents items={tocItems} />
+            </PerfectScrollbar>
           </MotionReveal>
         </aside>
       </div>
