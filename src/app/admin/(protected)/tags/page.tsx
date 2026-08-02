@@ -1,4 +1,5 @@
 import { removeTagAction, renameTagAction } from "@/app/admin/actions"
+import { ArrowRightLeft, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,7 +9,7 @@ export default async function AdminTagsPage() {
   const tags = await getManagedTags()
 
   return (
-    <section className="admin-surface px-6 py-6">
+    <section className="admin-surface p-4 sm:p-6">
       <div className="flex flex-col gap-2">
         <p className="admin-kicker">Tag Operations</p>
         <h1 className="admin-title">标签管理</h1>
@@ -23,12 +24,12 @@ export default async function AdminTagsPage() {
             <Card
               key={tag.name}
               size="sm"
-              className="admin-surface-muted rounded-none px-5 py-5 text-[#e0e0e0]"
+              className="admin-surface-muted px-4 py-4 text-[#edf3e9] sm:px-5 sm:py-5"
             >
               <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="text-lg font-semibold tracking-tight text-[#e0e0e0]">
+                    <h2 className="text-lg font-semibold tracking-tight text-[#edf3e9]">
                       {tag.name}
                     </h2>
                     <span className="admin-status-pill admin-status-muted">
@@ -53,14 +54,16 @@ export default async function AdminTagsPage() {
                       placeholder={`将 ${tag.name} 改成...`}
                       className="admin-input min-w-0 flex-1"
                     />
-                    <Button type="submit" variant="outline">
+                    <Button type="submit" variant="outline" size="sm">
+                      <ArrowRightLeft className="size-3.5" aria-hidden="true" />
                       重命名
                     </Button>
                   </form>
 
                   <form action={removeTagAction}>
                     <input type="hidden" name="sourceTag" value={tag.name} />
-                    <Button type="submit" variant="destructive">
+                    <Button type="submit" variant="destructive" size="sm">
+                      <Trash2 className="size-3.5" aria-hidden="true" />
                       从所有文章中移除
                     </Button>
                   </form>

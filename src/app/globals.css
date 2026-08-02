@@ -2,7 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@source inline("public-summary-panel public-summary-panel-document public-summary-card public-summary-card-muted public-summary-chip");
+@source inline(
+  "public-summary-panel public-summary-panel-document public-summary-card public-summary-card-muted public-summary-chip"
+);
 
 :root {
   --stale-office-yellow: #cfc58b;
@@ -728,7 +730,8 @@
     );
     mix-blend-mode: screen;
     transform: translateX(-120%) skewX(-10deg);
-    animation: insous-skeleton-scan 1.7s cubic-bezier(0.18, 0.82, 0.16, 1) infinite;
+    animation: insous-skeleton-scan 1.7s cubic-bezier(0.18, 0.82, 0.16, 1)
+      infinite;
   }
 
   .insous-skeleton::after {
@@ -974,159 +977,239 @@
     );
   }
 
+  .admin-console {
+    --admin-background: #10130f;
+    --admin-main: #151914;
+    --admin-surface: #1b201a;
+    --admin-surface-muted: #171b16;
+    --admin-border: rgb(220 235 211 / 12%);
+    --admin-border-strong: rgb(220 235 211 / 20%);
+    --admin-foreground: #edf3e9;
+    --admin-muted: #9aa79a;
+    --admin-subtle: #748073;
+    --admin-accent: #b8d77c;
+    --admin-accent-strong: #d0ec93;
+    --admin-accent-foreground: #182015;
+    --admin-warning: #e2b86c;
+    --admin-danger: #f08b81;
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+    background: var(--admin-main);
+    color: var(--admin-foreground);
+  }
+
+  body:has(.admin-console) {
+    background: var(--admin-main);
+    background-image: none;
+  }
+
+  body:has(.admin-console)::before,
+  body:has(.admin-console)::after {
+    display: none;
+  }
+
+  .admin-auth-panel {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border-strong);
+    border-radius: 0.5rem;
+    box-shadow: 0 24px 70px -46px rgb(0 0 0 / 85%);
+  }
+
   .admin-surface {
-    background: #1a1a1a;
-    border: 1px solid #333333;
-    box-shadow: 0 18px 36px -28px rgb(0 0 0 / 0.72);
+    border: 1px solid var(--admin-border);
+    border-radius: 0.5rem;
+    background: var(--admin-surface);
+    box-shadow: 0 18px 42px -34px rgb(0 0 0 / 85%);
   }
 
   .admin-surface-muted {
-    background: #111111;
-    border: 1px solid #222222;
-    box-shadow: 0 18px 32px -30px rgb(0 0 0 / 0.66);
+    border: 1px solid var(--admin-border);
+    border-radius: 0.5rem;
+    background: var(--admin-surface-muted);
+    box-shadow: 0 14px 34px -32px rgb(0 0 0 / 80%);
   }
 
   .admin-kicker {
-    @apply text-[0.7rem] font-semibold tracking-[0.3em] text-[#8c8c8c] uppercase;
+    @apply text-[0.68rem] font-semibold uppercase;
+    color: var(--admin-muted);
+    letter-spacing: 0.16em;
   }
 
   .admin-kicker-accent {
-    @apply text-[0.72rem] font-semibold tracking-[0.34em] text-[#4ade80] uppercase;
+    @apply text-[0.68rem] font-semibold uppercase;
+    color: var(--admin-accent);
+    letter-spacing: 0.18em;
   }
 
   .admin-title {
-    @apply text-2xl font-semibold tracking-tight text-[#4ade80];
+    @apply text-2xl font-semibold tracking-tight;
+    color: var(--admin-foreground);
   }
 
   .admin-copy {
-    @apply text-sm leading-7 text-[#8c8c8c];
+    @apply text-sm leading-7;
+    color: var(--admin-muted);
     overflow-wrap: anywhere;
   }
 
   .admin-link {
-    @apply text-sm text-[#3b82f6] underline underline-offset-4 transition hover:text-[#60a5fa];
+    @apply text-sm underline underline-offset-4 transition;
+    color: var(--admin-accent);
+  }
+
+  .admin-link:hover {
+    color: var(--admin-accent-strong);
   }
 
   .admin-status-pill {
-    @apply inline-flex items-center gap-2 border px-3 py-1.5 text-[0.68rem] font-semibold tracking-[0.26em] uppercase;
+    @apply inline-flex w-fit items-center gap-2 border px-2.5 py-1 text-[0.65rem] font-semibold uppercase;
+    border-radius: 999px;
+    letter-spacing: 0.1em;
   }
 
   .admin-status-live {
-    @apply text-[#4ade80];
-    border-color: rgb(20 83 45 / 100%);
-    background: #1a2e1a;
+    border-color: rgb(184 215 124 / 34%);
+    background: rgb(184 215 124 / 12%);
+    color: var(--admin-accent-strong);
   }
 
   .admin-status-draft {
-    @apply text-[#1a1a1a];
-    border-color: #d97706;
-    background: #f59e0b;
+    border-color: rgb(226 184 108 / 38%);
+    background: rgb(226 184 108 / 12%);
+    color: var(--admin-warning);
   }
 
   .admin-status-muted {
-    border-color: #333333;
-    background: transparent;
-    color: #8c8c8c;
+    border-color: var(--admin-border-strong);
+    background: rgb(255 255 255 / 3%);
+    color: var(--admin-muted);
   }
 
   .admin-chip {
-    @apply inline-flex px-3 py-1 text-xs tracking-[0.22em] uppercase;
-    border: 1px solid #333333;
-    background: #1a1a1a;
-    color: #8c8c8c;
+    @apply inline-flex w-fit items-center px-2.5 py-1 text-xs;
+    border: 1px solid var(--admin-border);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 4%);
+    color: var(--admin-muted);
   }
 
   .admin-input {
-    @apply border px-4 py-3 text-sm transition outline-none;
-    border-color: #333333;
-    background: #111111;
-    color: #d1d5db;
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.04),
-      0 0 0 1px rgb(255 255 255 / 0%);
+    @apply border px-3 py-2.5 text-sm transition outline-none;
+    border-color: var(--admin-border-strong);
+    border-radius: 0.375rem;
+    background: var(--admin-background);
+    color: var(--admin-foreground);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
+  }
+
+  .admin-console .admin-input {
+    border-color: var(--admin-border-strong);
+    background-color: var(--admin-background) !important;
+    color: var(--admin-foreground) !important;
+    color-scheme: dark;
   }
 
   .admin-input::placeholder {
-    color: #6b7280;
+    color: var(--admin-subtle);
   }
 
   .admin-input:focus {
-    border-color: #f59e0b;
-    @apply ring-2 ring-amber-500/20;
+    border-color: var(--admin-accent);
+    @apply ring-2 ring-[#b8d77c]/20;
   }
 
   .admin-empty {
-    @apply border border-dashed px-4 py-8 text-sm;
-    border-color: #333333;
-    color: #8c8c8c;
+    @apply border border-dashed px-4 py-10 text-sm;
+    border-color: var(--admin-border-strong);
+    border-radius: 0.5rem;
+    background: rgb(255 255 255 / 2%);
+    color: var(--admin-muted);
   }
 
   .admin-console [data-slot="button"] {
-    border-radius: 0;
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.04),
-      0 10px 18px -16px rgb(0 0 0 / 0.72);
+    border-width: 1px;
+    border-radius: 0.375rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    box-shadow: 0 12px 24px -20px rgb(0 0 0 / 90%);
   }
 
   .admin-console [data-slot="button"][data-variant="default"] {
-    border-color: #4ade80 !important;
-    background-color: #4ade80 !important;
-    color: #111111 !important;
+    border-color: var(--admin-accent) !important;
+    background-color: var(--admin-accent) !important;
+    color: var(--admin-accent-foreground) !important;
   }
 
   .admin-console [data-slot="button"][data-variant="default"]:hover {
-    border-color: #86efac !important;
-    background-color: #86efac !important;
-    color: #111111 !important;
+    border-color: var(--admin-accent-strong) !important;
+    background-color: var(--admin-accent-strong) !important;
+    color: var(--admin-accent-foreground) !important;
   }
 
   .admin-console [data-slot="button"][data-variant="outline"] {
-    border-color: #d97706 !important;
-    background-color: #f59e0b !important;
-    color: #1a1a1a !important;
+    border-color: var(--admin-border-strong) !important;
+    background-color: transparent !important;
+    color: var(--admin-foreground) !important;
   }
 
   .admin-console [data-slot="button"][data-variant="outline"]:hover {
-    border-color: #f59e0b !important;
-    background-color: #fbbf24 !important;
-    color: #1a1a1a !important;
+    border-color: rgb(184 215 124 / 55%) !important;
+    background-color: rgb(184 215 124 / 10%) !important;
+    color: var(--admin-accent-strong) !important;
   }
 
   .admin-console [data-slot="button"][data-variant="secondary"] {
-    @apply border-amber-400 bg-amber-600 text-black;
+    border-color: var(--admin-border-strong) !important;
+    background-color: rgb(255 255 255 / 8%) !important;
+    color: var(--admin-foreground) !important;
   }
 
   .admin-console [data-slot="button"][data-variant="secondary"]:hover {
-    @apply border-amber-300 bg-amber-500 text-black;
+    background-color: rgb(255 255 255 / 13%) !important;
   }
 
   .admin-console [data-slot="button"][data-variant="ghost"] {
-    @apply bg-transparent text-gray-400 shadow-none;
+    border-color: transparent !important;
+    background-color: transparent !important;
+    color: var(--admin-muted) !important;
+    box-shadow: none;
   }
 
   .admin-console [data-slot="button"][data-variant="ghost"]:hover {
-    @apply border-[#333333] bg-[#1a1a1a] text-gray-200;
+    border-color: var(--admin-border) !important;
+    background-color: rgb(255 255 255 / 6%) !important;
+    color: var(--admin-foreground) !important;
   }
 
   .admin-console [data-slot="button"][data-variant="destructive"] {
-    border-color: #ef4444 !important;
-    background-color: #ef4444 !important;
-    color: #ffffff !important;
+    border-color: rgb(240 139 129 / 42%) !important;
+    background-color: rgb(240 139 129 / 12%) !important;
+    color: var(--admin-danger) !important;
   }
 
   .admin-console [data-slot="button"][data-variant="destructive"]:hover {
-    border-color: #f87171 !important;
-    background-color: #f87171 !important;
-    color: #ffffff !important;
+    border-color: rgb(240 139 129 / 68%) !important;
+    background-color: rgb(240 139 129 / 20%) !important;
+    color: #ffc0b8 !important;
   }
 
   .admin-console [data-slot="button"][data-variant="link"] {
-    @apply text-blue-500;
+    color: var(--admin-accent) !important;
     box-shadow: none;
   }
 
   .admin-console [data-slot="button"][data-variant="link"]:hover {
-    @apply text-blue-400;
+    color: var(--admin-accent-strong) !important;
+  }
+
+  .admin-console [data-slot="card"] {
+    border-color: var(--admin-border);
+    border-radius: 0.5rem;
+    background-color: var(--admin-surface) !important;
+    color: var(--admin-foreground) !important;
+    box-shadow: 0 18px 42px -34px rgb(0 0 0 / 85%);
   }
 }
 

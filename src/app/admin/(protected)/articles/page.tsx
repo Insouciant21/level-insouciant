@@ -1,6 +1,19 @@
 import Link from "next/link"
+import {
+  ExternalLink,
+  FilePenLine,
+  History,
+  Plus,
+  Send,
+  Trash2,
+  EyeOff,
+} from "lucide-react"
 
-import { deleteArticleAction, hideArticleAction, publishArticleAction } from "@/app/admin/actions"
+import {
+  deleteArticleAction,
+  hideArticleAction,
+  publishArticleAction,
+} from "@/app/admin/actions"
 import { Button } from "@/components/ui/button"
 import { getManagedArticles } from "@/lib/content-admin"
 import { formatDisplayDate } from "@/lib/content"
@@ -9,7 +22,7 @@ export default async function AdminArticlesPage() {
   const articles = await getManagedArticles()
 
   return (
-    <section className="admin-surface px-6 py-6">
+    <section className="admin-surface p-4 sm:p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex flex-col gap-2">
           <p className="admin-kicker">Article Control</p>
@@ -19,30 +32,46 @@ export default async function AdminArticlesPage() {
           </p>
         </div>
 
-        <Button asChild>
-          <Link href="/admin/articles/new">新建文章</Link>
+        <Button asChild className="w-full sm:w-auto">
+          <Link href="/admin/articles/new">
+            <Plus className="size-4" aria-hidden="true" />
+            新建文章
+          </Link>
         </Button>
       </div>
 
       <div className="mt-6 grid gap-4">
         {articles.map((article) => (
-          <article key={article.slug} className="admin-surface-muted px-5 py-5">
+          <article
+            key={article.slug}
+            className="admin-surface-muted p-4 sm:p-5"
+          >
             <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="text-xl font-semibold tracking-tight text-[#e0e0e0]">{article.title}</h2>
-                  <span className={`admin-status-pill ${article.draft ? "admin-status-draft" : "admin-status-live"}`}>
+                  <h2 className="text-lg font-semibold tracking-tight text-[#edf3e9] sm:text-xl">
+                    {article.title}
+                  </h2>
+                  <span
+                    className={`admin-status-pill ${article.draft ? "admin-status-draft" : "admin-status-live"}`}
+                  >
                     {article.draft ? "草稿 / 已隐藏" : "已发布"}
                   </span>
                 </div>
 
                 <p className="admin-copy mt-3">{article.desc}</p>
 
-                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#8c8c8c]">
+                <div className="mt-4 grid gap-2 text-xs text-[#9aa79a] sm:grid-cols-2 xl:grid-cols-4">
                   <span>日期：{formatDisplayDate(article.date)}</span>
                   <span>分类：{article.category}</span>
-                  <span>Slug：{article.slug}</span>
-                  {article.legacySourcePath ? <span>导入来源：{article.legacySourcePath}</span> : null}
+                  <span className="min-w-0 break-all">
+                    Slug：{article.slug}
+                  </span>
+                  {article.legacySourcePath ? (
+                    <span className="min-w-0 break-all">
+                      导入来源：{article.legacySourcePath}
+                    </span>
+                  ) : null}
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -54,36 +83,50 @@ export default async function AdminArticlesPage() {
                 </div>
 
                 <div className="mt-4">
-                  <div className="flex flex-wrap gap-4 text-sm">
-                    <Link href={`/admin/articles/${article.slug}/edit`} className="admin-link">
+                  <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                    <Link
+                      href={`/admin/articles/${article.slug}/edit`}
+                      className="admin-link inline-flex items-center gap-1.5"
+                    >
+                      <FilePenLine className="size-3.5" aria-hidden="true" />
                       编辑文章
                     </Link>
-                    <Link href={`/admin/articles/${article.slug}/history`} className="admin-link">
+                    <Link
+                      href={`/admin/articles/${article.slug}/history`}
+                      className="admin-link inline-flex items-center gap-1.5"
+                    >
+                      <History className="size-3.5" aria-hidden="true" />
                       修订历史
                     </Link>
                     {!article.draft ? (
-                      <Link href={`/articles/${article.slug}`} className="admin-link">
+                      <Link
+                        href={`/articles/${article.slug}`}
+                        className="admin-link inline-flex items-center gap-1.5"
+                      >
+                        <ExternalLink className="size-3.5" aria-hidden="true" />
                         查看前台文章
                       </Link>
                     ) : (
-                      <span className="text-[#8c8c8c]">当前为隐藏文章</span>
+                      <span className="text-[#748073]">当前为隐藏文章</span>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-3 xl:max-w-xs xl:justify-end">
+              <div className="flex flex-wrap gap-2 xl:max-w-xs xl:justify-end">
                 {article.draft ? (
                   <form action={publishArticleAction}>
                     <input type="hidden" name="slug" value={article.slug} />
-                    <Button type="submit">
+                    <Button type="submit" size="sm">
+                      <Send className="size-3.5" aria-hidden="true" />
                       发布
                     </Button>
                   </form>
                 ) : (
                   <form action={hideArticleAction}>
                     <input type="hidden" name="slug" value={article.slug} />
-                    <Button type="submit" variant="outline">
+                    <Button type="submit" variant="outline" size="sm">
+                      <EyeOff className="size-3.5" aria-hidden="true" />
                       下线 / 隐藏
                     </Button>
                   </form>
@@ -91,7 +134,8 @@ export default async function AdminArticlesPage() {
 
                 <form action={deleteArticleAction}>
                   <input type="hidden" name="slug" value={article.slug} />
-                  <Button type="submit" variant="destructive">
+                  <Button type="submit" variant="destructive" size="sm">
+                    <Trash2 className="size-3.5" aria-hidden="true" />
                     删除
                   </Button>
                 </form>

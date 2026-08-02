@@ -3,6 +3,7 @@
 import * as React from "react"
 import { evaluate } from "@mdx-js/mdx"
 import Link from "next/link"
+import { ExternalLink, History, Save, Send } from "lucide-react"
 import * as jsxRuntime from "react/jsx-runtime"
 import rehypeKatex from "rehype-katex"
 import remarkMath from "remark-math"
@@ -61,7 +62,7 @@ function AdminArticleEditorForm({
       <h2
         {...props}
         className={cn(
-          "mt-12 text-2xl font-semibold tracking-tight text-[#e0e0e0]",
+          "mt-12 text-2xl font-semibold tracking-tight text-[#edf3e9]",
           props.className
         )}
       />
@@ -70,7 +71,7 @@ function AdminArticleEditorForm({
       <h3
         {...props}
         className={cn(
-          "mt-10 text-xl font-semibold tracking-tight text-[#d1d5db]",
+          "mt-10 text-xl font-semibold tracking-tight text-[#dce6d8]",
           props.className
         )}
       />
@@ -78,14 +79,14 @@ function AdminArticleEditorForm({
     p: (props: React.ComponentPropsWithoutRef<"p">) => (
       <p
         {...props}
-        className={cn("my-6 leading-8 text-[#c9c9c3]", props.className)}
+        className={cn("my-6 leading-8 text-[#c6d2c1]", props.className)}
       />
     ),
     a: (props: React.ComponentPropsWithoutRef<"a">) => (
       <a
         {...props}
         className={cn(
-          "text-amber-400 underline decoration-amber-700 underline-offset-4 transition-colors hover:text-amber-200",
+          "text-[#b8d77c] underline decoration-[#b8d77c]/50 underline-offset-4 transition-colors hover:text-[#d0ec93]",
           props.className
         )}
       />
@@ -94,7 +95,7 @@ function AdminArticleEditorForm({
       <blockquote
         {...props}
         className={cn(
-          "my-8 border-l-2 border-green-500 bg-[#111111] px-5 py-4 text-[#e5e7eb]",
+          "my-8 border-l-2 border-[#b8d77c] bg-[#10130f] px-5 py-4 text-[#dce6d8]",
           props.className
         )}
       />
@@ -103,7 +104,7 @@ function AdminArticleEditorForm({
       <code
         {...props}
         className={cn(
-          "rounded bg-[#111111] px-1.5 py-0.5 font-mono text-[0.95em] text-amber-300",
+          "rounded bg-[#10130f] px-1.5 py-0.5 font-mono text-[0.95em] text-[#e2b86c]",
           props.className
         )}
       />
@@ -112,7 +113,7 @@ function AdminArticleEditorForm({
       <pre
         {...props}
         className={cn(
-          "my-8 overflow-x-auto rounded-[1.75rem] border border-[#333333] bg-[#111111] px-4 py-4 font-mono text-sm leading-7 text-[#d1d5db]",
+          "my-8 overflow-x-auto rounded-md border border-white/10 bg-[#10130f] px-4 py-4 font-mono text-sm leading-7 text-[#c6d2c1]",
           props.className
         )}
       />
@@ -170,7 +171,7 @@ function AdminArticleEditorForm({
   }
 
   return (
-    <section className="admin-surface px-6 py-6 sm:px-7">
+    <section className="admin-surface p-4 sm:p-6 lg:p-7">
       <div className="flex flex-col gap-3 border-b border-white/10 pb-5">
         <div className="flex flex-wrap items-center gap-3">
           <p className="admin-kicker-accent">
@@ -190,17 +191,25 @@ function AdminArticleEditorForm({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3 text-sm text-[#8c8c8c]">
+          <div className="flex flex-wrap gap-3 text-sm text-[#9aa79a]">
             {lastEditedByName ? (
               <span>最近编辑：{lastEditedByName}</span>
             ) : null}
             {historyHref ? (
-              <Link href={historyHref} className="admin-link">
+              <Link
+                href={historyHref}
+                className="admin-link inline-flex items-center gap-1.5"
+              >
+                <History className="size-3.5" aria-hidden="true" />
                 查看修订历史
               </Link>
             ) : null}
             {previewHref ? (
-              <Link href={previewHref} className="admin-link">
+              <Link
+                href={previewHref}
+                className="admin-link inline-flex items-center gap-1.5"
+              >
+                <ExternalLink className="size-3.5" aria-hidden="true" />
                 预览公开页
               </Link>
             ) : null}
@@ -217,7 +226,7 @@ function AdminArticleEditorForm({
 
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="grid gap-2">
-              <Label htmlFor="article-title" className="text-[#e0e0e0]">
+              <Label htmlFor="article-title" className="text-[#dce6d8]">
                 标题
               </Label>
               <Input
@@ -232,7 +241,7 @@ function AdminArticleEditorForm({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="article-slug" className="text-[#e0e0e0]">
+              <Label htmlFor="article-slug" className="text-[#dce6d8]">
                 Slug
               </Label>
               <Input
@@ -243,13 +252,13 @@ function AdminArticleEditorForm({
                 readOnly={mode === "edit"}
                 value={draft.slug}
                 onChange={handleFieldChange("slug")}
-                className="admin-input read-only:bg-[#0a0a0a] read-only:text-[#6b7280]"
+                className="admin-input read-only:bg-[#10130f] read-only:text-[#748073]"
               />
             </div>
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="article-desc" className="text-[#e0e0e0]">
+            <Label htmlFor="article-desc" className="text-[#dce6d8]">
               摘要
             </Label>
             <Textarea
@@ -265,7 +274,7 @@ function AdminArticleEditorForm({
 
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="grid gap-2">
-              <Label htmlFor="article-category" className="text-[#e0e0e0]">
+              <Label htmlFor="article-category" className="text-[#dce6d8]">
                 分类
               </Label>
               <Input
@@ -280,7 +289,7 @@ function AdminArticleEditorForm({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="article-published-at" className="text-[#e0e0e0]">
+              <Label htmlFor="article-published-at" className="text-[#dce6d8]">
                 发布日期
               </Label>
               <Input
@@ -297,7 +306,7 @@ function AdminArticleEditorForm({
 
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="grid gap-2">
-              <Label htmlFor="article-tags" className="text-[#e0e0e0]">
+              <Label htmlFor="article-tags" className="text-[#dce6d8]">
                 标签
               </Label>
               <Input
@@ -313,7 +322,7 @@ function AdminArticleEditorForm({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="article-cover" className="text-[#e0e0e0]">
+              <Label htmlFor="article-cover" className="text-[#dce6d8]">
                 封面（可选）
               </Label>
               <Input
@@ -329,7 +338,7 @@ function AdminArticleEditorForm({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="article-content" className="text-[#e0e0e0]">
+            <Label htmlFor="article-content" className="text-[#dce6d8]">
               正文 MDX
             </Label>
             <Textarea
@@ -357,9 +366,11 @@ function AdminArticleEditorForm({
                 value="draft"
                 variant="outline"
               >
+                <Save className="size-4" aria-hidden="true" />
                 保存草稿
               </Button>
               <Button type="submit" name="intent" value="publish">
+                <Send className="size-4" aria-hidden="true" />
                 发布更新
               </Button>
             </div>
@@ -367,11 +378,11 @@ function AdminArticleEditorForm({
         </form>
 
         <aside className="xl:sticky xl:top-24">
-          <section className="admin-surface-muted px-6 py-6">
+          <section className="admin-surface-muted px-4 py-5 sm:px-6 sm:py-6">
             <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="admin-kicker-accent">Live Preview</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#4ade80]">
+                <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#edf3e9] sm:text-2xl">
                   实时预览
                 </h2>
               </div>
@@ -392,23 +403,23 @@ function AdminArticleEditorForm({
                   <Skeleton className="h-14 w-4/5" />
                   <Skeleton className="h-5 w-full" />
                   <Skeleton className="h-5 w-5/6" />
-                  <Skeleton className="h-64 w-full rounded-[1.75rem]" />
+                  <Skeleton className="h-64 w-full rounded-md" />
                 </div>
               ) : (
-                <article className="mx-auto min-h-[30rem] w-full max-w-3xl text-[#e0e0e0]">
+                <article className="mx-auto min-h-[30rem] w-full max-w-3xl text-[#edf3e9]">
                   <header className="space-y-5 border-b border-white/10 pb-8">
                     <span className="admin-chip">
                       {draft.category.trim() || "未分类"}
                     </span>
                     <div className="space-y-3">
-                      <h1 className="text-3xl font-semibold tracking-tight text-balance md:text-5xl">
+                      <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
                         {draft.title.trim() || "未命名文章"}
                       </h1>
                       <p className="admin-copy text-base md:text-lg">
                         {draft.desc.trim() || "这里会显示文章摘要预览。"}
                       </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#8c8c8c]">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#9aa79a]">
                       <span>{draft.publishedAt || "发布日期未设置"}</span>
                       <span className="text-white/16">/</span>
                       <span>{draft.category.trim() || "未分类"}</span>
@@ -428,7 +439,7 @@ function AdminArticleEditorForm({
 
                   <div className="mt-8">
                     {PreviewContent ? (
-                      <div className="text-base leading-8 text-[#d1d5db] [&_hr]:my-10 [&_hr]:border-white/10 [&_img]:rounded-[1.75rem] [&_img]:border [&_img]:border-[#333333] [&_img]:bg-[#0a0a0a] [&_li]:my-2 [&_ol]:my-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-[#e0e0e0] [&_table]:my-8 [&_table]:w-full [&_table]:border-collapse [&_tbody_td]:border [&_tbody_td]:border-white/10 [&_tbody_td]:px-3 [&_tbody_td]:py-2 [&_thead_th]:border [&_thead_th]:border-white/10 [&_thead_th]:bg-[#141414] [&_thead_th]:px-3 [&_thead_th]:py-2 [&_ul]:my-6 [&_ul]:list-disc [&_ul]:pl-6">
+                      <div className="text-base leading-8 text-[#c6d2c1] [&_hr]:my-10 [&_hr]:border-white/10 [&_img]:rounded-md [&_img]:border [&_img]:border-white/10 [&_img]:bg-[#10130f] [&_li]:my-2 [&_ol]:my-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-[#edf3e9] [&_table]:my-8 [&_table]:w-full [&_table]:border-collapse [&_tbody_td]:border [&_tbody_td]:border-white/10 [&_tbody_td]:px-3 [&_tbody_td]:py-2 [&_thead_th]:border [&_thead_th]:border-white/10 [&_thead_th]:bg-white/[0.04] [&_thead_th]:px-3 [&_thead_th]:py-2 [&_ul]:my-6 [&_ul]:list-disc [&_ul]:pl-6">
                         <PreviewContent components={previewComponents} />
                       </div>
                     ) : (

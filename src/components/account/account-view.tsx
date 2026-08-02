@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { ExternalLink, KeyRound, Save, Trash2 } from "lucide-react"
 
 import {
   changePasswordAction,
@@ -294,11 +295,11 @@ export function AdminAccountView({
   const initials = (profile.name || profile.email).slice(0, 1).toUpperCase()
 
   return (
-    <section className="admin-surface px-6 py-6">
+    <section className="admin-surface p-4 sm:p-6">
       <div className="flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="admin-kicker-accent">Account Console</p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[#4ade80]">
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[#edf3e9] sm:text-4xl">
             我的资料
           </h1>
           <p className="admin-copy mt-2">
@@ -308,8 +309,8 @@ export function AdminAccountView({
 
         <div className="flex flex-wrap items-center gap-3">
           <span className="admin-status-pill admin-status-live">
-            <span className="size-1.5 bg-[#4ade80]" />
-            Admin Session
+            <span className="size-1.5 rounded-full bg-[#b8d77c]" />
+            管理员会话
           </span>
         </div>
       </div>
@@ -320,11 +321,11 @@ export function AdminAccountView({
         <div className="grid gap-6">
           <Card
             size="sm"
-            className="admin-surface-muted rounded-none px-5 py-5"
+            className="admin-surface-muted px-4 py-4 sm:px-5 sm:py-5"
           >
             <div className="flex items-start gap-4">
               <div
-                className="flex size-16 shrink-0 items-center justify-center border border-[#333333] bg-[#1a1a1a] text-lg font-semibold text-[#e0e0e0]"
+                className="flex size-16 shrink-0 items-center justify-center rounded-lg border border-[#b8d77c]/25 bg-[#b8d77c]/10 text-lg font-semibold text-[#d0ec93]"
                 style={
                   profile.avatarUrl
                     ? {
@@ -339,10 +340,10 @@ export function AdminAccountView({
               </div>
 
               <div className="min-w-0">
-                <p className="text-lg font-semibold text-[#e0e0e0]">
+                <p className="text-lg font-semibold text-[#edf3e9]">
                   {profile.name || "未设置昵称"}
                 </p>
-                <p className="mt-1 text-sm break-all text-[#8c8c8c]">
+                <p className="mt-1 text-sm break-all text-[#9aa79a]">
                   {profile.email}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -359,18 +360,18 @@ export function AdminAccountView({
 
           <Card
             size="sm"
-            className="admin-surface-muted rounded-none px-5 py-5"
+            className="admin-surface-muted px-4 py-4 sm:px-5 sm:py-5"
           >
             <div className="mb-5">
               <p className="admin-kicker">Profile</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">
+              <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#edf3e9] sm:text-2xl">
                 基本信息
               </h2>
             </div>
 
             <form action={updateProfileAction} className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="admin-profile-name" className="text-[#e0e0e0]">
+                <Label htmlFor="admin-profile-name" className="text-[#dce6d8]">
                   昵称
                 </Label>
                 <Input
@@ -384,7 +385,7 @@ export function AdminAccountView({
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="admin-profile-email" className="text-[#e0e0e0]">
+                <Label htmlFor="admin-profile-email" className="text-[#dce6d8]">
                   邮箱
                 </Label>
                 <Input
@@ -400,7 +401,7 @@ export function AdminAccountView({
               <div className="grid gap-2">
                 <Label
                   htmlFor="admin-profile-avatar"
-                  className="text-[#e0e0e0]"
+                  className="text-[#dce6d8]"
                 >
                   头像链接
                 </Label>
@@ -418,6 +419,7 @@ export function AdminAccountView({
                 type="submit"
                 className="mt-2 w-full justify-center sm:w-fit"
               >
+                <Save className="size-4" aria-hidden="true" />
                 保存资料
               </Button>
             </form>
@@ -425,11 +427,11 @@ export function AdminAccountView({
 
           <Card
             size="sm"
-            className="admin-surface-muted rounded-none px-5 py-5"
+            className="admin-surface-muted px-4 py-4 sm:px-5 sm:py-5"
           >
             <div className="mb-5">
               <p className="admin-kicker">Security</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">
+              <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#edf3e9] sm:text-2xl">
                 修改密码
               </h2>
             </div>
@@ -438,7 +440,7 @@ export function AdminAccountView({
               <div className="grid gap-2">
                 <Label
                   htmlFor="admin-current-password"
-                  className="text-[#e0e0e0]"
+                  className="text-[#dce6d8]"
                 >
                   原密码
                 </Label>
@@ -452,7 +454,7 @@ export function AdminAccountView({
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="admin-next-password" className="text-[#e0e0e0]">
+                <Label htmlFor="admin-next-password" className="text-[#dce6d8]">
                   新密码
                 </Label>
                 <Input
@@ -468,7 +470,7 @@ export function AdminAccountView({
               <div className="grid gap-2">
                 <Label
                   htmlFor="admin-confirm-password"
-                  className="text-[#e0e0e0]"
+                  className="text-[#dce6d8]"
                 >
                   确认新密码
                 </Label>
@@ -486,17 +488,21 @@ export function AdminAccountView({
                 type="submit"
                 className="mt-2 w-full justify-center sm:w-fit"
               >
+                <KeyRound className="size-4" aria-hidden="true" />
                 更新密码
               </Button>
             </form>
           </Card>
         </div>
 
-        <Card size="sm" className="admin-surface-muted rounded-none px-5 py-5">
+        <Card
+          size="sm"
+          className="admin-surface-muted px-4 py-4 sm:px-5 sm:py-5"
+        >
           <div className="flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="admin-kicker">My Comments</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">
+              <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#edf3e9] sm:text-2xl">
                 我的评论
               </h2>
             </div>
@@ -508,11 +514,11 @@ export function AdminAccountView({
           <div className="mt-5 grid gap-4">
             {comments.length > 0 ? (
               comments.map((comment) => (
-                <article key={comment.id} className="admin-surface px-4 py-4">
+                <article key={comment.id} className="admin-surface p-4">
                   <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-3">
-                        <p className="font-semibold text-[#e0e0e0]">
+                        <p className="font-semibold text-[#edf3e9]">
                           {comment.articleTitle ?? comment.articleSlug}
                         </p>
                         <span
@@ -521,29 +527,29 @@ export function AdminAccountView({
                           {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
                         </span>
                         {comment.replyToAuthorName ? (
-                          <span className="border border-[#333333] px-2 py-1 text-[11px] tracking-[0.18em] text-[#8c8c8c] uppercase">
+                          <span className="admin-status-pill admin-status-muted">
                             回复 {comment.replyToAuthorName}
                           </span>
                         ) : null}
                         {comment.repliesCount > 0 ? (
-                          <span className="border border-[#333333] px-2 py-1 text-[11px] tracking-[0.18em] text-[#8c8c8c] uppercase">
+                          <span className="admin-status-pill admin-status-muted">
                             {comment.repliesCount} 条回复
                           </span>
                         ) : null}
-                        <span className="text-sm text-[#8c8c8c]">
+                        <span className="text-xs text-[#748073]">
                           {formatAccountCommentDate(comment.createdAt)}
                         </span>
                       </div>
 
-                      <p className="mt-3 text-sm text-[#8c8c8c]">
+                      <p className="mt-3 text-xs text-[#9aa79a]">
                         文章：{comment.articleSlug}
                       </p>
-                      <p className="mt-4 text-sm leading-7 whitespace-pre-line text-[#d1d5db]">
+                      <p className="mt-4 text-sm leading-7 whitespace-pre-line text-[#dce6d8]">
                         {comment.content}
                       </p>
                     </div>
 
-                    <div className="flex flex-wrap gap-3 xl:max-w-xs xl:justify-end">
+                    <div className="flex flex-wrap gap-2 xl:max-w-xs xl:justify-end">
                       <Button
                         asChild
                         variant="outline"
@@ -553,6 +559,10 @@ export function AdminAccountView({
                         <Link
                           href={`/articles/${comment.articleSlug}#article-engagement`}
                         >
+                          <ExternalLink
+                            className="size-3.5"
+                            aria-hidden="true"
+                          />
                           查看文章
                         </Link>
                       </Button>
@@ -572,6 +582,7 @@ export function AdminAccountView({
                           className="justify-center"
                           disabled={comment.repliesCount > 0}
                         >
+                          <Trash2 className="size-3.5" aria-hidden="true" />
                           {comment.repliesCount > 0
                             ? "已有回复，暂不可删除"
                             : "删除这条评论"}
