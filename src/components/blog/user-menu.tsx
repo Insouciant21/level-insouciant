@@ -30,7 +30,7 @@ function UserMenu({ user }: UserMenuProps) {
   const displayName = user?.name?.trim() || user?.email || "游客"
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           type="button"
