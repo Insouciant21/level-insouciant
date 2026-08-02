@@ -8,7 +8,10 @@ import rehypeKatex from "rehype-katex"
 import remarkMath from "remark-math"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Textarea } from "@/components/ui/textarea"
 import { normalizeMdxSource } from "@/lib/mdx"
 import { cn } from "@/lib/utils"
 
@@ -48,7 +51,8 @@ function AdminArticleEditorForm({
 }: AdminArticleEditorFormProps) {
   const [draft, setDraft] = React.useState(values)
   const deferredDraft = React.useDeferredValue(draft)
-  const [PreviewContent, setPreviewContent] = React.useState<PreviewContentComponent | null>(null)
+  const [PreviewContent, setPreviewContent] =
+    React.useState<PreviewContentComponent | null>(null)
   const [previewLoading, setPreviewLoading] = React.useState(true)
   const [previewError, setPreviewError] = React.useState<string | null>(null)
 
@@ -56,17 +60,26 @@ function AdminArticleEditorForm({
     h2: (props: React.ComponentPropsWithoutRef<"h2">) => (
       <h2
         {...props}
-        className={cn("mt-12 text-2xl font-semibold tracking-tight text-[#e0e0e0]", props.className)}
+        className={cn(
+          "mt-12 text-2xl font-semibold tracking-tight text-[#e0e0e0]",
+          props.className
+        )}
       />
     ),
     h3: (props: React.ComponentPropsWithoutRef<"h3">) => (
       <h3
         {...props}
-        className={cn("mt-10 text-xl font-semibold tracking-tight text-[#d1d5db]", props.className)}
+        className={cn(
+          "mt-10 text-xl font-semibold tracking-tight text-[#d1d5db]",
+          props.className
+        )}
       />
     ),
     p: (props: React.ComponentPropsWithoutRef<"p">) => (
-      <p {...props} className={cn("my-6 leading-8 text-[#c9c9c3]", props.className)} />
+      <p
+        {...props}
+        className={cn("my-6 leading-8 text-[#c9c9c3]", props.className)}
+      />
     ),
     a: (props: React.ComponentPropsWithoutRef<"a">) => (
       <a
@@ -89,7 +102,10 @@ function AdminArticleEditorForm({
     code: (props: React.ComponentPropsWithoutRef<"code">) => (
       <code
         {...props}
-        className={cn("rounded bg-[#111111] px-1.5 py-0.5 font-mono text-[0.95em] text-amber-300", props.className)}
+        className={cn(
+          "rounded bg-[#111111] px-1.5 py-0.5 font-mono text-[0.95em] text-amber-300",
+          props.className
+        )}
       />
     ),
     pre: (props: React.ComponentPropsWithoutRef<"pre">) => (
@@ -140,10 +156,10 @@ function AdminArticleEditorForm({
     }
   }, [deferredDraft.content])
 
-  function handleFieldChange(
-    field: keyof typeof values
-  ) {
-    return (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  function handleFieldChange(field: keyof typeof values) {
+    return (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
       const nextValue = event.target.value
 
       setDraft((current) => ({
@@ -175,7 +191,9 @@ function AdminArticleEditorForm({
           </div>
 
           <div className="flex flex-wrap gap-3 text-sm text-[#8c8c8c]">
-            {lastEditedByName ? <span>最近编辑：{lastEditedByName}</span> : null}
+            {lastEditedByName ? (
+              <span>最近编辑：{lastEditedByName}</span>
+            ) : null}
             {historyHref ? (
               <Link href={historyHref} className="admin-link">
                 查看修订历史
@@ -193,12 +211,17 @@ function AdminArticleEditorForm({
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-start">
         <form action={action} className="grid gap-5">
-          {mode === "edit" ? <input type="hidden" name="slug" value={draft.slug} /> : null}
+          {mode === "edit" ? (
+            <input type="hidden" name="slug" value={draft.slug} />
+          ) : null}
 
           <div className="grid gap-5 lg:grid-cols-2">
-            <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#e0e0e0]">标题</span>
-              <input
+            <div className="grid gap-2">
+              <Label htmlFor="article-title" className="text-[#e0e0e0]">
+                标题
+              </Label>
+              <Input
+                id="article-title"
                 type="text"
                 name="title"
                 required
@@ -206,11 +229,14 @@ function AdminArticleEditorForm({
                 onChange={handleFieldChange("title")}
                 className="admin-input"
               />
-            </label>
+            </div>
 
-            <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#e0e0e0]">Slug</span>
-              <input
+            <div className="grid gap-2">
+              <Label htmlFor="article-slug" className="text-[#e0e0e0]">
+                Slug
+              </Label>
+              <Input
+                id="article-slug"
                 type="text"
                 name="slug"
                 required
@@ -219,12 +245,15 @@ function AdminArticleEditorForm({
                 onChange={handleFieldChange("slug")}
                 className="admin-input read-only:bg-[#0a0a0a] read-only:text-[#6b7280]"
               />
-            </label>
+            </div>
           </div>
 
-          <label className="grid gap-2">
-            <span className="text-sm font-medium text-[#e0e0e0]">摘要</span>
-            <textarea
+          <div className="grid gap-2">
+            <Label htmlFor="article-desc" className="text-[#e0e0e0]">
+              摘要
+            </Label>
+            <Textarea
+              id="article-desc"
               name="desc"
               required
               value={draft.desc}
@@ -232,12 +261,15 @@ function AdminArticleEditorForm({
               rows={3}
               className="admin-input leading-7"
             />
-          </label>
+          </div>
 
           <div className="grid gap-5 lg:grid-cols-2">
-            <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#e0e0e0]">分类</span>
-              <input
+            <div className="grid gap-2">
+              <Label htmlFor="article-category" className="text-[#e0e0e0]">
+                分类
+              </Label>
+              <Input
+                id="article-category"
                 type="text"
                 name="category"
                 required
@@ -245,11 +277,14 @@ function AdminArticleEditorForm({
                 onChange={handleFieldChange("category")}
                 className="admin-input"
               />
-            </label>
+            </div>
 
-            <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#e0e0e0]">发布日期</span>
-              <input
+            <div className="grid gap-2">
+              <Label htmlFor="article-published-at" className="text-[#e0e0e0]">
+                发布日期
+              </Label>
+              <Input
+                id="article-published-at"
                 type="date"
                 name="publishedAt"
                 required
@@ -257,13 +292,16 @@ function AdminArticleEditorForm({
                 onChange={handleFieldChange("publishedAt")}
                 className="admin-input"
               />
-            </label>
+            </div>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-2">
-            <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#e0e0e0]">标签</span>
-              <input
+            <div className="grid gap-2">
+              <Label htmlFor="article-tags" className="text-[#e0e0e0]">
+                标签
+              </Label>
+              <Input
+                id="article-tags"
                 type="text"
                 name="tags"
                 required
@@ -272,11 +310,14 @@ function AdminArticleEditorForm({
                 placeholder="用逗号分隔，例如：writing, systems"
                 className="admin-input"
               />
-            </label>
+            </div>
 
-            <label className="grid gap-2">
-              <span className="text-sm font-medium text-[#e0e0e0]">封面（可选）</span>
-              <input
+            <div className="grid gap-2">
+              <Label htmlFor="article-cover" className="text-[#e0e0e0]">
+                封面（可选）
+              </Label>
+              <Input
+                id="article-cover"
                 type="text"
                 name="cover"
                 value={draft.cover}
@@ -284,12 +325,15 @@ function AdminArticleEditorForm({
                 placeholder="留空则不显示封面"
                 className="admin-input"
               />
-            </label>
+            </div>
           </div>
 
-          <label className="grid gap-2">
-            <span className="text-sm font-medium text-[#e0e0e0]">正文 MDX</span>
-            <textarea
+          <div className="grid gap-2">
+            <Label htmlFor="article-content" className="text-[#e0e0e0]">
+              正文 MDX
+            </Label>
+            <Textarea
+              id="article-content"
               name="content"
               required
               value={draft.content}
@@ -297,7 +341,7 @@ function AdminArticleEditorForm({
               rows={24}
               className="admin-input min-h-[32rem] font-mono leading-7 xl:min-h-[44rem]"
             />
-          </label>
+          </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
             <p className="admin-copy">
@@ -307,7 +351,12 @@ function AdminArticleEditorForm({
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <Button type="submit" name="intent" value="draft" variant="outline">
+              <Button
+                type="submit"
+                name="intent"
+                value="draft"
+                variant="outline"
+              >
                 保存草稿
               </Button>
               <Button type="submit" name="intent" value="publish">
@@ -322,7 +371,9 @@ function AdminArticleEditorForm({
             <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="admin-kicker-accent">Live Preview</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#4ade80]">实时预览</h2>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#4ade80]">
+                  实时预览
+                </h2>
               </div>
               <p className="admin-copy">
                 {previewLoading ? "正在更新预览..." : "预览已同步"}
@@ -368,10 +419,7 @@ function AdminArticleEditorForm({
                         .map((tag) => tag.trim())
                         .filter(Boolean)
                         .map((tag) => (
-                          <li
-                            key={tag}
-                            className="admin-chip"
-                          >
+                          <li key={tag} className="admin-chip">
                             {tag}
                           </li>
                         ))}

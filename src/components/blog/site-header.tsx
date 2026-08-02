@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { UserMenu } from "@/components/blog/user-menu"
+import { MobileNav } from "@/components/blog/mobile-nav"
 import { getCurrentUser } from "@/lib/auth"
 import { siteConfig } from "@/lib/site"
 
@@ -32,7 +33,11 @@ async function SiteHeader() {
           </div>
 
           <div className="flex flex-col gap-4 lg:items-end">
-            <nav aria-label="主导航">
+            <div className="flex justify-end md:hidden">
+              <MobileNav user={user} />
+            </div>
+
+            <nav aria-label="主导航" className="hidden md:block">
               <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[0.74rem] font-semibold tracking-[0.28em] text-muted-foreground uppercase">
                 {siteConfig.nav.map((item) => (
                   <li key={item.href}>

@@ -4,6 +4,9 @@ import { redirect } from "next/navigation"
 
 import { userLoginAction } from "@/app/actions/auth"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
 import { getCurrentUser } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
 
@@ -38,7 +41,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     redirect(next)
   }
 
-  const error = params.error ? errorMessages[params.error] ?? "登录失败，请稍后再试。" : null
+  const error = params.error
+    ? (errorMessages[params.error] ?? "登录失败，请稍后再试。")
+    : null
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-16 sm:px-6 lg:px-8">
@@ -62,27 +67,29 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <form action={userLoginAction} className="grid gap-4">
           <input type="hidden" name="redirectTo" value={next} />
 
-          <label className="grid gap-2">
-            <span className="text-sm font-medium">邮箱</span>
-            <input
+          <div className="grid gap-2">
+            <Label htmlFor="login-email">邮箱</Label>
+            <Input
+              id="login-email"
               type="email"
               name="email"
               required
               placeholder="you@example.com"
-              className="field-input"
+              className="field-input h-11 rounded-none"
             />
-          </label>
+          </div>
 
-          <label className="grid gap-2">
-            <span className="text-sm font-medium">密码</span>
-            <input
+          <div className="grid gap-2">
+            <Label htmlFor="login-password">密码</Label>
+            <Input
+              id="login-password"
               type="password"
               name="password"
               required
               placeholder="输入你的密码"
-              className="field-input"
+              className="field-input h-11 rounded-none"
             />
-          </label>
+          </div>
 
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
@@ -90,7 +97,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             登录
           </Button>
 
-          <div className="h-px bg-border/70" />
+          <Separator className="bg-border/70" />
 
           <p className="text-sm text-muted-foreground">
             还没有账号？

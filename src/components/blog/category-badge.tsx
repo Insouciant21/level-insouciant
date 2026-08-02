@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { Badge } from "@/components/ui/badge"
 import { toArchiveSlug } from "@/lib/content"
 
 type CategoryBadgeProps = {
@@ -8,12 +9,13 @@ type CategoryBadgeProps = {
 
 function CategoryBadge({ category }: CategoryBadgeProps) {
   return (
-    <Link
-      href={`/categories/${toArchiveSlug(category)}`}
-      className="inline-flex max-w-full whitespace-normal break-words border border-[#73766f]/48 bg-[#d9d1ad]/54 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)] transition duration-500 hover:border-foreground/20 hover:bg-[#c6bd99]/58 hover:text-foreground"
+    <Badge
+      asChild
+      variant="outline"
+      className="h-auto max-w-full border-[#73766f]/48 bg-[#d9d1ad]/54 px-3 py-1 text-[0.68rem] font-semibold tracking-[0.28em] break-words whitespace-normal text-muted-foreground uppercase shadow-[inset_0_1px_0_rgba(255,252,225,0.18)] transition duration-500 hover:border-foreground/20 hover:bg-[#c6bd99]/58 hover:text-foreground"
     >
-      {category}
-    </Link>
+      <Link href={`/categories/${toArchiveSlug(category)}`}>{category}</Link>
+    </Badge>
   )
 }
 

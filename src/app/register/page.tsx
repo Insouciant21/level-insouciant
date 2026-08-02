@@ -4,6 +4,9 @@ import { redirect } from "next/navigation"
 
 import { userRegisterAction } from "@/app/actions/auth"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
 import { getCurrentUser } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
 
@@ -30,7 +33,9 @@ export const metadata: Metadata = createPageMetadata({
   noIndex: true,
 })
 
-export default async function RegisterPage({ searchParams }: RegisterPageProps) {
+export default async function RegisterPage({
+  searchParams,
+}: RegisterPageProps) {
   const [user, params] = await Promise.all([getCurrentUser(), searchParams])
   const next = params.next && params.next.startsWith("/") ? params.next : "/"
 
@@ -38,7 +43,9 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     redirect(next)
   }
 
-  const error = params.error ? errorMessages[params.error] ?? "注册失败，请稍后再试。" : null
+  const error = params.error
+    ? (errorMessages[params.error] ?? "注册失败，请稍后再试。")
+    : null
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-16 sm:px-6 lg:px-8">
@@ -56,39 +63,42 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
         <form action={userRegisterAction} className="grid gap-4">
           <input type="hidden" name="redirectTo" value={next} />
 
-          <label className="grid gap-2">
-            <span className="text-sm font-medium">用户名</span>
-            <input
+          <div className="grid gap-2">
+            <Label htmlFor="register-name">用户名</Label>
+            <Input
+              id="register-name"
               type="text"
               name="name"
               required
               placeholder="例如：insouciant"
-              className="field-input"
+              className="field-input h-11 rounded-none"
             />
-          </label>
+          </div>
 
-          <label className="grid gap-2">
-            <span className="text-sm font-medium">邮箱</span>
-            <input
+          <div className="grid gap-2">
+            <Label htmlFor="register-email">邮箱</Label>
+            <Input
+              id="register-email"
               type="email"
               name="email"
               required
               placeholder="you@example.com"
-              className="field-input"
+              className="field-input h-11 rounded-none"
             />
-          </label>
+          </div>
 
-          <label className="grid gap-2">
-            <span className="text-sm font-medium">密码</span>
-            <input
+          <div className="grid gap-2">
+            <Label htmlFor="register-password">密码</Label>
+            <Input
+              id="register-password"
               type="password"
               name="password"
               required
               minLength={8}
               placeholder="至少 8 位字符"
-              className="field-input"
+              className="field-input h-11 rounded-none"
             />
-          </label>
+          </div>
 
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
@@ -96,7 +106,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             注册并登录
           </Button>
 
-          <div className="h-px bg-border/70" />
+          <Separator className="bg-border/70" />
 
           <p className="text-sm text-muted-foreground">
             已经有账号了？

@@ -6,7 +6,11 @@ import {
   updateProfileAction,
 } from "@/app/account/actions"
 import { PageShell } from "@/components/blog/page-shell"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import type { AccountCommentItem, AccountProfile } from "@/lib/account"
 import { formatAccountCommentDate } from "@/lib/account-page"
 
@@ -16,159 +20,195 @@ type AccountViewProps = {
   notice: string | null
 }
 
-const accountPanelClass =
-  "public-summary-panel-document px-6 py-6 sm:px-7"
+const accountPanelClass = "public-summary-panel-document px-6 py-6 sm:px-7"
 const accountCardClass =
   "public-summary-card-muted bg-[#aaa891]/28 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_14px_28px_-28px_rgba(0,0,0,0.26)]"
 const accountEntryClass =
   "public-summary-card-muted px-4 py-4 transition duration-700 hover:border-foreground/20 hover:bg-[#d9d1ad]/46"
 const accountChipClass =
-  "public-summary-chip px-3 py-1 text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
+  "h-auto public-summary-chip px-3 py-1 text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
 
-export function UserAccountView({ profile, comments, notice }: AccountViewProps) {
+export function UserAccountView({
+  profile,
+  comments,
+  notice,
+}: AccountViewProps) {
   const initials = (profile.name || profile.email).slice(0, 1).toUpperCase()
 
   return (
     <PageShell>
-      <section className={accountPanelClass}>
+      <Card className={`${accountPanelClass} py-6`}>
         <div className="flex flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="utility-kicker">Account Center</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight">我的资料</h1>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+              我的资料
+            </h1>
           </div>
         </div>
 
-        {notice ? <p className="mt-5 text-sm text-muted-foreground">{notice}</p> : null}
+        {notice ? (
+          <p className="mt-5 text-sm text-muted-foreground">{notice}</p>
+        ) : null}
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
           <div className="grid gap-6">
-            <section className={accountCardClass}>
+            <Card size="sm" className={accountCardClass}>
               <div className="flex items-start gap-4">
                 <div
                   className="flex size-16 shrink-0 items-center justify-center border border-[#73766f]/48 bg-[#d9d1ad]/52 text-lg font-semibold text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)]"
-                  style={profile.avatarUrl ? { backgroundImage: `url(${profile.avatarUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                  style={
+                    profile.avatarUrl
+                      ? {
+                          backgroundImage: `url(${profile.avatarUrl})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }
+                      : undefined
+                  }
                 >
                   {!profile.avatarUrl ? initials : null}
                 </div>
 
                 <div>
-                  <p className="text-lg font-semibold">{profile.name || "未设置昵称"}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{profile.email}</p>
-                  <p className="mt-2 text-sm text-muted-foreground">身份：普通用户</p>
+                  <p className="text-lg font-semibold">
+                    {profile.name || "未设置昵称"}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {profile.email}
+                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    身份：普通用户
+                  </p>
                 </div>
               </div>
-            </section>
+            </Card>
 
-            <section className={accountCardClass}>
+            <Card size="sm" className={accountCardClass}>
               <div className="mb-5">
                 <p className="utility-kicker">Profile</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">基本信息</h2>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+                  基本信息
+                </h2>
               </div>
 
               <form action={updateProfileAction} className="grid gap-4">
-                <label className="grid gap-2">
-                  <span className="text-sm font-medium">昵称</span>
-                  <input
+                <div className="grid gap-2">
+                  <Label htmlFor="profile-name">昵称</Label>
+                  <Input
+                    id="profile-name"
                     type="text"
                     name="name"
                     defaultValue={profile.name ?? ""}
                     placeholder="输入显示给其他人的昵称"
-                    className="field-input"
+                    className="field-input h-11 rounded-none"
                   />
-                </label>
+                </div>
 
-                <label className="grid gap-2">
-                  <span className="text-sm font-medium">邮箱</span>
-                  <input
+                <div className="grid gap-2">
+                  <Label htmlFor="profile-email">邮箱</Label>
+                  <Input
+                    id="profile-email"
                     type="email"
                     name="email"
                     required
                     defaultValue={profile.email}
-                    className="field-input"
+                    className="field-input h-11 rounded-none"
                   />
-                </label>
+                </div>
 
-                <label className="grid gap-2">
-                  <span className="text-sm font-medium">头像链接</span>
-                  <input
+                <div className="grid gap-2">
+                  <Label htmlFor="profile-avatar">头像链接</Label>
+                  <Input
+                    id="profile-avatar"
                     type="url"
                     name="avatarUrl"
                     defaultValue={profile.avatarUrl ?? ""}
                     placeholder="https://example.com/avatar.jpg"
-                    className="field-input"
+                    className="field-input h-11 rounded-none"
                   />
-                </label>
+                </div>
 
-                <Button type="submit" className="mt-2 w-full justify-center sm:w-fit">
+                <Button
+                  type="submit"
+                  className="mt-2 w-full justify-center sm:w-fit"
+                >
                   保存资料
                 </Button>
               </form>
-            </section>
+            </Card>
 
-            <section className={accountCardClass}>
+            <Card size="sm" className={accountCardClass}>
               <div className="mb-5">
                 <p className="utility-kicker">Security</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">修改密码</h2>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+                  修改密码
+                </h2>
               </div>
 
               <form action={changePasswordAction} className="grid gap-4">
-                <label className="grid gap-2">
-                  <span className="text-sm font-medium">原密码</span>
-                  <input
+                <div className="grid gap-2">
+                  <Label htmlFor="current-password">原密码</Label>
+                  <Input
+                    id="current-password"
                     type="password"
                     name="currentPassword"
                     required
-                    className="field-input"
+                    className="field-input h-11 rounded-none"
                   />
-                </label>
+                </div>
 
-                <label className="grid gap-2">
-                  <span className="text-sm font-medium">新密码</span>
-                  <input
+                <div className="grid gap-2">
+                  <Label htmlFor="next-password">新密码</Label>
+                  <Input
+                    id="next-password"
                     type="password"
                     name="nextPassword"
                     required
                     minLength={8}
-                    className="field-input"
+                    className="field-input h-11 rounded-none"
                   />
-                </label>
+                </div>
 
-                <label className="grid gap-2">
-                  <span className="text-sm font-medium">确认新密码</span>
-                  <input
+                <div className="grid gap-2">
+                  <Label htmlFor="confirm-password">确认新密码</Label>
+                  <Input
+                    id="confirm-password"
                     type="password"
                     name="confirmPassword"
                     required
                     minLength={8}
-                    className="field-input"
+                    className="field-input h-11 rounded-none"
                   />
-                </label>
+                </div>
 
-                <Button type="submit" className="mt-2 w-full justify-center sm:w-fit">
+                <Button
+                  type="submit"
+                  className="mt-2 w-full justify-center sm:w-fit"
+                >
                   更新密码
                 </Button>
               </form>
-            </section>
+            </Card>
           </div>
 
-          <section className={accountCardClass}>
+          <Card size="sm" className={accountCardClass}>
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="utility-kicker">My Comments</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">我的评论</h2>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+                  我的评论
+                </h2>
               </div>
-              <span className={accountChipClass}>
+              <Badge variant="outline" className={accountChipClass}>
                 {comments.length} 条
-              </span>
+              </Badge>
             </div>
 
             <div className="mt-5 grid gap-4">
               {comments.length > 0 ? (
                 comments.map((comment) => (
-                  <article
-                    key={comment.id}
-                    className={accountEntryClass}
-                  >
+                  <article key={comment.id} className={accountEntryClass}>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="font-medium">
@@ -184,34 +224,51 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-3">
-                        <span className={accountChipClass}>
+                        <Badge variant="outline" className={accountChipClass}>
                           {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
-                        </span>
+                        </Badge>
                         {comment.repliesCount > 0 ? (
-                          <span className={accountChipClass}>
+                          <Badge variant="outline" className={accountChipClass}>
                             {comment.repliesCount} 条回复
-                          </span>
+                          </Badge>
                         ) : null}
-                        <Button asChild variant="outline" size="sm" className="justify-center">
-                          <Link href={`/articles/${comment.articleSlug}#article-engagement`}>查看文章</Link>
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          className="justify-center"
+                        >
+                          <Link
+                            href={`/articles/${comment.articleSlug}#article-engagement`}
+                          >
+                            查看文章
+                          </Link>
                         </Button>
                       </div>
                     </div>
 
-                    <p className="mt-4 whitespace-pre-line text-sm leading-7 text-muted-foreground">
+                    <p className="mt-4 text-sm leading-7 whitespace-pre-line text-muted-foreground">
                       {comment.content}
                     </p>
 
                     <form action={deleteOwnCommentAction} className="mt-4">
-                      <input type="hidden" name="commentId" value={comment.id} />
+                      <input
+                        type="hidden"
+                        name="commentId"
+                        value={comment.id}
+                      />
                       <Button
                         type="submit"
-                        variant={comment.repliesCount > 0 ? "outline" : "destructive"}
+                        variant={
+                          comment.repliesCount > 0 ? "outline" : "destructive"
+                        }
                         size="sm"
                         className="justify-center"
                         disabled={comment.repliesCount > 0}
                       >
-                        {comment.repliesCount > 0 ? "已有回复，暂不可删除" : "删除这条评论"}
+                        {comment.repliesCount > 0
+                          ? "已有回复，暂不可删除"
+                          : "删除这条评论"}
                       </Button>
                     </form>
                   </article>
@@ -222,14 +279,18 @@ export function UserAccountView({ profile, comments, notice }: AccountViewProps)
                 </div>
               )}
             </div>
-          </section>
+          </Card>
         </div>
-      </section>
+      </Card>
     </PageShell>
   )
 }
 
-export function AdminAccountView({ profile, comments, notice }: AccountViewProps) {
+export function AdminAccountView({
+  profile,
+  comments,
+  notice,
+}: AccountViewProps) {
   const initials = (profile.name || profile.email).slice(0, 1).toUpperCase()
 
   return (
@@ -237,8 +298,12 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
       <div className="flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="admin-kicker-accent">Account Console</p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[#4ade80]">我的资料</h1>
-          <p className="admin-copy mt-2">管理管理员账号资料、密码，以及你在站内留下的评论记录。</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[#4ade80]">
+            我的资料
+          </h1>
+          <p className="admin-copy mt-2">
+            管理管理员账号资料、密码，以及你在站内留下的评论记录。
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -253,125 +318,191 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <div className="grid gap-6">
-          <section className="admin-surface-muted px-5 py-5">
+          <Card
+            size="sm"
+            className="admin-surface-muted rounded-none px-5 py-5"
+          >
             <div className="flex items-start gap-4">
               <div
                 className="flex size-16 shrink-0 items-center justify-center border border-[#333333] bg-[#1a1a1a] text-lg font-semibold text-[#e0e0e0]"
-                style={profile.avatarUrl ? { backgroundImage: `url(${profile.avatarUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                style={
+                  profile.avatarUrl
+                    ? {
+                        backgroundImage: `url(${profile.avatarUrl})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }
+                    : undefined
+                }
               >
                 {!profile.avatarUrl ? initials : null}
               </div>
 
               <div className="min-w-0">
-                <p className="text-lg font-semibold text-[#e0e0e0]">{profile.name || "未设置昵称"}</p>
-                <p className="mt-1 break-all text-sm text-[#8c8c8c]">{profile.email}</p>
+                <p className="text-lg font-semibold text-[#e0e0e0]">
+                  {profile.name || "未设置昵称"}
+                </p>
+                <p className="mt-1 text-sm break-all text-[#8c8c8c]">
+                  {profile.email}
+                </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="admin-status-pill admin-status-live">管理员</span>
-                  <span className="admin-status-pill admin-status-muted">资料中心</span>
+                  <span className="admin-status-pill admin-status-live">
+                    管理员
+                  </span>
+                  <span className="admin-status-pill admin-status-muted">
+                    资料中心
+                  </span>
                 </div>
               </div>
             </div>
-          </section>
+          </Card>
 
-          <section className="admin-surface-muted px-5 py-5">
+          <Card
+            size="sm"
+            className="admin-surface-muted rounded-none px-5 py-5"
+          >
             <div className="mb-5">
               <p className="admin-kicker">Profile</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">基本信息</h2>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">
+                基本信息
+              </h2>
             </div>
 
             <form action={updateProfileAction} className="grid gap-4">
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#e0e0e0]">昵称</span>
-                <input
+              <div className="grid gap-2">
+                <Label htmlFor="admin-profile-name" className="text-[#e0e0e0]">
+                  昵称
+                </Label>
+                <Input
+                  id="admin-profile-name"
                   type="text"
                   name="name"
                   defaultValue={profile.name ?? ""}
                   placeholder="输入显示给其他人的昵称"
                   className="admin-input"
                 />
-              </label>
+              </div>
 
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#e0e0e0]">邮箱</span>
-                <input
+              <div className="grid gap-2">
+                <Label htmlFor="admin-profile-email" className="text-[#e0e0e0]">
+                  邮箱
+                </Label>
+                <Input
+                  id="admin-profile-email"
                   type="email"
                   name="email"
                   required
                   defaultValue={profile.email}
                   className="admin-input"
                 />
-              </label>
+              </div>
 
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#e0e0e0]">头像链接</span>
-                <input
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="admin-profile-avatar"
+                  className="text-[#e0e0e0]"
+                >
+                  头像链接
+                </Label>
+                <Input
+                  id="admin-profile-avatar"
                   type="url"
                   name="avatarUrl"
                   defaultValue={profile.avatarUrl ?? ""}
                   placeholder="https://example.com/avatar.jpg"
                   className="admin-input"
                 />
-              </label>
+              </div>
 
-              <Button type="submit" className="mt-2 w-full justify-center sm:w-fit">
+              <Button
+                type="submit"
+                className="mt-2 w-full justify-center sm:w-fit"
+              >
                 保存资料
               </Button>
             </form>
-          </section>
+          </Card>
 
-          <section className="admin-surface-muted px-5 py-5">
+          <Card
+            size="sm"
+            className="admin-surface-muted rounded-none px-5 py-5"
+          >
             <div className="mb-5">
               <p className="admin-kicker">Security</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">修改密码</h2>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">
+                修改密码
+              </h2>
             </div>
 
             <form action={changePasswordAction} className="grid gap-4">
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#e0e0e0]">原密码</span>
-                <input
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="admin-current-password"
+                  className="text-[#e0e0e0]"
+                >
+                  原密码
+                </Label>
+                <Input
+                  id="admin-current-password"
                   type="password"
                   name="currentPassword"
                   required
                   className="admin-input"
                 />
-              </label>
+              </div>
 
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#e0e0e0]">新密码</span>
-                <input
+              <div className="grid gap-2">
+                <Label htmlFor="admin-next-password" className="text-[#e0e0e0]">
+                  新密码
+                </Label>
+                <Input
+                  id="admin-next-password"
                   type="password"
                   name="nextPassword"
                   required
                   minLength={8}
                   className="admin-input"
                 />
-              </label>
+              </div>
 
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-[#e0e0e0]">确认新密码</span>
-                <input
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="admin-confirm-password"
+                  className="text-[#e0e0e0]"
+                >
+                  确认新密码
+                </Label>
+                <Input
+                  id="admin-confirm-password"
                   type="password"
                   name="confirmPassword"
                   required
                   minLength={8}
                   className="admin-input"
                 />
-              </label>
+              </div>
 
-              <Button type="submit" className="mt-2 w-full justify-center sm:w-fit">
+              <Button
+                type="submit"
+                className="mt-2 w-full justify-center sm:w-fit"
+              >
                 更新密码
               </Button>
             </form>
-          </section>
+          </Card>
         </div>
 
-        <section className="admin-surface-muted px-5 py-5">
+        <Card size="sm" className="admin-surface-muted rounded-none px-5 py-5">
           <div className="flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="admin-kicker">My Comments</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">我的评论</h2>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#e0e0e0]">
+                我的评论
+              </h2>
             </div>
-            <span className="admin-status-pill admin-status-muted">{comments.length} 条记录</span>
+            <span className="admin-status-pill admin-status-muted">
+              {comments.length} 条记录
+            </span>
           </div>
 
           <div className="mt-5 grid gap-4">
@@ -384,43 +515,66 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
                         <p className="font-semibold text-[#e0e0e0]">
                           {comment.articleTitle ?? comment.articleSlug}
                         </p>
-                        <span className={`admin-status-pill ${comment.status === "HIDDEN" ? "admin-status-draft" : "admin-status-live"}`}>
+                        <span
+                          className={`admin-status-pill ${comment.status === "HIDDEN" ? "admin-status-draft" : "admin-status-live"}`}
+                        >
                           {comment.status === "HIDDEN" ? "已隐藏" : "已公开"}
                         </span>
                         {comment.replyToAuthorName ? (
-                          <span className="border border-[#333333] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c8c8c]">
+                          <span className="border border-[#333333] px-2 py-1 text-[11px] tracking-[0.18em] text-[#8c8c8c] uppercase">
                             回复 {comment.replyToAuthorName}
                           </span>
                         ) : null}
                         {comment.repliesCount > 0 ? (
-                          <span className="border border-[#333333] px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-[#8c8c8c]">
+                          <span className="border border-[#333333] px-2 py-1 text-[11px] tracking-[0.18em] text-[#8c8c8c] uppercase">
                             {comment.repliesCount} 条回复
                           </span>
                         ) : null}
-                        <span className="text-sm text-[#8c8c8c]">{formatAccountCommentDate(comment.createdAt)}</span>
+                        <span className="text-sm text-[#8c8c8c]">
+                          {formatAccountCommentDate(comment.createdAt)}
+                        </span>
                       </div>
 
-                      <p className="mt-3 text-sm text-[#8c8c8c]">文章：{comment.articleSlug}</p>
-                      <p className="mt-4 whitespace-pre-line text-sm leading-7 text-[#d1d5db]">
+                      <p className="mt-3 text-sm text-[#8c8c8c]">
+                        文章：{comment.articleSlug}
+                      </p>
+                      <p className="mt-4 text-sm leading-7 whitespace-pre-line text-[#d1d5db]">
                         {comment.content}
                       </p>
                     </div>
 
                     <div className="flex flex-wrap gap-3 xl:max-w-xs xl:justify-end">
-                      <Button asChild variant="outline" size="sm" className="justify-center">
-                        <Link href={`/articles/${comment.articleSlug}#article-engagement`}>查看文章</Link>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="justify-center"
+                      >
+                        <Link
+                          href={`/articles/${comment.articleSlug}#article-engagement`}
+                        >
+                          查看文章
+                        </Link>
                       </Button>
 
                       <form action={deleteOwnCommentAction}>
-                        <input type="hidden" name="commentId" value={comment.id} />
+                        <input
+                          type="hidden"
+                          name="commentId"
+                          value={comment.id}
+                        />
                         <Button
                           type="submit"
-                          variant={comment.repliesCount > 0 ? "outline" : "destructive"}
+                          variant={
+                            comment.repliesCount > 0 ? "outline" : "destructive"
+                          }
                           size="sm"
                           className="justify-center"
                           disabled={comment.repliesCount > 0}
                         >
-                          {comment.repliesCount > 0 ? "已有回复，暂不可删除" : "删除这条评论"}
+                          {comment.repliesCount > 0
+                            ? "已有回复，暂不可删除"
+                            : "删除这条评论"}
                         </Button>
                       </form>
                     </div>
@@ -428,12 +582,10 @@ export function AdminAccountView({ profile, comments, notice }: AccountViewProps
                 </article>
               ))
             ) : (
-              <div className="admin-empty">
-                你还没有发出过评论。
-              </div>
+              <div className="admin-empty">你还没有发出过评论。</div>
             )}
           </div>
-        </section>
+        </Card>
       </div>
     </section>
   )

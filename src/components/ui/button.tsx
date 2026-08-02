@@ -5,7 +5,7 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center border-[2px] border-transparent bg-clip-padding font-sans text-[0.78rem] font-semibold whitespace-nowrap uppercase tracking-[0.24em] text-foreground transition-all duration-200 outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center border-[2px] border-transparent bg-clip-padding font-sans text-[0.78rem] font-semibold tracking-[0.24em] whitespace-nowrap text-foreground uppercase transition-all duration-200 outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -19,8 +19,7 @@ const buttonVariants = cva(
           "border-transparent bg-transparent text-muted-foreground shadow-none hover:border-[#73766f]/45 hover:bg-[#d9d1ad]/36 hover:text-foreground aria-expanded:border-[#73766f]/45 aria-expanded:bg-[#d9d1ad]/42 aria-expanded:text-foreground",
         destructive:
           "border-destructive/70 bg-destructive text-destructive-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.12),0_16px_28px_-22px_rgba(0,0,0,0.28)] hover:border-destructive/85 hover:bg-destructive/88 focus-visible:border-destructive/60 focus-visible:ring-destructive/25",
-        link:
-          "text-[#8a4f34] underline-offset-4 hover:text-[#6f3f28] hover:underline",
+        link: "text-[#8a4f34] underline-offset-4 hover:text-[#6f3f28] hover:underline",
       },
       size: {
         default:
@@ -29,8 +28,7 @@ const buttonVariants = cva(
         sm: "h-9 gap-1 px-3 text-[0.72rem] has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-11 gap-1.5 px-5 text-[0.82rem] has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
         icon: "size-10",
-        "icon-xs":
-          "size-7 [&_svg:not([class*='size-'])]:size-3",
+        "icon-xs": "size-7 [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-9",
         "icon-lg": "size-11",
       },

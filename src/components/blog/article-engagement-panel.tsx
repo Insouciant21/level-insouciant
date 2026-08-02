@@ -5,7 +5,9 @@ import Link from "next/link"
 import { Eye, Heart, MessageSquare, SendHorizonal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import { useMessage } from "@/components/ui/message-provider"
+import { Textarea } from "@/components/ui/textarea"
 
 type ArticleEngagementPanelProps = {
   slug: string
@@ -35,11 +37,9 @@ const outlineActionClass =
 const primaryActionClass =
   "border-primary/65 bg-primary text-primary-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_14px_28px_-24px_rgba(0,0,0,0.32)] hover:border-primary/80 hover:bg-primary/85"
 const fieldTextareaClass =
-  "field-textarea border-[#73766f]/55 bg-[#eee9d6]/62 text-foreground placeholder:text-muted-foreground/80 focus:border-foreground/35 focus:bg-[#eee9d6]/82"
-const engagementPanelClass =
-  "public-summary-panel"
-const engagementCardClass =
-  "public-summary-card"
+  "field-textarea rounded-none border-[#73766f]/55 bg-[#eee9d6]/62 text-foreground placeholder:text-muted-foreground/80 focus:border-foreground/35 focus:bg-[#eee9d6]/82"
+const engagementPanelClass = "public-summary-panel"
+const engagementCardClass = "public-summary-card"
 const engagementChipClass =
   "public-summary-chip gap-2 border-[#73766f]/55 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.2),0_12px_24px_-22px_rgba(0,0,0,0.3)]"
 
@@ -162,10 +162,10 @@ function CommentCard({
     <article className={`${engagementCardClass} px-5 py-5`}>
       <div className="flex flex-col gap-3 border-b border-border/55 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-foreground">
+          <p className="text-sm font-semibold tracking-[0.22em] text-foreground uppercase">
             {comment.authorName}
           </p>
-          <p className="mt-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+          <p className="mt-1 text-xs tracking-[0.2em] text-muted-foreground uppercase">
             {comment.replyToAuthorName
               ? `Reply To ${comment.replyToAuthorName}`
               : "Comment Entry"}
@@ -202,7 +202,7 @@ function CommentCard({
         </div>
       </div>
 
-      <p className="mt-4 whitespace-pre-line break-words text-sm leading-7 text-foreground/78">
+      <p className="mt-4 text-sm leading-7 break-words whitespace-pre-line text-foreground/78">
         {comment.content}
       </p>
 
@@ -214,11 +214,12 @@ function CommentCard({
             void onReplySubmit(comment.id)
           }}
         >
-          <label className="grid gap-2">
-            <span className="text-sm font-medium text-foreground">
+          <div className="grid gap-2">
+            <Label htmlFor={`reply-${comment.id}`} className="text-foreground">
               回复 {comment.authorName}
-            </span>
-            <textarea
+            </Label>
+            <Textarea
+              id={`reply-${comment.id}`}
               value={replyContent}
               onChange={(event) => onReplyContentChange(event.target.value)}
               maxLength={2000}
@@ -226,7 +227,7 @@ function CommentCard({
               placeholder={`回复 ${comment.authorName}...`}
               className={fieldTextareaClass}
             />
-          </label>
+          </div>
 
           {replyError ? (
             <div className="border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
@@ -665,11 +666,12 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             </div>
 
             <form className="mt-5 grid gap-4" onSubmit={handleSubmitComment}>
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-foreground">
+              <div className="grid gap-2">
+                <Label htmlFor="article-comment" className="text-foreground">
                   评论内容
-                </span>
-                <textarea
+                </Label>
+                <Textarea
+                  id="article-comment"
                   value={content}
                   onChange={(event) => {
                     setContent(event.target.value)
@@ -682,7 +684,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
                   placeholder="欢迎分享你的想法、问题或者补充。"
                   className={fieldTextareaClass}
                 />
-              </label>
+              </div>
 
               {commentError ? (
                 <div className="border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">

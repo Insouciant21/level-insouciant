@@ -5,6 +5,9 @@ import Link from "next/link"
 import { motion as Motion } from "motion/react"
 import { Cpu, DatabaseZap, Terminal } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { getArchiveSignal } from "@/lib/archive-presentation"
 import type { ArticleSummary } from "@/types/blog"
 
@@ -40,7 +43,9 @@ function formatRecordLabel(article: ArticleSummary) {
 function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
   const normalizedInitialQuery = initialQuery.trim()
   const [query, setQuery] = useState(initialQuery)
-  const [isSearching, setIsSearching] = useState(Boolean(normalizedInitialQuery))
+  const [isSearching, setIsSearching] = useState(
+    Boolean(normalizedInitialQuery)
+  )
   const [results, setResults] = useState<ArticleSummary[] | null>(null)
   const [activeQuery, setActiveQuery] = useState(normalizedInitialQuery)
   const [searchRun, setSearchRun] = useState(normalizedInitialQuery ? 1 : 0)
@@ -62,10 +67,13 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
       const startedAt = Date.now()
 
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(activeQuery)}`, {
-          signal: controller.signal,
-          cache: "no-store",
-        })
+        const response = await fetch(
+          `/api/search?q=${encodeURIComponent(activeQuery)}`,
+          {
+            signal: controller.signal,
+            cache: "no-store",
+          }
+        )
         const payload = (await response.json()) as SearchResponse
 
         if (!response.ok) {
@@ -76,7 +84,9 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
         const remainingDelay = Math.max(0, 900 - elapsed)
 
         if (remainingDelay > 0) {
-          await new Promise((resolve) => window.setTimeout(resolve, remainingDelay))
+          await new Promise((resolve) =>
+            window.setTimeout(resolve, remainingDelay)
+          )
         }
 
         if (!isActive) {
@@ -92,7 +102,9 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
 
         setResults([])
         setIsSearching(false)
-        setError(caughtError instanceof Error ? caughtError.message : "SEARCH_FAILED")
+        setError(
+          caughtError instanceof Error ? caughtError.message : "SEARCH_FAILED"
+        )
       }
     }
 
@@ -112,11 +124,11 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
         transition={{ duration: 0.6 }}
         className={searchConsoleClass}
       >
-        <div className="pointer-events-none absolute inset-0 opacity-[0.05] bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,1)_50%)] bg-[length:100%_4px]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,1)_50%)] bg-[length:100%_4px] opacity-[0.05]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.4)_100%)]" />
 
         <header className="relative z-10 mb-12 flex items-center justify-between border-b-2 border-primary/20 pb-4">
-          <div className="flex items-center gap-4 text-xs font-sans font-bold uppercase tracking-[0.3em]">
+          <div className="flex items-center gap-4 font-sans text-xs font-bold tracking-[0.3em] uppercase">
             <Terminal className="h-5 w-5 animate-pulse text-primary" />
             Lookup Console v2.4
           </div>
@@ -134,16 +146,24 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
 
             setActiveQuery(nextQuery)
             setSearchRun((current) => current + 1)
-            window.history.replaceState(null, "", `/search?q=${encodeURIComponent(nextQuery)}`)
+            window.history.replaceState(
+              null,
+              "",
+              `/search?q=${encodeURIComponent(nextQuery)}`
+            )
           }}
           className="relative z-10 flex flex-col gap-6"
         >
-          <label className="text-sm font-bold uppercase tracking-widest text-primary/70">
+          <Label
+            htmlFor="archive-search-query"
+            className="text-sm font-bold tracking-widest text-primary/70 uppercase"
+          >
             Enter Entity/Level Designation
-          </label>
+          </Label>
           <div className={searchInputRowClass}>
             <DatabaseZap className="h-6 w-6 text-primary/50" />
-            <input
+            <Input
+              id="archive-search-query"
               autoFocus
               type="text"
               value={query}
@@ -154,21 +174,18 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
                   window.history.replaceState(null, "", "/search")
                 }
               }}
-              className="w-full bg-transparent text-xl text-primary caret-primary outline-none placeholder:text-primary/20 md:text-3xl"
+              className="h-auto w-full rounded-none border-0 bg-transparent px-0 text-xl text-primary caret-primary shadow-none ring-0 outline-none placeholder:text-primary/20 focus-visible:border-0 focus-visible:ring-0 md:text-3xl"
               placeholder="_"
             />
           </div>
-          <button
-            type="submit"
-            className={searchActionClass}
-          >
+          <Button type="submit" className={searchActionClass} size="lg">
             {isSearching ? "Querying Database..." : "Execute Search"}
-          </button>
+          </Button>
         </form>
 
-        <div className="mt-12 min-h-[200px] text-sm">
+        <div className="mt-12 min-h-[200px] text-sm" aria-live="polite">
           {!isSearching && !results && (
-            <div className="flex flex-col gap-2 opacity-50 animate-pulse">
+            <div className="flex animate-pulse flex-col gap-2 opacity-50">
               <div>&gt; AWAITING INPUT</div>
               <div>&gt; SYSTEM READY</div>
             </div>
@@ -176,8 +193,12 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
 
           {isSearching && (
             <div className="flex flex-col gap-2">
-              <div className="text-accent">&gt; PROCESSING QUERY: {activeQuery}</div>
-              <div className="animate-pulse">&gt; ACCESSING DEEP STORAGE...</div>
+              <div className="text-accent">
+                &gt; PROCESSING QUERY: {activeQuery}
+              </div>
+              <div className="animate-pulse">
+                &gt; ACCESSING DEEP STORAGE...
+              </div>
             </div>
           )}
 
@@ -188,13 +209,19 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
               className="flex flex-col gap-4 border-t-2 border-primary/20 pt-8"
             >
               {error ? (
-                <div className="text-destructive">&gt; CONSOLE ERROR: {error}</div>
+                <div className="text-destructive">
+                  &gt; CONSOLE ERROR: {error}
+                </div>
               ) : (
-                <div className="text-[#73766f]">&gt; FOUND {results.length} MATCHES</div>
+                <div className="text-[#73766f]">
+                  &gt; FOUND {results.length} MATCHES
+                </div>
               )}
 
               {!error && results.length === 0 ? (
-                <div className="text-[#73766f]">&gt; NO RECORDS FOUND FOR THIS QUERY</div>
+                <div className="text-[#73766f]">
+                  &gt; NO RECORDS FOUND FOR THIS QUERY
+                </div>
               ) : null}
 
               {!error

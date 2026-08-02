@@ -1,4 +1,5 @@
 import { getArticleStats } from "@/lib/admin"
+import { Card } from "@/components/ui/card"
 import { formatDisplayDate } from "@/lib/content"
 
 export default async function AdminStatsPage() {
@@ -14,7 +15,7 @@ export default async function AdminStatsPage() {
         </p>
       </div>
 
-      <div className="mt-6 overflow-hidden border border-[#333333] bg-[#111111] shadow-[0_24px_48px_-36px_rgba(0,0,0,0.72)]">
+      <Card className="mt-6 rounded-none border-[#333333] bg-[#111111] p-0 text-[#e0e0e0] shadow-[0_24px_48px_-36px_rgba(0,0,0,0.72)]">
         <table className="min-w-full border-collapse">
           <thead className="bg-[#0a0a0a]">
             <tr className="text-left text-sm text-[#8c8c8c]">
@@ -29,24 +30,43 @@ export default async function AdminStatsPage() {
           </thead>
           <tbody className="divide-y divide-[#222222]">
             {articles.map((article) => (
-              <tr key={article.slug} className="transition-colors hover:bg-[#161616]">
+              <tr
+                key={article.slug}
+                className="transition-colors hover:bg-[#161616]"
+              >
                 <td className="px-4 py-4 align-top">
                   <div>
-                    <p className="font-medium text-[#e0e0e0]">{article.title}</p>
-                    <p className="mt-2 text-sm text-[#8c8c8c]">{article.slug}</p>
+                    <p className="font-medium text-[#e0e0e0]">
+                      {article.title}
+                    </p>
+                    <p className="mt-2 text-sm text-[#8c8c8c]">
+                      {article.slug}
+                    </p>
                   </div>
                 </td>
-                <td className="px-4 py-4 text-sm text-[#8c8c8c]">{article.draft ? "草稿 / 隐藏" : "已发布"}</td>
-                <td className="px-4 py-4 text-sm text-[#8c8c8c]">{formatDisplayDate(article.date)}</td>
-                <td className="px-4 py-4 text-sm text-[#8c8c8c]">{article.views}</td>
-                <td className="px-4 py-4 text-sm text-[#8c8c8c]">{article.likes}</td>
-                <td className="px-4 py-4 text-sm text-[#8c8c8c]">{article.comments}</td>
-                <td className="px-4 py-4 text-sm text-[#8c8c8c]">{article.hiddenComments}</td>
+                <td className="px-4 py-4 text-sm text-[#8c8c8c]">
+                  {article.draft ? "草稿 / 隐藏" : "已发布"}
+                </td>
+                <td className="px-4 py-4 text-sm text-[#8c8c8c]">
+                  {formatDisplayDate(article.date)}
+                </td>
+                <td className="px-4 py-4 text-sm text-[#8c8c8c]">
+                  {article.views}
+                </td>
+                <td className="px-4 py-4 text-sm text-[#8c8c8c]">
+                  {article.likes}
+                </td>
+                <td className="px-4 py-4 text-sm text-[#8c8c8c]">
+                  {article.comments}
+                </td>
+                <td className="px-4 py-4 text-sm text-[#8c8c8c]">
+                  {article.hiddenComments}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </Card>
     </section>
   )
 }

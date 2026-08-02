@@ -1,5 +1,7 @@
 import { removeTagAction, renameTagAction } from "@/app/admin/actions"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { getManagedTags } from "@/lib/content-admin"
 
 export default async function AdminTagsPage() {
@@ -18,11 +20,17 @@ export default async function AdminTagsPage() {
       <div className="mt-6 grid gap-4">
         {tags.length > 0 ? (
           tags.map((tag) => (
-            <article key={tag.name} className="admin-surface-muted px-5 py-5">
+            <Card
+              key={tag.name}
+              size="sm"
+              className="admin-surface-muted rounded-none px-5 py-5 text-[#e0e0e0]"
+            >
               <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="text-lg font-semibold tracking-tight text-[#e0e0e0]">{tag.name}</h2>
+                    <h2 className="text-lg font-semibold tracking-tight text-[#e0e0e0]">
+                      {tag.name}
+                    </h2>
                     <span className="admin-status-pill admin-status-muted">
                       {tag.count} 篇文章
                     </span>
@@ -33,9 +41,12 @@ export default async function AdminTagsPage() {
                 </div>
 
                 <div className="grid gap-3 xl:min-w-[24rem]">
-                  <form action={renameTagAction} className="flex flex-col gap-3 sm:flex-row">
+                  <form
+                    action={renameTagAction}
+                    className="flex flex-col gap-3 sm:flex-row"
+                  >
                     <input type="hidden" name="sourceTag" value={tag.name} />
-                    <input
+                    <Input
                       type="text"
                       name="targetTag"
                       required
@@ -55,12 +66,10 @@ export default async function AdminTagsPage() {
                   </form>
                 </div>
               </div>
-            </article>
+            </Card>
           ))
         ) : (
-          <div className="admin-empty">
-            当前还没有可管理的标签。
-          </div>
+          <div className="admin-empty">当前还没有可管理的标签。</div>
         )}
       </div>
     </section>

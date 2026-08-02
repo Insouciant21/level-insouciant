@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 
 import { adminLoginAction } from "@/app/actions/auth"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { createPageMetadata } from "@/lib/seo"
 
 type AdminLoginPageProps = {
@@ -23,15 +25,21 @@ export const metadata: Metadata = createPageMetadata({
   noIndex: true,
 })
 
-export default async function AdminLoginPage({ searchParams }: AdminLoginPageProps) {
+export default async function AdminLoginPage({
+  searchParams,
+}: AdminLoginPageProps) {
   const params = await searchParams
-  const error = params.error ? errorMessages[params.error] ?? "登录失败，请稍后重试。" : null
+  const error = params.error
+    ? (errorMessages[params.error] ?? "登录失败，请稍后重试。")
+    : null
 
   return (
     <main className="admin-console flex min-h-svh flex-1 items-center justify-center bg-[#111111] px-5 py-16 sm:px-6 lg:px-8">
       <section className="terminal-panel grid w-full max-w-6xl gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <div className="relative z-10 space-y-4">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.34em] text-red-500">Admin Access</p>
+          <p className="text-[0.72rem] font-semibold tracking-[0.34em] text-red-500 uppercase">
+            Admin Access
+          </p>
           <h1 className="text-4xl font-semibold tracking-tight text-[#e0e0e0] sm:text-5xl">
             登录后台控制台
           </h1>
@@ -41,34 +49,40 @@ export default async function AdminLoginPage({ searchParams }: AdminLoginPagePro
           <div className="admin-surface-muted px-5 py-5 text-sm leading-7 text-[#8c8c8c]">
             <p className="admin-kicker-accent">Bootstrap</p>
             <p className="mt-3">
-              首次登录时，如果数据库里还没有管理员账号，系统会根据 `.env` 里的 `ADMIN_EMAIL` 和
-              `ADMIN_PASSWORD` 自动创建第一个管理员。
+              首次登录时，如果数据库里还没有管理员账号，系统会根据 `.env` 里的
+              `ADMIN_EMAIL` 和 `ADMIN_PASSWORD` 自动创建第一个管理员。
             </p>
           </div>
         </div>
 
         <form action={adminLoginAction} className="relative z-10 grid gap-4">
-          <label className="grid gap-2">
-            <span className="text-sm font-medium text-[#e0e0e0]">邮箱</span>
-            <input
+          <div className="grid gap-2">
+            <Label htmlFor="admin-login-email" className="text-[#e0e0e0]">
+              邮箱
+            </Label>
+            <Input
+              id="admin-login-email"
               type="email"
               name="email"
               required
               placeholder="admin@example.com"
               className="admin-input bg-[#111111] text-[#4ade80] placeholder:text-[#4ade80]/25"
             />
-          </label>
+          </div>
 
-          <label className="grid gap-2">
-            <span className="text-sm font-medium text-[#e0e0e0]">密码</span>
-            <input
+          <div className="grid gap-2">
+            <Label htmlFor="admin-login-password" className="text-[#e0e0e0]">
+              密码
+            </Label>
+            <Input
+              id="admin-login-password"
               type="password"
               name="password"
               required
               placeholder="输入管理员密码"
               className="admin-input bg-[#111111] text-[#4ade80] placeholder:text-[#4ade80]/25"
             />
-          </label>
+          </div>
 
           {error ? <p className="text-sm text-[#ff8d82]">{error}</p> : null}
 
