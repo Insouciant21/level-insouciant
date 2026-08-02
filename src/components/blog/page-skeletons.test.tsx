@@ -34,6 +34,46 @@ describe("public page skeleton compositions", () => {
     ).toBeGreaterThan(20)
   })
 
+  it("keeps home static copy visible while dynamic records load", () => {
+    const { container } = render(<HomePageSkeleton />)
+    const staticCopy = [
+      "Archive Notes",
+      "Level Insouciant",
+      "这里收集关于技术、日常与学习的记录，也把经验压进同一份档案里。",
+      "Facility Hub // Entry Node",
+      "分叉走廊",
+      "挑一扇门，继续向里走",
+      "Archive",
+      "Archive Index",
+      "最新档案",
+      "查看全部档案",
+      "Observation Log",
+      "观测日志",
+      "Index",
+      "关键词索引",
+      "Custodian Note",
+      "记录者摘要",
+      "公开记录",
+      "分类层级",
+    ]
+
+    for (const text of staticCopy) {
+      const visibleNode = Array.from(
+        container.querySelectorAll("h1, h2, p, span")
+      ).find(
+        (node) =>
+          node.textContent?.trim() === text &&
+          !node.closest('[aria-hidden="true"]')
+      )
+
+      expect(visibleNode, `Expected visible home copy: ${text}`).toBeDefined()
+    }
+
+    expect(
+      container.querySelectorAll('[aria-hidden="true"]').length
+    ).toBeGreaterThan(20)
+  })
+
   it("keeps article loading geometry in document, TOC, engagement, and related regions", () => {
     const { container } = render(<ArticlePageSkeleton />)
 

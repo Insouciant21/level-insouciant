@@ -1,11 +1,16 @@
+import { ArrowRight, ArrowUpRight, MapPin, Sparkles } from "lucide-react"
+
 import { PageShell } from "@/components/blog/page-shell"
 import { PageIntro } from "@/components/blog/page-intro"
+import { buttonVariants } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { siteConfig } from "@/lib/site"
 
 const skeletonPanelClass = "public-summary-panel"
 const skeletonDocumentClass = "public-summary-panel-document"
 const skeletonCardClass = "public-summary-card"
 const skeletonSoftCardClass = "public-summary-card-muted"
+const homeStatLabels = ["公开记录", "关键词索引", "分类层级"] as const
 
 function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
   return (
@@ -22,7 +27,9 @@ function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
       <div className="relative z-10 flex h-full min-w-0 flex-col gap-3 px-4 py-4 sm:px-5 sm:py-5">
         <div className="flex min-w-0 flex-wrap items-start justify-between gap-3 sm:gap-4">
           <Skeleton tone="accent" className="h-5 w-16" />
-          <Skeleton tone="soft" className="h-7 w-20" />
+          <span className="facility-signage-chip border px-2.5 py-1 text-[0.56rem] font-semibold tracking-[0.28em] uppercase shadow-sm sm:text-[0.6rem] sm:tracking-[0.3em]">
+            Archive
+          </span>
         </div>
 
         <div className="mt-auto min-w-0">
@@ -65,23 +72,47 @@ function HomeHeroSkeleton() {
     <section className="grid min-w-0 gap-6">
       <div className="site-section-header min-w-0 items-start">
         <div className="max-w-4xl min-w-0 space-y-5">
-          <Skeleton tone="accent" className="h-4 w-36 max-w-full" />
+          <p className="inline-flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.3em] text-muted-foreground uppercase">
+            <Sparkles className="size-3.5 text-primary" />
+            {siteConfig.hero.eyebrow}
+          </p>
           <div className="min-w-0 space-y-4">
-            <Skeleton tone="neutral" className="h-14 w-full max-w-4xl" />
-            <Skeleton tone="soft" className="h-6 w-full max-w-2xl" />
-            <Skeleton tone="soft" className="h-6 w-4/5 max-w-xl" />
+            <h1 className="max-w-4xl text-4xl leading-[0.98] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+              {siteConfig.hero.title}
+            </h1>
+            <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+              {siteConfig.hero.description}
+            </p>
           </div>
           <div className="flex min-w-0 flex-wrap gap-3">
-            <Skeleton tone="accent" className="h-11 w-40 max-w-full" />
-            <Skeleton tone="soft" className="h-11 w-36 max-w-full" />
+            <span
+              className={buttonVariants({
+                size: "lg",
+                className: "home-hero-primary-action px-5",
+              })}
+            >
+              {siteConfig.hero.primaryAction.label}
+              <ArrowRight className="size-4" />
+            </span>
+            <span
+              className={buttonVariants({
+                variant: "outline",
+                size: "lg",
+                className: "px-5",
+              })}
+            >
+              {siteConfig.hero.secondaryAction.label}
+            </span>
           </div>
         </div>
       </div>
 
       <div className="grid min-w-0 gap-3 sm:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className={`${skeletonCardClass} min-w-0 px-5 py-5`}>
-            <Skeleton tone="soft" className="h-4 w-20" />
+        {homeStatLabels.map((label) => (
+          <div key={label} className={`${skeletonCardClass} min-w-0 px-5 py-5`}>
+            <p className="text-[0.68rem] tracking-[0.24em] text-muted-foreground uppercase">
+              {label}
+            </p>
             <Skeleton tone="neutral" className="mt-3 h-8 w-16" />
           </div>
         ))}
@@ -95,8 +126,10 @@ function TimelinePanelSkeleton() {
     <section className={`${skeletonPanelClass} min-w-0 px-6 py-6 sm:px-7`}>
       <header className="site-section-header mb-5">
         <div>
-          <Skeleton tone="accent" className="h-4 w-28" />
-          <Skeleton tone="neutral" className="mt-2 h-8 w-36" />
+          <p className="utility-kicker">Observation Log</p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
+            观测日志
+          </h2>
         </div>
       </header>
 
@@ -133,8 +166,10 @@ function TagCloudPanelSkeleton() {
     <section className={`${skeletonPanelClass} min-w-0 px-6 py-6 sm:px-7`}>
       <header className="site-section-header mb-5">
         <div>
-          <Skeleton tone="accent" className="h-4 w-20" />
-          <Skeleton tone="neutral" className="mt-2 h-8 w-32" />
+          <p className="utility-kicker">Index</p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
+            关键词索引
+          </h2>
         </div>
         <Skeleton tone="soft" className="h-8 w-20 shrink-0" />
       </header>
@@ -164,18 +199,25 @@ function ProfilePanelSkeleton() {
       <div className="min-w-0 space-y-5">
         <header className="site-section-header">
           <div>
-            <Skeleton tone="accent" className="h-4 w-28" />
-            <Skeleton tone="neutral" className="mt-2 h-8 w-40" />
+            <p className="utility-kicker">Custodian Note</p>
+            <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
+              {siteConfig.profile.title}
+            </h2>
           </div>
-          <Skeleton tone="accent" className="h-8 w-20 shrink-0" />
+          <span className="site-status-pill shrink-0">
+            {siteConfig.profile.status}
+          </span>
         </header>
 
-        <Skeleton tone="soft" className="h-5 w-full max-w-2xl" />
-        <Skeleton tone="soft" className="h-5 w-5/6 max-w-xl" />
+        <p className="text-sm leading-7 text-muted-foreground">
+          {siteConfig.profile.summary}
+        </p>
 
         <div className="flex min-w-0 items-center gap-2">
-          <Skeleton tone="soft" className="size-4 shrink-0" />
-          <Skeleton tone="soft" className="h-4 w-36 max-w-full" />
+          <MapPin className="size-4 shrink-0 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">
+            {siteConfig.profile.location}
+          </span>
         </div>
 
         <div className="grid gap-3">
@@ -184,7 +226,10 @@ function ProfilePanelSkeleton() {
           ))}
         </div>
 
-        <Skeleton tone="accent" className="h-4 w-44 max-w-full" />
+        <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
+          {siteConfig.email}
+          <ArrowUpRight className="size-4" />
+        </span>
       </div>
     </section>
   )
@@ -202,9 +247,13 @@ function HomePageSkeleton() {
         <section className="grid min-w-0 gap-5">
           <header className="site-section-header items-start">
             <div>
-              <Skeleton tone="accent" className="h-4 w-40" />
-              <Skeleton tone="neutral" className="mt-3 h-9 w-44" />
-              <Skeleton tone="soft" className="mt-2 h-5 w-64 max-w-full" />
+              <p className="utility-kicker">Facility Hub // Entry Node</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                分叉走廊
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground sm:text-base">
+                挑一扇门，继续向里走
+              </p>
             </div>
             <Skeleton tone="accent" className="h-7 w-24 shrink-0" />
           </header>
@@ -218,11 +267,12 @@ function HomePageSkeleton() {
             ))}
 
             <div className="relative flex min-h-[16rem] min-w-0 flex-col items-center justify-center overflow-hidden rounded-md border border-destructive/40 bg-[#181b17] px-4 text-center sm:min-h-[18rem]">
-              <Skeleton tone="accent" className="h-4 w-28" />
-              <Skeleton
-                tone="inverse"
-                className="absolute bottom-4 left-4 h-3 w-24"
-              />
+              <p className="text-sm font-semibold tracking-[0.34em] text-destructive uppercase">
+                Dead End
+              </p>
+              <p className="absolute bottom-4 left-4 font-mono text-[0.68rem] tracking-[0.24em] text-[#73766f]/58 uppercase">
+                SEC-ERR-902
+              </p>
             </div>
           </div>
         </section>
@@ -230,15 +280,22 @@ function HomePageSkeleton() {
         <section className="grid min-w-0 gap-5">
           <header className="site-section-header">
             <div className="max-w-3xl min-w-0 space-y-3">
-              <Skeleton tone="accent" className="h-4 w-28" />
-              <Skeleton tone="neutral" className="h-10 w-44" />
-              <Skeleton tone="soft" className="h-5 w-full max-w-3xl" />
-              <Skeleton tone="soft" className="h-5 w-5/6 max-w-2xl" />
+              <p className="utility-kicker">Archive Index</p>
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                最新档案
+              </h2>
             </div>
 
             <div className="flex min-w-0 flex-wrap items-center gap-3">
               <Skeleton tone="soft" className="h-8 w-28" />
-              <Skeleton tone="accent" className="h-9 w-28" />
+              <span
+                className={buttonVariants({
+                  variant: "outline",
+                  size: "sm",
+                })}
+              >
+                查看全部档案
+              </span>
             </div>
           </header>
 
