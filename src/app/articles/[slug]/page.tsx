@@ -7,13 +7,13 @@ import { ArrowLeft } from "lucide-react"
 
 import { ArticleCard } from "@/components/blog/article-card"
 import { ArticlePaginationNav } from "@/components/blog/article-pagination-nav"
+import { ArticleReadingSurface } from "@/components/blog/article-reading-surface"
 import { ArticleTableOfContents } from "@/components/blog/article-table-of-contents"
 import { ContentProse } from "@/components/blog/content-prose"
 import { PerfectScrollbar } from "@/components/ui/perfect-scrollbar"
 import { MotionReveal } from "@/components/motion/page-transition"
 import { PageShell } from "@/components/blog/page-shell"
 import { ArticleEngagementPanelSkeleton } from "@/components/blog/page-skeletons"
-import { ReadingProgressBar } from "@/components/blog/reading-progress-bar"
 import { TagList } from "@/components/blog/tag-list"
 import { getArchiveSignal } from "@/lib/archive-presentation"
 import {
@@ -40,8 +40,7 @@ const ArticleEngagementPanel = dynamic(
   }
 )
 
-const articleDocumentPanelClass =
-  "public-summary-panel-document"
+const articleDocumentPanelClass = "public-summary-panel-document"
 const articleHeaderBadgeClass =
   "public-summary-chip border-[#73766f]/55 bg-[#d9d1ad]/58 px-3 py-1.5 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
 
@@ -92,7 +91,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <PageShell>
-      <ReadingProgressBar targetId="article-reading-root" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: createArticleJsonLd(article) }}
@@ -102,33 +100,33 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </div>
 
       <div className="mx-auto grid w-full max-w-[1200px] gap-8 md:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
-        <MotionReveal variant="left">
-          <article id="article-reading-root" className="min-w-0">
+        <ArticleReadingSurface>
+          <MotionReveal variant="left">
             <div
               className={`${articleDocumentPanelClass} mx-auto w-full max-w-4xl px-4 py-6 sm:px-8 sm:py-8 md:px-16 md:py-12`}
             >
               <Link
                 href="/articles"
-                className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground transition duration-500 hover:text-foreground"
+                className="inline-flex items-center gap-2 text-sm font-semibold tracking-[0.22em] text-muted-foreground uppercase transition duration-500 hover:text-foreground"
               >
                 <ArrowLeft className="size-4" />
                 返回档案索引
               </Link>
 
               <header className="mt-6 border-b border-[#181b17]/72 pb-8 shadow-[0_1px_0_rgba(255,252,225,0.14)]">
-                <div className="flex flex-wrap items-center justify-between gap-4 text-[0.72rem] font-bold uppercase tracking-[0.28em] text-muted-foreground">
+                <div className="flex flex-wrap items-center justify-between gap-4 text-[0.72rem] font-bold tracking-[0.28em] text-muted-foreground uppercase">
                   <span>M.E.G. Database // Archive File</span>
                   <span>{formatDisplayDate(article.date)}</span>
                 </div>
 
-                <h1 className="mt-5 break-words font-serif text-4xl font-bold leading-[0.95] tracking-tight text-foreground text-balance sm:text-5xl md:text-7xl">
+                <h1 className="mt-5 font-serif text-4xl leading-[0.95] font-bold tracking-tight text-balance break-words text-foreground sm:text-5xl md:text-7xl">
                   {article.title}
                 </h1>
                 <p className="mt-5 max-w-3xl text-base leading-8 text-foreground/78 md:text-lg">
                   {article.desc}
                 </p>
 
-                <div className="mt-6 flex flex-wrap gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.26em]">
+                <div className="mt-6 flex flex-wrap gap-3 text-[0.72rem] font-semibold tracking-[0.26em] uppercase">
                   <span className="border border-[#181b17] bg-[#181b17] px-3 py-1.5 text-[#d9d1ad]">
                     Code: {signal.designation}
                   </span>
@@ -143,14 +141,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </header>
 
               {article.cover ? (
-                <div className="group relative mt-8 overflow-hidden rounded-md border border-[#73766f]/38 bg-[#c6bd99] grayscale-[0.24] sepia-[0.22] shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_18px_42px_-34px_rgba(0,0,0,0.34)]">
+                <div className="group relative mt-8 overflow-hidden rounded-md border border-[#73766f]/38 bg-[#c6bd99] shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_18px_42px_-34px_rgba(0,0,0,0.34)] grayscale-[0.24] sepia-[0.22]">
                   <Image
                     src={article.cover}
                     alt={article.title}
                     width={1600}
                     height={880}
                     sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 896px"
-                    className="h-[14rem] w-full object-cover mix-blend-multiply opacity-85 transition duration-[3000ms] group-hover:scale-105 group-hover:opacity-100 sm:h-[18rem] md:h-[22rem]"
+                    className="h-[14rem] w-full object-cover opacity-85 mix-blend-multiply transition duration-[3000ms] group-hover:scale-105 group-hover:opacity-100 sm:h-[18rem] md:h-[22rem]"
                   />
                 </div>
               ) : null}
@@ -164,8 +162,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <ContentProse source={article.content} />
               </div>
             </div>
-          </article>
-        </MotionReveal>
+          </MotionReveal>
+        </ArticleReadingSurface>
 
         <aside className="hidden xl:sticky xl:top-32 xl:grid xl:self-start">
           <MotionReveal variant="right" delay={0.3}>

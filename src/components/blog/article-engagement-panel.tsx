@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import Link from "next/link"
 import { Eye, Heart, MessageSquare, SendHorizonal } from "lucide-react"
 
@@ -53,7 +54,7 @@ type CommentCardProps = {
   onReplyStart: (commentId: string) => void
   onReplyCancel: () => void
   onReplyContentChange: (value: string) => void
-  onReplySubmit: (commentId: string) => Promise<void>
+  onReplySubmit: (commentId: string) => void
 }
 
 function formatCommentDate(value: string) {
@@ -142,6 +143,109 @@ function getCommentErrorMessage(error: unknown) {
   }
 
   return "评论提交失败，请检查内容后重试。"
+}
+
+const EMPTY_ENGAGEMENT_SNAPSHOT: EngagementSnapshot = {
+  views: 0,
+  likes: 0,
+  commentsCount: 0,
+  likedByViewer: false,
+  isAuthenticated: false,
+  currentUserName: null,
+}
+
+type CommentSubmission = {
+  content: string
+  parentId?: string | null
+}
+
+type LikePayload = {
+  likes: number
+  likedByViewer: boolean
+}
+
+function engagementQueryKey(slug: string) {
+  return ["article-engagement", slug] as const
+}
+
+function commentsQueryKey(slug: string) {
+  return ["article-comments", slug] as const
+}
+
+async function fetchEngagement(slug: string): Promise<EngagementSnapshot> {
+  const response = await fetch(`/api/articles/${slug}/engagement`, {
+    cache: "no-store",
+  })
+
+  if (!response.ok) {
+    return EMPTY_ENGAGEMENT_SNAPSHOT
+  }
+
+  return (await response.json()) as EngagementSnapshot
+}
+
+async function fetchComments(slug: string): Promise<Comment[]> {
+  const response = await fetch(`/api/articles/${slug}/comments`, {
+    cache: "no-store",
+  })
+
+  if (!response.ok) {
+    return []
+  }
+
+  const payload = (await response.json()) as { comments: Comment[] }
+  return payload.comments
+}
+
+async function toggleLike(slug: string): Promise<LikePayload> {
+  const response = await fetch(`/api/articles/${slug}/engagement/like`, {
+    method: "POST",
+  })
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("AUTH_REQUIRED")
+    }
+
+    throw new Error("LIKE_FAILED")
+  }
+
+  return (await response.json()) as LikePayload
+}
+
+async function submitComment(
+  slug: string,
+  input: CommentSubmission
+): Promise<{ comment: Comment }> {
+  const response = await fetch(`/api/articles/${slug}/comments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  })
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as {
+      error?: string
+    } | null
+
+    if (response.status === 401) {
+      throw new Error("AUTH_REQUIRED")
+    }
+
+    if (payload?.error) {
+      throw new Error(payload.error)
+    }
+
+    if (response.status === 503) {
+      throw new Error("DATABASE_NOT_CONFIGURED")
+    }
+
+    throw new Error("COMMENT_FAILED")
+  }
+
+  return (await response.json()) as { comment: Comment }
 }
 
 function CommentCard({
@@ -277,73 +381,33 @@ function CommentCard({
 
 function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
   const { showMessage } = useMessage()
-  const [snapshot, setSnapshot] = React.useState<EngagementSnapshot>({
-    views: 0,
-    likes: 0,
-    commentsCount: 0,
-    likedByViewer: false,
-    isAuthenticated: false,
-    currentUserName: null,
-  })
-  const [comments, setComments] = React.useState<Comment[]>([])
+  const queryClient = useQueryClient()
   const [content, setContent] = React.useState("")
   const [replyContent, setReplyContent] = React.useState("")
   const [activeReplyId, setActiveReplyId] = React.useState<string | null>(null)
-  const [loading, setLoading] = React.useState(true)
-  const [likePending, setLikePending] = React.useState(false)
-  const [commentPending, setCommentPending] = React.useState(false)
-  const [replyPending, setReplyPending] = React.useState(false)
   const [commentError, setCommentError] = React.useState<string | null>(null)
   const [replyError, setReplyError] = React.useState<string | null>(null)
 
-  React.useEffect(() => {
-    let active = true
+  const engagementQuery = useQuery({
+    queryKey: engagementQueryKey(slug),
+    queryFn: () => fetchEngagement(slug),
+  })
+  const commentsQuery = useQuery({
+    queryKey: commentsQueryKey(slug),
+    queryFn: () => fetchComments(slug),
+  })
 
-    async function load() {
-      try {
-        const [engagementResponse, commentsResponse] = await Promise.all([
-          fetch(`/api/articles/${slug}/engagement`, {
-            cache: "no-store",
-          }),
-          fetch(`/api/articles/${slug}/comments`, {
-            cache: "no-store",
-          }),
-        ])
-
-        if (!active) {
-          return
-        }
-
-        if (engagementResponse.ok) {
-          const engagement =
-            (await engagementResponse.json()) as EngagementSnapshot
-          setSnapshot(engagement)
-        }
-
-        if (commentsResponse.ok) {
-          const commentsPayload = (await commentsResponse.json()) as {
-            comments: Comment[]
-          }
-          setComments(commentsPayload.comments)
-        }
-      } finally {
-        if (active) {
-          setLoading(false)
-        }
-      }
-    }
-
-    void load()
-
-    return () => {
-      active = false
-    }
-  }, [slug])
+  const snapshot = engagementQuery.data ?? EMPTY_ENGAGEMENT_SNAPSHOT
+  const comments = commentsQuery.data ?? []
+  const loading = engagementQuery.isPending || commentsQuery.isPending
 
   React.useEffect(() => {
     const sessionKey = `insous:viewed:${slug}`
 
-    if (window.sessionStorage.getItem(sessionKey)) {
+    if (
+      engagementQuery.isPending ||
+      window.sessionStorage.getItem(sessionKey)
+    ) {
       return
     }
 
@@ -364,59 +428,35 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
           return
         }
 
-        setSnapshot((current) => ({
-          ...current,
-          views: payload.views,
-        }))
+        queryClient.setQueryData<EngagementSnapshot>(
+          engagementQueryKey(slug),
+          (current) => ({
+            ...(current ?? EMPTY_ENGAGEMENT_SNAPSHOT),
+            views: payload.views,
+          })
+        )
       })
-  }, [slug])
+  }, [engagementQuery.isPending, queryClient, slug])
 
-  async function handleToggleLike() {
-    if (!snapshot.isAuthenticated) {
-      const message = "请先登录，再进行点赞。"
-      setCommentError(message)
-      showMessage({
-        title: "互动未发送",
-        description: message,
-        tone: "warning",
-      })
-      return
-    }
-
-    setLikePending(true)
-    setCommentError(null)
-    setReplyError(null)
-
-    try {
-      const response = await fetch(`/api/articles/${slug}/engagement/like`, {
-        method: "POST",
-      })
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("AUTH_REQUIRED")
-        }
-
-        throw new Error("LIKE_FAILED")
-      }
-
-      const payload = (await response.json()) as {
-        likes: number
-        likedByViewer: boolean
-      }
-
-      setSnapshot((current) => ({
-        ...current,
-        likes: payload.likes,
-        likedByViewer: payload.likedByViewer,
-      }))
+  const likeMutation = useMutation<LikePayload, Error>({
+    mutationFn: () => toggleLike(slug),
+    onSuccess: (payload) => {
+      queryClient.setQueryData<EngagementSnapshot>(
+        engagementQueryKey(slug),
+        (current) => ({
+          ...(current ?? EMPTY_ENGAGEMENT_SNAPSHOT),
+          likes: payload.likes,
+          likedByViewer: payload.likedByViewer,
+        })
+      )
       showMessage({
         title: payload.likedByViewer ? "已记录点赞" : "已取消点赞",
         description: "互动数据已经同步。",
         tone: payload.likedByViewer ? "success" : "info",
       })
-    } catch (likeError) {
-      if (likeError instanceof Error && likeError.message === "AUTH_REQUIRED") {
+    },
+    onError: (likeError) => {
+      if (likeError.message === "AUTH_REQUIRED") {
         const message = "请先登录，再进行点赞。"
         setCommentError(message)
         showMessage({
@@ -433,65 +473,34 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
           tone: "error",
         })
       }
-    } finally {
-      setLikePending(false)
-    }
-  }
+    },
+  })
 
-  async function submitComment(input: {
-    content: string
-    parentId?: string | null
-  }) {
-    const response = await fetch(`/api/articles/${slug}/comments`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(input),
-    })
-
-    if (!response.ok) {
-      const payload = (await response.json().catch(() => null)) as {
-        error?: string
-      } | null
-
-      if (response.status === 401) {
-        throw new Error("AUTH_REQUIRED")
-      }
-
-      if (payload?.error) {
-        throw new Error(payload.error)
-      }
-
-      if (response.status === 503) {
-        throw new Error("DATABASE_NOT_CONFIGURED")
-      }
-
-      throw new Error("COMMENT_FAILED")
-    }
-
-    return (await response.json()) as { comment: Comment }
-  }
-
-  async function handleSubmitComment(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setCommentPending(true)
-    setCommentError(null)
-
-    try {
-      const payload = await submitComment({ content })
-      setComments((current) => insertComment(current, payload.comment))
-      setSnapshot((current) => ({
-        ...current,
-        commentsCount: current.commentsCount + 1,
-      }))
+  const commentMutation = useMutation<
+    { comment: Comment },
+    Error,
+    CommentSubmission
+  >({
+    mutationFn: (input) => submitComment(slug, input),
+    onSuccess: (payload) => {
+      queryClient.setQueryData<Comment[]>(commentsQueryKey(slug), (current) =>
+        insertComment(current ?? [], payload.comment)
+      )
+      queryClient.setQueryData<EngagementSnapshot>(
+        engagementQueryKey(slug),
+        (current) => ({
+          ...(current ?? EMPTY_ENGAGEMENT_SNAPSHOT),
+          commentsCount: (current?.commentsCount ?? 0) + 1,
+        })
+      )
       setContent("")
       showMessage({
         title: "评论已提交",
         description: "评论已经写入当前文章的互动记录。",
         tone: "success",
       })
-    } catch (submitError) {
+    },
+    onError: (submitError) => {
       const message = getCommentErrorMessage(submitError)
       setCommentError(message)
       showMessage({
@@ -499,26 +508,26 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         description: message,
         tone: "error",
       })
-    } finally {
-      setCommentPending(false)
-    }
-  }
+    },
+  })
 
-  async function handleSubmitReply(commentId: string) {
-    setReplyPending(true)
-    setReplyError(null)
-
-    try {
-      const payload = await submitComment({
-        content: replyContent,
-        parentId: commentId,
-      })
-
-      setComments((current) => insertComment(current, payload.comment))
-      setSnapshot((current) => ({
-        ...current,
-        commentsCount: current.commentsCount + 1,
-      }))
+  const replyMutation = useMutation<
+    { comment: Comment },
+    Error,
+    CommentSubmission
+  >({
+    mutationFn: (input) => submitComment(slug, input),
+    onSuccess: (payload) => {
+      queryClient.setQueryData<Comment[]>(commentsQueryKey(slug), (current) =>
+        insertComment(current ?? [], payload.comment)
+      )
+      queryClient.setQueryData<EngagementSnapshot>(
+        engagementQueryKey(slug),
+        (current) => ({
+          ...(current ?? EMPTY_ENGAGEMENT_SNAPSHOT),
+          commentsCount: (current?.commentsCount ?? 0) + 1,
+        })
+      )
       setReplyContent("")
       setActiveReplyId(null)
       showMessage({
@@ -526,7 +535,8 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         description: "回复已经加入当前评论线程。",
         tone: "success",
       })
-    } catch (submitError) {
+    },
+    onError: (submitError) => {
       const message = getCommentErrorMessage(submitError)
       setReplyError(message)
       showMessage({
@@ -534,9 +544,38 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         description: message,
         tone: "error",
       })
-    } finally {
-      setReplyPending(false)
+    },
+  })
+
+  async function handleToggleLike() {
+    if (!snapshot.isAuthenticated) {
+      const message = "请先登录，再进行点赞。"
+      setCommentError(message)
+      showMessage({
+        title: "互动未发送",
+        description: message,
+        tone: "warning",
+      })
+      return
     }
+
+    setCommentError(null)
+    setReplyError(null)
+    likeMutation.mutate()
+  }
+
+  function handleSubmitComment(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setCommentError(null)
+    commentMutation.mutate({ content })
+  }
+
+  function handleSubmitReply(commentId: string) {
+    setReplyError(null)
+    replyMutation.mutate({
+      content: replyContent,
+      parentId: commentId,
+    })
   }
 
   const loginHref = `/login?next=${encodeURIComponent(`/articles/${slug}#article-engagement`)}`
@@ -571,7 +610,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               className={
                 snapshot.likedByViewer ? primaryActionClass : outlineActionClass
               }
-              disabled={likePending}
+              disabled={likeMutation.isPending}
               onClick={() => {
                 void handleToggleLike()
               }}
@@ -620,7 +659,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
                   canReply={snapshot.isAuthenticated}
                   activeReplyId={activeReplyId}
                   replyContent={replyContent}
-                  replyPending={replyPending}
+                  replyPending={replyMutation.isPending}
                   replyError={replyError}
                   onReplyStart={(commentId) => {
                     setActiveReplyId(commentId)
@@ -700,10 +739,10 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
                   type="submit"
                   size="sm"
                   className={primaryActionClass}
-                  disabled={commentPending}
+                  disabled={commentMutation.isPending}
                 >
                   <SendHorizonal className="size-4" />
-                  {commentPending ? "提交中..." : "提交评论"}
+                  {commentMutation.isPending ? "提交中..." : "提交评论"}
                 </Button>
               </div>
             </form>

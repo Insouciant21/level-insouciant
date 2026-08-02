@@ -9,6 +9,7 @@ import rehypeKatex from "rehype-katex"
 import remarkMath from "remark-math"
 
 import { Button } from "@/components/ui/button"
+import { MdxEditor } from "@/components/admin/mdx-editor"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -341,14 +342,16 @@ function AdminArticleEditorForm({
             <Label htmlFor="article-content" className="text-[#dce6d8]">
               正文 MDX
             </Label>
-            <Textarea
+            <input type="hidden" name="content" value={draft.content} />
+            <MdxEditor
               id="article-content"
-              name="content"
-              required
               value={draft.content}
-              onChange={handleFieldChange("content")}
-              rows={24}
-              className="admin-input min-h-[32rem] font-mono leading-7 xl:min-h-[44rem]"
+              onChange={(content) => {
+                setDraft((current) => ({
+                  ...current,
+                  content,
+                }))
+              }}
             />
           </div>
 

@@ -1,15 +1,23 @@
+import remarkMdx from "remark-mdx"
+import remarkParse from "remark-parse"
+import remarkStringify from "remark-stringify"
+import { unified } from "unified"
+import { visit } from "unist-util-visit"
+
 function normalizeFenceMeta(meta: string) {
   if (meta.includes('title="')) {
     return meta.trim()
   }
 
-  return meta.replace(
-    /filename=(?:"([^"]+)"|'([^']+)'|([^\s]+))/,
-    (_, doubleQuoted, singleQuoted, bare) => {
-      const value = doubleQuoted ?? singleQuoted ?? bare ?? ""
-      return `title="${value}"`
-    }
-  ).trim()
+  return meta
+    .replace(
+      /filename=(?:"([^"]+)"|'([^']+)'|([^\s]+))/,
+      (_, doubleQuoted, singleQuoted, bare) => {
+        const value = doubleQuoted ?? singleQuoted ?? bare ?? ""
+        return `title="${value}"`
+      }
+    )
+    .trim()
 }
 
 function normalizeCodeBlockContent(content: string) {
@@ -27,17 +35,38 @@ function normalizeCodeBlockContent(content: string) {
   const nonEmptyLines = lines.filter((line) => line.trim().length > 0)
   const minIndent =
     nonEmptyLines.length > 0
-      ? Math.min(...nonEmptyLines.map((line) => line.match(/^[\t ]*/)?.[0].length ?? 0))
+      ? Math.min(
+          ...nonEmptyLines.map((line) => line.match(/^[\t ]*/)?.[0].length ?? 0)
+        )
       : 0
 
   return lines.map((line) => line.slice(minIndent)).join("\n")
 }
 
-export function normalizeMdxSource(source: string) {
-  return source.replace(/```([^\n]*)\n([\s\S]*?)```/g, (_, rawMeta: string, rawCode: string) => {
-    const meta = normalizeFenceMeta(rawMeta)
-    const code = normalizeCodeBlockContent(rawCode)
+const mdxNormalizationProcessor = unified()
+  .use(remarkParse)
+  .use(remarkMdx)
+  .use(() => (tree) => {
+    visit(tree, "code", (node) => {
+      const codeNode = node as {
+        meta?: string | null
+        value: string
+      }
 
-    return `\`\`\`${meta}\n${code}\n\`\`\``
+      codeNode.meta = normalizeFenceMeta(codeNode.meta ?? "")
+      codeNode.value = normalizeCodeBlockContent(codeNode.value)
+    })
   })
+  .use(remarkStringify)
+
+export function normalizeMdxSource(source: string) {
+  try {
+    const tree = mdxNormalizationProcessor.parse(source)
+    const normalizedTree = mdxNormalizationProcessor.runSync(
+      tree
+    ) as typeof tree
+    return mdxNormalizationProcessor.stringify(normalizedTree)
+  } catch {
+    return source
+  }
 }

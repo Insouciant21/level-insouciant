@@ -1,3 +1,10 @@
+import { toString } from "mdast-util-to-string"
+import { slug as githubSlug } from "github-slugger"
+import remarkMdx from "remark-mdx"
+import remarkParse from "remark-parse"
+import { unified } from "unified"
+import { visit } from "unist-util-visit"
+
 export type TocItem = {
   id: string
   text: string
@@ -14,10 +21,7 @@ function stripMarkdownSyntax(value: string) {
 }
 
 export function slugifyHeading(value: string) {
-  return stripMarkdownSyntax(value)
-    .toLowerCase()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
-    .replace(/^-+|-+$/g, "")
+  return githubSlug(stripMarkdownSyntax(value))
 }
 
 export function createHeadingIdFactory() {
@@ -34,27 +38,26 @@ export function createHeadingIdFactory() {
 
 export function extractTableOfContents(source: string): TocItem[] {
   const nextId = createHeadingIdFactory()
+  const items: TocItem[] = []
 
-  return source
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => /^(##|###)\s+/.test(line))
-    .map((line) => {
-      const match = line.match(/^(##|###)\s+(.+)$/)
+  try {
+    const tree = unified().use(remarkParse).use(remarkMdx).parse(source)
 
-      if (!match) {
-        return null
+    visit(tree, "heading", (node) => {
+      if (node.depth !== 2 && node.depth !== 3) {
+        return
       }
 
-      const [, hashes, rawText] = match
-      const text = stripMarkdownSyntax(rawText)
-      const depth = hashes.length as 2 | 3
-
-      return {
+      const text = toString(node).trim()
+      items.push({
         id: nextId(text),
         text,
-        depth,
-      }
+        depth: node.depth,
+      })
     })
-    .filter((item): item is TocItem => item !== null)
+  } catch {
+    return []
+  }
+
+  return items
 }

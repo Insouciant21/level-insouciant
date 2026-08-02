@@ -1,12 +1,17 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { Barlow_Condensed, Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google"
+import {
+  Barlow_Condensed,
+  Cormorant_Garamond,
+  IBM_Plex_Mono,
+} from "next/font/google"
 
 import "katex/dist/katex.min.css"
 import "./globals.css"
 import { SiteFrame } from "@/components/blog/site-frame"
 import { SiteFooter } from "@/components/blog/site-footer"
 import { SiteHeader } from "@/components/blog/site-header"
+import { QueryProvider } from "@/components/providers/query-provider"
 import { MessageProvider } from "@/components/ui/message-provider"
 import { createPageMetadata, createWebsiteJsonLdString } from "@/lib/seo"
 import { siteConfig } from "@/lib/site"
@@ -104,11 +109,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: createWebsiteJsonLdString() }}
         />
-        <MessageProvider>
-          <SiteFrame header={<SiteHeader />} footer={<SiteFooter />}>
-            {children}
-          </SiteFrame>
-        </MessageProvider>
+        <QueryProvider>
+          <MessageProvider>
+            <SiteFrame header={<SiteHeader />} footer={<SiteFooter />}>
+              {children}
+            </SiteFrame>
+          </MessageProvider>
+        </QueryProvider>
       </body>
     </html>
   )
