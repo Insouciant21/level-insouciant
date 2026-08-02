@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type ReactNode } from "react"
+import { type ReactNode } from "react"
 import Link from "next/link"
 import {
   BarChart3,
@@ -14,7 +14,6 @@ import {
   PanelLeft,
   Tags,
   UserRound,
-  X,
   type LucideIcon,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
@@ -22,6 +21,15 @@ import { usePathname } from "next/navigation"
 import { logoutAction } from "@/app/actions/auth"
 import { Button } from "@/components/ui/button"
 import { PerfectScrollbar } from "@/components/ui/perfect-scrollbar"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 
 type AdminShellProps = {
@@ -72,16 +80,142 @@ function isActiveNavItem(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
+function AdminMobileNav({ userName }: { userName: string }) {
+  return (
+    <div className="sticky top-0 z-40 border-b border-white/10 bg-[#10130f] md:hidden">
+      <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <Link
+          href="/admin/dashboard"
+          className="flex min-w-0 items-center gap-3 text-[#edf3e9]"
+        >
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[#b8d77c]/35 bg-[#b8d77c]/10 text-[#b8d77c]">
+            <PanelLeft className="size-4" aria-hidden="true" />
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-semibold tracking-wide">
+              Level Insouciant
+            </span>
+            <span className="mt-0.5 block text-xs text-[#748073]">
+              管理控制台
+            </span>
+          </span>
+        </Link>
+
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-10 border border-white/10 bg-white/[0.03] text-[#d0ec93] hover:bg-white/10 hover:text-[#edf3e9]"
+              aria-label="打开后台导航"
+              title="打开后台导航"
+            >
+              <Menu className="size-5" />
+            </Button>
+          </SheetTrigger>
+
+          <SheetContent
+            side="right"
+            className="w-[min(88vw,22rem)] border-[#b8d77c]/20 bg-[#10130f] px-5 text-[#edf3e9]"
+          >
+            <SheetHeader className="border-b border-white/10 px-0 pb-5">
+              <p className="admin-kicker">Workspace Relay</p>
+              <SheetTitle className="mt-2 text-2xl tracking-tight text-[#edf3e9]">
+                管理控制台
+              </SheetTitle>
+              <SheetDescription className="leading-7 text-[#748073]">
+                选择一个入口，继续管理站点内容。
+              </SheetDescription>
+            </SheetHeader>
+
+            <nav aria-label="移动端后台导航" className="grid gap-2">
+              {navigationItems.map((item) => {
+                const Icon = item.icon
+
+                return (
+                  <SheetClose key={item.href} asChild>
+                    <Link
+                      href={item.href}
+                      className="group flex items-center gap-3 border border-transparent px-3 py-3 text-[#9aa79a] transition hover:border-white/10 hover:bg-white/5 hover:text-[#edf3e9]"
+                    >
+                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-medium text-[#edf3e9]">
+                          {item.label}
+                        </span>
+                        <span className="mt-0.5 block text-xs text-[#748073]">
+                          {item.description}
+                        </span>
+                      </span>
+                      <ChevronRight
+                        className="size-3.5 shrink-0 text-[#748073] transition-transform group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </SheetClose>
+                )
+              })}
+            </nav>
+
+            <div className="mt-auto border-t border-white/10 pt-5">
+              <div className="flex items-center gap-3 px-3">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#b8d77c]/15 text-xs font-semibold text-[#d0ec93]">
+                  {userName.slice(0, 1).toUpperCase()}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-[#edf3e9]">
+                    {userName}
+                  </p>
+                  <p className="mt-0.5 text-xs text-[#748073]">管理员账户</p>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-2">
+                <SheetClose asChild>
+                  <Link
+                    href="/"
+                    className="flex items-center gap-2 border border-transparent px-3 py-2.5 text-sm text-[#9aa79a] transition hover:border-white/10 hover:bg-white/5 hover:text-[#edf3e9]"
+                  >
+                    <ExternalLink className="size-3.5" aria-hidden="true" />
+                    查看站点
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <form action={logoutAction}>
+                    <input
+                      type="hidden"
+                      name="redirectTo"
+                      value="/admin/login"
+                    />
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      className="w-full justify-start gap-2 px-3 text-[#9aa79a] hover:text-[#edf3e9]"
+                    >
+                      <LogOut className="size-3.5" aria-hidden="true" />
+                      退出登录
+                    </Button>
+                  </form>
+                </SheetClose>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </div>
+  )
+}
+
 function AdminShell({ userName, children }: AdminShellProps) {
   const pathname = usePathname()
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const activeItem =
     navigationItems.find((item) => isActiveNavItem(pathname, item.href)) ??
     navigationItems[0]
 
   return (
     <div className="admin-console flex min-h-svh flex-1 flex-col selection:bg-[#b8d77c]/25 md:flex-row">
-      <aside className="sticky top-0 z-30 flex w-full flex-col border-b border-white/10 bg-[#10130f] md:h-svh md:min-h-svh md:w-64 md:shrink-0 md:self-start md:overflow-hidden md:border-r md:border-b-0">
+      <aside className="sticky top-0 z-30 hidden w-full flex-col border-b border-white/10 bg-[#10130f] md:flex md:h-svh md:min-h-svh md:w-64 md:shrink-0 md:self-start md:overflow-hidden md:border-r md:border-b-0">
         <PerfectScrollbar
           aria-label="后台侧栏"
           tabIndex={0}
@@ -92,7 +226,6 @@ function AdminShell({ userName, children }: AdminShellProps) {
               <Link
                 href="/admin/dashboard"
                 className="flex min-w-0 items-center gap-3 text-[#edf3e9]"
-                onClick={() => setMobileNavOpen(false)}
               >
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[#b8d77c]/35 bg-[#b8d77c]/10 text-[#b8d77c]">
                   <PanelLeft className="size-4" aria-hidden="true" />
@@ -107,32 +240,12 @@ function AdminShell({ userName, children }: AdminShellProps) {
                 </span>
               </Link>
 
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                className="shrink-0 md:hidden"
-                onClick={() => setMobileNavOpen((open) => !open)}
-                aria-expanded={mobileNavOpen}
-                aria-controls="admin-shell-navigation"
-                aria-label={mobileNavOpen ? "收起后台导航" : "展开后台导航"}
-              >
-                {mobileNavOpen ? (
-                  <X className="size-4" />
-                ) : (
-                  <Menu className="size-4" />
-                )}
-              </Button>
             </div>
           </div>
 
           <nav
             id="admin-shell-navigation"
-            className={cn(
-              "px-3 py-4 md:flex-1 md:px-4 md:py-6",
-              mobileNavOpen ? "block" : "hidden",
-              "md:block"
-            )}
+            className="flex-1 px-3 py-4 md:px-4 md:py-6"
             aria-label="后台导航"
           >
             <div className="mb-3 flex items-center justify-between px-2">
@@ -150,7 +263,6 @@ function AdminShell({ userName, children }: AdminShellProps) {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      onClick={() => setMobileNavOpen(false)}
                       className={cn(
                         "group flex items-center gap-3 rounded-md border px-3 py-2.5 transition",
                         active
@@ -190,11 +302,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
           </nav>
 
           <div
-            className={cn(
-              "border-t border-white/10 px-3 py-4 md:px-4 md:py-5",
-              mobileNavOpen ? "block" : "hidden",
-              "md:block"
-            )}
+            className="border-t border-white/10 px-3 py-4 md:px-4 md:py-5"
           >
             <div className="flex items-center gap-3 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2.5">
               <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#b8d77c]/15 text-xs font-semibold text-[#d0ec93]">
@@ -211,7 +319,6 @@ function AdminShell({ userName, children }: AdminShellProps) {
             <div className="mt-3 grid gap-1">
               <Link
                 href="/"
-                onClick={() => setMobileNavOpen(false)}
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-[#9aa79a] transition hover:bg-white/5 hover:text-[#edf3e9]"
               >
                 <ExternalLink className="size-3.5" aria-hidden="true" />
@@ -223,7 +330,6 @@ function AdminShell({ userName, children }: AdminShellProps) {
                   type="submit"
                   variant="ghost"
                   className="w-full justify-start gap-2 px-3"
-                  onClick={() => setMobileNavOpen(false)}
                 >
                   <LogOut className="size-3.5" aria-hidden="true" />
                   退出登录
@@ -233,6 +339,8 @@ function AdminShell({ userName, children }: AdminShellProps) {
           </div>
         </PerfectScrollbar>
       </aside>
+
+      <AdminMobileNav userName={userName} />
 
       <main className="flex min-w-0 flex-1 flex-col bg-[#151914]">
         <div className="border-b border-white/10 bg-[#151914]/95 px-4 py-3 sm:px-6 lg:px-8">
