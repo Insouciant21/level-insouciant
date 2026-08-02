@@ -9,7 +9,7 @@ type ArticleTableOfContentsProps = {
 }
 
 const tocLinkClass =
-  "block border-l border-transparent px-3 py-2 text-sm leading-6 text-muted-foreground transition duration-500 hover:border-[#73766f]/42 hover:bg-[#d9d1ad]/42 hover:text-foreground"
+  "block rounded-sm border-l border-transparent px-3 py-2 text-sm leading-6 text-muted-foreground transition duration-500 hover:border-[#73766f]/42 hover:bg-[#d9d1ad]/42 hover:text-foreground"
 
 function ArticleTableOfContents({ items, className }: ArticleTableOfContentsProps) {
   if (items.length === 0) {

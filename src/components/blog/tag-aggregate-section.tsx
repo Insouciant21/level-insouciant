@@ -23,7 +23,7 @@ function TagAggregateSection({ tag }: TagAggregateSectionProps) {
       id={tag.slug}
       className={`${tagPanelClass} scroll-mt-28 px-6 py-6 sm:px-7`}
     >
-      <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <header className="site-section-header">
         <div>
           <p className="utility-kicker">Tag</p>
           <h2 className="mt-2 text-3xl font-semibold tracking-tight">
@@ -39,7 +39,7 @@ function TagAggregateSection({ tag }: TagAggregateSectionProps) {
         >
           查看独立标签页
         </Link>
-      </div>
+      </header>
 
       <div className="mt-6 grid gap-3">
         {tag.articles.map((article) => (

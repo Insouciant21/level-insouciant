@@ -8,17 +8,11 @@ type HomeTagCloudProps = {
   items: ArchiveItem[]
 }
 
-const tagCloudPanelClass =
-  "public-summary-panel px-6 py-6 sm:px-7"
+const tagCloudPanelClass = "public-summary-panel px-6 py-6 sm:px-7"
 const tagCloudChipClass =
   "public-summary-card-muted inline-flex items-center gap-2 px-4 py-2 font-medium text-foreground transition duration-500 hover:-translate-y-0.5 hover:border-foreground/20 hover:bg-[#d9d1ad]/46"
 
-const densityClasses = [
-  "text-xs",
-  "text-sm",
-  "text-base",
-  "text-lg",
-] as const
+const densityClasses = ["text-xs", "text-sm", "text-base", "text-lg"] as const
 
 function getDensityClass(count: number, min: number, max: number) {
   if (min === max) {
@@ -26,7 +20,10 @@ function getDensityClass(count: number, min: number, max: number) {
   }
 
   const normalized = (count - min) / (max - min)
-  const index = Math.min(densityClasses.length - 1, Math.floor(normalized * densityClasses.length))
+  const index = Math.min(
+    densityClasses.length - 1,
+    Math.floor(normalized * densityClasses.length)
+  )
 
   return densityClasses[index]
 }
@@ -43,13 +40,15 @@ function HomeTagCloud({ items }: HomeTagCloudProps) {
 
   return (
     <section className={tagCloudPanelClass}>
-      <div className="mb-6 flex items-center justify-between gap-3">
+      <header className="site-section-header mb-5">
         <div>
           <p className="utility-kicker">Index</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight">关键词索引</h2>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
+            关键词索引
+          </h2>
         </div>
         <span className="chrome-pill">{items.length} 项</span>
-      </div>
+      </header>
 
       <div className="flex flex-wrap gap-3">
         {visibleItems.map((item) => (

@@ -15,7 +15,7 @@ function ArticleCard({ article }: ArticleCardProps) {
   const signal = getArchiveSignal(article)
 
   return (
-    <Card className="group rounded-none border-[3px] border-[#73766f]/55 bg-[#c6bd99]/78 py-0 shadow-[inset_0_1px_0_rgba(255,252,225,0.2),0_22px_52px_-40px_rgba(0,0,0,0.46)] transition duration-700 before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-[linear-gradient(180deg,rgba(255,252,225,0.12),transparent_38%,rgba(24,27,23,0.11)),radial-gradient(circle_at_16%_20%,rgba(24,27,23,0.06)_0_1px,transparent_1.6px)] before:opacity-55 before:content-[''] hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-[0_30px_70px_-46px_rgba(0,0,0,0.52)]">
+    <Card className="group rounded-md border border-[#73766f]/55 bg-[#c6bd99]/78 py-0 shadow-[inset_0_1px_0_rgba(255,252,225,0.2),0_22px_52px_-40px_rgba(0,0,0,0.46)] transition duration-700 before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-[linear-gradient(180deg,rgba(255,252,225,0.12),transparent_38%,rgba(24,27,23,0.11)),radial-gradient(circle_at_16%_20%,rgba(24,27,23,0.06)_0_1px,transparent_1.6px)] before:opacity-55 before:content-[''] hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-[0_30px_70px_-46px_rgba(0,0,0,0.52)]">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,252,225,0.12),transparent_38%,rgba(24,27,23,0.1))]" />
       <div className="absolute inset-0 z-0 shadow-[inset_0_0_44px_rgba(24,27,23,0.18)]" />
       <Link
@@ -33,7 +33,7 @@ function ArticleCard({ article }: ArticleCardProps) {
 
         <div className="space-y-4">
           <CategoryBadge category={article.category} />
-          <div className="border border-[#73766f]/42 bg-[#d9d1ad]/52 px-4 py-4 shadow-[0_16px_30px_-26px_rgba(0,0,0,0.34)] backdrop-blur-sm transition duration-700 group-hover:-translate-y-1 group-hover:bg-[#d9d1ad]/62 group-hover:shadow-[0_24px_42px_-30px_rgba(0,0,0,0.4)]">
+          <div className="rounded-md border border-[#73766f]/42 bg-[#d9d1ad]/52 px-4 py-4 shadow-[0_16px_30px_-26px_rgba(0,0,0,0.34)] backdrop-blur-sm transition duration-700 group-hover:-translate-y-1 group-hover:bg-[#d9d1ad]/62 group-hover:shadow-[0_24px_42px_-30px_rgba(0,0,0,0.4)]">
             <div className="space-y-3">
               <h2 className="text-2xl leading-tight font-semibold tracking-tight text-balance break-words sm:text-[2rem]">
                 <span className="transition duration-700 group-hover:text-destructive">

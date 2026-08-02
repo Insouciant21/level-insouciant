@@ -20,7 +20,7 @@ function SiteFrame({ children, header, footer }: SiteFrameProps) {
     <div
       className={cn(
         "flex min-h-svh flex-col",
-        isPublicRoute ? "relative overflow-x-hidden" : null
+        isPublicRoute ? "site-console relative overflow-x-hidden" : null
       )}
     >
       {isPublicRoute ? (
@@ -47,9 +47,7 @@ function SiteFrame({ children, header, footer }: SiteFrameProps) {
       <div
         className={cn(
           "flex min-h-svh flex-col",
-          isPublicRoute
-            ? "relative z-10 [&_.site-header-shell]:border-b-0 [&_.site-header-shell]:bg-transparent [&_.site-header-shell]:backdrop-blur-none"
-            : null
+          isPublicRoute ? "relative z-10" : null
         )}
       >
         {isAdminRoute ? null : header}

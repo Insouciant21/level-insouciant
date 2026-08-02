@@ -76,7 +76,7 @@ function CodeBlockFigure({ children }: CodeBlockFigureProps) {
   const label = title || language
 
   return (
-    <figure className="code-block my-8 w-full max-w-full overflow-hidden rounded-[1.75rem] border shadow-[0_28px_80px_-45px_rgba(20,16,13,0.3)]">
+    <figure className="code-block my-8 w-full max-w-full overflow-hidden rounded-md border shadow-[0_28px_80px_-45px_rgba(20,16,13,0.3)]">
       <div className="code-block-toolbar flex items-center justify-between gap-3 border-b px-4 py-3">
         <div className="min-w-0">
           <p className="code-block-label truncate font-mono text-xs tracking-[0.12em] uppercase">

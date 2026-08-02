@@ -16,11 +16,11 @@ const archiveEntryClass =
 
 function ArchiveSection({ title, items, type }: ArchiveSectionProps) {
   return (
-    <section className={`${archivePanelClass} space-y-6 px-6 py-6 sm:px-7`}>
-      <div className="flex items-center justify-between">
+    <section className={`${archivePanelClass} space-y-5 px-6 py-6 sm:px-7`}>
+      <header className="site-section-header">
         <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
         <span className="chrome-pill">{items.length} 项</span>
-      </div>
+      </header>
       <ul className="grid gap-3">
         {items.map((item) => (
           <li key={item.slug}>

@@ -21,13 +21,13 @@ type SearchResponse = {
 }
 
 const searchConsoleClass =
-  "terminal-panel relative overflow-hidden border-[3px] p-8 md:p-12"
+  "terminal-panel relative overflow-hidden rounded-md border p-5 sm:p-8 md:p-10"
 const searchInputRowClass =
-  "flex items-center gap-4 border-l-4 border-primary bg-[#12140f] p-4"
+  "flex items-center gap-4 rounded-md border border-primary/30 bg-[#12140f] p-3 sm:p-4"
 const searchActionClass =
-  "self-end border border-primary/65 bg-primary px-8 py-3 font-sans text-sm font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:border-primary/80 hover:bg-primary/85"
+  "self-end rounded-md border border-primary/65 bg-primary px-6 py-3 font-sans text-sm font-bold uppercase tracking-widest text-primary-foreground transition-colors hover:border-primary/80 hover:bg-primary/85"
 const searchResultClass =
-  "flex cursor-crosshair items-center gap-4 border border-transparent p-4 text-primary transition-all hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
+  "flex cursor-crosshair items-center gap-4 rounded-md border border-transparent p-3 text-primary transition-all hover:border-primary/30 hover:bg-primary/10 hover:text-primary sm:p-4"
 
 function formatRecordLabel(article: ArticleSummary) {
   const signal = getArchiveSignal(article)
@@ -117,7 +117,7 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
   }, [activeQuery, searchRun])
 
   return (
-    <div className="mx-auto w-full max-w-[800px] px-6 py-20 font-mono text-[#1a1a1a]">
+    <div className="mx-auto w-full max-w-[800px] px-0 py-8 font-mono text-[#1a1a1a] sm:px-4 sm:py-12">
       <Motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}

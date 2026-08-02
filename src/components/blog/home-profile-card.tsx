@@ -10,10 +10,9 @@ type HomeProfileCardProps = {
   email: string
 }
 
-const profilePanelClass =
-  "public-summary-panel px-6 py-6 sm:px-7"
+const profilePanelClass = "public-summary-panel px-6 py-6 sm:px-7"
 const profileStatusClass =
-  "chrome-pill border-[#73766f]/48 bg-[#d9d1ad]/48 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)]"
+  "site-status-pill border-[#73766f]/48 bg-[#d9d1ad]/48 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)]"
 const profileFocusClass =
   "public-summary-card-muted px-4 py-3 transition duration-700 hover:border-foreground/20 hover:bg-[#d9d1ad]/46"
 
@@ -28,15 +27,15 @@ function HomeProfileCard({
   return (
     <section className={profilePanelClass}>
       <div className="space-y-5">
-        <div className="flex items-start justify-between gap-4">
+        <header className="site-section-header">
           <div>
             <p className="utility-kicker">Custodian Note</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight">{title}</h2>
+            <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
+              {title}
+            </h2>
           </div>
-          <span className={profileStatusClass}>
-            {status}
-          </span>
-        </div>
+          <span className={profileStatusClass}>{status}</span>
+        </header>
 
         <p className="text-sm leading-7 text-muted-foreground">{summary}</p>
 

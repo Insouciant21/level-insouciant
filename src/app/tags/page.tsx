@@ -33,13 +33,13 @@ export default async function TagsPage() {
       {tags.length > 0 ? (
         <div className="grid gap-6">
           <section className={`${tagOverviewPanelClass} px-6 py-6`}>
-            <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <header className="site-section-header">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Overview</p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight">标签总览</h2>
               </div>
               <p className="text-sm text-muted-foreground">{tags.length} 个标签主题</p>
-            </div>
+            </header>
 
             <div className="mt-6 flex flex-wrap gap-3">
               {tags.map((tag) => (

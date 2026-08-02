@@ -142,7 +142,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </header>
 
               {article.cover ? (
-                <div className="group relative mt-8 overflow-hidden border-[4px] border-[#73766f]/38 bg-[#c6bd99] grayscale-[0.24] sepia-[0.22] shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_18px_42px_-34px_rgba(0,0,0,0.34)]">
+                <div className="group relative mt-8 overflow-hidden rounded-md border border-[#73766f]/38 bg-[#c6bd99] grayscale-[0.24] sepia-[0.22] shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_18px_42px_-34px_rgba(0,0,0,0.34)]">
                   <Image
                     src={article.cover}
                     alt={article.title}

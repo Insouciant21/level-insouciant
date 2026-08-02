@@ -45,7 +45,7 @@ function HomeDoorCard({
         ease: "easeOut",
       }}
       className={cn(
-        "door-card group relative flex flex-col overflow-hidden border-[3px] shadow-[0_26px_54px_-36px_rgba(0,0,0,0.38)] hover:shadow-[0_36px_76px_-34px_rgba(0,0,0,0.42)]",
+        "door-card group relative flex flex-col overflow-hidden border shadow-[0_26px_54px_-36px_rgba(0,0,0,0.38)] hover:shadow-[0_36px_76px_-34px_rgba(0,0,0,0.42)]",
         featured
           ? "min-h-[16rem] border-[#73766f]/60 sm:min-h-[18rem] lg:col-span-2 lg:row-span-2 lg:min-h-[24rem]"
           : "min-h-[16rem] border-[#73766f]/50 sm:min-h-[18rem]"
@@ -60,7 +60,7 @@ function HomeDoorCard({
       <div className="absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(255,252,225,0.12),transparent)] opacity-80" />
       <div className="door-card__shade absolute inset-0 shadow-[inset_0_0_44px_rgba(24,27,23,0.16)]" />
 
-      <div className="relative z-10 flex h-full min-w-0 flex-col px-4 py-4 sm:px-6 sm:py-6">
+      <div className="relative z-10 flex h-full min-w-0 flex-col px-4 py-4 sm:px-5 sm:py-5">
         <div className="flex items-start justify-between gap-3 text-[0.66rem] font-semibold tracking-[0.28em] uppercase sm:gap-4 sm:text-[0.68rem] sm:tracking-[0.3em]">
           <span className="utility-charcoal-chip px-2.5 py-1 shadow-md">
             {signal.designation}
@@ -108,7 +108,7 @@ function HomeDoorGrid({ articles }: HomeDoorGridProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <div className="grid auto-rows-[16rem] gap-4 sm:auto-rows-[18rem] sm:gap-6 md:grid-cols-2 lg:grid-cols-4 xl:gap-10">
+    <div className="grid auto-rows-[16rem] gap-4 sm:auto-rows-[18rem] md:grid-cols-2 lg:grid-cols-4 xl:gap-6">
       {articles.map((article, index) => (
         <HomeDoorCard
           key={article.slug}
@@ -126,7 +126,7 @@ function HomeDoorGrid({ articles }: HomeDoorGridProps) {
           duration: reducedMotion ? 0 : 1.15,
           delay: reducedMotion ? 0 : 0.28 + articles.length * 0.13,
         }}
-        className="relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden border-[3px] border-[#73766f]/42 bg-[#181b17] px-4 text-center text-[#8a4f34] shadow-[inset_0_0_60px_rgba(0,0,0,0.82)] sm:min-h-[18rem]"
+        className="relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden rounded-md border border-[#73766f]/42 bg-[#181b17] px-4 text-center text-[#8a4f34] shadow-[inset_0_0_60px_rgba(0,0,0,0.82)] sm:min-h-[18rem]"
       >
         <p className="text-sm font-semibold tracking-[0.34em] uppercase">
           Dead End

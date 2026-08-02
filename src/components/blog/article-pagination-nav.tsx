@@ -39,7 +39,7 @@ function PaginationItem({ article, label, direction }: PaginationItemProps) {
     <Link
       href={`/articles/${article.slug}`}
       className={cn(
-        "article-sidecard flex min-h-40 flex-col justify-between gap-5 px-6 py-6 shadow-[0_18px_34px_-30px_rgba(0,0,0,0.3)] transition duration-700 hover:-translate-y-0.5 hover:border-foreground/20 hover:bg-[#d9d1ad]/58 hover:shadow-[0_24px_48px_-36px_rgba(0,0,0,0.38)]",
+        "article-sidecard flex min-h-40 flex-col justify-between gap-5 px-5 py-5 shadow-[0_18px_34px_-30px_rgba(0,0,0,0.3)] transition duration-700 hover:-translate-y-0.5 hover:border-foreground/20 hover:bg-[#d9d1ad]/58 hover:shadow-[0_24px_48px_-36px_rgba(0,0,0,0.38)] sm:px-6 sm:py-6",
         isPrevious ? "text-left" : "text-left sm:text-right"
       )}
     >
