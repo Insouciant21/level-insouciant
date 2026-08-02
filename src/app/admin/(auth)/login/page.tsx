@@ -40,7 +40,7 @@ export default async function AdminLoginPage({
       <section className="admin-auth-panel grid w-full max-w-4xl overflow-hidden lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)]">
         <div className="flex flex-col justify-between gap-10 border-b border-white/10 px-6 py-8 sm:px-8 sm:py-10 lg:border-r lg:border-b-0 lg:px-10">
           <div className="space-y-6">
-            <div className="flex size-11 items-center justify-center rounded-lg border border-[#b8d77c]/35 bg-[#b8d77c]/10 text-[#b8d77c]">
+            <div className="flex size-11 items-center justify-center rounded-lg border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/10 text-[var(--safety-exit-green)]">
               <ShieldCheck className="size-5" aria-hidden="true" />
             </div>
             <div className="space-y-3">

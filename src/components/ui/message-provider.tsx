@@ -261,7 +261,7 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
                     ? "text-[#ff8d82]"
                     : message.tone === "warning"
                       ? "text-[#f59e0b]"
-                      : "text-[#4ade80]"
+                      : "text-[var(--safety-exit-green-strong)]"
                   : message.tone === "error"
                     ? "text-[#8a4f34]"
                     : message.tone === "warning"

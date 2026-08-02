@@ -14,7 +14,9 @@
   --dirty-off-white: #eee9d6;
   --institutional-gray-beige: #aaa891;
   --concrete-gray: #73766f;
-  --fluorescent-green: #a2c957;
+  --safety-exit-green-rgb: 0 155 78;
+  --safety-exit-green: #009b4e;
+  --safety-exit-green-strong: #62d99a;
   --warning-amber: #c58b2f;
   --muted-rust: #8a4f34;
   --utility-charcoal: #181b17;
@@ -24,7 +26,7 @@
   --card-foreground: #1b1b16;
   --popover: var(--maintenance-cream);
   --popover-foreground: #1b1b16;
-  --primary: var(--fluorescent-green);
+  --primary: var(--safety-exit-green);
   --primary-foreground: #151712;
   --secondary: var(--concrete-gray);
   --secondary-foreground: var(--dirty-off-white);
@@ -36,8 +38,8 @@
   --destructive-foreground: var(--dirty-off-white);
   --border: rgb(27 27 22 / 22%);
   --input: transparent;
-  --ring: rgb(162 201 87 / 28%);
-  --chart-1: var(--fluorescent-green);
+  --ring: rgb(var(--safety-exit-green-rgb) / 28%);
+  --chart-1: var(--safety-exit-green);
   --chart-2: var(--warning-amber);
   --chart-3: var(--concrete-gray);
   --chart-4: var(--muted-rust);
@@ -45,12 +47,12 @@
   --radius: 0.32rem;
   --sidebar: #12140f;
   --sidebar-foreground: #d5d2bc;
-  --sidebar-primary: var(--fluorescent-green);
+  --sidebar-primary: var(--safety-exit-green);
   --sidebar-primary-foreground: #151712;
   --sidebar-accent: var(--utility-charcoal);
   --sidebar-accent-foreground: #d5d2bc;
   --sidebar-border: rgb(54 55 45 / 100%);
-  --sidebar-ring: rgb(162 201 87 / 28%);
+  --sidebar-ring: rgb(var(--safety-exit-green-rgb) / 28%);
   --hero-glow: rgb(197 139 47 / 16%);
   --surface-shadow: 0 0 0;
   --surface-highlight: rgb(255 252 225 / 45%);
@@ -138,7 +140,7 @@
       radial-gradient(circle at 50% 10rem, var(--hero-glow), transparent 27rem),
       radial-gradient(
         circle at 72% 26%,
-        rgb(162 201 87 / 10%),
+        rgb(var(--safety-exit-green-rgb) / 10%),
         transparent 30rem
       ),
       radial-gradient(
@@ -338,7 +340,7 @@
       ),
       radial-gradient(
         circle at 82% 22%,
-        rgb(162 201 87 / 11%),
+        rgb(var(--safety-exit-green-rgb) / 11%),
         transparent 34rem
       ),
       radial-gradient(
@@ -403,7 +405,7 @@
       linear-gradient(
         90deg,
         rgb(197 139 47 / 20%),
-        rgb(162 201 87 / 14%),
+        rgb(var(--safety-exit-green-rgb) / 14%),
         rgb(115 118 111 / 12%)
       );
     background-size:
@@ -601,7 +603,7 @@
     inset: 0;
     background:
       linear-gradient(rgb(255 255 255 / 0%) 50%, rgb(24 27 23 / 100%) 50%),
-      radial-gradient(circle at 18% 0, rgb(162 201 87 / 10%), transparent 19rem);
+      radial-gradient(circle at 18% 0, rgb(var(--safety-exit-green-rgb) / 10%), transparent 19rem);
     background-size:
       100% 6px,
       auto;
@@ -618,7 +620,7 @@
 
   .utility-brand-link:hover {
     color: var(--foreground);
-    text-shadow: 0 0 18px rgb(162 201 87 / 22%);
+    text-shadow: 0 0 18px rgb(var(--safety-exit-green-rgb) / 22%);
   }
 
   .signal-beacon {
@@ -628,9 +630,9 @@
   .signal-beacon__halo {
     position: absolute;
     inset: -0.2rem;
-    border: 1px solid rgb(162 201 87 / 36%);
-    background: rgb(162 201 87 / 10%);
-    box-shadow: 0 0 18px rgb(162 201 87 / 18%);
+    border: 1px solid rgb(var(--safety-exit-green-rgb) / 36%);
+    background: rgb(var(--safety-exit-green-rgb) / 10%);
+    box-shadow: 0 0 18px rgb(var(--safety-exit-green-rgb) / 18%);
     animation: utility-soft-flicker 5.8s steps(1, end) infinite;
   }
 
@@ -638,9 +640,9 @@
     position: relative;
     width: 0.5rem;
     height: 0.5rem;
-    background: var(--fluorescent-green);
+    background: var(--safety-exit-green);
     box-shadow:
-      0 0 12px rgb(162 201 87 / 42%),
+      0 0 12px rgb(var(--safety-exit-green-rgb) / 42%),
       inset 0 0 0 1px rgb(24 27 23 / 20%);
     animation: utility-luminance-drift 7.2s ease-in-out infinite;
   }
@@ -664,7 +666,7 @@
     height: 1px;
     background: linear-gradient(
       90deg,
-      var(--fluorescent-green),
+      var(--safety-exit-green),
       var(--warning-amber)
     );
     transform: scaleX(0);
@@ -675,7 +677,7 @@
 
   .utility-nav-link:hover {
     color: var(--foreground);
-    text-shadow: 0 0 14px rgb(162 201 87 / 16%);
+    text-shadow: 0 0 14px rgb(var(--safety-exit-green-rgb) / 16%);
   }
 
   .utility-nav-link:hover::after {
@@ -688,7 +690,7 @@
       linear-gradient(180deg, rgb(217 209 173 / 95%), rgb(198 189 153 / 96%)),
       radial-gradient(
         circle at 68% 18%,
-        rgb(162 201 87 / 10%),
+        rgb(var(--safety-exit-green-rgb) / 10%),
         transparent 16rem
       );
     transition:
@@ -732,7 +734,7 @@
     background:
       radial-gradient(
         circle at 50% 44%,
-        rgb(162 201 87 / 18%),
+        rgb(var(--safety-exit-green-rgb) / 18%),
         transparent 14rem
       ),
       linear-gradient(180deg, rgb(24 27 23 / 18%), rgb(24 27 23 / 46%));
@@ -748,15 +750,15 @@
   }
 
   .door-card__signage {
-    border-color: rgb(162 201 87 / 58%);
+    border-color: rgb(var(--safety-exit-green-rgb) / 58%);
     background: color-mix(
       in srgb,
-      var(--fluorescent-green) 84%,
+      var(--safety-exit-green) 84%,
       var(--utility-charcoal)
     );
     color: var(--utility-charcoal);
     box-shadow:
-      0 0 22px rgb(162 201 87 / 28%),
+      0 0 22px rgb(var(--safety-exit-green-rgb) / 28%),
       inset 0 1px 0 rgb(255 252 225 / 22%);
     transform: translateY(0.65rem) scale(0.98);
     transition:
@@ -768,17 +770,17 @@
   .door-card:hover .door-card__signage {
     transform: translateY(0) scale(1);
     box-shadow:
-      0 0 28px rgb(162 201 87 / 36%),
+      0 0 28px rgb(var(--safety-exit-green-rgb) / 36%),
       inset 0 1px 0 rgb(255 252 225 / 26%);
   }
 
   .facility-signage-chip {
-    border-color: rgb(162 201 87 / 44%);
-    background: rgb(162 201 87 / 72%);
+    border-color: rgb(var(--safety-exit-green-rgb) / 44%);
+    background: rgb(var(--safety-exit-green-rgb) / 72%);
     color: #181b17;
     box-shadow:
       inset 0 1px 0 rgb(255 252 225 / 20%),
-      0 0 18px rgb(162 201 87 / 18%);
+      0 0 18px rgb(var(--safety-exit-green-rgb) / 18%);
   }
 
   .utility-charcoal-chip {
@@ -803,7 +805,7 @@
       transparent 0%,
       rgb(255 252 225 / 0%) 32%,
       rgb(255 252 225 / 42%) 48%,
-      rgb(162 201 87 / 18%) 54%,
+      rgb(var(--safety-exit-green-rgb) / 18%) 54%,
       rgb(255 252 225 / 0%) 68%,
       transparent 100%
     );
@@ -1017,7 +1019,7 @@
     @apply relative overflow-hidden border;
     border-color: rgb(49 51 42 / 100%);
     background: var(--utility-charcoal);
-    color: var(--fluorescent-green);
+    color: var(--safety-exit-green);
     box-shadow:
       inset 0 0 0 1px rgb(255 255 255 / 2%),
       0 24px 70px -45px rgb(0 0 0 / 0.68);
@@ -1034,7 +1036,7 @@
       linear-gradient(
         90deg,
         rgb(197 139 47 / 5%),
-        rgb(162 201 87 / 3%),
+        rgb(var(--safety-exit-green-rgb) / 3%),
         rgb(115 118 111 / 5%)
       );
     background-size:
@@ -1064,8 +1066,8 @@
     --admin-foreground: #edf3e9;
     --admin-muted: #9aa79a;
     --admin-subtle: #748073;
-    --admin-accent: #b8d77c;
-    --admin-accent-strong: #d0ec93;
+    --admin-accent: var(--safety-exit-green);
+    --admin-accent-strong: var(--safety-exit-green-strong);
     --admin-accent-foreground: #182015;
     --admin-warning: #e2b86c;
     --admin-danger: #f08b81;
@@ -1146,8 +1148,8 @@
   }
 
   .admin-status-live {
-    border-color: rgb(184 215 124 / 34%);
-    background: rgb(184 215 124 / 12%);
+    border-color: rgb(var(--safety-exit-green-rgb) / 34%);
+    background: rgb(var(--safety-exit-green-rgb) / 12%);
     color: var(--admin-accent-strong);
   }
 
@@ -1193,7 +1195,7 @@
 
   .admin-input:focus {
     border-color: var(--admin-accent);
-    @apply ring-2 ring-[#b8d77c]/20;
+    box-shadow: 0 0 0 2px rgb(var(--safety-exit-green-rgb) / 20%);
   }
 
   .admin-empty {
@@ -1232,8 +1234,8 @@
   }
 
   .admin-console [data-slot="button"][data-variant="outline"]:hover {
-    border-color: rgb(184 215 124 / 55%) !important;
-    background-color: rgb(184 215 124 / 10%) !important;
+    border-color: rgb(var(--safety-exit-green-rgb) / 55%) !important;
+    background-color: rgb(var(--safety-exit-green-rgb) / 10%) !important;
     color: var(--admin-accent-strong) !important;
   }
 

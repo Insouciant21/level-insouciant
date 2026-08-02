@@ -309,7 +309,7 @@ export function AdminAccountView({
 
         <div className="flex flex-wrap items-center gap-3">
           <span className="admin-status-pill admin-status-live">
-            <span className="size-1.5 rounded-full bg-[#b8d77c]" />
+            <span className="size-1.5 rounded-full bg-[var(--safety-exit-green)]" />
             管理员会话
           </span>
         </div>
@@ -325,7 +325,7 @@ export function AdminAccountView({
           >
             <div className="flex items-start gap-4">
               <div
-                className="flex size-16 shrink-0 items-center justify-center rounded-lg border border-[#b8d77c]/25 bg-[#b8d77c]/10 text-lg font-semibold text-[#d0ec93]"
+                className="flex size-16 shrink-0 items-center justify-center rounded-lg border border-[var(--safety-exit-green)]/25 bg-[var(--safety-exit-green)]/10 text-lg font-semibold text-[var(--safety-exit-green-strong)]"
                 style={
                   profile.avatarUrl
                     ? {

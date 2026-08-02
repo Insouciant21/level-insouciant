@@ -88,7 +88,7 @@ function AdminMobileNav({ userName }: { userName: string }) {
           href="/admin/dashboard"
           className="flex min-w-0 items-center gap-3 text-[#edf3e9]"
         >
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[#b8d77c]/35 bg-[#b8d77c]/10 text-[#b8d77c]">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/10 text-[var(--safety-exit-green)]">
             <PanelLeft className="size-4" aria-hidden="true" />
           </span>
           <span className="min-w-0">
@@ -107,7 +107,7 @@ function AdminMobileNav({ userName }: { userName: string }) {
               type="button"
               variant="ghost"
               size="icon"
-              className="size-10 border border-white/10 bg-white/[0.03] text-[#d0ec93] hover:bg-white/10 hover:text-[#edf3e9]"
+              className="size-10 border border-white/10 bg-white/[0.03] text-[var(--safety-exit-green-strong)] hover:bg-white/10 hover:text-[#edf3e9]"
               aria-label="打开后台导航"
               title="打开后台导航"
             >
@@ -117,7 +117,7 @@ function AdminMobileNav({ userName }: { userName: string }) {
 
           <SheetContent
             side="right"
-            className="w-[min(88vw,22rem)] border-[#b8d77c]/20 bg-[#10130f] px-5 text-[#edf3e9]"
+            className="w-[min(88vw,22rem)] border-[var(--safety-exit-green)]/20 bg-[#10130f] px-5 text-[#edf3e9]"
           >
             <SheetHeader className="border-b border-white/10 px-0 pb-5">
               <p className="admin-kicker">Workspace Relay</p>
@@ -160,7 +160,7 @@ function AdminMobileNav({ userName }: { userName: string }) {
 
             <div className="mt-auto border-t border-white/10 pt-5">
               <div className="flex items-center gap-3 px-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#b8d77c]/15 text-xs font-semibold text-[#d0ec93]">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--safety-exit-green)]/15 text-xs font-semibold text-[var(--safety-exit-green-strong)]">
                   {userName.slice(0, 1).toUpperCase()}
                 </span>
                 <div className="min-w-0">
@@ -214,7 +214,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
     navigationItems[0]
 
   return (
-    <div className="admin-console flex min-h-svh flex-1 flex-col selection:bg-[#b8d77c]/25 md:flex-row">
+    <div className="admin-console flex min-h-svh flex-1 flex-col selection:bg-[var(--safety-exit-green)]/25 md:flex-row">
       <aside className="sticky top-0 z-30 hidden w-full flex-col border-b border-white/10 bg-[#10130f] md:flex md:h-svh md:min-h-svh md:w-64 md:shrink-0 md:self-start md:overflow-hidden md:border-r md:border-b-0">
         <PerfectScrollbar
           aria-label="后台侧栏"
@@ -227,7 +227,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
                 href="/admin/dashboard"
                 className="flex min-w-0 items-center gap-3 text-[#edf3e9]"
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[#b8d77c]/35 bg-[#b8d77c]/10 text-[#b8d77c]">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/10 text-[var(--safety-exit-green)]">
                   <PanelLeft className="size-4" aria-hidden="true" />
                 </span>
                 <span className="min-w-0">
@@ -266,7 +266,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
                       className={cn(
                         "group flex items-center gap-3 rounded-md border px-3 py-2.5 transition",
                         active
-                          ? "border-[#b8d77c]/30 bg-[#b8d77c]/10 text-[#d0ec93]"
+                          ? "border-[var(--safety-exit-green)]/30 bg-[var(--safety-exit-green)]/10 text-[var(--safety-exit-green-strong)]"
                           : "border-transparent text-[#9aa79a] hover:border-white/10 hover:bg-white/5 hover:text-[#edf3e9]"
                       )}
                       aria-current={active ? "page" : undefined}
@@ -279,7 +279,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
                         <span
                           className={cn(
                             "mt-0.5 block text-xs",
-                            active ? "text-[#a9c77a]" : "text-[#748073]"
+                            active ? "text-[var(--safety-exit-green-strong)]" : "text-[#748073]"
                           )}
                         >
                           {item.description}
@@ -289,7 +289,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
                         className={cn(
                           "size-3.5 shrink-0 transition-transform",
                           active
-                            ? "text-[#b8d77c]"
+                            ? "text-[var(--safety-exit-green)]"
                             : "text-[#4f5b4c] group-hover:translate-x-0.5"
                         )}
                         aria-hidden="true"
@@ -305,7 +305,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
             className="border-t border-white/10 px-3 py-4 md:px-4 md:py-5"
           >
             <div className="flex items-center gap-3 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2.5">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#b8d77c]/15 text-xs font-semibold text-[#d0ec93]">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--safety-exit-green)]/15 text-xs font-semibold text-[var(--safety-exit-green-strong)]">
                 {userName.slice(0, 1).toUpperCase()}
               </span>
               <div className="min-w-0">
@@ -357,7 +357,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
             </div>
             <span className="admin-status-pill admin-status-live shrink-0">
               <span
-                className="size-1.5 rounded-full bg-[#b8d77c]"
+                className="size-1.5 rounded-full bg-[var(--safety-exit-green)]"
                 aria-hidden="true"
               />
               已连接

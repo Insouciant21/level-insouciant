@@ -47,7 +47,7 @@ export default function NotFound() {
           <div className="mt-16">
             <Link
               href="/"
-              className="inline-flex items-center justify-center border-2 border-green-600 bg-green-800 px-8 py-4 font-sans text-sm font-bold uppercase tracking-widest text-white transition-all shadow-[0_0_20px_rgba(74,222,128,0.2),inset_0_0_15px_rgba(0,0,0,0.5)] hover:scale-105 hover:bg-green-700 active:scale-95"
+              className="inline-flex items-center justify-center border-2 border-[var(--safety-exit-green)] bg-[var(--safety-exit-green)] px-8 py-4 font-sans text-sm font-bold uppercase tracking-widest text-white transition-all shadow-[0_0_20px_rgb(var(--safety-exit-green-rgb) / 20%),inset_0_0_15px_rgba(0,0,0,0.5)] hover:scale-105 hover:bg-[var(--safety-exit-green-strong)] active:scale-95"
             >
               Turn Back to The Hub
             </Link>

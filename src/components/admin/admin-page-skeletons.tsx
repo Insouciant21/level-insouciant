@@ -16,7 +16,7 @@ function AdminSkeleton({ className }: AdminSkeletonProps) {
 function AdminAccentSkeleton({ className }: AdminSkeletonProps) {
   return (
     <Skeleton
-      className={cn("border-none bg-[#b8d77c]/16 shadow-none", className)}
+      className={cn("border-none bg-[var(--safety-exit-green)]/16 shadow-none", className)}
     />
   )
 }
@@ -101,7 +101,7 @@ function AdminListCardSkeleton({
               key={index}
               className={cn(
                 "h-10 w-24",
-                index === actionCount - 1 ? "bg-[#b8d77c]/14" : "bg-white/10"
+                index === actionCount - 1 ? "bg-[var(--safety-exit-green)]/14" : "bg-white/10"
               )}
             />
           ))}
@@ -136,7 +136,7 @@ function AdminPageHeaderSkeleton({
         />
       </div>
 
-      {action ? <AdminSkeleton className="h-10 w-28 bg-[#b8d77c]/14" /> : null}
+      {action ? <AdminSkeleton className="h-10 w-28 bg-[var(--safety-exit-green)]/14" /> : null}
     </div>
   )
 }
@@ -180,7 +180,7 @@ function AdminLoginPageSkeleton() {
           </div>
           <AdminEditorFieldSkeleton labelWidth="w-12" />
           <AdminEditorFieldSkeleton labelWidth="w-12" />
-          <AdminSkeleton className="h-10 w-full bg-[#b8d77c]/14" />
+          <AdminSkeleton className="h-10 w-full bg-[var(--safety-exit-green)]/14" />
         </div>
       </section>
     </main>
@@ -197,7 +197,7 @@ function AdminDashboardPageSkeleton() {
             <AdminSkeleton className="h-12 w-64 bg-white/14" />
             <AdminSkeleton className="mt-3 h-5 w-full max-w-2xl bg-white/8" />
           </div>
-          <AdminAccentSkeleton className="h-8 w-32 bg-[#b8d77c]/14" />
+          <AdminAccentSkeleton className="h-8 w-32 bg-[var(--safety-exit-green)]/14" />
         </div>
       </header>
 
@@ -265,7 +265,7 @@ function AdminArticlesPageSkeleton() {
           <AdminSkeleton className="h-10 w-56 bg-white/14" />
           <AdminSkeleton className="h-4 w-full max-w-3xl bg-white/8" />
         </div>
-        <AdminSkeleton className="h-10 w-28 bg-[#b8d77c]/14" />
+        <AdminSkeleton className="h-10 w-28 bg-[var(--safety-exit-green)]/14" />
       </div>
 
       <div className="mt-6 grid gap-4">
@@ -397,7 +397,7 @@ function AdminAccountPageSkeleton() {
                 <AdminSkeleton className="h-6 w-28 bg-white/14" />
                 <AdminSkeleton className="mt-2 h-4 w-44 bg-white/8" />
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <AdminAccentSkeleton className="h-7 w-16 bg-[#b8d77c]/14" />
+                  <AdminAccentSkeleton className="h-7 w-16 bg-[var(--safety-exit-green)]/14" />
                   <AdminSkeleton className="h-7 w-20 bg-white/8" />
                 </div>
               </div>
@@ -413,7 +413,7 @@ function AdminAccountPageSkeleton() {
               <AdminEditorFieldSkeleton />
               <AdminEditorFieldSkeleton />
               <AdminEditorFieldSkeleton labelWidth="w-20" />
-              <AdminSkeleton className="mt-2 h-10 w-full bg-[#b8d77c]/14 sm:w-28" />
+              <AdminSkeleton className="mt-2 h-10 w-full bg-[var(--safety-exit-green)]/14 sm:w-28" />
             </div>
           </section>
 
@@ -426,7 +426,7 @@ function AdminAccountPageSkeleton() {
               <AdminEditorFieldSkeleton labelWidth="w-16" />
               <AdminEditorFieldSkeleton labelWidth="w-16" />
               <AdminEditorFieldSkeleton labelWidth="w-20" />
-              <AdminSkeleton className="mt-2 h-10 w-full bg-[#b8d77c]/14 sm:w-28" />
+              <AdminSkeleton className="mt-2 h-10 w-full bg-[var(--safety-exit-green)]/14 sm:w-28" />
             </div>
           </section>
         </div>
@@ -498,7 +498,7 @@ function AdminArticleEditorPageSkeleton() {
             className="min-h-[24rem]"
           />
           <div className="flex flex-wrap gap-3">
-            <AdminSkeleton className="h-10 w-28 bg-[#b8d77c]/14" />
+            <AdminSkeleton className="h-10 w-28 bg-[var(--safety-exit-green)]/14" />
             <AdminSkeleton className="h-10 w-28 bg-white/10" />
           </div>
         </div>

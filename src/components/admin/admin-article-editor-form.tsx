@@ -87,7 +87,7 @@ function AdminArticleEditorForm({
       <a
         {...props}
         className={cn(
-          "text-[#b8d77c] underline decoration-[#b8d77c]/50 underline-offset-4 transition-colors hover:text-[#d0ec93]",
+          "text-[var(--safety-exit-green)] underline decoration-[var(--safety-exit-green)]/50 underline-offset-4 transition-colors hover:text-[var(--safety-exit-green-strong)]",
           props.className
         )}
       />
@@ -96,7 +96,7 @@ function AdminArticleEditorForm({
       <blockquote
         {...props}
         className={cn(
-          "my-8 border-l-2 border-[#b8d77c] bg-[#10130f] px-5 py-4 text-[#dce6d8]",
+          "my-8 border-l-2 border-[var(--safety-exit-green)] bg-[#10130f] px-5 py-4 text-[#dce6d8]",
           props.className
         )}
       />

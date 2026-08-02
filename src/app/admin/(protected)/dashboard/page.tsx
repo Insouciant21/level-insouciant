@@ -41,7 +41,7 @@ export default async function AdminDashboardPage() {
               </p>
             </div>
             <span className="admin-status-pill admin-status-live">
-              <span className="size-1.5 rounded-full bg-[#b8d77c]" />
+              <span className="size-1.5 rounded-full bg-[var(--safety-exit-green)]" />
               系统正常
             </span>
           </div>
