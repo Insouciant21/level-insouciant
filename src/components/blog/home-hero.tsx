@@ -52,7 +52,11 @@ function HomeHero({
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" className="px-5">
+            <Button
+              asChild
+              size="lg"
+              className="home-hero-primary-action px-5"
+            >
               <Link href={primaryAction.href}>
                 {primaryAction.label}
                 <ArrowRight className="size-4" />

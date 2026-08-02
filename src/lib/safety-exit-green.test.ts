@@ -24,6 +24,12 @@ const source = collectSourceFiles(sourceRoot)
   .map((filePath) => readFileSync(filePath, "utf8"))
   .join("\n")
 
+const globals = readFileSync(path.join(sourceRoot, "app/globals.css"), "utf8")
+const homeHero = readFileSync(
+  path.join(sourceRoot, "components/blog/home-hero.tsx"),
+  "utf8"
+)
+
 describe("safety exit green palette", () => {
   it("defines the approved shared safety-exit tokens", () => {
     const globals = readFileSync(
@@ -36,9 +42,20 @@ describe("safety exit green palette", () => {
     expect(globals).toContain("--safety-exit-green-strong: #62d99a;")
   })
 
+  it("scopes the restored grass green to the home hero and atmosphere", () => {
+    expect(globals).toContain("--home-accent-green-rgb: 162 201 87;")
+    expect(globals).toContain("--home-accent-green: #a2c957;")
+    expect(globals).toContain(
+      "rgb(var(--home-accent-green-rgb) / 11%),"
+    )
+    expect(homeHero).toContain("home-hero-primary-action")
+  })
+
   it("does not retain the previous grass-green literals or token", () => {
     expect(source).not.toContain("--fluorescent-green")
-    expect(source).not.toMatch(/#a2c957|#b8d77c|#d0ec93|#a9c77a/i)
+    expect(source.match(/#a2c957/gi)).toHaveLength(1)
+    expect(source.match(/162 201 87/g)).toHaveLength(1)
+    expect(source).not.toMatch(/#b8d77c|#d0ec93|#a9c77a/i)
     expect(source).not.toMatch(
       /rgb\((?:162 201 87|184 215 124)\s*\//i
     )

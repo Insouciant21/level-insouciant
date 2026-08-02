@@ -17,6 +17,8 @@
   --safety-exit-green-rgb: 0 155 78;
   --safety-exit-green: #009b4e;
   --safety-exit-green-strong: #62d99a;
+  --home-accent-green-rgb: 162 201 87;
+  --home-accent-green: #a2c957;
   --warning-amber: #c58b2f;
   --muted-rust: #8a4f34;
   --utility-charcoal: #181b17;
@@ -340,7 +342,7 @@
       ),
       radial-gradient(
         circle at 82% 22%,
-        rgb(var(--safety-exit-green-rgb) / 11%),
+        rgb(var(--home-accent-green-rgb) / 11%),
         transparent 34rem
       ),
       radial-gradient(
@@ -355,6 +357,10 @@
         rgb(170 168 145 / 82%)
       );
     animation: utility-luminance-drift 18s ease-in-out infinite;
+  }
+
+  .home-hero-primary-action {
+    --primary: var(--home-accent-green);
   }
 
   .public-atmosphere-grain {
