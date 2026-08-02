@@ -123,6 +123,23 @@ describe("ArticleEngagementPanel", () => {
     expect(commentsCalls).toBe(1)
   })
 
+  it("renders comments before likes in the engagement summary", async () => {
+    renderPanel()
+
+    const views = await screen.findByText("42 次阅读")
+    const comments = await screen.findByText("0 条评论")
+    const likes = await screen.findByRole("button", { name: "3 次点赞" })
+
+    expect(
+      views.compareDocumentPosition(comments) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+    expect(
+      comments.compareDocumentPosition(likes) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+  })
+
   it("updates the like snapshot and inserts a newly returned comment", async () => {
     server.use(
       http.post(

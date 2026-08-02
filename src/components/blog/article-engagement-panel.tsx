@@ -602,6 +602,13 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             </span>
           </div>
 
+          <div className={engagementChipClass}>
+            <span className="inline-flex items-center gap-2">
+              <MessageSquare className="size-4" />
+              {loading ? "..." : snapshot.commentsCount} 条评论
+            </span>
+          </div>
+
           {snapshot.isAuthenticated ? (
             <Button
               type="button"
@@ -626,13 +633,6 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               </span>
             </div>
           )}
-
-          <div className={engagementChipClass}>
-            <span className="inline-flex items-center gap-2">
-              <MessageSquare className="size-4" />
-              {loading ? "..." : snapshot.commentsCount} 条评论
-            </span>
-          </div>
         </div>
       </div>
 
