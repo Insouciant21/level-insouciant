@@ -282,7 +282,11 @@ function ArticlesPageSkeleton() {
 function ArchiveDirectoryPageSkeleton() {
   return (
     <PageShell>
-      <PageIntroSkeleton action />
+      <PageIntro
+        eyebrow="Categories"
+        title="分类归档"
+        description="分类回答内容属于什么方向，和标签一起构成博客的双层归档结构。"
+      />
       <section
         className={`${skeletonPanelClass} min-w-0 space-y-5 px-6 py-6 sm:px-7`}
       >
@@ -353,7 +357,11 @@ function TagAggregateBlockSkeleton() {
 function TagsPageSkeleton() {
   return (
     <PageShell>
-      <PageIntroSkeleton action />
+      <PageIntro
+        eyebrow="Tags"
+        title="标签归档"
+        description="标签用于组织主题维度。这里既能快速总览全部主题，也能直接下钻到每个标签下的文章集合。"
+      />
 
       <div className="grid min-w-0 gap-6">
         <section className={`${skeletonPanelClass} min-w-0 px-6 py-6`}>

@@ -59,6 +59,35 @@ describe("public page skeleton compositions", () => {
   })
 
   it.each([
+    [
+      "categories",
+      <ArchiveDirectoryPageSkeleton key="categories" />,
+      "Categories",
+      "分类归档",
+      "分类回答内容属于什么方向，和标签一起构成博客的双层归档结构。",
+    ],
+    [
+      "tags",
+      <TagsPageSkeleton key="tags" />,
+      "Tags",
+      "标签归档",
+      "标签用于组织主题维度。这里既能快速总览全部主题，也能直接下钻到每个标签下的文章集合。",
+    ],
+  ] satisfies [string, ReactElement, string, string, string][]) (
+    "%s intro copy stays visible while data loads",
+    (_, skeleton, eyebrow, title, description) => {
+      const { container } = render(skeleton)
+      const intro = container.querySelector(".site-section-header")
+
+      expect(intro?.querySelector("[aria-hidden=\"true\"]")).toBeNull()
+      expect(intro?.querySelector("h1")?.textContent).toBe(title)
+      expect(intro?.querySelector("p")?.textContent).toBe(eyebrow)
+      expect(intro?.textContent).toContain(description)
+      expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull()
+    }
+  )
+
+  it.each([
     ["articles", <ArticlesPageSkeleton key="articles" />],
     [
       "archive directory",
