@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Anchor, FileStack, Users, Zap } from "lucide-react"
+import { Anchor, Contact, FileStack, Zap } from "lucide-react"
 
 import { MotionReveal } from "@/components/motion/page-transition"
 import { PageShell } from "@/components/blog/page-shell"
@@ -17,6 +17,7 @@ const aboutWarningHighlightClass =
   "border border-[#8a4f34]/70 bg-[#181b17] px-5 py-4 text-[#d9d1ad] shadow-[inset_0_1px_0_rgba(255,252,225,0.08),0_18px_38px_-30px_rgba(0,0,0,0.46)]"
 const aboutAccessLinkClass =
   "flex items-center justify-between border-b border-[#73766f]/42 pb-2 transition duration-500 hover:border-[#8a4f34]/48 hover:text-destructive"
+const contactLabels = ["github", "email", "steam"] as const
 
 export const metadata: Metadata = createPageMetadata({
   title: "生存须知",
@@ -72,8 +73,8 @@ export default function AboutPage() {
 
             <div className="mt-12">
               <h2 className="flex items-center gap-3 border-b-2 border-foreground/80 pb-3 text-xl font-semibold uppercase tracking-[0.2em]">
-                <Users className="size-5 text-destructive" />
-                Organizational Structure
+                <Contact className="size-5 text-destructive" />
+                Contact Information
               </h2>
 
               <ul className="mt-6 grid gap-4">
@@ -94,11 +95,11 @@ export default function AboutPage() {
                         <p
                           className={
                             isWarning
-                              ? "text-sm font-semibold uppercase tracking-[0.24em] text-[#d9d1ad]"
-                              : "text-sm font-semibold uppercase tracking-[0.24em] text-foreground/80"
+                              ? "text-sm font-semibold tracking-[0.24em] text-[#d9d1ad]"
+                              : "text-sm font-semibold tracking-[0.24em] text-foreground/80"
                           }
                         >
-                          Protocol {String(index + 1).padStart(2, "0")}
+                          {contactLabels[index]}
                         </p>
                         <p
                           className={
