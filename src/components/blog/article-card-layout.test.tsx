@@ -49,7 +49,7 @@ describe("article card spacing", () => {
 
     const categoryBadge = screen.getByRole("link", { name: "世界观档案" })
 
-    expect(classNames(categoryBadge.parentElement)).toContain("gap-5")
+    expect(classNames(categoryBadge.parentElement)).toContain("gap-3")
   })
 
   it("keeps a visible gap between the home designation row and content panel", () => {
@@ -58,7 +58,7 @@ describe("article card spacing", () => {
     const archiveBadge = screen.getByText("Archive", { exact: true })
     const contentWrapper = archiveBadge.parentElement?.parentElement
 
-    expect(classNames(contentWrapper)).toContain("gap-5")
+    expect(classNames(contentWrapper)).toContain("gap-3")
   })
 
   it("uses compact title sizing for long home card titles", () => {
