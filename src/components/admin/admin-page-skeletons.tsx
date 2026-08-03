@@ -817,6 +817,76 @@ function AdminAccountFormSkeleton({
   )
 }
 
+function AdminSettingsPageSkeleton() {
+  return (
+    <section
+      data-skeleton-layout="admin-settings"
+      className="admin-surface min-w-0 p-4 sm:p-6 lg:p-7"
+    >
+      <div className="flex min-w-0 flex-col gap-3 border-b border-white/10 pb-5">
+        <p className="admin-kicker-accent">Site Settings</p>
+        <div className="min-w-0">
+          <h1 className="admin-title">站点设置</h1>
+          <p className="admin-copy mt-2 max-w-xl">
+            正在载入站点身份、页面内容、链接与 SEO 配置。
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6 grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-start">
+        <section className="admin-surface-muted min-w-0 px-4 py-5 sm:px-6 sm:py-6">
+          <div className="border-b border-white/10 pb-4">
+            <p className="admin-kicker">Identity And SEO</p>
+            <h2 className="mt-2 text-xl font-semibold text-[#edf3e9]">
+              站点身份与 SEO
+            </h2>
+          </div>
+          <div className="mt-5 grid min-w-0 gap-5">
+            <AdminEditorFieldSkeleton label="站点名称" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton label="站点描述" labelWidth="w-20" multiline />
+            <AdminEditorFieldSkeleton label="站点地址" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton label="SEO 关键词" labelWidth="w-20" />
+          </div>
+        </section>
+
+        <div className="grid min-w-0 gap-6">
+          <section className="admin-surface-muted min-w-0 px-4 py-5 sm:px-6 sm:py-6">
+            <div className="border-b border-white/10 pb-4">
+              <p className="admin-kicker">Home And Profile</p>
+              <h2 className="mt-2 text-xl font-semibold text-[#edf3e9]">
+                首页与维护者摘要
+              </h2>
+            </div>
+            <div className="mt-5 grid min-w-0 gap-5">
+              <AdminEditorFieldSkeleton label="Hero 标题" labelWidth="w-20" />
+              <AdminEditorFieldSkeleton
+                label="维护者摘要"
+                labelWidth="w-24"
+                multiline
+              />
+            </div>
+          </section>
+
+          <section className="admin-surface-muted min-w-0 px-4 py-5 sm:px-6 sm:py-6">
+            <div className="border-b border-white/10 pb-4">
+              <p className="admin-kicker">Links And Footer</p>
+              <h2 className="mt-2 text-xl font-semibold text-[#edf3e9]">
+                联系方式与页脚
+              </h2>
+            </div>
+            <div className="mt-5 grid min-w-0 gap-4">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <AdminSkeleton key={index} tone="soft" className="h-12 w-full" />
+              ))}
+              <AdminAccentSkeleton className="mt-1 h-10 w-full sm:w-28" />
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function AdminArticleEditorPageSkeleton({
   mode = "edit",
 }: {
@@ -961,6 +1031,7 @@ export {
   AdminDashboardPageSkeleton,
   AdminLoginPageSkeleton,
   AdminProtectedPageSkeleton,
+  AdminSettingsPageSkeleton,
   AdminStatsPageSkeleton,
   AdminTagsPageSkeleton,
 }

@@ -14,6 +14,7 @@ import {
   AdminDashboardPageSkeleton,
   AdminLoginPageSkeleton,
   AdminProtectedPageSkeleton,
+  AdminSettingsPageSkeleton,
   AdminStatsPageSkeleton,
   AdminTagsPageSkeleton,
 } from "@/components/admin/admin-page-skeletons"
@@ -145,6 +146,10 @@ describe("admin page skeleton compositions", () => {
         ],
       },
       {
+        container: render(<AdminSettingsPageSkeleton />).container,
+        texts: ["Site Settings", "站点设置"],
+      },
+      {
         container: render(<AdminArticleEditorPageSkeleton />).container,
         texts: [
           "Edit Article",
@@ -223,6 +228,14 @@ describe("admin page skeleton compositions", () => {
     ).toBe(true)
   })
 
+  it("uses the settings loading layout contract", () => {
+    const { container } = render(<AdminSettingsPageSkeleton />)
+
+    expect(
+      container.querySelector('[data-skeleton-layout="admin-settings"]')
+    ).not.toBeNull()
+  })
+
   it.each([
     ["protected", <AdminProtectedPageSkeleton key="protected" />],
     ["articles", <AdminArticlesPageSkeleton key="articles" />],
@@ -230,6 +243,7 @@ describe("admin page skeleton compositions", () => {
     ["tags", <AdminTagsPageSkeleton key="tags" />],
     ["stats", <AdminStatsPageSkeleton key="stats" />],
     ["account", <AdminAccountPageSkeleton key="account" />],
+    ["settings", <AdminSettingsPageSkeleton key="settings" />],
     ["editor", <AdminArticleEditorPageSkeleton key="editor" />],
     ["history", <AdminArticleHistoryPageSkeleton key="history" />],
   ] satisfies [string, ReactElement][])(

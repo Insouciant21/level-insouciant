@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import { AdminShell } from "@/components/admin/admin-shell"
 import { getUserDisplayName, requireAdmin } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 export const metadata: Metadata = createPageMetadata({
   title: "博客后台",
@@ -18,6 +19,11 @@ export default async function ProtectedAdminLayout({
   children: ReactNode
 }>) {
   const admin = await requireAdmin()
+  const siteConfig = await getSiteConfig()
 
-  return <AdminShell userName={getUserDisplayName(admin)}>{children}</AdminShell>
+  return (
+    <AdminShell userName={getUserDisplayName(admin)} siteName={siteConfig.name}>
+      {children}
+    </AdminShell>
+  )
 }

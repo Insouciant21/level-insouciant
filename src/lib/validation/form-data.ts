@@ -13,6 +13,8 @@ import {
   type ProfileInput,
   type RegistrationInput,
 } from "@/lib/validation/auth"
+import { type SiteConfigData } from "@/lib/site"
+import { siteConfigDataSchema } from "@/lib/validation/site-settings"
 
 function getFormString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "")
@@ -71,6 +73,14 @@ export function parsePasswordChangeFormData(
     nextPassword: getFormString(formData, "nextPassword").trim(),
     confirmPassword: getFormString(formData, "confirmPassword").trim(),
   })
+}
+
+export function parseSiteSettingsFormData(
+  formData: FormData
+): SiteConfigData {
+  return siteConfigDataSchema.parse(
+    JSON.parse(getFormString(formData, "settings"))
+  )
 }
 
 export function parseCommentRequestBody(value: unknown): CommentInput {

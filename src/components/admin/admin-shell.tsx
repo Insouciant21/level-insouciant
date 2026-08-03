@@ -12,6 +12,7 @@ import {
   Menu,
   MessageSquare,
   PanelLeft,
+  Settings2,
   Tags,
   UserRound,
   type LucideIcon,
@@ -34,6 +35,7 @@ import { cn } from "@/lib/utils"
 
 type AdminShellProps = {
   userName: string
+  siteName: string
   children: ReactNode
 }
 
@@ -64,6 +66,12 @@ const navigationItems = [
     icon: BarChart3,
   },
   {
+    href: "/admin/settings",
+    label: "设置",
+    description: "站点配置",
+    icon: Settings2,
+  },
+  {
     href: "/admin/account",
     label: "我的资料",
     description: "账号设置",
@@ -80,7 +88,13 @@ function isActiveNavItem(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
-function AdminMobileNav({ userName }: { userName: string }) {
+function AdminMobileNav({
+  userName,
+  siteName,
+}: {
+  userName: string
+  siteName: string
+}) {
   return (
     <div className="sticky top-0 z-40 border-b border-white/10 bg-[#10130f] md:hidden">
       <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
@@ -93,7 +107,7 @@ function AdminMobileNav({ userName }: { userName: string }) {
           </span>
           <span className="min-w-0">
             <span className="block truncate text-sm font-semibold tracking-wide">
-              Level Insouciant
+              {siteName}
             </span>
             <span className="mt-0.5 block text-xs text-[#748073]">
               管理控制台
@@ -207,7 +221,7 @@ function AdminMobileNav({ userName }: { userName: string }) {
   )
 }
 
-function AdminShell({ userName, children }: AdminShellProps) {
+function AdminShell({ userName, siteName, children }: AdminShellProps) {
   const pathname = usePathname()
   const activeItem =
     navigationItems.find((item) => isActiveNavItem(pathname, item.href)) ??
@@ -232,7 +246,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
                 </span>
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold tracking-wide">
-                    Level Insouciant
+                    {siteName}
                   </span>
                   <span className="mt-0.5 block text-xs text-[#748073]">
                     管理控制台
@@ -340,7 +354,7 @@ function AdminShell({ userName, children }: AdminShellProps) {
         </PerfectScrollbar>
       </aside>
 
-      <AdminMobileNav userName={userName} />
+      <AdminMobileNav userName={userName} siteName={siteName} />
 
       <main className="flex min-w-0 flex-1 flex-col bg-[#151914]">
         <div className="border-b border-white/10 bg-[#151914]/95 px-4 py-3 sm:px-6 lg:px-8">
