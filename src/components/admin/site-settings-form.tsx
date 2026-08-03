@@ -246,9 +246,19 @@ function Field({
     <div className="grid gap-2">
       <Label htmlFor={id}>{label}</Label>
       {multiline ? (
-        <Textarea id={id} value={value} onChange={(event) => onChange(event.target.value)} />
+        <Textarea
+          id={id}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="admin-input"
+        />
       ) : (
-        <Input id={id} value={value} onChange={(event) => onChange(event.target.value)} />
+        <Input
+          id={id}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="admin-input"
+        />
       )}
     </div>
   )
@@ -365,7 +375,10 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
   }
 
   return (
-    <form action={updateSiteSettingsAction} className="admin-surface grid gap-7 p-4 sm:p-6 lg:p-7">
+    <form
+      action={updateSiteSettingsAction}
+      className="site-settings-form admin-surface grid gap-7 p-4 sm:p-6 lg:p-7"
+    >
       <input type="hidden" name="settings" value={JSON.stringify(settings)} readOnly />
 
       <section className="grid gap-4">

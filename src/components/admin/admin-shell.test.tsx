@@ -55,7 +55,12 @@ afterEach(() => {
 describe("AdminShell mobile navigation", () => {
   it("renders the mobile sheet and closes navigation destinations", () => {
     render(
-      <AdminShell userName="Admin User" siteName="Custom Archive">
+      <AdminShell
+        userName="Admin User"
+        userImage="https://example.com/admin-avatar.png"
+        siteIconUrl="/site-icons/icon-32.png?v=test"
+        siteName="Custom Archive"
+      >
         <p>Admin content</p>
       </AdminShell>
     )
@@ -69,9 +74,19 @@ describe("AdminShell mobile navigation", () => {
       within(mobileSheet).getByRole("heading", { name: "管理控制台" })
     ).toBeTruthy()
     expect(screen.getAllByText("Custom Archive")).toHaveLength(2)
+    expect(screen.getAllByTestId("admin-site-icon")).toHaveLength(2)
+    expect(screen.getAllByTestId("admin-site-icon")[0].style.backgroundImage).toContain(
+      "/site-icons/icon-32.png?v=test"
+    )
+    expect(screen.getAllByTestId("admin-user-avatar")).toHaveLength(2)
+    expect(screen.getAllByTestId("admin-user-avatar")[0].style.backgroundImage).toContain(
+      "https://example.com/admin-avatar.png"
+    )
+    expect(screen.queryByText("运营总览")).toBeNull()
+    expect(screen.queryByText("内容管理")).toBeNull()
 
     const articleLink = within(mobileSheet).getByRole("link", {
-      name: /文章内容管理/,
+      name: "文章",
     })
     const siteLink = within(mobileSheet).getByRole("link", {
       name: "查看站点",
@@ -83,5 +98,24 @@ describe("AdminShell mobile navigation", () => {
     expect(articleLink.closest("[data-sheet-close]")).not.toBeNull()
     expect(siteLink.closest("[data-sheet-close]")).not.toBeNull()
     expect(logoutButton.closest("[data-sheet-close]")).not.toBeNull()
+  })
+
+  it("falls back to the user's initial when no avatar is configured", () => {
+    render(
+      <AdminShell
+        siteIconUrl="/site-icons/icon-32.png?v=test"
+        userName="Admin User"
+        siteName="Custom Archive"
+      >
+        <p>Admin content</p>
+      </AdminShell>
+    )
+
+    expect(screen.getAllByTestId("admin-user-avatar")).toHaveLength(2)
+    expect(
+      screen
+        .getAllByTestId("admin-user-avatar")
+        .every((avatar) => avatar.textContent === "A")
+    ).toBe(true)
   })
 })

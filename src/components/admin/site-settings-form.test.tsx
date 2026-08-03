@@ -28,9 +28,17 @@ describe("SiteSettingsForm", () => {
   it("renders the approved editable settings fields", () => {
     render(<SiteSettingsForm siteConfig={defaultSiteConfig} />)
 
+    const form = screen
+      .getByRole("button", { name: "保存站点设置" })
+      .closest("form")
+
+    expect(form).not.toBeNull()
+    expect(form?.classList.contains("site-settings-form")).toBe(true)
     expect((screen.getByLabelText("站点名称") as HTMLInputElement).value).toBe(
       "Level Insouciant"
     )
+    expect(screen.getByLabelText("站点名称").classList.contains("admin-input")).toBe(true)
+    expect(screen.getByLabelText("站点描述").classList.contains("admin-input")).toBe(true)
     expect((screen.getByLabelText("须知页标题") as HTMLInputElement).value).toBe("Moeblue")
     expect(screen.getByRole("button", { name: "添加联系方式" })).toBeTruthy()
   })

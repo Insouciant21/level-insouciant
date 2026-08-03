@@ -1195,6 +1195,27 @@
     color-scheme: dark;
   }
 
+  .site-settings-form [data-slot="input"],
+  .site-settings-form [data-slot="textarea"],
+  .site-settings-form select {
+    border-color: var(--admin-border-strong);
+    background-color: var(--admin-background) !important;
+    color: var(--admin-foreground) !important;
+    color-scheme: dark;
+  }
+
+  .site-settings-form [data-slot="input"]::placeholder,
+  .site-settings-form [data-slot="textarea"]::placeholder {
+    color: var(--admin-subtle);
+  }
+
+  .site-settings-form [data-slot="input"]:focus,
+  .site-settings-form [data-slot="textarea"]:focus,
+  .site-settings-form select:focus {
+    border-color: var(--admin-accent);
+    box-shadow: 0 0 0 2px rgb(var(--safety-exit-green-rgb) / 20%);
+  }
+
   .admin-input::placeholder {
     color: var(--admin-subtle);
   }

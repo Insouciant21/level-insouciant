@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 
 import { AdminShell } from "@/components/admin/admin-shell"
 import { getUserDisplayName, requireAdmin } from "@/lib/auth"
+import { getFaviconMetadata } from "@/lib/favicon-assets"
 import { createPageMetadata } from "@/lib/seo"
 import { getSiteConfig } from "@/lib/site-config"
 
@@ -26,10 +27,18 @@ export default async function ProtectedAdminLayout({
   children: ReactNode
 }>) {
   const admin = await requireAdmin()
-  const siteConfig = await getSiteConfig()
+  const [siteConfig, faviconMetadata] = await Promise.all([
+    getSiteConfig(),
+    getFaviconMetadata(),
+  ])
 
   return (
-    <AdminShell userName={getUserDisplayName(admin)} siteName={siteConfig.name}>
+    <AdminShell
+      siteIconUrl={faviconMetadata.urls.icon32}
+      userImage={admin.image}
+      userName={getUserDisplayName(admin)}
+      siteName={siteConfig.name}
+    >
       {children}
     </AdminShell>
   )

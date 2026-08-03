@@ -11,7 +11,6 @@ import {
   LogOut,
   Menu,
   MessageSquare,
-  PanelLeft,
   Settings2,
   Tags,
   UserRound,
@@ -35,6 +34,8 @@ import { cn } from "@/lib/utils"
 
 type AdminShellProps = {
   userName: string
+  userImage?: string | null
+  siteIconUrl: string
   siteName: string
   children: ReactNode
 }
@@ -43,46 +44,77 @@ const navigationItems = [
   {
     href: "/admin/dashboard",
     label: "概览",
-    description: "运营总览",
     icon: LayoutDashboard,
   },
   {
     href: "/admin/articles",
     label: "文章",
-    description: "内容管理",
     icon: FileText,
   },
   {
     href: "/admin/comments",
     label: "评论",
-    description: "审核互动",
     icon: MessageSquare,
   },
-  { href: "/admin/tags", label: "标签", description: "整理主题", icon: Tags },
+  { href: "/admin/tags", label: "标签", icon: Tags },
   {
     href: "/admin/stats",
     label: "统计",
-    description: "内容表现",
     icon: BarChart3,
   },
   {
     href: "/admin/settings",
     label: "设置",
-    description: "站点配置",
     icon: Settings2,
   },
   {
     href: "/admin/account",
     label: "我的资料",
-    description: "账号设置",
     icon: UserRound,
   },
 ] satisfies Array<{
   href: string
   label: string
-  description: string
   icon: LucideIcon
 }>
+
+function AdminSiteIcon({ siteIconUrl }: { siteIconUrl: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/10 bg-contain bg-center bg-no-repeat p-1.5"
+      data-testid="admin-site-icon"
+      style={{ backgroundImage: `url(${siteIconUrl})` }}
+    />
+  )
+}
+
+function AdminAvatar({
+  userName,
+  userImage,
+  className,
+}: {
+  userName: string
+  userImage?: string | null
+  className?: string
+}) {
+  const imageUrl = userImage?.trim() || null
+  const initials = userName.trim().slice(0, 1).toUpperCase() || "?"
+
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        "flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--safety-exit-green)]/15 text-xs font-semibold text-[var(--safety-exit-green-strong)] bg-cover bg-center",
+        className
+      )}
+      data-testid="admin-user-avatar"
+      style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
+    >
+      {imageUrl ? null : initials}
+    </span>
+  )
+}
 
 function isActiveNavItem(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`)
@@ -90,9 +122,13 @@ function isActiveNavItem(pathname: string, href: string) {
 
 function AdminMobileNav({
   userName,
+  userImage,
+  siteIconUrl,
   siteName,
 }: {
   userName: string
+  userImage?: string | null
+  siteIconUrl: string
   siteName: string
 }) {
   return (
@@ -102,9 +138,7 @@ function AdminMobileNav({
           href="/admin/dashboard"
           className="flex min-w-0 items-center gap-3 text-[#edf3e9]"
         >
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/10 text-[var(--safety-exit-green)]">
-            <PanelLeft className="size-4" aria-hidden="true" />
-          </span>
+          <AdminSiteIcon siteIconUrl={siteIconUrl} />
           <span className="min-w-0">
             <span className="block truncate text-sm font-semibold tracking-wide">
               {siteName}
@@ -154,13 +188,8 @@ function AdminMobileNav({
                       className="group flex items-center gap-3 border border-transparent px-3 py-3 text-[#9aa79a] transition hover:border-white/10 hover:bg-white/5 hover:text-[#edf3e9]"
                     >
                       <Icon className="size-4 shrink-0" aria-hidden="true" />
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-medium text-[#edf3e9]">
-                          {item.label}
-                        </span>
-                        <span className="mt-0.5 block text-xs text-[#748073]">
-                          {item.description}
-                        </span>
+                      <span className="min-w-0 flex-1 text-sm font-medium text-[#edf3e9]">
+                        {item.label}
                       </span>
                       <ChevronRight
                         className="size-3.5 shrink-0 text-[#748073] transition-transform group-hover:translate-x-0.5"
@@ -174,9 +203,11 @@ function AdminMobileNav({
 
             <div className="mt-auto border-t border-white/10 pt-5">
               <div className="flex items-center gap-3 px-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--safety-exit-green)]/15 text-xs font-semibold text-[var(--safety-exit-green-strong)]">
-                  {userName.slice(0, 1).toUpperCase()}
-                </span>
+                <AdminAvatar
+                  userName={userName}
+                  userImage={userImage}
+                  className="size-9"
+                />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-[#edf3e9]">
                     {userName}
@@ -221,7 +252,13 @@ function AdminMobileNav({
   )
 }
 
-function AdminShell({ userName, siteName, children }: AdminShellProps) {
+function AdminShell({
+  userName,
+  userImage,
+  siteIconUrl,
+  siteName,
+  children,
+}: AdminShellProps) {
   const pathname = usePathname()
   const activeItem =
     navigationItems.find((item) => isActiveNavItem(pathname, item.href)) ??
@@ -241,9 +278,7 @@ function AdminShell({ userName, siteName, children }: AdminShellProps) {
                 href="/admin/dashboard"
                 className="flex min-w-0 items-center gap-3 text-[#edf3e9]"
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/10 text-[var(--safety-exit-green)]">
-                  <PanelLeft className="size-4" aria-hidden="true" />
-                </span>
+                <AdminSiteIcon siteIconUrl={siteIconUrl} />
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold tracking-wide">
                     {siteName}
@@ -286,18 +321,8 @@ function AdminShell({ userName, siteName, children }: AdminShellProps) {
                       aria-current={active ? "page" : undefined}
                     >
                       <Icon className="size-4 shrink-0" aria-hidden="true" />
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-medium">
-                          {item.label}
-                        </span>
-                        <span
-                          className={cn(
-                            "mt-0.5 block text-xs",
-                            active ? "text-[var(--safety-exit-green-strong)]" : "text-[#748073]"
-                          )}
-                        >
-                          {item.description}
-                        </span>
+                      <span className="min-w-0 flex-1 text-sm font-medium">
+                        {item.label}
                       </span>
                       <ChevronRight
                         className={cn(
@@ -319,9 +344,11 @@ function AdminShell({ userName, siteName, children }: AdminShellProps) {
             className="border-t border-white/10 px-3 py-4 md:px-4 md:py-5"
           >
             <div className="flex items-center gap-3 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2.5">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--safety-exit-green)]/15 text-xs font-semibold text-[var(--safety-exit-green-strong)]">
-                {userName.slice(0, 1).toUpperCase()}
-              </span>
+              <AdminAvatar
+                userName={userName}
+                userImage={userImage}
+                className="size-8"
+              />
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-[#edf3e9]">
                   {userName}
@@ -354,7 +381,12 @@ function AdminShell({ userName, siteName, children }: AdminShellProps) {
         </PerfectScrollbar>
       </aside>
 
-      <AdminMobileNav userName={userName} siteName={siteName} />
+      <AdminMobileNav
+        userName={userName}
+        userImage={userImage}
+        siteIconUrl={siteIconUrl}
+        siteName={siteName}
+      />
 
       <main className="flex min-w-0 flex-1 flex-col bg-[#151914]">
         <div className="border-b border-white/10 bg-[#151914]/95 px-4 py-3 sm:px-6 lg:px-8">
