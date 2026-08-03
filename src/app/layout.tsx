@@ -14,7 +14,6 @@ import { SiteHeader } from "@/components/blog/site-header"
 import { QueryProvider } from "@/components/providers/query-provider"
 import { MessageProvider } from "@/components/ui/message-provider"
 import { createPageMetadata, createWebsiteJsonLdString } from "@/lib/seo"
-import { getFaviconMetadata } from "@/lib/favicon-assets"
 import { getSiteConfig } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 
@@ -38,10 +37,7 @@ const fontMono = IBM_Plex_Mono({
 })
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [siteConfig, faviconMetadata] = await Promise.all([
-    getSiteConfig(),
-    getFaviconMetadata(),
-  ])
+  const siteConfig = await getSiteConfig()
 
   return {
     ...createPageMetadata(
@@ -62,7 +58,6 @@ export async function generateMetadata(): Promise<Metadata> {
     creator: siteConfig.author,
     publisher: siteConfig.author,
     category: "technology",
-    icons: faviconMetadata.icons,
   }
 }
 

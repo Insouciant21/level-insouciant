@@ -58,7 +58,7 @@ describe("AdminShell mobile navigation", () => {
       <AdminShell
         userName="Admin User"
         userImage="https://example.com/admin-avatar.png"
-        siteIconUrl="/site-icons/icon-32.png?v=test"
+        siteIconUrl="/icon.png"
         siteName="Custom Archive"
       >
         <p>Admin content</p>
@@ -76,7 +76,7 @@ describe("AdminShell mobile navigation", () => {
     expect(screen.getAllByText("Custom Archive")).toHaveLength(2)
     expect(screen.getAllByTestId("admin-site-icon")).toHaveLength(2)
     expect(screen.getAllByTestId("admin-site-icon")[0].style.backgroundImage).toContain(
-      "/site-icons/icon-32.png?v=test"
+      "/icon.png"
     )
     expect(screen.getAllByTestId("admin-user-avatar")).toHaveLength(2)
     expect(screen.getAllByTestId("admin-user-avatar")[0].style.backgroundImage).toContain(
@@ -103,7 +103,7 @@ describe("AdminShell mobile navigation", () => {
   it("falls back to the user's initial when no avatar is configured", () => {
     render(
       <AdminShell
-        siteIconUrl="/site-icons/icon-32.png?v=test"
+        siteIconUrl="/icon.png"
         userName="Admin User"
         siteName="Custom Archive"
       >

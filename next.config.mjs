@@ -1,8 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    localPatterns: [{ pathname: "/site-icons/**" }],
-  },
-}
+const nextConfig = {}
 
 export default nextConfig

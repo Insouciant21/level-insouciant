@@ -1,9 +1,7 @@
 import type { Metadata } from "next"
 
-import { FaviconUploadForm } from "@/components/admin/favicon-upload-form"
 import { SiteSettingsForm } from "@/components/admin/site-settings-form"
 import { createPageMetadata } from "@/lib/seo"
-import { getFaviconMetadata } from "@/lib/favicon-assets"
 import { getSiteConfig } from "@/lib/site-config"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,10 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AdminSettingsPage() {
-  const [siteConfig, faviconMetadata] = await Promise.all([
-    getSiteConfig(),
-    getFaviconMetadata(),
-  ])
+  const siteConfig = await getSiteConfig()
 
   return (
     <div className="grid gap-6">
@@ -32,7 +27,6 @@ export default async function AdminSettingsPage() {
         <p className="admin-kicker-accent">Site Settings</p>
         <h1 className="admin-title mt-2">站点设置</h1>
       </header>
-      <FaviconUploadForm currentIconUrl={faviconMetadata.urls.icon32} />
       <SiteSettingsForm siteConfig={siteConfig} />
     </div>
   )
