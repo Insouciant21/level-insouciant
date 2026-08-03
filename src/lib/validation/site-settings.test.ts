@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest"
 
 import { defaultSiteConfig } from "@/lib/site"
 import {
+  mergeSiteConfig,
   normalizeSiteConfigData,
   siteConfigDataSchema,
+  siteConfigOverridesSchema,
 } from "@/lib/validation/site-settings"
 
 describe("site settings validation", () => {
@@ -33,11 +35,18 @@ describe("site settings validation", () => {
     expect(result.contacts.map((item) => item.enabled)).toEqual([true, false, true])
   })
 
-  it("rejects unknown contact kinds and more than twelve contacts", () => {
+  it("rejects unknown contact kinds", () => {
+    const input = structuredClone(defaultSiteConfig)
+    input.contacts[0].kind = "unknown" as never
+
+    expect(() => siteConfigDataSchema.parse(input)).toThrow()
+  })
+
+  it("rejects more than twelve contacts", () => {
     const input = structuredClone(defaultSiteConfig)
     input.contacts = Array.from({ length: 13 }, (_, index) => ({
       id: "contact-" + index,
-      kind: "unknown" as never,
+      kind: "custom",
       label: "Contact",
       value: "value",
       href: "/contact",
@@ -45,5 +54,30 @@ describe("site settings validation", () => {
     }))
 
     expect(() => siteConfigDataSchema.parse(input)).toThrow()
+  })
+
+  it("uses validated defaults when a stored override has an unsafe href", () => {
+    expect(
+      mergeSiteConfig({
+        about: {
+          transmission: { href: "javascript:alert(1)" },
+        },
+      })
+    ).toEqual(defaultSiteConfig)
+  })
+
+  it("normalizes one unknown legacy contact kind to custom", () => {
+    const stored = {
+      contacts: [
+        {
+          ...defaultSiteConfig.contacts[0],
+          kind: "mastodon",
+        },
+      ],
+    }
+
+    expect(siteConfigOverridesSchema.parse(stored).contacts).toMatchObject([
+      { kind: "custom" },
+    ])
   })
 })

@@ -2,12 +2,14 @@ import { z } from "zod"
 
 import {
   defaultSiteConfig,
+  type ContactKind,
   type SiteConfig,
   type SiteConfigData,
 } from "@/lib/site"
 
 const MAX_CONTACTS = 12
 const MAX_FOOTER_LINKS = 12
+const contactKinds = ["github", "email", "steam", "website", "custom"] as const
 
 function normalizedText(maximum: number) {
   return z.string().trim().min(1).max(maximum)
@@ -56,11 +58,21 @@ const actionSchema = z.object({
 
 const siteLinkSchema = z.object({
   id: singleLineText(100),
-  kind: z.enum(["github", "email", "steam", "website", "custom"]),
+  kind: z.enum(contactKinds),
   label: singleLineText(100),
   value: singleLineText(2_048),
   href: safeLinkHrefSchema,
   enabled: z.boolean(),
+})
+
+const legacySiteLinkSchema = siteLinkSchema.extend({
+  kind: z
+    .string()
+    .trim()
+    .min(1)
+    .transform((kind): ContactKind =>
+      contactKinds.includes(kind as ContactKind) ? (kind as ContactKind) : "custom"
+    ),
 })
 
 const heroSchema = z.object({
@@ -151,11 +163,11 @@ export const siteConfigOverridesSchema = z.object({
     .partial()
     .optional(),
   profile: profileSchema.partial().optional(),
-  contacts: z.array(siteLinkSchema).max(MAX_CONTACTS).optional(),
+  contacts: z.array(legacySiteLinkSchema).max(MAX_CONTACTS).optional(),
   footer: z
     .object({
       closing: normalizedText(5_000).optional(),
-      links: z.array(siteLinkSchema).max(MAX_FOOTER_LINKS).optional(),
+      links: z.array(legacySiteLinkSchema).max(MAX_FOOTER_LINKS).optional(),
     })
     .partial()
     .optional(),
@@ -243,8 +255,21 @@ export function normalizeSiteConfigData(input: unknown): SiteConfigData {
   }
 }
 
+function validatedDefaultSiteConfig(): SiteConfig {
+  return {
+    ...defaultSiteConfig,
+    ...normalizeSiteConfigData(defaultSiteConfig),
+  }
+}
+
 export function mergeSiteConfig(overrides: unknown): SiteConfig {
-  const parsed = siteConfigOverridesSchema.parse(overrides)
+  const result = siteConfigOverridesSchema.safeParse(overrides)
+
+  if (!result.success) {
+    return validatedDefaultSiteConfig()
+  }
+
+  const parsed = result.data
   const merged = {
     ...defaultSiteConfig,
     name: parsed.name ?? defaultSiteConfig.name,
