@@ -22,9 +22,9 @@ function FaviconUploadForm({ currentIconUrl }: FaviconUploadFormProps) {
           <Image
             src={currentIconUrl}
             alt="当前站点图标"
-            width={40}
-            height={40}
-            className="size-10 object-contain"
+            width={32}
+            height={32}
+            className="size-8 object-contain"
           />
         </div>
       </div>
