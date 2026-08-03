@@ -510,86 +510,6 @@ function SearchPageSkeleton() {
   )
 }
 
-function AboutPageSkeleton() {
-  return (
-    <PageShell>
-      <section className="grid min-w-0 gap-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
-        <aside className="grid min-w-0 gap-8 lg:sticky lg:top-28">
-          <div className="min-w-0 space-y-4 border-r-4 border-foreground/80 pr-6">
-            <Skeleton tone="accent" className="h-4 w-40 max-w-full" />
-            <Skeleton tone="neutral" className="h-16 w-40 max-w-full" />
-            <Skeleton tone="soft" className="h-4 w-44 max-w-full" />
-            <Skeleton tone="soft" className="h-4 w-40 max-w-full" />
-            <Skeleton tone="soft" className="h-4 w-36 max-w-full" />
-          </div>
-
-          <div className="flex h-56 min-w-0 items-center justify-center bg-[#1a1a1a]">
-            <Skeleton tone="inverse" className="size-24" />
-          </div>
-
-          <div className="grid gap-4">
-            {Array.from({ length: 2 }).map((_, index) => (
-              <div
-                key={index}
-                className="flex min-w-0 items-center justify-between gap-4 border-b border-border/70 pb-2"
-              >
-                <Skeleton tone="soft" className="h-4 w-36 max-w-full" />
-                <Skeleton tone="accent" className="size-4 shrink-0" />
-              </div>
-            ))}
-          </div>
-        </aside>
-
-        <article
-          className={`${skeletonDocumentClass} min-w-0 px-7 py-8 sm:px-10 sm:py-10`}
-        >
-          <Skeleton tone="accent" className="h-24 w-full max-w-4xl" />
-
-          <div className="mt-8 min-w-0 space-y-4">
-            <Skeleton tone="soft" className="h-5 w-full max-w-3xl" />
-            <Skeleton tone="soft" className="h-5 w-5/6 max-w-2xl" />
-            <Skeleton tone="soft" className="h-5 w-full max-w-3xl" />
-            <Skeleton tone="soft" className="h-5 w-4/5 max-w-2xl" />
-            <Skeleton tone="soft" className="h-5 w-full max-w-3xl" />
-          </div>
-
-          <div className="mt-12 min-w-0">
-            <div className="flex min-w-0 items-center gap-3 border-b-2 border-foreground/80 pb-3">
-              <Skeleton tone="accent" className="size-5 shrink-0" />
-              <Skeleton tone="neutral" className="h-6 w-56 max-w-full" />
-            </div>
-
-            <div className="mt-6 grid gap-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className={`${skeletonCardClass} min-w-0 px-5 py-4`}
-                >
-                  <div className="grid min-w-0 gap-2 md:grid-cols-[180px_minmax(0,1fr)]">
-                    <Skeleton tone="soft" className="h-4 w-28 max-w-full" />
-                    <div className="min-w-0 space-y-2">
-                      <Skeleton
-                        tone="neutral"
-                        className="h-4 w-full max-w-2xl"
-                      />
-                      <Skeleton tone="soft" className="h-4 w-5/6 max-w-xl" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 space-y-2 border-t border-border/60 pt-5">
-              <Skeleton tone="soft" className="h-4 w-24" />
-              <Skeleton tone="soft" className="h-4 w-40 max-w-full" />
-            </div>
-          </div>
-        </article>
-      </section>
-    </PageShell>
-  )
-}
-
 function AuthPageSkeleton() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-16 sm:px-6 lg:px-8">
@@ -922,7 +842,6 @@ function ArticlePageSkeleton() {
 }
 
 export {
-  AboutPageSkeleton,
   ArchiveDetailPageSkeleton,
   ArchiveDirectoryPageSkeleton,
   AuthPageSkeleton,

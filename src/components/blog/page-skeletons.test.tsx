@@ -6,7 +6,6 @@ import { cleanup, render } from "@testing-library/react"
 import { afterEach, describe, expect, it } from "vitest"
 
 import {
-  AboutPageSkeleton,
   AccountPageSkeleton,
   ArchiveDetailPageSkeleton,
   ArchiveDirectoryPageSkeleton,
@@ -138,7 +137,6 @@ describe("public page skeleton compositions", () => {
     ["search", <SearchPageSkeleton key="search" />],
     ["auth", <AuthPageSkeleton key="auth" />],
     ["account", <AccountPageSkeleton key="account" />],
-    ["about", <AboutPageSkeleton key="about" />],
   ] satisfies [string, ReactElement][])(
     "%s loading contains hidden placeholders",
     (_, skeleton) => {
