@@ -55,7 +55,7 @@ afterEach(() => {
 describe("AdminShell mobile navigation", () => {
   it("renders the mobile sheet and closes navigation destinations", () => {
     render(
-      <AdminShell userName="Admin User">
+      <AdminShell userName="Admin User" siteName="Custom Archive">
         <p>Admin content</p>
       </AdminShell>
     )
@@ -68,6 +68,7 @@ describe("AdminShell mobile navigation", () => {
     expect(
       within(mobileSheet).getByRole("heading", { name: "管理控制台" })
     ).toBeTruthy()
+    expect(screen.getAllByText("Custom Archive")).toHaveLength(2)
 
     const articleLink = within(mobileSheet).getByRole("link", {
       name: /文章内容管理/,
