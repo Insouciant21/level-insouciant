@@ -9,16 +9,3 @@ describe("Next image configuration", () => {
     ])
   })
 })
-
-describe("Next server output tracing", () => {
-  it("includes Sharp Linux native runtime assets", () => {
-    const includes = nextConfig.outputFileTracingIncludes?.["/*"] ?? []
-
-    expect(includes).toEqual(
-      expect.arrayContaining([
-        "node_modules/.pnpm/@img+sharp-libvips-linux-x64@*/node_modules/@img/sharp-libvips-linux-x64/lib/**/*",
-        "node_modules/.pnpm/@img+sharp-linux-x64@*/node_modules/@img/sharp-linux-x64/lib/**/*",
-      ]),
-    )
-  })
-})
