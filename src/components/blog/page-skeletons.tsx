@@ -4,7 +4,6 @@ import { PageShell } from "@/components/blog/page-shell"
 import { PageIntro } from "@/components/blog/page-intro"
 import { buttonVariants } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { siteConfig } from "@/lib/site"
 
 const skeletonPanelClass = "public-summary-panel"
 const skeletonDocumentClass = "public-summary-panel-document"
@@ -74,14 +73,14 @@ function HomeHeroSkeleton() {
         <div className="max-w-4xl min-w-0 space-y-5">
           <p className="inline-flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.3em] text-muted-foreground uppercase">
             <Sparkles className="size-3.5 text-primary" />
-            {siteConfig.hero.eyebrow}
+            Archive Signal
           </p>
           <div className="min-w-0 space-y-4">
             <h1 className="max-w-4xl text-4xl leading-[0.98] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              {siteConfig.hero.title}
+              Loading archive
             </h1>
             <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              {siteConfig.hero.description}
+              Configured archive details are loading.
             </p>
           </div>
           <div className="flex min-w-0 flex-wrap gap-3">
@@ -91,7 +90,7 @@ function HomeHeroSkeleton() {
                 className: "home-hero-primary-action px-5",
               })}
             >
-              {siteConfig.hero.primaryAction.label}
+              Primary entry
               <ArrowRight className="size-4" />
             </span>
             <span
@@ -101,7 +100,7 @@ function HomeHeroSkeleton() {
                 className: "px-5",
               })}
             >
-              {siteConfig.hero.secondaryAction.label}
+              Secondary entry
             </span>
           </div>
         </div>
@@ -201,22 +200,22 @@ function ProfilePanelSkeleton() {
           <div>
             <p className="utility-kicker">Custodian Note</p>
             <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
-              {siteConfig.profile.title}
+              Custodian profile
             </h2>
           </div>
           <span className="site-status-pill shrink-0">
-            {siteConfig.profile.status}
+            Pending
           </span>
         </header>
 
         <p className="text-sm leading-7 text-muted-foreground">
-          {siteConfig.profile.summary}
+          Configured profile details are loading.
         </p>
 
         <div className="flex min-w-0 items-center gap-2">
           <MapPin className="size-4 shrink-0 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
-            {siteConfig.profile.location}
+            Location pending
           </span>
         </div>
 
@@ -227,7 +226,7 @@ function ProfilePanelSkeleton() {
         </div>
 
         <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
-          {siteConfig.email}
+          Contact pending
           <ArrowUpRight className="size-4" />
         </span>
       </div>

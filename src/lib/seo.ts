@@ -171,13 +171,13 @@ export function createArticleJsonLd(
   article: Article,
   config: SiteConfig = defaultSiteConfig
 ) {
-  return JSON.stringify(createBlogPostingJsonLd(article, config))
+  return stringifyJsonLd(createBlogPostingJsonLd(article, config))
 }
 
 export function createWebsiteJsonLdString(
   config: SiteConfig = defaultSiteConfig
 ) {
-  return JSON.stringify(createWebsiteJsonLd(config))
+  return stringifyJsonLd(createWebsiteJsonLd(config))
 }
 
 export function buildRssXml(
@@ -200,8 +200,8 @@ export function buildRssXml(
       return `
     <item>
       <title>${escapeXml(article.title)}</title>
-      <link>${url}</link>
-      <guid>${url}</guid>
+      <link>${escapeXml(url)}</link>
+      <guid>${escapeXml(url)}</guid>
       <description>${escapeXml(article.desc)}</description>
       <pubDate>${new Date(article.date).toUTCString()}</pubDate>
       <category>${escapeXml(article.category)}</category>
@@ -214,14 +214,21 @@ export function buildRssXml(
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${escapeXml(config.name)}</title>
-    <link>${config.url}</link>
+    <link>${escapeXml(config.url)}</link>
     <description>${escapeXml(config.description)}</description>
     <language>${config.language}</language>
     <lastBuildDate>${new Date(latestDate).toUTCString()}</lastBuildDate>
-    <atom:link href="${absoluteUrl("/rss.xml", config)}" rel="self" type="application/rss+xml" />
+    <atom:link href="${escapeXml(absoluteUrl("/rss.xml", config))}" rel="self" type="application/rss+xml" />
 ${items}
   </channel>
 </rss>`
+}
+
+function stringifyJsonLd(value: object) {
+  return JSON.stringify(value)
+    .replaceAll("<", "\\u003c")
+    .replaceAll(">", "\\u003e")
+    .replaceAll("&", "\\u0026")
 }
 
 function escapeXml(value: string) {

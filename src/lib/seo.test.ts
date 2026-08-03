@@ -3,10 +3,12 @@ import { describe, expect, it } from "vitest"
 import {
   absoluteUrl,
   buildRssXml,
+  createArticleJsonLd,
   createArticleMetadata,
   createBlogPostingJsonLd,
   createPageMetadata,
   createWebsiteJsonLd,
+  createWebsiteJsonLdString,
 } from "@/lib/seo"
 import { defaultSiteConfig, type SiteConfig } from "@/lib/site"
 import type { Article } from "@/types/blog"
@@ -120,6 +122,60 @@ describe("configured SEO helpers", () => {
     expect(rss).toContain(
       "<link>https://example.test/articles/configured-entry</link>"
     )
+    expect(rss).toContain(
+      '<atom:link href="https://example.test/rss.xml" rel="self" type="application/rss+xml" />'
+    )
+  })
+
+  it("escapes script-breaking characters in website and article JSON-LD strings", () => {
+    const unsafeSiteConfig = {
+      ...customSiteConfig,
+      name: "</script><script>alert(1)</script>&",
+      description: "Description with </script> & ampersand",
+      author: "</script>& Maintainer",
+      email: "unsafe@example.test",
+    } satisfies SiteConfig
+    const unsafeArticle = {
+      ...article,
+      title: "Article </script>& title",
+      desc: "Article </script>& description",
+    } satisfies Article
+
+    const websiteJsonLd = createWebsiteJsonLdString(unsafeSiteConfig)
+    const articleJsonLd = createArticleJsonLd(unsafeArticle, unsafeSiteConfig)
+
+    expect(websiteJsonLd).not.toContain("</script>")
+    expect(articleJsonLd).not.toContain("</script>")
+    expect(websiteJsonLd).toContain("\\u003c/script\\u003e")
+    expect(articleJsonLd).toContain("\\u003c/script\\u003e")
+    expect(websiteJsonLd).toContain("\\u0026")
+    expect(articleJsonLd).toContain("\\u0026")
+  })
+
+  it("escapes query-string URLs in RSS text and URL fields", () => {
+    const querySiteConfig = {
+      ...customSiteConfig,
+      url: "https://example.test/archive?ref=one&mode=full",
+    } satisfies SiteConfig
+    const queryArticle = {
+      ...article,
+      slug: "configured-entry?from=one&to=two",
+    } satisfies Article
+
+    const rss = buildRssXml([queryArticle], querySiteConfig)
+    const articleUrl =
+      "https://example.test/articles/configured-entry?from=one&to=two"
+    const escapedArticleUrl =
+      "https://example.test/articles/configured-entry?from=one&amp;to=two"
+
+    expect(rss).toContain(
+      "<link>https://example.test/archive?ref=one&amp;mode=full</link>"
+    )
+    expect(rss).not.toContain(`<link>${querySiteConfig.url}</link>`)
+    expect(rss).toContain(`<link>${escapedArticleUrl}</link>`)
+    expect(rss).toContain(`<guid>${escapedArticleUrl}</guid>`)
+    expect(rss).not.toContain(`<link>${articleUrl}</link>`)
+    expect(rss).not.toContain(`<guid>${articleUrl}</guid>`)
     expect(rss).toContain(
       '<atom:link href="https://example.test/rss.xml" rel="self" type="application/rss+xml" />'
     )

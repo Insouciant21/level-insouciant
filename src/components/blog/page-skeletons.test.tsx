@@ -36,9 +36,11 @@ describe("public page skeleton compositions", () => {
   it("keeps home static copy visible while dynamic records load", () => {
     const { container } = render(<HomePageSkeleton />)
     const staticCopy = [
-      "Archive Notes",
-      "Level Insouciant",
-      "这里收集关于技术、日常与学习的记录，也把经验压进同一份档案里。",
+      "Archive Signal",
+      "Loading archive",
+      "Configured archive details are loading.",
+      "Primary entry",
+      "Secondary entry",
       "Facility Hub // Entry Node",
       "分叉走廊",
       "挑一扇门，继续向里走",
@@ -51,9 +53,11 @@ describe("public page skeleton compositions", () => {
       "Index",
       "关键词索引",
       "Custodian Note",
-      "记录者摘要",
-      "公开记录",
-      "分类层级",
+      "Custodian profile",
+      "Pending",
+      "Configured profile details are loading.",
+      "Location pending",
+      "Contact pending",
     ]
 
     for (const text of staticCopy) {
@@ -71,6 +75,14 @@ describe("public page skeleton compositions", () => {
     expect(
       container.querySelectorAll('[aria-hidden="true"]').length
     ).toBeGreaterThan(20)
+  })
+
+  it("does not render fallback identity or contact data while home loads", () => {
+    const { container } = render(<HomePageSkeleton />)
+
+    expect(container.textContent).not.toContain("Level Insouciant")
+    expect(container.textContent).not.toContain("insouciant21@outlook.com")
+    expect(container.textContent).toContain("Facility Hub // Entry Node")
   })
 
   it("keeps article loading geometry in document, TOC, engagement, and related regions", () => {
