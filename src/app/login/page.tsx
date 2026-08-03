@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { getCurrentUser } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type LoginPageProps = {
   searchParams: Promise<{
@@ -26,12 +27,19 @@ const authPanelClass =
 const authNoteClass =
   "public-summary-card-muted border-dashed bg-[#aaa891]/28 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_14px_28px_-28px_rgba(0,0,0,0.24)]"
 
-export const metadata: Metadata = createPageMetadata({
-  title: "用户登录",
-  description: "登录后即可点赞与评论。",
-  path: "/login",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "用户登录",
+      description: "登录后即可点赞与评论。",
+      path: "/login",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const [user, params] = await Promise.all([getCurrentUser(), searchParams])

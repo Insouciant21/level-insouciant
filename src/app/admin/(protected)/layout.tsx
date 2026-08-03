@@ -6,12 +6,19 @@ import { getUserDisplayName, requireAdmin } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
 import { getSiteConfig } from "@/lib/site-config"
 
-export const metadata: Metadata = createPageMetadata({
-  title: "博客后台",
-  description: "管理员控制台。",
-  path: "/admin",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "博客后台",
+      description: "管理员控制台。",
+      path: "/admin",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 export default async function ProtectedAdminLayout({
   children,

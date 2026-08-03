@@ -6,17 +6,25 @@ import { getAccountProfile, getOwnComments } from "@/lib/account"
 import { getAccountNotice, type AccountPageSearchParams } from "@/lib/account-page"
 import { requireUser } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type AccountPageProps = {
   searchParams: Promise<AccountPageSearchParams>
 }
 
-export const metadata: Metadata = createPageMetadata({
-  title: "我的资料",
-  description: "管理个人资料、密码和评论。",
-  path: "/account",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "我的资料",
+      description: "管理个人资料、密码和评论。",
+      path: "/account",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 export default async function AccountPage({ searchParams }: AccountPageProps) {
   const user = await requireUser()

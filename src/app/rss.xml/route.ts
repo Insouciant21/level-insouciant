@@ -1,9 +1,13 @@
 import { getAllArticles } from "@/lib/content"
 import { buildRssXml } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 export async function GET() {
-  const articles = await getAllArticles()
-  const xml = buildRssXml(articles)
+  const [articles, siteConfig] = await Promise.all([
+    getAllArticles(),
+    getSiteConfig(),
+  ])
+  const xml = buildRssXml(articles, siteConfig)
 
   return new Response(xml, {
     headers: {

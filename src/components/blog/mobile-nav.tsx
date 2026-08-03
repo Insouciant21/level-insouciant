@@ -15,13 +15,19 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import type { UserMenuUser } from "@/components/blog/user-menu"
-import { siteConfig } from "@/lib/site"
 
 type MobileNavProps = {
   user: UserMenuUser | null
+  config: {
+    name: string
+    nav: Array<{
+      href: string
+      label: string
+    }>
+  }
 }
 
-function MobileNav({ user }: MobileNavProps) {
+function MobileNav({ user, config }: MobileNavProps) {
   const accountHref = user?.role === "ADMIN" ? "/admin/dashboard" : "/account"
 
   return (
@@ -43,7 +49,7 @@ function MobileNav({ user }: MobileNavProps) {
         <SheetHeader className="border-b border-border/60 px-0 pb-5">
           <p className="utility-kicker">Navigation Relay</p>
           <SheetTitle className="mt-2 text-2xl tracking-tight">
-            {siteConfig.name}
+            {config.name}
           </SheetTitle>
           <SheetDescription className="leading-7">
             选择一条入口，继续浏览公开档案。
@@ -51,7 +57,7 @@ function MobileNav({ user }: MobileNavProps) {
         </SheetHeader>
 
         <nav aria-label="移动端主导航" className="grid gap-2">
-          {siteConfig.nav.map((item) => (
+          {config.nav.map((item) => (
             <SheetClose key={item.href} asChild>
               <Link
                 href={item.href}

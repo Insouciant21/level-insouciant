@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { createArticleAction } from "@/app/admin/actions"
 import { AdminArticleEditorForm } from "@/components/admin/admin-article-editor-form"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type AdminNewArticlePageProps = {
   searchParams: Promise<{
@@ -15,12 +16,19 @@ const errorMessages: Record<string, string> = {
   INVALID_ARTICLE_INPUT: "文章信息不完整，请补全标题、摘要、分类、标签、发布日期和正文。",
 }
 
-export const metadata: Metadata = createPageMetadata({
-  title: "新建文章",
-  description: "管理员在线创建新文章。",
-  path: "/admin/articles/new",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "新建文章",
+      description: "管理员在线创建新文章。",
+      path: "/admin/articles/new",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 export default async function AdminNewArticlePage({ searchParams }: AdminNewArticlePageProps) {
   const params = await searchParams

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 import type { Article } from "@/types/blog"
-import { siteConfig } from "@/lib/site"
+import { defaultSiteConfig, type SiteConfig } from "@/lib/site"
 
 type SeoOptions = {
   title: string
@@ -23,32 +23,40 @@ function normalizePath(path: string) {
   return path.startsWith("/") ? path : `/${path}`
 }
 
-export function absoluteUrl(path = "/") {
-  return new URL(normalizePath(path), siteConfig.url).toString()
+export function absoluteUrl(
+  path = "/",
+  config: SiteConfig = defaultSiteConfig
+) {
+  return new URL(normalizePath(path), config.url).toString()
 }
 
-export function createPageMetadata({
-  title,
-  description,
-  path,
-  type = "website",
-  noIndex = false,
-  publishedTime,
-  modifiedTime,
-  tags,
-  imagePath,
-}: SeoOptions): Metadata {
-  const canonical = absoluteUrl(path)
-  const image = imagePath ? absoluteUrl(imagePath) : absoluteUrl("/opengraph-image")
+export function createPageMetadata(
+  {
+    title,
+    description,
+    path,
+    type = "website",
+    noIndex = false,
+    publishedTime,
+    modifiedTime,
+    tags,
+    imagePath,
+  }: SeoOptions,
+  config: SiteConfig = defaultSiteConfig
+): Metadata {
+  const canonical = absoluteUrl(path, config)
+  const image = imagePath
+    ? absoluteUrl(imagePath, config)
+    : absoluteUrl("/opengraph-image", config)
 
   return {
     title,
     description,
-    keywords: [...siteConfig.seo.keywords],
+    keywords: [...config.seo.keywords],
     alternates: {
       canonical,
       types: {
-        "application/rss+xml": absoluteUrl("/rss.xml"),
+        "application/rss+xml": absoluteUrl("/rss.xml", config),
       },
     },
     openGraph: {
@@ -56,12 +64,12 @@ export function createPageMetadata({
       url: canonical,
       title,
       description,
-      siteName: siteConfig.name,
-      locale: siteConfig.locale,
+      siteName: config.name,
+      locale: config.locale,
       images: [
         {
           url: image,
-          alt: siteConfig.seo.defaultOgImageAlt,
+          alt: config.seo.defaultOgImageAlt,
         },
       ],
       ...(publishedTime ? { publishedTime } : {}),
@@ -83,42 +91,51 @@ export function createPageMetadata({
   }
 }
 
-export function createArticleMetadata(article: Article): Metadata {
-  return createPageMetadata({
-    title: article.title,
-    description: article.desc,
-    path: `/articles/${article.slug}`,
-    type: "article",
-    publishedTime: article.date,
-    modifiedTime: article.date,
-    tags: article.tags,
-    imagePath: `/articles/${article.slug}/opengraph-image`,
-  })
+export function createArticleMetadata(
+  article: Article,
+  config: SiteConfig = defaultSiteConfig
+): Metadata {
+  return createPageMetadata(
+    {
+      title: article.title,
+      description: article.desc,
+      path: `/articles/${article.slug}`,
+      type: "article",
+      publishedTime: article.date,
+      modifiedTime: article.date,
+      tags: article.tags,
+      imagePath: `/articles/${article.slug}/opengraph-image`,
+    },
+    config
+  )
 }
 
-export function createWebsiteJsonLd() {
+export function createWebsiteJsonLd(config: SiteConfig = defaultSiteConfig) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: siteConfig.name,
-    description: siteConfig.description,
-    url: siteConfig.url,
-    inLanguage: siteConfig.language,
+    name: config.name,
+    description: config.description,
+    url: config.url,
+    inLanguage: config.language,
     author: {
       "@type": "Person",
-      name: siteConfig.author,
-      email: siteConfig.email,
+      name: config.author,
+      email: config.email,
     },
     publisher: {
       "@type": "Person",
-      name: siteConfig.author,
-      email: siteConfig.email,
+      name: config.author,
+      email: config.email,
     },
   }
 }
 
-export function createBlogPostingJsonLd(article: Article) {
-  const articleUrl = absoluteUrl(`/articles/${article.slug}`)
+export function createBlogPostingJsonLd(
+  article: Article,
+  config: SiteConfig = defaultSiteConfig
+) {
+  const articleUrl = absoluteUrl(`/articles/${article.slug}`, config)
 
   return {
     "@context": "https://schema.org",
@@ -129,33 +146,38 @@ export function createBlogPostingJsonLd(article: Article) {
     dateModified: article.date,
     mainEntityOfPage: articleUrl,
     url: articleUrl,
-    inLanguage: siteConfig.language,
+    inLanguage: config.language,
     keywords: article.tags.join(", "),
     articleSection: article.category,
     author: {
       "@type": "Person",
-      name: siteConfig.author,
-      email: siteConfig.email,
+      name: config.author,
+      email: config.email,
     },
     publisher: {
       "@type": "Person",
-      name: siteConfig.author,
-      email: siteConfig.email,
+      name: config.author,
+      email: config.email,
     },
     isPartOf: {
       "@type": "Blog",
-      name: siteConfig.name,
-      url: absoluteUrl("/articles"),
+      name: config.name,
+      url: absoluteUrl("/articles", config),
     },
   }
 }
 
-export function createArticleJsonLd(article: Article) {
-  return JSON.stringify(createBlogPostingJsonLd(article))
+export function createArticleJsonLd(
+  article: Article,
+  config: SiteConfig = defaultSiteConfig
+) {
+  return JSON.stringify(createBlogPostingJsonLd(article, config))
 }
 
-export function createWebsiteJsonLdString() {
-  return JSON.stringify(createWebsiteJsonLd())
+export function createWebsiteJsonLdString(
+  config: SiteConfig = defaultSiteConfig
+) {
+  return JSON.stringify(createWebsiteJsonLd(config))
 }
 
 export function buildRssXml(
@@ -166,13 +188,14 @@ export function buildRssXml(
     date: string
     category: string
     tags: string[]
-  }>
+  }>,
+  config: SiteConfig = defaultSiteConfig
 ) {
   const latestDate = articles[0]?.date ?? new Date().toISOString()
 
   const items = articles
     .map((article) => {
-      const url = absoluteUrl(`/articles/${article.slug}`)
+      const url = absoluteUrl(`/articles/${article.slug}`, config)
 
       return `
     <item>
@@ -190,12 +213,12 @@ export function buildRssXml(
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${escapeXml(siteConfig.name)}</title>
-    <link>${siteConfig.url}</link>
-    <description>${escapeXml(siteConfig.description)}</description>
-    <language>${siteConfig.language}</language>
+    <title>${escapeXml(config.name)}</title>
+    <link>${config.url}</link>
+    <description>${escapeXml(config.description)}</description>
+    <language>${config.language}</language>
     <lastBuildDate>${new Date(latestDate).toUTCString()}</lastBuildDate>
-    <atom:link href="${absoluteUrl("/rss.xml")}" rel="self" type="application/rss+xml" />
+    <atom:link href="${absoluteUrl("/rss.xml", config)}" rel="self" type="application/rss+xml" />
 ${items}
   </channel>
 </rss>`

@@ -28,6 +28,7 @@ import {
   createArticleMetadata,
   createPageMetadata,
 } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 import { extractTableOfContents } from "@/lib/toc"
 
 const ArticleEngagementPanel = dynamic(
@@ -61,22 +62,31 @@ export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params
-  const article = await getArticleBySlug(slug)
+  const [article, siteConfig] = await Promise.all([
+    getArticleBySlug(slug),
+    getSiteConfig(),
+  ])
 
   if (!article) {
-    return createPageMetadata({
-      title: "文章不存在",
-      description: "请求的文章不存在。",
-      path: `/articles/${slug}`,
-    })
+    return createPageMetadata(
+      {
+        title: "文章不存在",
+        description: "请求的文章不存在。",
+        path: `/articles/${slug}`,
+      },
+      siteConfig
+    )
   }
 
-  return createArticleMetadata(article)
+  return createArticleMetadata(article, siteConfig)
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params
-  const article = await getArticleBySlug(slug)
+  const [article, siteConfig] = await Promise.all([
+    getArticleBySlug(slug),
+    getSiteConfig(),
+  ])
 
   if (!article) {
     notFound()
@@ -93,7 +103,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     <PageShell>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: createArticleJsonLd(article) }}
+        dangerouslySetInnerHTML={{
+          __html: createArticleJsonLd(article, siteConfig),
+        }}
       />
       <div className="pointer-events-none fixed inset-0 opacity-[0.02]">
         <div className="h-full w-full bg-[radial-gradient(ellipse_at_top,#ffbf00_0%,transparent_60%)]" />

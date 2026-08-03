@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { PageShell } from "@/components/blog/page-shell"
 import { SearchConsole } from "@/components/blog/search-console"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type SearchPageProps = {
   searchParams: Promise<{
@@ -10,16 +11,23 @@ type SearchPageProps = {
   }>
 }
 
-export const metadata: Metadata = {
-  ...createPageMetadata({
-    title: "搜索",
-    description: "按标题、摘要、正文、分类和标签检索层级档案。",
-    path: "/search",
-  }),
-  robots: {
-    index: false,
-    follow: true,
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return {
+    ...createPageMetadata(
+      {
+        title: "搜索",
+        description: "按标题、摘要、正文、分类和标签检索层级档案。",
+        path: "/search",
+      },
+      siteConfig
+    ),
+    robots: {
+      index: false,
+      follow: true,
+    },
+  }
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {

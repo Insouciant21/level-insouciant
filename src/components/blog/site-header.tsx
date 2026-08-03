@@ -3,10 +3,13 @@ import Link from "next/link"
 import { UserMenu } from "@/components/blog/user-menu"
 import { MobileNav } from "@/components/blog/mobile-nav"
 import { getCurrentUser } from "@/lib/auth"
-import { siteConfig } from "@/lib/site"
+import { getSiteConfig } from "@/lib/site-config"
 
 async function SiteHeader() {
-  const user = await getCurrentUser()
+  const [user, siteConfig] = await Promise.all([
+    getCurrentUser(),
+    getSiteConfig(),
+  ])
 
   return (
     <header className="site-header-shell sticky top-0 z-40 overflow-visible border-b backdrop-blur-sm">
@@ -36,7 +39,10 @@ async function SiteHeader() {
           </span>
 
           <div className="md:hidden">
-            <MobileNav user={user} />
+            <MobileNav
+              user={user}
+              config={{ name: siteConfig.name, nav: siteConfig.nav }}
+            />
           </div>
 
           <nav aria-label="主导航" className="hidden md:block">

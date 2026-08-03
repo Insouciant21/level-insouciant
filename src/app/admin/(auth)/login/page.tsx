@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type AdminLoginPageProps = {
   searchParams: Promise<{
@@ -20,17 +21,27 @@ const errorMessages: Record<string, string> = {
   NO_ACCESS: "当前账号没有后台权限。",
 }
 
-export const metadata: Metadata = createPageMetadata({
-  title: "后台登录",
-  description: "管理员登录入口。",
-  path: "/admin/login",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "后台登录",
+      description: "管理员登录入口。",
+      path: "/admin/login",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 export default async function AdminLoginPage({
   searchParams,
 }: AdminLoginPageProps) {
-  const params = await searchParams
+  const [params, siteConfig] = await Promise.all([
+    searchParams,
+    getSiteConfig(),
+  ])
   const error = params.error
     ? (errorMessages[params.error] ?? "登录失败，请稍后重试。")
     : null
@@ -57,7 +68,7 @@ export default async function AdminLoginPage({
           <div className="space-y-4">
             <Separator className="bg-white/10" />
             <div className="flex items-center justify-between gap-4 text-xs text-[#748073]">
-              <span>Level Insouciant</span>
+              <span>{siteConfig.name}</span>
               <span className="tracking-[0.12em] uppercase">
                 Private workspace
               </span>

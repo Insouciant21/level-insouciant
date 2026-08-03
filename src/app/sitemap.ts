@@ -8,9 +8,11 @@ import {
   getArticlesByTag,
 } from "@/lib/content"
 import { absoluteUrl } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articles, tags, categories] = await Promise.all([
+  const [siteConfig, articles, tags, categories] = await Promise.all([
+    getSiteConfig(),
     getAllArticles(),
     getAllTags(),
     getAllCategories(),
@@ -18,34 +20,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: absoluteUrl("/"),
+      url: absoluteUrl("/", siteConfig),
       changeFrequency: "weekly",
       priority: 1,
     },
     {
-      url: absoluteUrl("/articles"),
+      url: absoluteUrl("/articles", siteConfig),
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
-      url: absoluteUrl("/about"),
+      url: absoluteUrl("/about", siteConfig),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
-      url: absoluteUrl("/tags"),
+      url: absoluteUrl("/tags", siteConfig),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
-      url: absoluteUrl("/categories"),
+      url: absoluteUrl("/categories", siteConfig),
       changeFrequency: "weekly",
       priority: 0.7,
     },
   ]
 
   const articleRoutes: MetadataRoute.Sitemap = articles.map((article) => ({
-    url: absoluteUrl(`/articles/${article.slug}`),
+    url: absoluteUrl(`/articles/${article.slug}`, siteConfig),
     lastModified: new Date(article.date),
     changeFrequency: "monthly",
     priority: 0.8,
@@ -57,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const latestDate = archive?.articles[0]?.date
 
       return {
-        url: absoluteUrl(`/tags/${tag.slug}`),
+        url: absoluteUrl(`/tags/${tag.slug}`, siteConfig),
         ...(latestDate ? { lastModified: new Date(latestDate) } : {}),
         changeFrequency: "weekly" as const,
         priority: 0.6,
@@ -71,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const latestDate = archive?.articles[0]?.date
 
       return {
-        url: absoluteUrl(`/categories/${category.slug}`),
+        url: absoluteUrl(`/categories/${category.slug}`, siteConfig),
         ...(latestDate ? { lastModified: new Date(latestDate) } : {}),
         changeFrequency: "weekly" as const,
         priority: 0.6,

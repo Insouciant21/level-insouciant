@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { getCurrentUser } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type RegisterPageProps = {
   searchParams: Promise<{
@@ -26,12 +27,19 @@ const errorMessages: Record<string, string> = {
 const authPanelClass =
   "public-summary-panel-document px-6 py-8 sm:px-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]"
 
-export const metadata: Metadata = createPageMetadata({
-  title: "账号注册",
-  description: "注册后即可点赞、评论并管理自己的资料。",
-  path: "/register",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "账号注册",
+      description: "注册后即可点赞、评论并管理自己的资料。",
+      path: "/register",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 export default async function RegisterPage({
   searchParams,

@@ -7,17 +7,25 @@ import { PageShell } from "@/components/blog/page-shell"
 import { TagAggregateSection } from "@/components/blog/tag-aggregate-section"
 import { getTagAggregates } from "@/lib/content"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 const tagOverviewPanelClass =
   "public-summary-panel"
 const tagOverviewLinkClass =
   "public-summary-card-muted inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition duration-500 hover:border-foreground/20 hover:bg-[#d9d1ad]/46 hover:text-foreground"
 
-export const metadata: Metadata = createPageMetadata({
-  title: "标签",
-  description: "按主题查看文章归档。",
-  path: "/tags",
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "标签",
+      description: "按主题查看文章归档。",
+      path: "/tags",
+    },
+    siteConfig
+  )
+}
 
 export default async function TagsPage() {
   const tags = await getTagAggregates()

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { getArticleRevisionHistory } from "@/lib/content-admin"
 import { formatDisplayDate } from "@/lib/content"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type AdminArticleHistoryPageProps = {
   params: Promise<{
@@ -25,12 +26,19 @@ const errorMessages: Record<string, string> = {
   REVISION_NOT_FOUND: "这条修订记录不存在，可能已经被删除。",
 }
 
-export const metadata: Metadata = createPageMetadata({
-  title: "文章修订历史",
-  description: "管理员查看并恢复文章历史版本。",
-  path: "/admin/articles",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "文章修订历史",
+      description: "管理员查看并恢复文章历史版本。",
+      path: "/admin/articles",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 function formatRevisionDate(value: string) {
   return new Intl.DateTimeFormat("zh-CN", {

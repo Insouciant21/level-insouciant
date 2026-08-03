@@ -7,14 +7,18 @@ import {
   FileStack,
   Gamepad2,
   Github,
+  Globe2,
+  Link as LinkIcon,
   Mail,
   Zap,
+  type LucideIcon,
 } from "lucide-react"
 
 import { MotionReveal } from "@/components/motion/page-transition"
 import { PageShell } from "@/components/blog/page-shell"
 import { createPageMetadata } from "@/lib/seo"
-import { siteConfig } from "@/lib/site"
+import type { ContactKind } from "@/lib/site"
+import { getSiteConfig } from "@/lib/site-config"
 
 const aboutArticleClass =
   "public-summary-panel-document px-7 py-8 sm:px-10 sm:py-10"
@@ -26,37 +30,40 @@ const aboutWarningHighlightClass =
   "border border-[#8a4f34]/70 bg-[#181b17] px-5 py-4 text-[#d9d1ad] shadow-[inset_0_1px_0_rgba(255,252,225,0.08),0_18px_38px_-30px_rgba(0,0,0,0.46)]"
 const aboutAccessLinkClass =
   "flex items-center justify-between border-b border-[#73766f]/42 pb-2 transition duration-500 hover:border-[#8a4f34]/48 hover:text-destructive"
-const contactItems = [
-  {
-    label: "GitHub",
-    value: "github.com/Insouciant21",
-    href: "https://github.com/Insouciant21",
-    icon: Github,
-    external: true,
-  },
-  {
-    label: "Email",
-    value: siteConfig.email,
-    href: `mailto:${siteConfig.email}`,
-    icon: Mail,
-    external: false,
-  },
-  {
-    label: "Steam",
-    value: "https://steamcommunity.com/id/insouciant21/",
-    href: "https://steamcommunity.com/id/insouciant21/",
-    icon: Gamepad2,
-    external: true,
-  },
-] as const
+const contactIconByKind: Record<ContactKind, LucideIcon> = {
+  github: Github,
+  email: Mail,
+  steam: Gamepad2,
+  website: Globe2,
+  custom: LinkIcon,
+}
 
-export const metadata: Metadata = createPageMetadata({
-  title: "生存须知",
-  description: "关于层级维护者、记录方式与持续更新的说明。",
-  path: "/about",
-})
+function isExternalHttpHref(href: string) {
+  try {
+    const url = new URL(href)
+    return url.protocol === "http:" || url.protocol === "https:"
+  } catch {
+    return false
+  }
+}
 
-export default function AboutPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: siteConfig.about.metadataTitle,
+      description: siteConfig.about.metadataDescription,
+      path: "/about",
+    },
+    siteConfig
+  )
+}
+
+export default async function AboutPage() {
+  const siteConfig = await getSiteConfig()
+  const contactItems = siteConfig.contacts.filter((contact) => contact.enabled)
+
   return (
     <PageShell>
       <section className="grid gap-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
@@ -64,11 +71,16 @@ export default function AboutPage() {
           <aside className="grid gap-8 lg:sticky lg:top-28">
             <div className="space-y-4 border-r-4 border-foreground/80 pr-6">
               <p className="utility-kicker">Official Designation</p>
-              <h1 className="text-5xl font-semibold uppercase tracking-tight">Moeblue</h1>
+              <h1 className="text-5xl font-semibold uppercase tracking-tight">
+                {siteConfig.about.displayTitle}
+              </h1>
               <p className="font-mono text-xs leading-7 text-muted-foreground">
-                Archive Node: Level Insouciant
-                <br />
-                Status: Operational
+                <span className="block">
+                  Archive Node: {siteConfig.about.archiveNodeLabel}
+                </span>
+                <span className="block">
+                  {siteConfig.about.statusLabel}: {siteConfig.about.statusValue}
+                </span>
               </p>
             </div>
 
@@ -77,12 +89,22 @@ export default function AboutPage() {
             </div>
 
             <div className="grid gap-4 font-mono text-sm text-muted-foreground">
-              <Link href="/articles" className={aboutAccessLinkClass}>
-                <span className="font-semibold uppercase tracking-[0.24em]">Archive Access</span>
+              <Link
+                href={siteConfig.about.archiveAccess.href}
+                className={aboutAccessLinkClass}
+              >
+                <span className="font-semibold uppercase tracking-[0.24em]">
+                  {siteConfig.about.archiveAccess.label}
+                </span>
                 <FileStack className="size-4" />
               </Link>
-              <Link href={`mailto:${siteConfig.email}`} className={aboutAccessLinkClass}>
-                <span className="font-semibold uppercase tracking-[0.24em]">Transmission</span>
+              <Link
+                href={siteConfig.about.transmission.href}
+                className={aboutAccessLinkClass}
+              >
+                <span className="font-semibold uppercase tracking-[0.24em]">
+                  {siteConfig.about.transmission.label}
+                </span>
                 <Zap className="size-4" />
               </Link>
             </div>
@@ -92,31 +114,30 @@ export default function AboutPage() {
         <MotionReveal variant="right" delay={0.3}>
           <article className={aboutArticleClass}>
             <p className={aboutQuoteClass}>
-              “To map the unmappable. To survive the unlivable. To record what was meant to be forgotten.”
+              {siteConfig.about.quote}
             </p>
 
             <div className="mt-8 space-y-6 text-base leading-8 text-foreground/84">
               <p>{siteConfig.about.intro}</p>
-              <p>
-                我把这座站点当成一份会持续演化的开放档案，技术与经验会被放进同一套秩序里，因为它们本质上都在处理同一个问题：如何给后来者留下可信的路径标记。
-              </p>
+              <p>{siteConfig.about.principles}</p>
             </div>
 
             <div className="mt-12">
               <h2 className="flex items-center gap-3 border-b-2 border-foreground/80 pb-3 text-xl font-semibold uppercase tracking-[0.2em]">
                 <Contact className="size-5 text-destructive" />
-                Contact Information
+                {siteConfig.about.contactHeading}
               </h2>
 
               <ul className="mt-6 grid gap-4">
                 {contactItems.map((contact, index) => {
                   const isWarning =
                     index === contactItems.length - 1
-                  const Icon = contact.icon
+                  const Icon = contactIconByKind[contact.kind] ?? LinkIcon
+                  const external = isExternalHttpHref(contact.href)
 
                   return (
                     <li
-                      key={contact.label}
+                      key={contact.id}
                       className={
                         isWarning
                           ? aboutWarningHighlightClass
@@ -136,8 +157,8 @@ export default function AboutPage() {
                         </div>
                         <a
                           href={contact.href}
-                          target={contact.external ? "_blank" : undefined}
-                          rel={contact.external ? "noreferrer" : undefined}
+                          target={external ? "_blank" : undefined}
+                          rel={external ? "noreferrer" : undefined}
                           className={
                             isWarning
                               ? "inline-flex min-w-0 items-center gap-2 break-all text-sm leading-7 text-[#d9d1ad]/90 underline decoration-[#d9d1ad]/40 underline-offset-4 transition hover:text-white"

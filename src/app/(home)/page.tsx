@@ -17,22 +17,36 @@ import {
 } from "@/lib/content"
 import { getHitokotoQuotes } from "@/lib/hitokoto"
 import { createPageMetadata } from "@/lib/seo"
-import { siteConfig } from "@/lib/site"
+import { getSiteConfig } from "@/lib/site-config"
 
-export const metadata: Metadata = {
-  ...createPageMetadata({
-    title: siteConfig.name,
-    description: siteConfig.hero.description,
-    path: "/",
-  }),
-  title: {
-    absolute: siteConfig.name,
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return {
+    ...createPageMetadata(
+      {
+        title: siteConfig.name,
+        description: siteConfig.hero.description,
+        path: "/",
+      },
+      siteConfig
+    ),
+    title: {
+      absolute: siteConfig.name,
+    },
+  }
 }
 
 export default async function Page() {
-  const [featuredArticles, archiveOverview, allArticles, hitokotoQuotes] =
+  const [
+    siteConfig,
+    featuredArticles,
+    archiveOverview,
+    allArticles,
+    hitokotoQuotes,
+  ] =
     await Promise.all([
+      getSiteConfig(),
       getFeaturedArticles(),
       getArchiveOverview(),
       getAllArticles(),

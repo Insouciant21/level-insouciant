@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og"
 
-import { siteConfig } from "@/lib/site"
+import { getSiteConfig } from "@/lib/site-config"
 
 export const size = {
   width: 1200,
@@ -9,7 +9,9 @@ export const size = {
 
 export const contentType = "image/png"
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const siteConfig = await getSiteConfig()
+
   return new ImageResponse(
     (
       <div

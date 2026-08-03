@@ -5,6 +5,7 @@ import { updateArticleAction } from "@/app/admin/actions"
 import { AdminArticleEditorForm } from "@/components/admin/admin-article-editor-form"
 import { getManagedArticleBySlug } from "@/lib/content-admin"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type AdminEditArticlePageProps = {
   params: Promise<{
@@ -22,12 +23,19 @@ const errorMessages: Record<string, string> = {
   INVALID_ARTICLE_INPUT: "文章信息不完整，请把必填内容补全后再保存。",
 }
 
-export const metadata: Metadata = createPageMetadata({
-  title: "编辑文章",
-  description: "管理员在线编辑文章。",
-  path: "/admin/articles",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "编辑文章",
+      description: "管理员在线编辑文章。",
+      path: "/admin/articles",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 function getPageMessage(params: Awaited<AdminEditArticlePageProps["searchParams"]>) {
   if (params.created) {

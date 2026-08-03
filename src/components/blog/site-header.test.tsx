@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 
-import { render, screen } from "@testing-library/react"
+import { cleanup, render, screen } from "@testing-library/react"
 import type { ComponentProps, ReactNode } from "react"
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 vi.mock("next/link", () => ({
   default: ({ children, ...props }: ComponentProps<"a">) => (
@@ -14,12 +14,12 @@ vi.mock("@/lib/auth", () => ({
   getCurrentUser: vi.fn(async () => null),
 }))
 
-vi.mock("@/lib/site", () => ({
-  siteConfig: {
-    name: "Level Insouciant",
-    description: "记录现实、回声与失真的秩序",
+vi.mock("@/lib/site-config", () => ({
+  getSiteConfig: vi.fn(async () => ({
+    name: "Custom Archive",
+    description: "Configured archive description",
     nav: [{ href: "/", label: "首页" }],
-  },
+  })),
 }))
 
 vi.mock("@/components/blog/mobile-nav", () => ({
@@ -34,7 +34,17 @@ vi.mock("@/components/blog/user-menu", () => ({
 
 import { SiteHeader } from "@/components/blog/site-header"
 
+afterEach(() => {
+  cleanup()
+})
+
 describe("SiteHeader", () => {
+  it("renders the resolved configured site name", async () => {
+    render(await SiteHeader())
+
+    expect(screen.getByText("Custom Archive", { exact: true })).toBeTruthy()
+  })
+
   it("uses the same translucent public surface language as the page", async () => {
     render(await SiteHeader())
 

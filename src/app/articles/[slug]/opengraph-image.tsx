@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og"
 import { notFound } from "next/navigation"
 
 import { getArticleBySlug } from "@/lib/content"
-import { siteConfig } from "@/lib/site"
+import { getSiteConfig } from "@/lib/site-config"
 
 export const size = {
   width: 1200,
@@ -19,7 +19,10 @@ type ArticleOgImageProps = {
 
 export default async function ArticleOpenGraphImage({ params }: ArticleOgImageProps) {
   const { slug } = await params
-  const article = await getArticleBySlug(slug)
+  const [article, siteConfig] = await Promise.all([
+    getArticleBySlug(slug),
+    getSiteConfig(),
+  ])
 
   if (!article) {
     notFound()

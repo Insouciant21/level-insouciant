@@ -14,7 +14,7 @@ import { SiteHeader } from "@/components/blog/site-header"
 import { QueryProvider } from "@/components/providers/query-provider"
 import { MessageProvider } from "@/components/ui/message-provider"
 import { createPageMetadata, createWebsiteJsonLdString } from "@/lib/seo"
-import { siteConfig } from "@/lib/site"
+import { getSiteConfig } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 
 const fontSans = Barlow_Condensed({
@@ -36,32 +36,41 @@ const fontMono = IBM_Plex_Mono({
   variable: "--font-mono",
 })
 
-export const metadata: Metadata = {
-  ...createPageMetadata({
-    title: siteConfig.name,
-    description: siteConfig.description,
-    path: "/",
-  }),
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
-  },
-  applicationName: siteConfig.name,
-  authors: [{ name: siteConfig.author }],
-  creator: siteConfig.author,
-  publisher: siteConfig.author,
-  category: "technology",
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return {
+    ...createPageMetadata(
+      {
+        title: siteConfig.name,
+        description: siteConfig.description,
+        path: "/",
+      },
+      siteConfig
+    ),
+    metadataBase: new URL(siteConfig.url),
+    title: {
+      default: siteConfig.name,
+      template: `%s | ${siteConfig.name}`,
+    },
+    applicationName: siteConfig.name,
+    authors: [{ name: siteConfig.author }],
+    creator: siteConfig.author,
+    publisher: siteConfig.author,
+    category: "technology",
+  }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode
 }>) {
+  const siteConfig = await getSiteConfig()
+
   return (
     <html
-      lang="zh-CN"
+      lang={siteConfig.language}
       suppressHydrationWarning
       className={cn(
         "antialiased",
@@ -107,7 +116,9 @@ export default function RootLayout({
         ) : null}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: createWebsiteJsonLdString() }}
+          dangerouslySetInnerHTML={{
+            __html: createWebsiteJsonLdString(siteConfig),
+          }}
         />
         <QueryProvider>
           <MessageProvider>

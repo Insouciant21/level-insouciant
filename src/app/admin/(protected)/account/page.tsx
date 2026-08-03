@@ -5,17 +5,25 @@ import { getAccountProfile, getOwnComments } from "@/lib/account"
 import { getAccountNotice, type AccountPageSearchParams } from "@/lib/account-page"
 import { requireAdmin } from "@/lib/auth"
 import { createPageMetadata } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
 
 type AdminAccountPageProps = {
   searchParams: Promise<AccountPageSearchParams>
 }
 
-export const metadata: Metadata = createPageMetadata({
-  title: "后台资料",
-  description: "管理员资料与安全设置。",
-  path: "/admin/account",
-  noIndex: true,
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteConfig()
+
+  return createPageMetadata(
+    {
+      title: "后台资料",
+      description: "管理员资料与安全设置。",
+      path: "/admin/account",
+      noIndex: true,
+    },
+    siteConfig
+  )
+}
 
 export default async function AdminAccountPage({ searchParams }: AdminAccountPageProps) {
   const admin = await requireAdmin()
