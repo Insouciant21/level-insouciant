@@ -87,4 +87,44 @@ describe("SiteSettingsForm", () => {
       ] as HTMLButtonElement).disabled
     ).toBe(true)
   })
+
+  it("does not render an actionable preview for an unsafe unsaved contact link", () => {
+    render(<SiteSettingsForm siteConfig={defaultSiteConfig} />)
+
+    fireEvent.change(document.getElementById("联系方式-0-href")!, {
+      target: { value: "javascript:alert(1)" },
+    })
+
+    expect(document.querySelector('a[href="javascript:alert(1)"]')).toBeNull()
+    expect(screen.getAllByRole("link", { name: "打开链接" })).toHaveLength(
+      defaultSiteConfig.contacts.length + defaultSiteConfig.footer.links.length - 1
+    )
+  })
+
+  it("serializes footer link additions independently from contacts", () => {
+    render(<SiteSettingsForm siteConfig={defaultSiteConfig} />)
+
+    fireEvent.click(screen.getByRole("button", { name: "添加页脚链接" }))
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "上移" })[
+        defaultSiteConfig.contacts.length + defaultSiteConfig.footer.links.length
+      ]
+    )
+
+    const settings = getSerializedSettings()
+    expect(settings.contacts).toEqual(defaultSiteConfig.contacts)
+    expect((settings.footer as { links: unknown[] }).links).toEqual([
+      defaultSiteConfig.footer.links[0],
+      defaultSiteConfig.footer.links[1],
+      {
+        id: expect.any(String),
+        kind: "custom",
+        label: "",
+        value: "",
+        href: "",
+        enabled: true,
+      },
+      defaultSiteConfig.footer.links[2],
+    ])
+  })
 })

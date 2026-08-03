@@ -66,6 +66,19 @@ function newLink(): SiteLink {
   }
 }
 
+function isSafeLinkHref(value: string) {
+  if (value.startsWith("/") && !value.startsWith("//") && !value.startsWith("/\\")) {
+    return true
+  }
+
+  try {
+    const url = new URL(value)
+    return ["http:", "https:", "mailto:", "tel:"].includes(url.protocol)
+  } catch {
+    return false
+  }
+}
+
 type LinkEditorProps = {
   title: string
   links: SiteLink[]
@@ -196,16 +209,18 @@ function LinkEditor({
               >
                 <Trash2 aria-hidden="true" />
               </Button>
-              <a
-                href={link.href || "#"}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="打开链接"
-                title="打开链接"
-                className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-              >
-                <ExternalLink aria-hidden="true" className="size-3" />
-              </a>
+              {isSafeLinkHref(link.href) ? (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="打开链接"
+                  title="打开链接"
+                  className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+                >
+                  <ExternalLink aria-hidden="true" className="size-3" />
+                </a>
+              ) : null}
             </div>
           </div>
         ))}
