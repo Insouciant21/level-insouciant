@@ -6,7 +6,9 @@ allowBuilds:
   unrs-resolver: true
 supportedArchitectures:
   os:
-  - win32
-  - linux
+    - win32
+    - linux
   cpu:
-  - x64
+    - x64
+  libc:
+    - glibc
