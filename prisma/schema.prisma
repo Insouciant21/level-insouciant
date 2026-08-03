@@ -114,3 +114,10 @@ model Comment {
   @@index([status, createdAt])
   @@index([userId, createdAt])
 }
+
+model SiteConfig {
+  id        String   @id
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
