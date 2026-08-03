@@ -104,6 +104,11 @@ const adminNoticeMessages = {
     description: "站点身份、页面内容和 SEO 配置已同步。",
     tone: "success",
   },
+  "site-favicon-saved": {
+    title: "站点图标已更新",
+    description: "新的 PNG、ICO 和多尺寸图标已经生成。",
+    tone: "success",
+  },
 } satisfies Record<string, MessagePayload>
 
 const accountMessages = {
@@ -137,11 +142,13 @@ const errorMessages: Record<string, string> = {
   INVALID_CURRENT_PASSWORD: "原密码验证失败。",
   INVALID_PASSWORD_INPUT: "新密码至少需要 8 位字符。",
   INVALID_PROFILE_INPUT: "请至少填写有效邮箱后再保存资料。",
+  INVALID_FAVICON_UPLOAD: "请上传有效的 PNG 或 ICO 图标文件。",
   INVALID_SITE_SETTINGS: "站点设置格式无效，请检查后再保存。",
   INVALID_TAG: "标签内容无效，请检查后再提交。",
   PASSWORD_CONFIRM_MISMATCH: "两次输入的新密码不一致。",
   REVISION_NOT_FOUND: "这条修订记录不存在，可能已经被删除。",
   SITE_SETTINGS_SAVE_FAILED: "站点设置保存失败，请稍后再试。",
+  FAVICON_SAVE_FAILED: "站点图标生成或保存失败，请稍后再试。",
   USER_NOT_FOUND: "没有找到当前账号。",
 }
 
