@@ -27,18 +27,17 @@ function TagAggregateSection({ tag }: TagAggregateSectionProps) {
         <div>
           <p className="utility-kicker">Tag</p>
           <h2 className="mt-2 text-3xl font-semibold tracking-tight">
-            {tag.name}
+            <Link
+              href={`/tags/${tag.slug}`}
+              className="transition duration-500 hover:text-destructive focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50"
+            >
+              {tag.name}
+            </Link>
           </h2>
           <p className="mt-2 text-sm leading-7 text-muted-foreground">
             {tag.count} 条公开档案与这个主题相关。
           </p>
         </div>
-        <Link
-          href={`/tags/${tag.slug}`}
-          className="public-summary-card-muted inline-flex px-3 py-2 text-sm text-muted-foreground transition duration-500 hover:border-foreground/20 hover:bg-[#d9d1ad]/46 hover:text-foreground"
-        >
-          查看独立标签页
-        </Link>
       </header>
 
       <div className="mt-6 grid gap-3">
