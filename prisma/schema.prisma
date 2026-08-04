@@ -16,6 +16,18 @@ enum CommentStatus {
   HIDDEN
 }
 
+enum MediaProvider {
+  OSS
+  COS
+  R2
+}
+
+enum MediaAssetStatus {
+  ACTIVE
+  DELETING
+  DELETE_FAILED
+}
+
 model User {
   id                 String            @id @default(cuid())
   email              String            @unique
@@ -27,6 +39,7 @@ model User {
   updatedAt          DateTime          @updatedAt
   lastEditedArticles Article[]         @relation("ArticleLastEditedBy")
   articleRevisions   ArticleRevision[] @relation("ArticleRevisionCreatedBy")
+  mediaAssets        MediaAsset[]
   comments           Comment[]
 }
 
@@ -120,4 +133,23 @@ model SiteConfig {
   data      Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model MediaAsset {
+  id               String           @id @default(cuid())
+  displayName      String
+  provider         MediaProvider
+  objectKey        String           @unique
+  publicUrl        String           @unique
+  originalFilename String
+  mimeType         String
+  sizeBytes        Int
+  status           MediaAssetStatus @default(ACTIVE)
+  uploadedByUserId String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  uploadedBy       User?            @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([displayName])
 }
