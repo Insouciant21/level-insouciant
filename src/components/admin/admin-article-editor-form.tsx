@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { MdxEditor } from "@/components/admin/mdx-editor"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { PerfectScrollbar } from "@/components/ui/perfect-scrollbar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { normalizeMdxSource } from "@/lib/mdx"
@@ -63,7 +64,7 @@ function AdminArticleEditorForm({
     "source" | "preview"
   >("source")
   const sourceScrollRef = React.useRef<HTMLElement | null>(null)
-  const previewScrollRef = React.useRef<HTMLDivElement | null>(null)
+  const previewScrollRef = React.useRef<HTMLElement | null>(null)
 
   React.useEffect(() => {
     if (
@@ -246,7 +247,7 @@ function AdminArticleEditorForm({
         {message ? <p className="admin-copy">{message}</p> : null}
       </div>
 
-      <form action={action} className="mt-6">
+      <form action={action}>
         <section
           data-editor-section="metadata"
           className="border-b border-white/10 py-6"
@@ -512,10 +513,10 @@ function AdminArticleEditorForm({
                     </p>
                   </div>
 
-                  <div
-                    ref={previewScrollRef}
+                  <PerfectScrollbar
+                    scrollContainerRef={previewScrollRef}
                     data-testid="article-editor-preview-scroll"
-                    className="h-[32rem] min-h-0 overflow-y-auto overscroll-contain px-4 py-5 sm:px-6 sm:py-6"
+                    className="h-[32rem] min-h-0 px-4 py-5 sm:px-6 sm:py-6"
                   >
                     {previewError ? (
                       <div className="border border-dashed border-destructive/40 px-5 py-8 text-sm text-destructive">
@@ -576,7 +577,7 @@ function AdminArticleEditorForm({
                         </div>
                       </article>
                     )}
-                  </div>
+                  </PerfectScrollbar>
                 </section>
               </aside>
             ) : null}

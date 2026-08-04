@@ -13,8 +13,13 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { AdminArticleEditorForm } from "@/components/admin/admin-article-editor-form"
 import { MdxEditor } from "@/components/admin/mdx-editor"
 
+const { lineWrapping } = vi.hoisted(() => ({
+  lineWrapping: { type: "line-wrapping" },
+}))
+
 vi.mock("@uiw/react-codemirror", () => ({
   EditorView: {
+    lineWrapping,
     theme: (styles: unknown, options: unknown) => ({ styles, options }),
   },
   default: function MockCodeMirror({
@@ -22,6 +27,7 @@ vi.mock("@uiw/react-codemirror", () => ({
     onChange,
     id,
     theme,
+    extensions,
     onCreateEditor,
     "aria-label": ariaLabel,
   }: {
@@ -29,6 +35,7 @@ vi.mock("@uiw/react-codemirror", () => ({
     onChange?: (value: string) => void
     id?: string
     theme?: "light" | "dark" | "none" | unknown
+    extensions?: unknown[]
     onCreateEditor?: (view: { scrollDOM: HTMLElement }, state: unknown) => void
     "aria-label"?: string
     [key: string]: unknown
@@ -81,6 +88,9 @@ vi.mock("@uiw/react-codemirror", () => ({
           data-theme-dark={String(themeIsDark)}
           data-gutter-font={String(guttersAreMonospace)}
           data-content-font={String(contentIsMonospace)}
+          data-line-wrapping={String(
+            extensions?.includes(lineWrapping) ?? false
+          )}
           data-testid="codemirror-editor"
           value={value}
           onChange={(event) => onChange?.(event.target.value)}
@@ -182,6 +192,14 @@ describe("MdxEditor", () => {
     expect(editor?.getAttribute("data-content-font")).toBe("true")
   })
 
+  it("wraps long source lines", () => {
+    render(<MdxEditor value="# Draft" onChange={vi.fn()} />)
+
+    const editor = screen.getAllByTestId("codemirror-editor").at(-1)
+
+    expect(editor?.getAttribute("data-line-wrapping")).toBe("true")
+  })
+
   it("exposes the CodeMirror scroll container", async () => {
     const scrollContainerRef = { current: null as HTMLElement | null }
 
@@ -253,12 +271,53 @@ describe("AdminArticleEditorForm", () => {
       )
     ).toBeNull()
 
-    const metadata = container.querySelector(
-      '[data-editor-section="metadata"]'
-    )
+    const metadata = container.querySelector('[data-editor-section="metadata"]')
 
     expect(metadata?.className).not.toContain("border-y")
     expect(metadata?.className).toContain("border-b")
+  })
+
+  it("keeps metadata close to the editor header", () => {
+    const { container } = render(
+      <AdminArticleEditorForm
+        mode="edit"
+        action={vi.fn()}
+        values={values}
+        statusLabel="已发布"
+      />
+    )
+
+    expect(container.querySelector("form")?.className).not.toContain("mt-6")
+  })
+
+  it("uses themed scrollbars for the source and preview surfaces", async () => {
+    mockMatchMedia(true)
+
+    const { container } = render(
+      <AdminArticleEditorForm
+        mode="edit"
+        action={vi.fn()}
+        values={values}
+        statusLabel="已发布"
+      />
+    )
+
+    await waitFor(() => {
+      expect(
+        container.querySelector('[data-editor-panel="preview"]')
+      ).not.toBeNull()
+    })
+
+    expect(
+      screen
+        .getByTestId("codemirror-scroll")
+        .classList.contains("perfect-scrollbar")
+    ).toBe(true)
+    expect(
+      screen
+        .getByTestId("article-editor-preview-scroll")
+        .classList.contains("perfect-scrollbar")
+    ).toBe(true)
   })
 
   it("syncs desktop source scrolling to the preview proportionally", async () => {

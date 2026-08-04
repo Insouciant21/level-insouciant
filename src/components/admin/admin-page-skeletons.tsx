@@ -927,7 +927,7 @@ function AdminArticleEditorPageSkeleton({
 
       <section
         data-editor-section="metadata"
-        className="mt-6 border-b border-white/10 py-6"
+        className="border-b border-white/10 py-6"
       >
         <div className="border-b border-white/10 pb-4">
           <p className="admin-kicker">Article Metadata</p>

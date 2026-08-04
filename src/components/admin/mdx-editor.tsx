@@ -3,7 +3,9 @@
 import * as React from "react"
 import CodeMirror, { EditorView } from "@uiw/react-codemirror"
 import { markdown } from "@codemirror/lang-markdown"
+import PerfectScrollbarPrimitive from "perfect-scrollbar"
 
+import { createPerfectScrollbarController } from "@/lib/perfect-scrollbar"
 import { cn } from "@/lib/utils"
 
 type MdxEditorProps = {
@@ -60,15 +62,56 @@ function MdxEditor({
   className,
   scrollContainerRef,
 }: MdxEditorProps) {
-  const extensions = React.useMemo(() => [markdown()], [])
+  const extensions = React.useMemo(
+    () => [markdown(), EditorView.lineWrapping],
+    []
+  )
+  const perfectScrollbarRef = React.useRef<ReturnType<
+    typeof createPerfectScrollbarController
+  > | null>(null)
+  const perfectScrollbarElementRef = React.useRef<HTMLElement | null>(null)
+
+  const handleCreateEditor = React.useCallback(
+    (view: { scrollDOM: HTMLElement }) => {
+      perfectScrollbarRef.current?.destroy()
+
+      const scrollElement = view.scrollDOM
+      scrollElement.classList.add("perfect-scrollbar")
+      perfectScrollbarElementRef.current = scrollElement
+
+      if (scrollContainerRef) {
+        scrollContainerRef.current = scrollElement
+      }
+
+      perfectScrollbarRef.current = createPerfectScrollbarController(
+        scrollElement,
+        PerfectScrollbarPrimitive
+      )
+      perfectScrollbarRef.current.update()
+    },
+    [scrollContainerRef]
+  )
 
   React.useEffect(() => {
     return () => {
+      perfectScrollbarRef.current?.destroy()
+      perfectScrollbarRef.current = null
+
+      const scrollElement = perfectScrollbarElementRef.current
+      scrollElement?.classList.remove("perfect-scrollbar")
+      perfectScrollbarElementRef.current = null
+
       if (scrollContainerRef) {
-        scrollContainerRef.current = null
+        if (scrollContainerRef.current === scrollElement) {
+          scrollContainerRef.current = null
+        }
       }
     }
   }, [scrollContainerRef])
+
+  React.useEffect(() => {
+    perfectScrollbarRef.current?.update()
+  }, [value])
 
   return (
     <div
@@ -85,11 +128,7 @@ function MdxEditor({
         extensions={extensions}
         theme={mdxEditorTheme}
         aria-label={ariaLabel}
-        onCreateEditor={(view) => {
-          if (scrollContainerRef) {
-            scrollContainerRef.current = view.scrollDOM
-          }
-        }}
+        onCreateEditor={handleCreateEditor}
         onChange={onChange}
       />
     </div>
