@@ -41,6 +41,5 @@ next-env.d.ts
 
 # local content and planning artifacts
 content/
-superpowers/
 docs/superpowers/
 .superpowers/
