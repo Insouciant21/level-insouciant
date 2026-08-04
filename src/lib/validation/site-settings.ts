@@ -9,7 +9,17 @@ import {
 
 const MAX_CONTACTS = 12
 const MAX_FOOTER_LINKS = 12
-const contactKinds = ["github", "email", "steam", "website", "custom"] as const
+const contactKinds = [
+  "github",
+  "email",
+  "steam",
+  "twitter",
+  "linkedin",
+  "netease",
+  "bilibili",
+  "website",
+  "custom",
+] as const
 
 function normalizedText(maximum: number) {
   return z.string().trim().min(1).max(maximum)
@@ -78,7 +88,6 @@ const legacySiteLinkSchema = siteLinkSchema.extend({
 const heroSchema = z.object({
   eyebrow: singleLineText(100),
   title: singleLineText(100),
-  description: normalizedText(5_000),
   primaryAction: actionSchema,
   secondaryAction: actionSchema,
 })
@@ -106,7 +115,6 @@ const profileSchema = z.object({
 })
 
 const footerSchema = z.object({
-  closing: normalizedText(5_000),
   links: z.array(siteLinkSchema).max(MAX_FOOTER_LINKS),
 })
 
@@ -139,7 +147,6 @@ export const siteConfigOverridesSchema = z.object({
     .object({
       eyebrow: singleLineText(100).optional(),
       title: singleLineText(100).optional(),
-      description: normalizedText(5_000).optional(),
       primaryAction: actionSchema.partial().optional(),
       secondaryAction: actionSchema.partial().optional(),
     })
@@ -166,7 +173,6 @@ export const siteConfigOverridesSchema = z.object({
   contacts: z.array(legacySiteLinkSchema).max(MAX_CONTACTS).optional(),
   footer: z
     .object({
-      closing: normalizedText(5_000).optional(),
       links: z.array(legacySiteLinkSchema).max(MAX_FOOTER_LINKS).optional(),
     })
     .partial()

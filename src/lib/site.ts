@@ -1,4 +1,13 @@
-export type ContactKind = "github" | "email" | "steam" | "website" | "custom"
+export type ContactKind =
+  | "github"
+  | "email"
+  | "steam"
+  | "twitter"
+  | "linkedin"
+  | "netease"
+  | "bilibili"
+  | "website"
+  | "custom"
 
 export type SiteLink = {
   id: string
@@ -23,7 +32,6 @@ export type SiteConfigData = {
   hero: {
     eyebrow: string
     title: string
-    description: string
     primaryAction: SiteAction
     secondaryAction: SiteAction
   }
@@ -49,7 +57,6 @@ export type SiteConfigData = {
   }
   contacts: SiteLink[]
   footer: {
-    closing: string
     links: SiteLink[]
   }
   seo: {
@@ -76,7 +83,7 @@ const defaultEmail = "insouciant21@outlook.com"
 
 export const defaultSiteConfig: SiteConfig = {
   name: "Level Insouciant",
-  description: "记录从容、回声与失真的秩序",
+  description: "一间过于安静的房间",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://level-insouciant.local",
   author: "Insouciant21",
   email: defaultEmail,
@@ -93,8 +100,6 @@ export const defaultSiteConfig: SiteConfig = {
   hero: {
     eyebrow: "Archive Notes",
     title: "Level Insouciant",
-    description:
-      "这里收集关于技术、日常与学习的记录，也把经验压进同一份档案里。",
     primaryAction: {
       href: "/articles",
       label: "进入层级档案",
@@ -177,7 +182,6 @@ export const defaultSiteConfig: SiteConfig = {
     },
   ],
   footer: {
-    closing: "如果你在一间过于安静的房间里读到这些文字，说明档案仍在更新。",
     links: [
       {
         id: "contact",

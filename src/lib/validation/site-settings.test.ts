@@ -9,12 +9,30 @@ import {
 } from "@/lib/validation/site-settings"
 
 describe("site settings validation", () => {
+  it("uses the quiet-room site description and removes deprecated hero/footer fields", () => {
+    expect(defaultSiteConfig.description).toBe("一间过于安静的房间")
+    expect(defaultSiteConfig.hero).not.toHaveProperty("description")
+    expect(defaultSiteConfig.footer).not.toHaveProperty("closing")
+  })
+
   it("accepts the default settings document", () => {
     expect(siteConfigDataSchema.parse(defaultSiteConfig)).toMatchObject({
       name: "Level Insouciant",
       about: { displayTitle: "Moeblue" },
     })
   })
+
+  it.each(["twitter", "linkedin", "netease", "bilibili"])(
+    "accepts the %s contact kind",
+    (kind) => {
+      const parsed = siteConfigDataSchema.parse({
+        ...structuredClone(defaultSiteConfig),
+        contacts: [{ ...defaultSiteConfig.contacts[0], kind }],
+      })
+
+      expect(parsed.contacts[0].kind).toBe(kind)
+    }
+  )
 
   it("rejects unsafe href protocols", () => {
     const input = structuredClone(defaultSiteConfig)
@@ -79,5 +97,15 @@ describe("site settings validation", () => {
     expect(siteConfigOverridesSchema.parse(stored).contacts).toMatchObject([
       { kind: "custom" },
     ])
+  })
+
+  it("strips removed fields from legacy stored overrides", () => {
+    const parsed = mergeSiteConfig({
+      hero: { description: "legacy hero copy" },
+      footer: { closing: "legacy footer copy" },
+    })
+
+    expect(parsed.hero).not.toHaveProperty("description")
+    expect(parsed.footer).not.toHaveProperty("closing")
   })
 })
