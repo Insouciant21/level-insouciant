@@ -210,5 +210,3 @@ export const defaultSiteConfig: SiteConfig = {
     defaultOgImageAlt: "Level Insouciant archive cover",
   },
 }
-
-export const siteConfig = defaultSiteConfig

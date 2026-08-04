@@ -586,7 +586,6 @@ export {
   ArchiveDirectoryPageSkeleton,
   AuthPageSkeleton,
   AccountPageSkeleton,
-  ArticleCardSkeleton,
   ArticleEngagementPanelSkeleton,
   ArticlePageSkeleton,
   ArticlesPageSkeleton,

@@ -20,7 +20,7 @@ function stripMarkdownSyntax(value: string) {
     .trim()
 }
 
-export function slugifyHeading(value: string) {
+function slugifyHeading(value: string) {
   return githubSlug(stripMarkdownSyntax(value))
 }
 

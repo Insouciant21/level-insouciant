@@ -10,7 +10,7 @@ export function isAuthStorageEnabled() {
   return Boolean(process.env.DATABASE_URL)
 }
 
-export function normalizeEmail(email: string) {
+function normalizeEmail(email: string) {
   return email.trim().toLowerCase()
 }
 
