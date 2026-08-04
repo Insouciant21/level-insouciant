@@ -218,6 +218,33 @@ describe("MdxEditor", () => {
 })
 
 describe("AdminArticleEditorForm", () => {
+  it("uses the styled date picker while preserving publishedAt form serialization", () => {
+    const { container } = render(
+      <AdminArticleEditorForm
+        mode="edit"
+        action={vi.fn()}
+        values={values}
+        statusLabel="已发布"
+      />
+    )
+
+    expect(container.querySelector('input[type="date"]')).toBeNull()
+
+    const publishedAt = container.querySelector(
+      'input[type="hidden"][name="publishedAt"]'
+    ) as HTMLInputElement | null
+
+    expect(publishedAt).not.toBeNull()
+    expect(publishedAt?.value).toBe(values.publishedAt)
+
+    fireEvent.click(screen.getByRole("button", { name: "打开日期选择器" }))
+    fireEvent.click(
+      screen.getByRole("button", { name: "选择 2026年8月12日" })
+    )
+
+    expect(publishedAt?.value).toBe("2026-08-12")
+  })
+
   it("separates metadata from the desktop source and preview workbench", async () => {
     mockMatchMedia(true)
 

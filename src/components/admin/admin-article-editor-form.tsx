@@ -8,6 +8,7 @@ import * as jsxRuntime from "react/jsx-runtime"
 import rehypeKatex from "rehype-katex"
 import remarkMath from "remark-math"
 
+import { AdminDatePicker } from "@/components/admin/admin-date-picker"
 import { useEditorScrollSync } from "@/components/admin/editor-scroll-sync"
 import { Button } from "@/components/ui/button"
 import { MdxEditor } from "@/components/admin/mdx-editor"
@@ -335,14 +336,14 @@ function AdminArticleEditorForm({
                 >
                   发布日期
                 </Label>
-                <Input
+                <AdminDatePicker
                   id="article-published-at"
-                  type="date"
                   name="publishedAt"
                   required
                   value={draft.publishedAt}
-                  onChange={handleFieldChange("publishedAt")}
-                  className="admin-input"
+                  onChange={(publishedAt) =>
+                    setDraft((current) => ({ ...current, publishedAt }))
+                  }
                 />
               </div>
             </div>
