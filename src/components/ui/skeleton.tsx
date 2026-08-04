@@ -18,7 +18,7 @@ function Skeleton({ className, tone = "neutral" }: SkeletonProps) {
   return (
     <div
       className={cn(
-        "insous-skeleton animate-pulse border shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]",
+        "level-insouciant-skeleton animate-pulse border shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]",
         skeletonToneClasses[tone],
         className
       )}

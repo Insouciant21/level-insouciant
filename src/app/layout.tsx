@@ -90,11 +90,11 @@ export default async function RootLayout({
                     return;
                   }
 
-                  if (window.__insousMeasureGuardInstalled) {
+                  if (window.__levelInsouciantMeasureGuardInstalled) {
                     return;
                   }
 
-                  window.__insousMeasureGuardInstalled = true;
+                  window.__levelInsouciantMeasureGuardInstalled = true;
 
                   var originalMeasure = window.performance.measure.bind(window.performance);
 

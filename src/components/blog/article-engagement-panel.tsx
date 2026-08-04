@@ -402,7 +402,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
   const loading = engagementQuery.isPending || commentsQuery.isPending
 
   React.useEffect(() => {
-    const sessionKey = `insous:viewed:${slug}`
+    const sessionKey = `level-insouciant:viewed:${slug}`
 
     if (
       engagementQuery.isPending ||

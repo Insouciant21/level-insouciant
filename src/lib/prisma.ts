@@ -3,9 +3,9 @@ import { Prisma, PrismaClient } from "@prisma/client"
 import { Pool } from "pg"
 
 declare global {
-  var __insousPrisma__: PrismaClient | undefined
-  var __insousPgPool__: Pool | undefined
-  var __insousPrismaSignature__: string | undefined
+  var __levelInsouciantPrisma__: PrismaClient | undefined
+  var __levelInsouciantPgPool__: Pool | undefined
+  var __levelInsouciantPrismaSignature__: string | undefined
 }
 
 const prismaClientSignature = [
@@ -22,10 +22,10 @@ function createPool() {
 }
 
 function getPool() {
-  const pool = globalThis.__insousPgPool__ ?? createPool()
+  const pool = globalThis.__levelInsouciantPgPool__ ?? createPool()
 
   if (process.env.NODE_ENV !== "production") {
-    globalThis.__insousPgPool__ = pool
+    globalThis.__levelInsouciantPgPool__ = pool
   }
 
   return pool
@@ -37,20 +37,20 @@ function createPrismaClient() {
 }
 
 function getPrismaClient() {
-  const hasMatchingSignature = globalThis.__insousPrismaSignature__ === prismaClientSignature
+  const hasMatchingSignature = globalThis.__levelInsouciantPrismaSignature__ === prismaClientSignature
 
   if (!hasMatchingSignature) {
-    void globalThis.__insousPrisma__?.$disconnect()
-    void globalThis.__insousPgPool__?.end()
-    globalThis.__insousPrisma__ = undefined
-    globalThis.__insousPgPool__ = undefined
+    void globalThis.__levelInsouciantPrisma__?.$disconnect()
+    void globalThis.__levelInsouciantPgPool__?.end()
+    globalThis.__levelInsouciantPrisma__ = undefined
+    globalThis.__levelInsouciantPgPool__ = undefined
   }
 
-  const client = globalThis.__insousPrisma__ ?? createPrismaClient()
+  const client = globalThis.__levelInsouciantPrisma__ ?? createPrismaClient()
 
   if (process.env.NODE_ENV !== "production") {
-    globalThis.__insousPrisma__ = client
-    globalThis.__insousPrismaSignature__ = prismaClientSignature
+    globalThis.__levelInsouciantPrisma__ = client
+    globalThis.__levelInsouciantPrismaSignature__ = prismaClientSignature
   }
 
   return client
@@ -59,6 +59,6 @@ function getPrismaClient() {
 export const prisma = getPrismaClient()
 
 if (process.env.NODE_ENV !== "production") {
-  globalThis.__insousPrisma__ = prisma
-  globalThis.__insousPrismaSignature__ = prismaClientSignature
+  globalThis.__levelInsouciantPrisma__ = prisma
+  globalThis.__levelInsouciantPrismaSignature__ = prismaClientSignature
 }

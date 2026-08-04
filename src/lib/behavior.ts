@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 
-export const BEHAVIOR_VISITOR_COOKIE = "insous_behavior_id"
+export const BEHAVIOR_VISITOR_COOKIE = "level_insouciant_behavior_id"
 
 const APPROVED_COMMENT_STATUS = "APPROVED" as const
 
