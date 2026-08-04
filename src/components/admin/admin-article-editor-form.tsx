@@ -431,7 +431,10 @@ function AdminArticleEditorForm({
                 aria-labelledby="article-editor-source-heading"
                 className="min-w-0 overflow-hidden border border-white/10 bg-[#10130f]"
               >
-                <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-3 sm:px-5">
+                <div
+                  data-editor-panel-header
+                  className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-3 sm:px-5"
+                >
                   <div className="min-w-0">
                     <p className="admin-kicker-accent">MDX Source</p>
                     <h2
@@ -494,7 +497,10 @@ function AdminArticleEditorForm({
                   aria-labelledby="article-editor-preview-heading"
                   className="min-w-0 overflow-hidden border border-white/10 bg-[#10130f]"
                 >
-                  <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+                  <div
+                    data-editor-panel-header
+                    className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-3 sm:px-5"
+                  >
                     <div>
                       <p className="admin-kicker-accent">Live Preview</p>
                       <h2

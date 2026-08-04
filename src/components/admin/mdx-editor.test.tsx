@@ -228,6 +228,13 @@ describe("AdminArticleEditorForm", () => {
 
     expect(screen.getByRole("heading", { name: "MDX 源码" })).not.toBeNull()
     expect(screen.getByRole("heading", { name: "实时效果" })).not.toBeNull()
+
+    const panelHeaders = Array.from(
+      container.querySelectorAll("[data-editor-panel-header]")
+    )
+
+    expect(panelHeaders).toHaveLength(2)
+    expect(panelHeaders[0]?.className).toBe(panelHeaders[1]?.className)
   })
 
   it("syncs desktop source scrolling to the preview proportionally", async () => {
