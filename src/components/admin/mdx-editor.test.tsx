@@ -32,6 +32,28 @@ vi.mock("@uiw/react-codemirror", () => ({
       theme.options !== null &&
       "dark" in theme.options &&
       theme.options.dark === true
+    const themeStyles =
+      typeof theme === "object" && theme !== null && "styles" in theme
+        ? theme.styles
+        : null
+    const getThemeRule = (selector: string) =>
+      typeof themeStyles === "object" &&
+      themeStyles !== null &&
+      selector in themeStyles
+        ? (themeStyles as Record<string, unknown>)[selector]
+        : null
+    const gutterStyles = getThemeRule(".cm-gutters")
+    const contentStyles = getThemeRule(".cm-content")
+    const guttersAreMonospace =
+      typeof gutterStyles === "object" &&
+      gutterStyles !== null &&
+      "fontFamily" in gutterStyles &&
+      gutterStyles.fontFamily === "var(--font-mono)"
+    const contentIsMonospace =
+      typeof contentStyles === "object" &&
+      contentStyles !== null &&
+      "fontFamily" in contentStyles &&
+      contentStyles.fontFamily === "var(--font-mono)"
 
     return (
       <textarea
@@ -39,6 +61,8 @@ vi.mock("@uiw/react-codemirror", () => ({
         aria-label={ariaLabel}
         data-theme={typeof theme === "string" ? theme : "custom"}
         data-theme-dark={String(themeIsDark)}
+        data-gutter-font={String(guttersAreMonospace)}
+        data-content-font={String(contentIsMonospace)}
         data-testid="codemirror-editor"
         value={value}
         onChange={(event) => onChange?.(event.target.value)}
@@ -85,6 +109,15 @@ describe("MdxEditor", () => {
 
     expect(editor?.getAttribute("data-theme")).toBe("custom")
     expect(editor?.getAttribute("data-theme-dark")).toBe("true")
+  })
+
+  it("uses the editor font for line numbers", () => {
+    render(<MdxEditor value="# Draft" onChange={vi.fn()} />)
+
+    const editor = screen.getAllByTestId("codemirror-editor").at(-1)
+
+    expect(editor?.getAttribute("data-gutter-font")).toBe("true")
+    expect(editor?.getAttribute("data-content-font")).toBe("true")
   })
 })
 

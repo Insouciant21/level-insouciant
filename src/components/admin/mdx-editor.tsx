@@ -22,6 +22,9 @@ const mdxEditorTheme = EditorView.theme(
     },
     ".cm-content": {
       caretColor: "#62d99a",
+      fontFamily: "var(--font-mono)",
+      fontSize: "0.875rem",
+      lineHeight: "1.75rem",
     },
     ".cm-cursor, .cm-dropCursor": {
       borderLeftColor: "#62d99a",
@@ -36,6 +39,9 @@ const mdxEditorTheme = EditorView.theme(
       backgroundColor: "#10130f",
       borderRight: "1px solid rgb(220 235 211 / 12%)",
       color: "#748073",
+      fontFamily: "var(--font-mono)",
+      fontSize: "0.875rem",
+      lineHeight: "1.75rem",
     },
     ".cm-activeLineGutter": {
       backgroundColor: "rgb(0 155 78 / 12%)",
