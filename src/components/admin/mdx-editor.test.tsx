@@ -1,8 +1,14 @@
 // @vitest-environment jsdom
 
 import * as React from "react"
-import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { AdminArticleEditorForm } from "@/components/admin/admin-article-editor-form"
 import { MdxEditor } from "@/components/admin/mdx-editor"
@@ -11,7 +17,7 @@ vi.mock("@uiw/react-codemirror", () => ({
   EditorView: {
     theme: (styles: unknown, options: unknown) => ({ styles, options }),
   },
-  default: ({
+  default: function MockCodeMirror({
     value,
     onChange,
     id,
@@ -26,7 +32,7 @@ vi.mock("@uiw/react-codemirror", () => ({
     onCreateEditor?: (view: { scrollDOM: HTMLElement }, state: unknown) => void
     "aria-label"?: string
     [key: string]: unknown
-  }) => {
+  }) {
     const scrollContainerRef = React.useRef<HTMLDivElement>(null)
 
     React.useEffect(() => {
@@ -101,6 +107,49 @@ const values = {
   content: "# Draft content",
 }
 
+function mockMatchMedia(matches: boolean) {
+  vi.stubGlobal(
+    "matchMedia",
+    (query: string) =>
+      ({
+        matches,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }) as MediaQueryList
+  )
+}
+
+function defineScrollMetrics(
+  element: HTMLElement,
+  metrics: { scrollHeight: number; clientHeight: number }
+) {
+  Object.defineProperties(element, {
+    scrollTop: {
+      configurable: true,
+      value: 0,
+      writable: true,
+    },
+    scrollHeight: {
+      configurable: true,
+      value: metrics.scrollHeight,
+    },
+    clientHeight: {
+      configurable: true,
+      value: metrics.clientHeight,
+    },
+  })
+}
+
+afterEach(() => {
+  cleanup()
+  vi.unstubAllGlobals()
+})
+
 describe("MdxEditor", () => {
   it("keeps the CodeMirror surface controlled and forwards edits", () => {
     const onChange = vi.fn()
@@ -151,6 +200,102 @@ describe("MdxEditor", () => {
 })
 
 describe("AdminArticleEditorForm", () => {
+  it("separates metadata from the desktop source and preview workbench", async () => {
+    mockMatchMedia(true)
+
+    const { container } = render(
+      <AdminArticleEditorForm
+        mode="edit"
+        action={vi.fn()}
+        values={values}
+        statusLabel="已发布"
+      />
+    )
+
+    expect(
+      container.querySelector('[data-editor-section="metadata"]')
+    ).not.toBeNull()
+    expect(container.querySelector("[data-editor-workbench]")).not.toBeNull()
+
+    await waitFor(() => {
+      expect(
+        container.querySelector('[data-editor-panel="source"]')
+      ).not.toBeNull()
+      expect(
+        container.querySelector('[data-editor-panel="preview"]')
+      ).not.toBeNull()
+    })
+
+    expect(screen.getByRole("heading", { name: "MDX 源码" })).not.toBeNull()
+    expect(screen.getByRole("heading", { name: "实时效果" })).not.toBeNull()
+  })
+
+  it("syncs desktop source scrolling to the preview proportionally", async () => {
+    mockMatchMedia(true)
+
+    const { container } = render(
+      <AdminArticleEditorForm
+        mode="edit"
+        action={vi.fn()}
+        values={values}
+        statusLabel="已发布"
+      />
+    )
+
+    await waitFor(() => {
+      expect(
+        container.querySelector('[data-editor-panel="preview"]')
+      ).not.toBeNull()
+    })
+
+    const source = screen.getByTestId("codemirror-scroll")
+    const target = screen.getByTestId("article-editor-preview-scroll")
+
+    defineScrollMetrics(source, { scrollHeight: 650, clientHeight: 150 })
+    defineScrollMetrics(target, { scrollHeight: 1150, clientHeight: 150 })
+
+    source.scrollTop = 150
+    fireEvent.scroll(source)
+
+    expect(target.scrollTop).toBe(300)
+  })
+
+  it("switches between source and preview panels on mobile", async () => {
+    mockMatchMedia(false)
+
+    render(
+      <AdminArticleEditorForm
+        mode="create"
+        action={vi.fn()}
+        values={values}
+        statusLabel="新文章 / 未发布"
+      />
+    )
+
+    expect(screen.getByTestId("article-editor-source-panel")).not.toBeNull()
+    expect(screen.queryByTestId("article-editor-preview-panel")).toBeNull()
+    expect(
+      screen.getByRole("button", { name: "源码" }).getAttribute("aria-pressed")
+    ).toBe("true")
+
+    fireEvent.click(screen.getByRole("button", { name: "效果" }))
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("article-editor-source-panel")).toBeNull()
+      expect(screen.getByTestId("article-editor-preview-panel")).not.toBeNull()
+    })
+    expect(
+      document.querySelector('input[type="hidden"][name="content"]')
+    ).not.toBeNull()
+    expect(
+      (
+        document.querySelector(
+          'input[type="hidden"][name="content"]'
+        ) as HTMLInputElement
+      ).value
+    ).toBe(values.content)
+  })
+
   it("submits the current MDX through a hidden content field", () => {
     render(
       <AdminArticleEditorForm
