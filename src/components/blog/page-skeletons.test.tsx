@@ -45,9 +45,6 @@ describe("public page skeleton compositions", () => {
       "分叉走廊",
       "挑一扇门，继续向里走",
       "Archive",
-      "Archive Index",
-      "最新档案",
-      "查看全部档案",
       "Observation Log",
       "观测日志",
       "Index",
@@ -83,6 +80,13 @@ describe("public page skeleton compositions", () => {
     expect(container.textContent).not.toContain("Level Insouciant")
     expect(container.textContent).not.toContain("insouciant21@outlook.com")
     expect(container.textContent).toContain("Facility Hub // Entry Node")
+  })
+
+  it("removes the latest archive section from the home loading state", () => {
+    const { container } = render(<HomePageSkeleton />)
+
+    expect(container.textContent).not.toContain("最新档案")
+    expect(container.textContent).not.toContain("查看全部档案")
   })
 
   it("keeps article loading geometry in document, TOC, engagement, and related regions", () => {

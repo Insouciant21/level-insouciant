@@ -1,7 +1,5 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 
-import { ArticleCard } from "@/components/blog/article-card"
 import { EmptyState } from "@/components/blog/empty-state"
 import { HomeDoorGrid } from "@/components/blog/home-door-grid"
 import { HomeHero } from "@/components/blog/home-hero"
@@ -9,12 +7,7 @@ import { HomeProfileCard } from "@/components/blog/home-profile-card"
 import { HomeTagCloud } from "@/components/blog/home-tag-cloud"
 import { HomeTimeline } from "@/components/blog/home-timeline"
 import { PageShell } from "@/components/blog/page-shell"
-import { Button } from "@/components/ui/button"
-import {
-  getAllArticles,
-  getArchiveOverview,
-  getFeaturedArticles,
-} from "@/lib/content"
+import { getAllArticles, getArchiveOverview } from "@/lib/content"
 import { getHitokotoQuotes } from "@/lib/hitokoto"
 import { createPageMetadata } from "@/lib/seo"
 import { getSiteConfig } from "@/lib/site-config"
@@ -38,16 +31,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const [
-    siteConfig,
-    featuredArticles,
-    archiveOverview,
-    allArticles,
-    hitokotoQuotes,
-  ] =
+  const [siteConfig, archiveOverview, allArticles, hitokotoQuotes] =
     await Promise.all([
       getSiteConfig(),
-      getFeaturedArticles(),
       getArchiveOverview(),
       getAllArticles(),
       getHitokotoQuotes(),
@@ -101,31 +87,6 @@ export default async function Page() {
             description="当前还没有公开记录，等第一批层级笔记整理完再开放。"
           />
         )}
-      </section>
-
-      <section className="grid gap-5">
-        <header className="site-section-header">
-          <div className="max-w-3xl">
-            <p className="utility-kicker">Archive Index</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-              最新档案
-            </h2>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="chrome-pill">{allArticles.length} 条公开记录</span>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/articles">查看全部档案</Link>
-            </Button>
-          </div>
-        </header>
-
-        <div className="grid gap-4 lg:grid-cols-2">
-          {featuredArticles.length > 0
-            ? featuredArticles.map((article) => (
-                <ArticleCard key={article.slug} article={article} />
-              ))
-            : null}
-        </div>
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">

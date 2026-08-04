@@ -154,11 +154,6 @@ export async function getArchiveOverview() {
   }
 }
 
-export async function getFeaturedArticles(limit = 3) {
-  const articles = await getAllArticles()
-  return articles.slice(0, limit)
-}
-
 export async function getArticlePagination(slug: string) {
   const articles = await getAllArticles()
   const index = articles.findIndex((article) => article.slug === slug)

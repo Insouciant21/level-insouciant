@@ -276,35 +276,6 @@ function HomePageSkeleton() {
           </div>
         </section>
 
-        <section className="grid min-w-0 gap-5">
-          <header className="site-section-header">
-            <div className="max-w-3xl min-w-0 space-y-3">
-              <p className="utility-kicker">Archive Index</p>
-              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-                最新档案
-              </h2>
-            </div>
-
-            <div className="flex min-w-0 flex-wrap items-center gap-3">
-              <Skeleton tone="soft" className="h-8 w-28" />
-              <span
-                className={buttonVariants({
-                  variant: "outline",
-                  size: "sm",
-                })}
-              >
-                查看全部档案
-              </span>
-            </div>
-          </header>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <ArticleCardSkeleton key={index} />
-            ))}
-          </div>
-        </section>
-
         <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
           <TimelinePanelSkeleton />
 
