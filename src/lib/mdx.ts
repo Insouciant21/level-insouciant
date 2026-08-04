@@ -59,9 +59,13 @@ const mdxNormalizationProcessor = unified()
   })
   .use(remarkStringify)
 
+export function parseMdxTree(source: string) {
+  return mdxNormalizationProcessor.parse(source)
+}
+
 export function normalizeMdxSource(source: string) {
   try {
-    const tree = mdxNormalizationProcessor.parse(source)
+    const tree = parseMdxTree(source)
     const normalizedTree = mdxNormalizationProcessor.runSync(
       tree
     ) as typeof tree
