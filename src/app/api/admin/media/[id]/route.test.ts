@@ -4,10 +4,11 @@ import { revalidatePath } from "next/cache"
 import { getCurrentAdmin } from "@/lib/auth"
 import {
   deleteMediaAsset,
+  getMediaAssetDetails,
   renameMediaAsset,
   retryMediaAssetDeletion,
 } from "@/lib/media/assets"
-import { DELETE, PATCH } from "@/app/api/admin/media/[id]/route"
+import { DELETE, GET, PATCH } from "@/app/api/admin/media/[id]/route"
 
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
@@ -19,6 +20,7 @@ vi.mock("@/lib/auth", () => ({
 
 vi.mock("@/lib/media/assets", () => ({
   deleteMediaAsset: vi.fn(),
+  getMediaAssetDetails: vi.fn(),
   renameMediaAsset: vi.fn(),
   retryMediaAssetDeletion: vi.fn(),
 }))
@@ -29,6 +31,38 @@ const params = { params: Promise.resolve({ id: "asset-1" }) }
 beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(getCurrentAdmin).mockResolvedValue(admin as never)
+})
+
+describe("GET /api/admin/media/:id", () => {
+  it("returns media details for an authenticated administrator", async () => {
+    const details = {
+      id: "asset-1",
+      displayName: "hero.png",
+      articles: [],
+    }
+    vi.mocked(getMediaAssetDetails).mockResolvedValue(details as never)
+
+    const response = await GET(
+      new Request("http://localhost/api/admin/media/asset-1"),
+      params
+    )
+
+    expect(response.status).toBe(200)
+    expect(getMediaAssetDetails).toHaveBeenCalledWith("asset-1")
+    expect(await response.json()).toEqual(details)
+  })
+
+  it("returns not found when the media asset does not exist", async () => {
+    vi.mocked(getMediaAssetDetails).mockResolvedValue(null)
+
+    const response = await GET(
+      new Request("http://localhost/api/admin/media/missing"),
+      { params: Promise.resolve({ id: "missing" }) }
+    )
+
+    expect(response.status).toBe(404)
+    expect(await response.json()).toEqual({ error: "MEDIA_ASSET_NOT_FOUND" })
+  })
 })
 
 describe("PATCH /api/admin/media/:id", () => {

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { getCurrentAdmin } from "@/lib/auth"
 import {
   deleteMediaAsset,
+  getMediaAssetDetails,
   renameMediaAsset,
   retryMediaAssetDeletion,
 } from "@/lib/media/assets"
@@ -53,6 +54,31 @@ function getServiceErrorResponse(error: unknown) {
   }
 
   return NextResponse.json({ error: "MEDIA_REQUEST_FAILED" }, { status: 500 })
+}
+
+export async function GET(_request: Request, { params }: RouteProps) {
+  const admin = await getCurrentAdmin()
+
+  if (!admin) {
+    return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 })
+  }
+
+  const { id } = await params
+
+  try {
+    const asset = await getMediaAssetDetails(id)
+
+    if (!asset) {
+      return NextResponse.json(
+        { error: "MEDIA_ASSET_NOT_FOUND" },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json(asset)
+  } catch (error) {
+    return getServiceErrorResponse(error)
+  }
 }
 
 export async function PATCH(request: Request, { params }: RouteProps) {
