@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen } from "@testing-library/react"
+import * as React from "react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 import { AdminArticleEditorForm } from "@/components/admin/admin-article-editor-form"
@@ -15,15 +16,25 @@ vi.mock("@uiw/react-codemirror", () => ({
     onChange,
     id,
     theme,
+    onCreateEditor,
     "aria-label": ariaLabel,
   }: {
     value: string
     onChange?: (value: string) => void
     id?: string
     theme?: "light" | "dark" | "none" | unknown
+    onCreateEditor?: (view: { scrollDOM: HTMLElement }, state: unknown) => void
     "aria-label"?: string
     [key: string]: unknown
   }) => {
+    const scrollContainerRef = React.useRef<HTMLDivElement>(null)
+
+    React.useEffect(() => {
+      if (scrollContainerRef.current) {
+        onCreateEditor?.({ scrollDOM: scrollContainerRef.current }, {})
+      }
+    }, [onCreateEditor])
+
     const themeIsDark =
       typeof theme === "object" &&
       theme !== null &&
@@ -56,17 +67,19 @@ vi.mock("@uiw/react-codemirror", () => ({
       contentStyles.fontFamily === "var(--font-mono)"
 
     return (
-      <textarea
-        id={id}
-        aria-label={ariaLabel}
-        data-theme={typeof theme === "string" ? theme : "custom"}
-        data-theme-dark={String(themeIsDark)}
-        data-gutter-font={String(guttersAreMonospace)}
-        data-content-font={String(contentIsMonospace)}
-        data-testid="codemirror-editor"
-        value={value}
-        onChange={(event) => onChange?.(event.target.value)}
-      />
+      <div ref={scrollContainerRef} data-testid="codemirror-scroll">
+        <textarea
+          id={id}
+          aria-label={ariaLabel}
+          data-theme={typeof theme === "string" ? theme : "custom"}
+          data-theme-dark={String(themeIsDark)}
+          data-gutter-font={String(guttersAreMonospace)}
+          data-content-font={String(contentIsMonospace)}
+          data-testid="codemirror-editor"
+          value={value}
+          onChange={(event) => onChange?.(event.target.value)}
+        />
+      </div>
     )
   },
 }))
@@ -118,6 +131,22 @@ describe("MdxEditor", () => {
 
     expect(editor?.getAttribute("data-gutter-font")).toBe("true")
     expect(editor?.getAttribute("data-content-font")).toBe("true")
+  })
+
+  it("exposes the CodeMirror scroll container", async () => {
+    const scrollContainerRef = { current: null as HTMLElement | null }
+
+    render(
+      <MdxEditor
+        value="# Draft"
+        onChange={vi.fn()}
+        scrollContainerRef={scrollContainerRef}
+      />
+    )
+
+    await waitFor(() => {
+      expect(scrollContainerRef.current).not.toBeNull()
+    })
   })
 })
 

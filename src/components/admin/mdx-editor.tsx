@@ -12,6 +12,7 @@ type MdxEditorProps = {
   id?: string
   ariaLabel?: string
   className?: string
+  scrollContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
 const mdxEditorTheme = EditorView.theme(
@@ -57,8 +58,17 @@ function MdxEditor({
   id,
   ariaLabel = "MDX editor",
   className,
+  scrollContainerRef,
 }: MdxEditorProps) {
   const extensions = React.useMemo(() => [markdown()], [])
+
+  React.useEffect(() => {
+    return () => {
+      if (scrollContainerRef) {
+        scrollContainerRef.current = null
+      }
+    }
+  }, [scrollContainerRef])
 
   return (
     <div
@@ -75,6 +85,11 @@ function MdxEditor({
         extensions={extensions}
         theme={mdxEditorTheme}
         aria-label={ariaLabel}
+        onCreateEditor={(view) => {
+          if (scrollContainerRef) {
+            scrollContainerRef.current = view.scrollDOM
+          }
+        }}
         onChange={onChange}
       />
     </div>
