@@ -118,9 +118,9 @@ export const defaultSiteConfig: SiteConfig = {
     statusValue: "Operational",
     quote: "To map the unmappable. To survive the unlivable. To record what was meant to be forgotten.",
     intro:
-      "这里不是普通的个人主页，而是我为 Level Insouciant 维护的一份开放档案。经验、日常与学习在这里被整理成可复查的路径。",
+      "这里不只是一张个人主页，也是一份持续整理中的开放档案。Level Insouciant 记录经验、日常与学习，并将零散的经历整理成可以回看、验证和继续延伸的路径。",
     principles:
-      "我把这座站点当成一份会持续演化的开放档案，技术与经验会被放进同一套秩序里，因为它们本质上都在处理同一个问题：如何给后来者留下可信的路径标记。",
+      "我希望这个站点在不断记录中逐渐形成自己的秩序。技术、经验，以及那些暂时没有答案的问题，都会在这里留下痕迹；如果这些记录能为后来者提供一些线索，它们便有了继续存在的意义。",
     contactHeading: "Contact Information",
     archiveAccess: {
       label: "Archive Access",
@@ -134,7 +134,7 @@ export const defaultSiteConfig: SiteConfig = {
   profile: {
     title: "记录者摘要",
     summary:
-      "我是这份档案的长期维护者，也是一个正在学习的开发者。遇到难以解释的房间时，我更习惯先整理命名、边界和证据，再决定要不要继续深入。",
+      "我是这份档案的维护者，也是一名仍在学习中的开发者。面对一时难以解释的房间，我习惯先理清名称、边界与证据，再决定是否继续深入。",
     status: "持续记录中",
     location: "China",
   },
