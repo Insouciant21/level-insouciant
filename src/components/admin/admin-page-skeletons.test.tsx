@@ -3,8 +3,9 @@
 import type { ReactElement } from "react"
 
 import { cleanup, render } from "@testing-library/react"
-import { afterEach, describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
+import { AdminAccountView } from "@/components/account/account-view"
 import {
   AdminAccountPageSkeleton,
   AdminArticleEditorPageSkeleton,
@@ -18,6 +19,12 @@ import {
   AdminStatsPageSkeleton,
   AdminTagsPageSkeleton,
 } from "@/components/admin/admin-page-skeletons"
+
+vi.mock("@/app/account/actions", () => ({
+  changePasswordAction: vi.fn(),
+  deleteOwnCommentAction: vi.fn(),
+  updateProfileAction: vi.fn(),
+}))
 
 afterEach(() => {
   cleanup()
@@ -356,6 +363,87 @@ describe("admin page skeleton compositions", () => {
     expect(
       container.querySelector('[data-skeleton-layout="admin-settings"]')
     ).not.toBeNull()
+  })
+
+  it("does not render page-level descriptions in admin loading states", () => {
+    const cases = [
+      [
+        <AdminLoginPageSkeleton key="login" />,
+        "管理文章、评论和站点内容，所有操作都会保留在后台记录中。",
+      ],
+      [
+        <AdminDashboardPageSkeleton key="dashboard" />,
+        "这里汇总公开记录、草稿、互动数据和用户规模",
+      ],
+      [<AdminProtectedPageSkeleton key="protected" />, "正在载入后台内容。"],
+      [
+        <AdminArticlesPageSkeleton key="articles" />,
+        "这里直接操作数据库中的文章记录，可以新建、编辑、发布、下线、查看修订历史或删除文章。",
+      ],
+      [
+        <AdminCommentsPageSkeleton key="comments" />,
+        "可以隐藏、恢复或删除评论。对某条评论执行操作时，会同步作用到它下面的所有楼中楼回复。",
+      ],
+      [
+        <AdminTagsPageSkeleton key="tags" />,
+        "标签现在来自数据库中的文章记录。这里支持批量重命名标签，或者从所有文章里移除某个标签。",
+      ],
+      [
+        <AdminStatsPageSkeleton key="stats" />,
+        "按文章维度聚合阅读、点赞和评论表现，方便快速判断哪些内容在工作。",
+      ],
+      [
+        <AdminAccountPageSkeleton key="account" />,
+        "管理管理员账号资料、密码，以及你在站内留下的评论记录。",
+      ],
+      [
+        <AdminArticleEditorPageSkeleton key="editor-create" mode="create" />,
+        "创建后会立刻写入数据库并生成第一条修订记录。",
+      ],
+      [
+        <AdminArticleEditorPageSkeleton key="editor-edit" mode="edit" />,
+        "每次保存都会生成修订记录，便于后续回滚。",
+      ],
+      [
+        <AdminArticleHistoryPageSkeleton key="history" />,
+        "这里会保存每一次创建、编辑、发布、隐藏、标签变更和版本恢复后的快照。",
+      ],
+    ] as const
+
+    for (const [skeleton, description] of cases) {
+      const { container } = render(skeleton)
+      expect(container.textContent).not.toContain(description)
+    }
+
+    const { container } = render(<AdminSettingsPageSkeleton />)
+    expect(container.textContent).not.toContain("页脚结束语")
+    expect(
+      Array.from(container.querySelectorAll("label")).some(
+        (label) => label.textContent?.trim() === "描述"
+      )
+    ).toBe(false)
+  })
+
+  it("removes the admin account header description", () => {
+    const { container } = render(
+      <AdminAccountView
+        profile={{
+          id: "admin-1",
+          email: "admin@example.test",
+          name: "Admin",
+          avatarUrl: null,
+          role: "ADMIN",
+          createdAt: "2026-08-04T00:00:00.000Z",
+        }}
+        comments={[]}
+        notice={null}
+      />
+    )
+
+    expect(container.textContent).not.toContain(
+      "管理管理员账号资料、密码，以及你在站内留下的评论记录。"
+    )
+    expect(container.querySelector("h1")?.textContent).toBe("我的资料")
   })
 
   it.each([

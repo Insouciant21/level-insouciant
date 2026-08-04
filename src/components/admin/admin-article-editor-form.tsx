@@ -463,13 +463,7 @@ function AdminArticleEditorForm({
               </section>
             ) : null}
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5 xl:order-3 xl:col-span-2">
-              <p className="admin-copy">
-                {mode === "create"
-                  ? "创建后会立刻写入数据库并生成第一条修订记录。"
-                  : "每次保存都会生成修订记录，便于后续回滚。"}
-              </p>
-
+            <div className="flex flex-wrap items-center justify-end gap-3 border-t border-white/10 pt-5 xl:order-3 xl:col-span-2">
               <div className="flex flex-wrap gap-3">
                 <Button
                   type="submit"

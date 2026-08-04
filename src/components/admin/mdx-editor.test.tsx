@@ -297,6 +297,9 @@ describe("AdminArticleEditorForm", () => {
         "使用结构化字段加原始 MDX 正文编辑，保存即生成修订记录。"
       )
     ).toBeNull()
+    expect(
+      screen.queryByText("每次保存都会生成修订记录，便于后续回滚。")
+    ).toBeNull()
 
     const metadata = container.querySelector('[data-editor-section="metadata"]')
 

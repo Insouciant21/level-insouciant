@@ -27,9 +27,6 @@ export default async function AdminArticlesPage() {
         <div className="flex flex-col gap-2">
           <p className="admin-kicker-accent">Article Control</p>
           <h1 className="admin-title">草稿与文章管理</h1>
-          <p className="admin-copy">
-            这里直接操作数据库中的文章记录，可以新建、编辑、发布、下线、查看修订历史或删除文章。
-          </p>
         </div>
 
         <Button asChild className="w-full sm:w-auto">

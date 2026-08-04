@@ -36,9 +36,6 @@ export default async function AdminDashboardPage() {
               <h1 className="text-3xl font-semibold tracking-tight text-[#edf3e9] sm:text-4xl">
                 后台概览
               </h1>
-              <p className="admin-copy mt-2">
-                这里汇总公开记录、草稿、互动数据和用户规模
-              </p>
             </div>
             <span className="admin-status-pill admin-status-live">
               <span className="size-1.5 rounded-full bg-[var(--safety-exit-green)]" />

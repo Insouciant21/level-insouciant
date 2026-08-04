@@ -302,9 +302,6 @@ export function AdminAccountView({
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[#edf3e9] sm:text-4xl">
             我的资料
           </h1>
-          <p className="admin-copy mt-2">
-            管理管理员账号资料、密码，以及你在站内留下的评论记录。
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">

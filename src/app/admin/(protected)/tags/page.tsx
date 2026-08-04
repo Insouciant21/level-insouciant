@@ -13,9 +13,6 @@ export default async function AdminTagsPage() {
       <div className="flex flex-col gap-2">
         <p className="admin-kicker-accent">Tag Operations</p>
         <h1 className="admin-title">标签管理</h1>
-        <p className="admin-copy">
-          标签现在来自数据库中的文章记录。这里支持批量重命名标签，或者从所有文章里移除某个标签。
-        </p>
       </div>
 
       <div className="mt-6 grid gap-4">

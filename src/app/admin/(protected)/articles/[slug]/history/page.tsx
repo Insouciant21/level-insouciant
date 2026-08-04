@@ -91,12 +91,7 @@ export default async function AdminArticleHistoryPage({
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="admin-title">{article.title}</h1>
-            <p className="admin-copy mt-2">
-              这里会保存每一次创建、编辑、发布、隐藏、标签变更和版本恢复后的快照。
-            </p>
-          </div>
+          <h1 className="admin-title">{article.title}</h1>
 
           <div className="flex flex-wrap gap-4 text-sm">
             <Link

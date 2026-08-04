@@ -255,25 +255,21 @@ function AdminListCardSkeleton({
 function AdminPageHeaderSkeleton({
   variant = "standard",
   titleWidth = "w-56",
-  descWidth = "max-w-2xl",
   kicker = "accent",
   action = false,
   status = false,
   kickerText,
   titleText,
-  descriptionText,
   actionText,
   statusText,
 }: {
   variant?: "standard" | "dashboard" | "account"
   titleWidth?: string
-  descWidth?: string
   kicker?: "accent" | "default"
   action?: boolean
   status?: boolean
   kickerText?: string
   titleText?: string
-  descriptionText?: string
   actionText?: string
   statusText?: string
 }) {
@@ -283,11 +279,6 @@ function AdminPageHeaderSkeleton({
     variant === "standard"
       ? "admin-title max-w-full"
       : "max-w-full text-3xl font-semibold tracking-tight text-[#edf3e9] sm:text-4xl"
-  const descriptionClass = cn(
-    "admin-copy",
-    variant === "standard" ? null : "mt-2",
-    descWidth
-  )
   const kickerNode = kickerText ? (
     <p data-admin-skeleton-kicker="top-level" className={kickerClass}>
       {kickerText}
@@ -309,18 +300,6 @@ function AdminPageHeaderSkeleton({
         variant === "standard" ? "h-8" : "h-10",
         "max-w-full",
         titleWidth
-      )}
-    />
-  )
-  const descriptionNode = descriptionText ? (
-    <p className={descriptionClass}>{descriptionText}</p>
-  ) : (
-    <AdminSkeleton
-      tone="soft"
-      className={cn(
-        "h-4 w-full",
-        variant === "standard" ? null : "mt-2",
-        descWidth
       )}
     />
   )
@@ -347,7 +326,6 @@ function AdminPageHeaderSkeleton({
         <div className="mt-3 flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
             {titleNode}
-            {descriptionNode}
           </div>
           {statusNode}
         </div>
@@ -365,7 +343,6 @@ function AdminPageHeaderSkeleton({
           {kickerNode}
           <div className="mt-3">
             {titleNode}
-            {descriptionNode}
           </div>
         </div>
         {statusNode ? (
@@ -391,7 +368,6 @@ function AdminPageHeaderSkeleton({
       >
         {kickerNode}
         {titleNode}
-        {descriptionNode}
       </div>
       {actionNode}
       {statusNode}
@@ -455,9 +431,6 @@ function AdminLoginPageSkeleton() {
               <h1 className="text-3xl font-semibold tracking-tight text-[#edf3e9] sm:text-4xl">
                 登录后台控制台
               </h1>
-              <p className="max-w-md text-sm leading-7 text-[#9aa79a] sm:text-base">
-                管理文章、评论和站点内容，所有操作都会保留在后台记录中。
-              </p>
             </div>
           </div>
 
@@ -475,7 +448,6 @@ function AdminLoginPageSkeleton() {
         <div className="grid min-w-0 gap-5 px-6 py-8 sm:px-8 sm:py-10">
           <div>
             <p className="text-base font-semibold text-[#edf3e9]">管理员登录</p>
-            <p className="mt-1 text-sm text-[#748073]">使用管理员账号继续。</p>
           </div>
           <div className="grid gap-2">
             <label className="text-sm font-medium text-[#dce6d8]">邮箱</label>
@@ -560,9 +532,7 @@ function AdminDashboardPageSkeleton() {
       <AdminPageHeaderSkeleton
         variant="dashboard"
         titleText="后台概览"
-        descriptionText="这里汇总公开记录、草稿、互动数据和用户规模"
         kickerText="Operations Console"
-        descWidth="max-w-2xl"
         statusText="系统正常"
       />
 
@@ -605,8 +575,6 @@ function AdminProtectedPageSkeleton() {
       <AdminPageHeaderSkeleton
         kickerText="Admin Workspace"
         titleText="后台工作区"
-        descriptionText="正在载入后台内容。"
-        descWidth="max-w-xl"
       />
 
       <section className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -633,8 +601,6 @@ function AdminArticlesPageSkeleton() {
       <AdminPageHeaderSkeleton
         kickerText="Article Control"
         titleText="草稿与文章管理"
-        descriptionText="这里直接操作数据库中的文章记录，可以新建、编辑、发布、下线、查看修订历史或删除文章。"
-        descWidth="max-w-3xl"
         actionText="新建文章"
       />
 
@@ -659,8 +625,6 @@ function AdminCommentsPageSkeleton() {
       <AdminPageHeaderSkeleton
         kickerText="Comment Moderation"
         titleText="评论管理"
-        descriptionText="可以隐藏、恢复或删除评论。对某条评论执行操作时，会同步作用到它下面的所有楼中楼回复。"
-        descWidth="max-w-3xl"
       />
 
       <div className="mt-6 grid min-w-0 gap-3">
@@ -684,8 +648,6 @@ function AdminTagsPageSkeleton() {
       <AdminPageHeaderSkeleton
         kickerText="Tag Operations"
         titleText="标签管理"
-        descriptionText="标签现在来自数据库中的文章记录。这里支持批量重命名标签，或者从所有文章里移除某个标签。"
-        descWidth="max-w-3xl"
       />
 
       <div className="mt-6 grid min-w-0 gap-3">
@@ -738,8 +700,6 @@ function AdminStatsPageSkeleton() {
       <AdminPageHeaderSkeleton
         kickerText="Article Analytics"
         titleText="文章统计"
-        descriptionText="按文章维度聚合阅读、点赞和评论表现，方便快速判断哪些内容在工作。"
-        descWidth="max-w-3xl"
       />
 
       <div className="mt-6 min-w-0 overflow-x-auto rounded-lg border border-white/10">
@@ -804,8 +764,6 @@ function AdminAccountPageSkeleton() {
         variant="account"
         kickerText="Account Console"
         titleText="我的资料"
-        descriptionText="管理管理员账号资料、密码，以及你在站内留下的评论记录。"
-        descWidth="max-w-xl"
         statusText="管理员会话"
       />
 
@@ -1010,11 +968,6 @@ function AdminSettingsPageSkeleton() {
           <div className="grid gap-5 lg:grid-cols-2">
             <AdminEditorFieldSkeleton label="眉题" labelWidth="w-10" />
             <AdminEditorFieldSkeleton label="标题" labelWidth="w-10" />
-            <AdminEditorFieldSkeleton
-              label="描述"
-              labelWidth="w-10"
-              multiline
-            />
             <div className="grid gap-5">
               <AdminEditorFieldSkeleton label="主按钮文字" labelWidth="w-24" />
               <AdminEditorFieldSkeleton label="主按钮地址" labelWidth="w-24" />
@@ -1096,14 +1049,6 @@ function AdminSettingsPageSkeleton() {
         </section>
 
         <AdminSettingsLinkEditorSkeleton title="联系方式" itemCount={3} />
-
-        <section className="grid gap-4 border-t border-white/10 pt-5">
-          <AdminEditorFieldSkeleton
-            label="页脚结束语"
-            labelWidth="w-24"
-            multiline
-          />
-        </section>
 
         <AdminSettingsLinkEditorSkeleton title="页脚链接" itemCount={3} />
 
@@ -1237,12 +1182,7 @@ function AdminArticleEditorPageSkeleton({
             </div>
           </section>
 
-          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5 xl:col-span-2">
-            <p className="admin-copy">
-              {mode === "create"
-                ? "创建后会立刻写入数据库并生成第一条修订记录。"
-                : "每次保存都会生成修订记录，便于后续回滚。"}
-            </p>
+          <div className="flex min-w-0 flex-wrap items-center justify-end gap-3 border-t border-white/10 pt-5 xl:col-span-2">
             <div className="flex flex-wrap gap-3">
               <AdminStaticAction variant="outline">保存草稿</AdminStaticAction>
               <AdminStaticAction>发布更新</AdminStaticAction>
@@ -1271,9 +1211,6 @@ function AdminArticleHistoryPageSkeleton() {
         <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
             <AdminSkeleton className="h-8 w-64 max-w-full" />
-            <p className="admin-copy mt-2 max-w-xl">
-              这里会保存每一次创建、编辑、发布、隐藏、标签变更和版本恢复后的快照。
-            </p>
           </div>
           <div className="flex min-w-0 flex-wrap gap-4">
             <span className="admin-link">返回编辑页</span>

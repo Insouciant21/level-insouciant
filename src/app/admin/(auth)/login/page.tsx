@@ -59,9 +59,6 @@ export default async function AdminLoginPage({
               <h1 className="text-3xl font-semibold tracking-tight text-[#edf3e9] sm:text-4xl">
                 登录后台控制台
               </h1>
-              <p className="max-w-md text-sm leading-7 text-[#9aa79a] sm:text-base">
-                管理文章、评论和站点内容，所有操作都会保留在后台记录中。
-              </p>
             </div>
           </div>
 
@@ -82,7 +79,6 @@ export default async function AdminLoginPage({
         >
           <div>
             <p className="text-base font-semibold text-[#edf3e9]">管理员登录</p>
-            <p className="mt-1 text-sm text-[#748073]">使用管理员账号继续。</p>
           </div>
 
           <div className="grid gap-2">
