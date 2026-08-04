@@ -154,6 +154,8 @@ describe("admin page skeleton compositions", () => {
         texts: [
           "Edit Article",
           "在线编辑文章",
+          "Article Metadata",
+          "文章元数据",
           "标题",
           "Slug",
           "摘要",
@@ -161,9 +163,10 @@ describe("admin page skeleton compositions", () => {
           "发布日期",
           "标签",
           "封面（可选）",
-          "正文 MDX",
+          "MDX Source",
+          "MDX 源码",
           "Live Preview",
-          "实时预览",
+          "实时效果",
           "保存草稿",
           "发布更新",
         ],
@@ -182,6 +185,23 @@ describe("admin page skeleton compositions", () => {
         page.container.querySelector('[aria-hidden="true"]')
       ).not.toBeNull()
     }
+  })
+
+  it("keeps the article editor skeleton aligned to the metadata and workbench layout", () => {
+    const { container } = render(<AdminArticleEditorPageSkeleton />)
+
+    expect(
+      container.querySelector('[data-editor-section="metadata"]')
+    ).not.toBeNull()
+    expect(container.querySelector("[data-editor-workbench]")).not.toBeNull()
+    expect(
+      container.querySelector('[data-editor-panel="source"]')
+    ).not.toBeNull()
+    expect(
+      container.querySelector('[data-editor-panel="preview"]')
+    ).not.toBeNull()
+    expectVisibleAdminCopy(container, "MDX 源码")
+    expectVisibleAdminCopy(container, "实时效果")
   })
 
   it("uses the route-known title for new article loading", () => {
@@ -208,24 +228,20 @@ describe("admin page skeleton compositions", () => {
     expect(stats.querySelector("table.min-w-\\[760px\\]")).not.toBeNull()
   })
 
-  it("keeps editor loading geometry in a desktop split with a stable multiline field", () => {
+  it("keeps editor loading geometry in a desktop split with stable panel heights", () => {
     const { container } = render(<AdminArticleEditorPageSkeleton />)
 
     expect(
       container.querySelector('[data-skeleton-layout="admin-editor"]')
     ).not.toBeNull()
+    expect(container.querySelector("[data-editor-workbench]")).not.toBeNull()
     expect(
-      container.querySelector(
-        ".xl\\:grid-cols-\\[minmax\\(0\\,1fr\\)_minmax\\(0\\,1fr\\)\\]"
-      )
+      container.querySelector('[data-editor-panel="source"]')
     ).not.toBeNull()
-    const largeField = container.querySelector(".min-h-\\[24rem\\]")
-    expect(largeField).not.toBeNull()
     expect(
-      Array.from(
-        largeField?.querySelectorAll('[aria-hidden="true"]') ?? []
-      ).some((node) => node.className.includes("min-h-[24rem]"))
-    ).toBe(true)
+      container.querySelector('[data-editor-panel="preview"]')
+    ).not.toBeNull()
+    expect(container.querySelector(".h-\\[32rem\\]")).not.toBeNull()
   })
 
   it("uses the settings loading layout contract", () => {

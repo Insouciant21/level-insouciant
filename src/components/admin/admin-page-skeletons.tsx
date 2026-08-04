@@ -843,7 +843,11 @@ function AdminSettingsPageSkeleton() {
           </div>
           <div className="mt-5 grid min-w-0 gap-5">
             <AdminEditorFieldSkeleton label="站点名称" labelWidth="w-20" />
-            <AdminEditorFieldSkeleton label="站点描述" labelWidth="w-20" multiline />
+            <AdminEditorFieldSkeleton
+              label="站点描述"
+              labelWidth="w-20"
+              multiline
+            />
             <AdminEditorFieldSkeleton label="站点地址" labelWidth="w-20" />
             <AdminEditorFieldSkeleton label="SEO 关键词" labelWidth="w-20" />
           </div>
@@ -876,7 +880,11 @@ function AdminSettingsPageSkeleton() {
             </div>
             <div className="mt-5 grid min-w-0 gap-4">
               {Array.from({ length: 3 }).map((_, index) => (
-                <AdminSkeleton key={index} tone="soft" className="h-12 w-full" />
+                <AdminSkeleton
+                  key={index}
+                  tone="soft"
+                  className="h-12 w-full"
+                />
               ))}
               <AdminAccentSkeleton className="mt-1 h-10 w-full sm:w-28" />
             </div>
@@ -920,8 +928,18 @@ function AdminArticleEditorPageSkeleton({
         </div>
       </div>
 
-      <div className="mt-6 grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-start">
-        <div className="grid min-w-0 gap-5">
+      <section
+        data-editor-section="metadata"
+        className="mt-6 border-y border-white/10 py-6"
+      >
+        <div className="border-b border-white/10 pb-4">
+          <p className="admin-kicker">Article Metadata</p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#edf3e9]">
+            文章元数据
+          </h2>
+        </div>
+
+        <div className="mt-5 grid min-w-0 gap-5">
           <div className="grid min-w-0 gap-5 lg:grid-cols-2">
             <AdminEditorFieldSkeleton label="标题" labelWidth="w-10" />
             <AdminEditorFieldSkeleton label="Slug" labelWidth="w-10" />
@@ -935,40 +953,83 @@ function AdminArticleEditorPageSkeleton({
             <AdminEditorFieldSkeleton label="标签" labelWidth="w-10" />
             <AdminEditorFieldSkeleton label="封面（可选）" labelWidth="w-20" />
           </div>
-          <AdminEditorFieldSkeleton
-            label="正文 MDX"
-            labelWidth="w-12"
-            multiline
-            className="min-h-[24rem]"
-            contentClassName="min-h-[24rem]"
-          />
-          <div className="flex min-w-0 flex-wrap gap-3">
-            <AdminStaticAction variant="outline">保存草稿</AdminStaticAction>
-            <AdminStaticAction>发布更新</AdminStaticAction>
-          </div>
+        </div>
+      </section>
+
+      <section data-editor-workbench className="mt-6">
+        <div className="mb-4 grid grid-cols-2 border border-white/10 bg-white/[0.03] p-1 xl:hidden">
+          <AdminStaticAction
+            variant="secondary"
+            className="min-h-10 rounded-none"
+          >
+            源码
+          </AdminStaticAction>
+          <AdminStaticAction
+            variant="outline"
+            className="min-h-10 rounded-none text-[#9aa79a]"
+          >
+            效果
+          </AdminStaticAction>
         </div>
 
-        <section className="admin-surface-muted min-w-0 px-4 py-5 sm:px-6 sm:py-6">
-          <div className="flex min-w-0 flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <p className="admin-kicker-accent">Live Preview</p>
-              <h2 className="mt-2 text-xl font-semibold tracking-tight text-[#edf3e9] sm:text-2xl">
-                实时预览
-              </h2>
+        <div className="grid min-w-0 gap-6 xl:grid-cols-2 xl:items-start">
+          <section
+            data-editor-panel="source"
+            className="min-w-0 overflow-hidden border border-white/10 bg-[#10130f]"
+          >
+            <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-3 sm:px-5">
+              <div className="min-w-0">
+                <p className="admin-kicker-accent">MDX Source</p>
+                <h2 className="mt-1 text-lg font-semibold tracking-tight text-[#edf3e9]">
+                  MDX 源码
+                </h2>
+              </div>
+              <AdminSkeleton tone="soft" className="h-4 w-12" />
             </div>
-            <AdminSkeleton tone="soft" className="h-4 w-24 max-w-full" />
-          </div>
+            <div className="h-[32rem] min-h-0 overflow-hidden">
+              <AdminSkeleton className="h-full w-full rounded-none" />
+            </div>
+          </section>
 
-          <div className="mt-6 grid min-h-[30rem] min-w-0 content-start gap-4">
-            <AdminSkeleton className="h-6 w-24" />
-            <AdminSkeleton className="h-14 w-full" />
-            <AdminSkeleton className="h-14 w-4/5 max-w-full" />
-            <AdminSkeleton tone="soft" className="h-5 w-full" />
-            <AdminSkeleton tone="soft" className="h-5 w-5/6 max-w-full" />
-            <AdminSkeleton tone="soft" className="h-64 w-full rounded-md" />
+          <section
+            data-editor-panel="preview"
+            className="hidden min-w-0 overflow-hidden border border-white/10 bg-[#10130f] xl:block"
+          >
+            <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-3 sm:px-5">
+              <div className="min-w-0">
+                <p className="admin-kicker-accent">Live Preview</p>
+                <h2 className="mt-1 text-lg font-semibold tracking-tight text-[#edf3e9]">
+                  实时效果
+                </h2>
+              </div>
+              <AdminSkeleton tone="soft" className="h-4 w-24 max-w-full" />
+            </div>
+
+            <div className="h-[32rem] min-h-0 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
+              <div className="grid min-w-0 content-start gap-4">
+                <AdminSkeleton className="h-6 w-24" />
+                <AdminSkeleton className="h-14 w-full" />
+                <AdminSkeleton className="h-14 w-4/5 max-w-full" />
+                <AdminSkeleton tone="soft" className="h-5 w-full" />
+                <AdminSkeleton tone="soft" className="h-5 w-5/6 max-w-full" />
+                <AdminSkeleton tone="soft" className="h-64 w-full rounded-md" />
+              </div>
+            </div>
+          </section>
+
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5 xl:col-span-2">
+            <p className="admin-copy">
+              {mode === "create"
+                ? "创建后会立刻写入数据库并生成第一条修订记录。"
+                : "每次保存都会生成修订记录，便于后续回滚。"}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <AdminStaticAction variant="outline">保存草稿</AdminStaticAction>
+              <AdminStaticAction>发布更新</AdminStaticAction>
+            </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </section>
   )
 }
