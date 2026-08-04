@@ -250,9 +250,6 @@ function HomePageSkeleton() {
               <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
                 分叉走廊
               </h2>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground sm:text-base">
-                挑一扇门，继续向里走
-              </p>
             </div>
             <Skeleton tone="accent" className="h-7 w-24 shrink-0" />
           </header>
@@ -295,7 +292,6 @@ function ArticlesPageSkeleton() {
       <PageIntro
         eyebrow="Archive"
         title="层级档案"
-        description="所有公开记录都按照统一元数据整理，方便沿关键词、分类和时间线继续向深处下潜。"
       />
       <section className="grid min-w-0 gap-5">
         {Array.from({ length: 5 }).map((_, index) => (
@@ -312,7 +308,6 @@ function ArchiveDirectoryPageSkeleton() {
       <PageIntro
         eyebrow="Categories"
         title="分类归档"
-        description="分类回答内容属于什么方向，和标签一起构成博客的双层归档结构。"
       />
       <section
         className={`${skeletonPanelClass} min-w-0 space-y-5 px-6 py-6 sm:px-7`}
@@ -387,7 +382,6 @@ function TagsPageSkeleton() {
       <PageIntro
         eyebrow="Tags"
         title="标签归档"
-        description="标签用于组织主题维度。这里既能快速总览全部主题，也能直接下钻到每个标签下的文章集合。"
       />
 
       <div className="grid min-w-0 gap-6">

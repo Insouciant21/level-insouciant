@@ -35,7 +35,6 @@ export default async function TagsPage() {
       <PageIntro
         eyebrow="Tags"
         title="标签归档"
-        description="标签用于组织主题维度。这里既能快速总览全部主题，也能直接下钻到每个标签下的文章集合。"
       />
 
       {tags.length > 0 ? (

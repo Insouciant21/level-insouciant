@@ -29,7 +29,6 @@ export default async function ArticlesPage() {
       <PageIntro
         eyebrow="Archive"
         title="层级档案"
-        description="所有公开记录都按照统一元数据整理，方便沿关键词、分类和时间线继续向深处下潜。"
       />
 
       {articles.length > 0 ? (

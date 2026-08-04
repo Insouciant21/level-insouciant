@@ -43,7 +43,6 @@ describe("public page skeleton compositions", () => {
       "Secondary entry",
       "Facility Hub // Entry Node",
       "分叉走廊",
-      "挑一扇门，继续向里走",
       "Archive",
       "Observation Log",
       "观测日志",
@@ -72,6 +71,7 @@ describe("public page skeleton compositions", () => {
     expect(
       container.querySelectorAll('[aria-hidden="true"]').length
     ).toBeGreaterThan(20)
+    expect(container.textContent).not.toContain("挑一扇门，继续向里走")
   })
 
   it("does not render fallback identity or contact data while home loads", () => {
@@ -108,36 +108,25 @@ describe("public page skeleton compositions", () => {
     expect(intro?.querySelector("[aria-hidden=\"true\"]")).toBeNull()
     expect(intro?.querySelector("h1")?.textContent).toBe("层级档案")
     expect(intro?.querySelector("p")?.textContent).toBe("Archive")
-    expect(intro?.textContent).toContain(
+    expect(intro?.querySelectorAll("p")).toHaveLength(1)
+    expect(intro?.textContent).not.toContain(
       "所有公开记录都按照统一元数据整理，方便沿关键词、分类和时间线继续向深处下潜。"
     )
   })
 
   it.each([
-    [
-      "categories",
-      <ArchiveDirectoryPageSkeleton key="categories" />,
-      "Categories",
-      "分类归档",
-      "分类回答内容属于什么方向，和标签一起构成博客的双层归档结构。",
-    ],
-    [
-      "tags",
-      <TagsPageSkeleton key="tags" />,
-      "Tags",
-      "标签归档",
-      "标签用于组织主题维度。这里既能快速总览全部主题，也能直接下钻到每个标签下的文章集合。",
-    ],
-  ] satisfies [string, ReactElement, string, string, string][]) (
-    "%s intro copy stays visible while data loads",
-    (_, skeleton, eyebrow, title, description) => {
+    ["categories", <ArchiveDirectoryPageSkeleton key="categories" />, "Categories", "分类归档"],
+    ["tags", <TagsPageSkeleton key="tags" />, "Tags", "标签归档"],
+  ] satisfies [string, ReactElement, string, string][]) (
+    "%s intro title stays visible while data loads",
+    (_, skeleton, eyebrow, title) => {
       const { container } = render(skeleton)
       const intro = container.querySelector(".site-section-header")
 
       expect(intro?.querySelector("[aria-hidden=\"true\"]")).toBeNull()
       expect(intro?.querySelector("h1")?.textContent).toBe(title)
       expect(intro?.querySelector("p")?.textContent).toBe(eyebrow)
-      expect(intro?.textContent).toContain(description)
+      expect(intro?.querySelectorAll("p")).toHaveLength(1)
       expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull()
     }
   )

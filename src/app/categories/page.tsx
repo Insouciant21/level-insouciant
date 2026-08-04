@@ -29,7 +29,6 @@ export default async function CategoriesPage() {
       <PageIntro
         eyebrow="Categories"
         title="分类归档"
-        description="分类回答内容属于什么方向，和标签一起构成博客的双层归档结构。"
       />
 
       {categories.length > 0 ? (

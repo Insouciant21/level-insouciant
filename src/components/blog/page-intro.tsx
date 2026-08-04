@@ -1,7 +1,7 @@
 type PageIntroProps = {
   eyebrow?: string
   title: string
-  description: string
+  description?: string
 }
 
 function PageIntro({ eyebrow, title, description }: PageIntroProps) {
@@ -12,9 +12,11 @@ function PageIntro({ eyebrow, title, description }: PageIntroProps) {
         <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
           {title}
         </h1>
-        <p className="max-w-3xl text-base leading-7 text-muted-foreground md:text-lg">
-          {description}
-        </p>
+        {description ? (
+          <p className="max-w-3xl text-base leading-7 text-muted-foreground md:text-lg">
+            {description}
+          </p>
+        ) : null}
       </div>
     </section>
   )
