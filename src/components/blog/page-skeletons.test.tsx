@@ -12,7 +12,6 @@ import {
   ArticlePageSkeleton,
   ArticlesPageSkeleton,
   AuthPageSkeleton,
-  HomePageSkeleton,
   SearchPageSkeleton,
   TagsPageSkeleton,
 } from "@/components/blog/page-skeletons"
@@ -22,73 +21,6 @@ afterEach(() => {
 })
 
 describe("public page skeleton compositions", () => {
-  it("keeps home loading geometry in hero, archive grid, article grid, and support panels", () => {
-    const { container } = render(<HomePageSkeleton />)
-
-    expect(
-      container.querySelector('[data-skeleton-layout="home"]')
-    ).not.toBeNull()
-    expect(
-      container.querySelectorAll('[aria-hidden="true"]').length
-    ).toBeGreaterThan(20)
-  })
-
-  it("keeps home static copy visible while dynamic records load", () => {
-    const { container } = render(<HomePageSkeleton />)
-    const staticCopy = [
-      "Archive Signal",
-      "Loading archive",
-      "Configured archive details are loading.",
-      "Primary entry",
-      "Secondary entry",
-      "Facility Hub // Entry Node",
-      "分叉走廊",
-      "Archive",
-      "Observation Log",
-      "观测日志",
-      "Index",
-      "关键词索引",
-      "Custodian Note",
-      "Custodian profile",
-      "Pending",
-      "Configured profile details are loading.",
-      "Location pending",
-      "Contact pending",
-    ]
-
-    for (const text of staticCopy) {
-      const visibleNode = Array.from(
-        container.querySelectorAll("h1, h2, p, span")
-      ).find(
-        (node) =>
-          node.textContent?.trim() === text &&
-          !node.closest('[aria-hidden="true"]')
-      )
-
-      expect(visibleNode, `Expected visible home copy: ${text}`).toBeDefined()
-    }
-
-    expect(
-      container.querySelectorAll('[aria-hidden="true"]').length
-    ).toBeGreaterThan(20)
-    expect(container.textContent).not.toContain("挑一扇门，继续向里走")
-  })
-
-  it("does not render fallback identity or contact data while home loads", () => {
-    const { container } = render(<HomePageSkeleton />)
-
-    expect(container.textContent).not.toContain("Level Insouciant")
-    expect(container.textContent).not.toContain("insouciant21@outlook.com")
-    expect(container.textContent).toContain("Facility Hub // Entry Node")
-  })
-
-  it("removes the latest archive section from the home loading state", () => {
-    const { container } = render(<HomePageSkeleton />)
-
-    expect(container.textContent).not.toContain("最新档案")
-    expect(container.textContent).not.toContain("查看全部档案")
-  })
-
   it("keeps article loading geometry in document, TOC, engagement, and related regions", () => {
     const { container } = render(<ArticlePageSkeleton />)
 

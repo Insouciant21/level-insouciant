@@ -1,15 +1,11 @@
-import { ArrowRight, ArrowUpRight, MapPin, Sparkles } from "lucide-react"
-
 import { PageShell } from "@/components/blog/page-shell"
 import { PageIntro } from "@/components/blog/page-intro"
-import { buttonVariants } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 
 const skeletonPanelClass = "public-summary-panel"
 const skeletonDocumentClass = "public-summary-panel-document"
 const skeletonCardClass = "public-summary-card"
 const skeletonSoftCardClass = "public-summary-card-muted"
-const homeStatLabels = ["公开记录", "关键词索引", "分类层级"] as const
 
 function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
   return (
@@ -63,226 +59,6 @@ function PageIntroSkeleton({ action = false }: { action?: boolean } = {}) {
       </div>
       {action ? <Skeleton tone="accent" className="h-8 w-24 shrink-0" /> : null}
     </section>
-  )
-}
-
-function HomeHeroSkeleton() {
-  return (
-    <section className="grid min-w-0 gap-6">
-      <div className="site-section-header min-w-0 items-start">
-        <div className="max-w-4xl min-w-0 space-y-5">
-          <p className="inline-flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.3em] text-muted-foreground uppercase">
-            <Sparkles className="size-3.5 text-primary" />
-            Archive Signal
-          </p>
-          <div className="min-w-0 space-y-4">
-            <h1 className="max-w-4xl text-4xl leading-[0.98] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              Loading archive
-            </h1>
-            <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              Configured archive details are loading.
-            </p>
-          </div>
-          <div className="flex min-w-0 flex-wrap gap-3">
-            <span
-              className={buttonVariants({
-                size: "lg",
-                className: "home-hero-primary-action px-5",
-              })}
-            >
-              Primary entry
-              <ArrowRight className="size-4" />
-            </span>
-            <span
-              className={buttonVariants({
-                variant: "outline",
-                size: "lg",
-                className: "px-5",
-              })}
-            >
-              Secondary entry
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid min-w-0 gap-3 sm:grid-cols-3">
-        {homeStatLabels.map((label) => (
-          <div key={label} className={`${skeletonCardClass} min-w-0 px-5 py-5`}>
-            <p className="text-[0.68rem] tracking-[0.24em] text-muted-foreground uppercase">
-              {label}
-            </p>
-            <Skeleton tone="neutral" className="mt-3 h-8 w-16" />
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function TimelinePanelSkeleton() {
-  return (
-    <section className={`${skeletonPanelClass} min-w-0 px-6 py-6 sm:px-7`}>
-      <header className="site-section-header mb-5">
-        <div>
-          <p className="utility-kicker">Observation Log</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
-            观测日志
-          </h2>
-        </div>
-      </header>
-
-      <div className="grid gap-3">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={index}
-            className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] gap-4"
-          >
-            <div className="flex flex-col items-center pt-1">
-              <Skeleton tone="accent" className="size-3 rounded-full" />
-              {index < 3 ? (
-                <div className="mt-2 h-full w-px bg-border/60" />
-              ) : null}
-            </div>
-
-            <div
-              className={`${skeletonSoftCardClass} min-w-0 space-y-2 px-4 py-4`}
-            >
-              <Skeleton tone="soft" className="h-4 w-28" />
-              <Skeleton tone="neutral" className="h-6 w-3/4 max-w-xl" />
-              <Skeleton tone="soft" className="h-4 w-full max-w-2xl" />
-              <Skeleton tone="soft" className="h-4 w-5/6 max-w-xl" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function TagCloudPanelSkeleton() {
-  return (
-    <section className={`${skeletonPanelClass} min-w-0 px-6 py-6 sm:px-7`}>
-      <header className="site-section-header mb-5">
-        <div>
-          <p className="utility-kicker">Index</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
-            关键词索引
-          </h2>
-        </div>
-        <Skeleton tone="soft" className="h-8 w-20 shrink-0" />
-      </header>
-
-      <div className="flex min-w-0 flex-wrap gap-3">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <Skeleton
-            key={index}
-            tone="soft"
-            className={
-              index % 3 === 0
-                ? "h-10 w-28"
-                : index % 3 === 1
-                  ? "h-10 w-24"
-                  : "h-10 w-20"
-            }
-          />
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function ProfilePanelSkeleton() {
-  return (
-    <section className={`${skeletonPanelClass} min-w-0 px-6 py-6 sm:px-7`}>
-      <div className="min-w-0 space-y-5">
-        <header className="site-section-header">
-          <div>
-            <p className="utility-kicker">Custodian Note</p>
-            <h2 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
-              Custodian profile
-            </h2>
-          </div>
-          <span className="site-status-pill shrink-0">
-            Pending
-          </span>
-        </header>
-
-        <p className="text-sm leading-7 text-muted-foreground">
-          Configured profile details are loading.
-        </p>
-
-        <div className="flex min-w-0 items-center gap-2">
-          <MapPin className="size-4 shrink-0 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
-            Location pending
-          </span>
-        </div>
-
-        <div className="grid gap-3">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <Skeleton key={index} tone="soft" className="h-14 w-full" />
-          ))}
-        </div>
-
-        <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
-          Contact pending
-          <ArrowUpRight className="size-4" />
-        </span>
-      </div>
-    </section>
-  )
-}
-
-function HomePageSkeleton() {
-  return (
-    <PageShell className="gap-10 lg:gap-12">
-      <div
-        data-skeleton-layout="home"
-        className="grid min-w-0 gap-10 lg:gap-12"
-      >
-        <HomeHeroSkeleton />
-
-        <section className="grid min-w-0 gap-5">
-          <header className="site-section-header items-start">
-            <div>
-              <p className="utility-kicker">Facility Hub // Entry Node</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-                分叉走廊
-              </h2>
-            </div>
-            <Skeleton tone="accent" className="h-7 w-24 shrink-0" />
-          </header>
-
-          <div className="grid auto-rows-[16rem] gap-4 sm:auto-rows-[18rem] md:grid-cols-2 lg:grid-cols-4 xl:gap-6">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <DoorCardSkeleton
-                key={index}
-                featured={index === 0 || index === 3}
-              />
-            ))}
-
-            <div className="relative flex min-h-[16rem] min-w-0 flex-col items-center justify-center overflow-hidden rounded-md border border-destructive/40 bg-[#181b17] px-4 text-center sm:min-h-[18rem]">
-              <p className="text-sm font-semibold tracking-[0.34em] text-destructive uppercase">
-                Dead End
-              </p>
-              <p className="absolute bottom-4 left-4 font-mono text-[0.68rem] tracking-[0.24em] text-[#73766f]/58 uppercase">
-                SEC-ERR-902
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
-          <TimelinePanelSkeleton />
-
-          <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-1">
-            <TagCloudPanelSkeleton />
-            <ProfilePanelSkeleton />
-          </div>
-        </section>
-      </div>
-    </PageShell>
   )
 }
 
@@ -814,7 +590,6 @@ export {
   ArticleEngagementPanelSkeleton,
   ArticlePageSkeleton,
   ArticlesPageSkeleton,
-  HomePageSkeleton,
   SearchPageSkeleton,
   TagsPageSkeleton,
 }
