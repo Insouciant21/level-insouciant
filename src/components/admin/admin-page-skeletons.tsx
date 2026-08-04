@@ -917,9 +917,6 @@ function AdminArticleEditorPageSkeleton({
             <h1 className="admin-title">
               {mode === "create" ? "新建文章" : "在线编辑文章"}
             </h1>
-            <p className="admin-copy mt-2 max-w-xl">
-              使用结构化字段加原始 MDX 正文编辑，保存即生成修订记录。
-            </p>
           </div>
           <div className="flex min-w-0 flex-wrap gap-3">
             <AdminSkeleton tone="soft" className="h-4 w-20" />
@@ -930,7 +927,7 @@ function AdminArticleEditorPageSkeleton({
 
       <section
         data-editor-section="metadata"
-        className="mt-6 border-y border-white/10 py-6"
+        className="mt-6 border-b border-white/10 py-6"
       >
         <div className="border-b border-white/10 pb-4">
           <p className="admin-kicker">Article Metadata</p>

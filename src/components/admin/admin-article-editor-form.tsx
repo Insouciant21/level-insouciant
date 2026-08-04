@@ -217,9 +217,6 @@ function AdminArticleEditorForm({
             <h1 className="admin-title">
               {mode === "create" ? "新建文章" : "在线编辑文章"}
             </h1>
-            <p className="admin-copy mt-2">
-              使用结构化字段加原始 MDX 正文编辑，保存即生成修订记录。
-            </p>
           </div>
 
           <div className="flex flex-wrap gap-3 text-sm text-[#9aa79a]">
@@ -252,7 +249,7 @@ function AdminArticleEditorForm({
       <form action={action} className="mt-6">
         <section
           data-editor-section="metadata"
-          className="border-y border-white/10 py-6"
+          className="border-b border-white/10 py-6"
         >
           <div className="border-b border-white/10 pb-4">
             <p className="admin-kicker">Article Metadata</p>

@@ -237,6 +237,30 @@ describe("AdminArticleEditorForm", () => {
     expect(panelHeaders[0]?.className).toBe(panelHeaders[1]?.className)
   })
 
+  it("keeps the editor header compact and avoids a duplicate metadata divider", () => {
+    const { container } = render(
+      <AdminArticleEditorForm
+        mode="edit"
+        action={vi.fn()}
+        values={values}
+        statusLabel="已发布"
+      />
+    )
+
+    expect(
+      screen.queryByText(
+        "使用结构化字段加原始 MDX 正文编辑，保存即生成修订记录。"
+      )
+    ).toBeNull()
+
+    const metadata = container.querySelector(
+      '[data-editor-section="metadata"]'
+    )
+
+    expect(metadata?.className).not.toContain("border-y")
+    expect(metadata?.className).toContain("border-b")
+  })
+
   it("syncs desktop source scrolling to the preview proportionally", async () => {
     mockMatchMedia(true)
 

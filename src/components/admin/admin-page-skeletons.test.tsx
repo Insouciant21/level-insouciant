@@ -202,6 +202,16 @@ describe("admin page skeleton compositions", () => {
     ).not.toBeNull()
     expectVisibleAdminCopy(container, "MDX 源码")
     expectVisibleAdminCopy(container, "实时效果")
+    expect(container.textContent).not.toContain(
+      "使用结构化字段加原始 MDX 正文编辑，保存即生成修订记录。"
+    )
+
+    const metadata = container.querySelector(
+      '[data-editor-section="metadata"]'
+    )
+
+    expect(metadata?.className).not.toContain("border-y")
+    expect(metadata?.className).toContain("border-b")
   })
 
   it("uses the route-known title for new article loading", () => {
