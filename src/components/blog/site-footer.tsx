@@ -18,9 +18,6 @@ async function SiteFooter() {
             <p className="max-w-2xl text-sm leading-7 text-foreground/90">
               {siteConfig.description}
             </p>
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-              {siteConfig.footer.closing}
-            </p>
           </div>
 
           <nav aria-label="社交与联系入口" className="flex flex-wrap gap-2">

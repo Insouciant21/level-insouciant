@@ -39,8 +39,25 @@ describe("SiteSettingsForm", () => {
     )
     expect(screen.getByLabelText("站点名称").classList.contains("admin-input")).toBe(true)
     expect(screen.getByLabelText("站点描述").classList.contains("admin-input")).toBe(true)
+    expect(screen.queryByLabelText("描述")).toBeNull()
+    expect(screen.queryByLabelText("页脚结束语")).toBeNull()
     expect((screen.getByLabelText("须知页标题") as HTMLInputElement).value).toBe("Moeblue")
     expect(screen.getByRole("button", { name: "添加联系方式" })).toBeTruthy()
+
+    const settings = getSerializedSettings()
+    expect(settings.hero).not.toHaveProperty("description")
+    expect(settings.footer).not.toHaveProperty("closing")
+  })
+
+  it("shows the expanded icon-bearing contact kind options", () => {
+    render(<SiteSettingsForm siteConfig={defaultSiteConfig} />)
+
+    fireEvent.click(screen.getAllByRole("combobox")[0])
+
+    expect(screen.getByRole("option", { name: "Twitter" })).toBeTruthy()
+    expect(screen.getByRole("option", { name: "LinkedIn" })).toBeTruthy()
+    expect(screen.getByRole("option", { name: "网易云音乐" })).toBeTruthy()
+    expect(screen.getByRole("option", { name: "哔哩哔哩" })).toBeTruthy()
   })
 
   it("serializes contact additions, ordering, enabled state, and removals", () => {

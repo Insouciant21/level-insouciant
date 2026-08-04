@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ...createPageMetadata(
       {
         title: siteConfig.name,
-        description: siteConfig.hero.description,
+        description: siteConfig.description,
         path: "/",
       },
       siteConfig
@@ -57,7 +57,6 @@ export default async function Page() {
       <HomeHero
         eyebrow={siteConfig.hero.eyebrow}
         title={siteConfig.hero.title}
-        description={siteConfig.hero.description}
         primaryAction={siteConfig.hero.primaryAction}
         secondaryAction={siteConfig.hero.secondaryAction}
         stats={heroStats}

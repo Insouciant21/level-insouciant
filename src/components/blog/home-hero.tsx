@@ -11,7 +11,6 @@ type HeroStat = {
 type HomeHeroProps = {
   eyebrow: string
   title: string
-  description: string
   primaryAction: {
     href: string
     label: string
@@ -28,7 +27,6 @@ const heroStatCardClass = "site-metric-card px-5 py-5"
 function HomeHero({
   eyebrow,
   title,
-  description,
   primaryAction,
   secondaryAction,
   stats,
@@ -46,9 +44,6 @@ function HomeHero({
             <h1 className="max-w-4xl text-4xl leading-[0.98] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
               {title}
             </h1>
-            <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              {description}
-            </p>
           </div>
 
           <div className="flex flex-wrap gap-3">

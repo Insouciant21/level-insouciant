@@ -12,19 +12,13 @@ import {
 } from "lucide-react"
 
 import { updateSiteSettingsAction } from "@/app/admin/settings-actions"
+import { AdminSelect } from "@/components/admin/admin-select"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { contactKindOptions } from "@/lib/contact-kinds"
 import type { ContactKind, SiteConfig, SiteConfigData, SiteLink } from "@/lib/site"
-
-const linkKinds: Array<{ value: ContactKind; label: string }> = [
-  { value: "github", label: "GitHub" },
-  { value: "email", label: "Email" },
-  { value: "steam", label: "Steam" },
-  { value: "website", label: "网站" },
-  { value: "custom", label: "自定义" },
-]
 
 type EditableTextField = "name" | "description" | "author" | "email" | "url"
 
@@ -117,20 +111,14 @@ function LinkEditor({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor={`${title}-${index}-kind`}>类型</Label>
-                <select
+                <AdminSelect
                   id={`${title}-${index}-kind`}
                   value={link.kind}
-                  onChange={(event) =>
-                    onUpdate(index, "kind", event.target.value as ContactKind)
+                  options={contactKindOptions}
+                  onValueChange={(value) =>
+                    onUpdate(index, "kind", value as ContactKind)
                   }
-                  className="admin-input h-10 w-full rounded-md border border-border bg-[var(--field-background)] px-3 text-sm text-foreground outline-none focus-visible:border-foreground focus-visible:ring-2 focus-visible:ring-ring/30"
-                >
-                  {linkKinds.map((kind) => (
-                    <option key={kind.value} value={kind.value}>
-                      {kind.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor={`${title}-${index}-label`}>标签</Label>
@@ -271,7 +259,7 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
     setSettings((current) => ({ ...current, [field]: value }))
   }
 
-  function updateHero(field: "eyebrow" | "title" | "description", value: string) {
+  function updateHero(field: "eyebrow" | "title", value: string) {
     setSettings((current) => ({ ...current, hero: { ...current.hero, [field]: value } }))
   }
 
@@ -399,7 +387,6 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
         <div className="grid gap-5 lg:grid-cols-2">
           <Field id="hero-eyebrow" label="眉题" value={settings.hero.eyebrow} onChange={(value) => updateHero("eyebrow", value)} />
           <Field id="hero-title" label="标题" value={settings.hero.title} onChange={(value) => updateHero("title", value)} />
-          <Field id="hero-description" label="描述" value={settings.hero.description} onChange={(value) => updateHero("description", value)} multiline />
           <div className="grid gap-5">
             <Field id="hero-primary-label" label="主按钮文字" value={settings.hero.primaryAction.label} onChange={(value) => updateHeroAction("primaryAction", "label", value)} />
             <Field id="hero-primary-href" label="主按钮地址" value={settings.hero.primaryAction.href} onChange={(value) => updateHeroAction("primaryAction", "href", value)} />
@@ -454,10 +441,6 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
         onMove={(index, direction) => moveLink("contacts", index, direction)}
         onToggle={(index) => toggleLink("contacts", index)}
       />
-
-      <section className="grid gap-4 border-t border-white/10 pt-5">
-        <Field id="footer-closing" label="页脚结束语" value={settings.footer.closing} onChange={(value) => setSettings((current) => ({ ...current, footer: { ...current.footer, closing: value } }))} multiline />
-      </section>
 
       <LinkEditor
         title="页脚链接"
