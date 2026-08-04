@@ -1,7 +1,11 @@
-import type { Article, Prisma, User } from "@prisma/client"
+import type { Prisma, User } from "@prisma/client"
 import { cache } from "react"
 
 import type { ArticleSummary } from "@/types/blog"
+import {
+  buildSearchDocument,
+  createArticleRevisionSnapshot,
+} from "@/lib/content-search"
 import { prisma } from "@/lib/prisma"
 import {
   managedArticleInputSchema,
@@ -178,16 +182,6 @@ function toManagedArticleRevisionSummary(
   }
 }
 
-function buildSearchDocument(input: {
-  title: string
-  desc: string
-  category: string
-  tags: string[]
-  content: string
-}) {
-  return [input.title, input.desc, input.category, input.tags.join(" "), input.content].join(" ").trim()
-}
-
 function deduplicateTags(tags: string[]) {
   return [...new Set(tags.map((tag) => tag.trim()).filter(Boolean))]
 }
@@ -217,29 +211,6 @@ function normalizeArticleInput(input: ManagedArticleInput, options?: { requireSl
     slug: normalized.slug,
     publishedAt: new Date(normalized.publishedAt),
   }
-}
-
-async function createRevisionSnapshot(
-  tx: Prisma.TransactionClient,
-  article: Article,
-  editorUserId: string | null,
-  reason?: string
-) {
-  await tx.articleRevision.create({
-    data: {
-      articleId: article.id,
-      title: article.title,
-      desc: article.desc,
-      content: article.content,
-      category: article.category,
-      tags: article.tags,
-      cover: article.cover,
-      draft: article.draft,
-      publishedAt: article.publishedAt,
-      createdByUserId: editorUserId,
-      reason,
-    },
-  })
 }
 
 export const getManagedArticles = cache(async function getManagedArticles() {
@@ -294,7 +265,7 @@ export async function createManagedArticle(input: ManagedArticleInput, editorUse
       },
     })
 
-    await createRevisionSnapshot(tx, article, editorUserId, "Article created")
+    await createArticleRevisionSnapshot(tx, article, editorUserId, "Article created")
     return article
   })
 }
@@ -326,7 +297,7 @@ export async function updateManagedArticle(slug: string, input: ManagedArticleIn
       },
     })
 
-    await createRevisionSnapshot(tx, article, editorUserId, "Article updated")
+    await createArticleRevisionSnapshot(tx, article, editorUserId, "Article updated")
     return article
   })
 }
@@ -349,7 +320,12 @@ export async function setArticleDraftState(slug: string, draft: boolean, editorU
       },
     })
 
-    await createRevisionSnapshot(tx, updated, editorUserId, draft ? "Article hidden" : "Article published")
+    await createArticleRevisionSnapshot(
+      tx,
+      updated,
+      editorUserId,
+      draft ? "Article hidden" : "Article published"
+    )
     return updated
   })
 }
@@ -431,7 +407,12 @@ export async function renameTagAcrossArticles(fromTag: string, toTag: string, ed
           lastEditedByUserId: editorUserId,
         },
       })
-      await createRevisionSnapshot(tx, updated, editorUserId, `Tag renamed from ${sourceTag} to ${targetTag}`)
+      await createArticleRevisionSnapshot(
+        tx,
+        updated,
+        editorUserId,
+        `Tag renamed from ${sourceTag} to ${targetTag}`
+      )
     }
   })
 }
@@ -469,7 +450,12 @@ export async function removeTagAcrossArticles(tagToRemove: string, editorUserId:
         },
       })
 
-      await createRevisionSnapshot(tx, updated, editorUserId, `Tag removed: ${normalizedTag}`)
+      await createArticleRevisionSnapshot(
+        tx,
+        updated,
+        editorUserId,
+        `Tag removed: ${normalizedTag}`
+      )
     }
   })
 }
@@ -561,7 +547,12 @@ export async function restoreArticleRevision(slug: string, revisionId: string, e
       },
     })
 
-    await createRevisionSnapshot(tx, updated, editorUserId, `Restored revision ${revision.id}`)
+    await createArticleRevisionSnapshot(
+      tx,
+      updated,
+      editorUserId,
+      `Restored revision ${revision.id}`
+    )
     return updated
   })
 }

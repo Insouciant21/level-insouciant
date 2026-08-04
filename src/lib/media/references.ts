@@ -68,6 +68,14 @@ function lineBreakLength(source: string, offset: number): number {
   return source[offset] === "\n" ? 1 : 0
 }
 
+function precedingLineBreakLength(source: string, offset: number): number {
+  if (source.slice(offset - 2, offset) === "\r\n") {
+    return 2
+  }
+
+  return source[offset - 1] === "\n" ? 1 : 0
+}
+
 function getStandaloneParagraphRange(
   source: string,
   paragraph: MdxNode
@@ -75,7 +83,7 @@ function getStandaloneParagraphRange(
   const { start: paragraphStart, end: paragraphEnd } = getOffsets(paragraph)
   const lineStart = source.lastIndexOf("\n", paragraphStart - 1) + 1
   const leadingText = source.slice(lineStart, paragraphStart)
-  const start = /^[\t ]*$/.test(leadingText) ? lineStart : paragraphStart
+  let start = /^[\t ]*$/.test(leadingText) ? lineStart : paragraphStart
   let end = paragraphEnd
   const firstBreakLength = lineBreakLength(source, end)
 
@@ -85,6 +93,18 @@ function getStandaloneParagraphRange(
 
     if (secondBreakLength > 0) {
       end += secondBreakLength
+    }
+  }
+
+  if (source.slice(end).trim() === "") {
+    const previousBreakLength = precedingLineBreakLength(source, start)
+    const breakBeforePreviousLength = precedingLineBreakLength(
+      source,
+      start - previousBreakLength
+    )
+
+    if (previousBreakLength > 0 && breakBeforePreviousLength > 0) {
+      start -= previousBreakLength
     }
   }
 

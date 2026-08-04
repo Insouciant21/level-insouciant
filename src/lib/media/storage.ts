@@ -10,6 +10,8 @@ import type {
   ObjectStorageProvider,
 } from "@/lib/media/types"
 
+export { getActiveMediaProvider } from "@/lib/media/config"
+
 const SAFE_EXTENSIONS: Record<string, AcceptedImageMime> = {
   gif: "image/gif",
   jpeg: "image/jpeg",
