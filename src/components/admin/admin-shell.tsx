@@ -7,6 +7,7 @@ import {
   ChevronRight,
   ExternalLink,
   FileText,
+  Images,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -50,6 +51,11 @@ const navigationItems = [
     href: "/admin/articles",
     label: "文章",
     icon: FileText,
+  },
+  {
+    href: "/admin/media",
+    label: "媒体库",
+    icon: Images,
   },
   {
     href: "/admin/comments",
