@@ -8,7 +8,7 @@ export default async function AdminStatsPage() {
   return (
     <section className="admin-surface p-4 sm:p-6">
       <div className="flex flex-col gap-2">
-        <p className="admin-kicker">Article Analytics</p>
+        <p className="admin-kicker-accent">Article Analytics</p>
         <h1 className="admin-title">文章统计</h1>
         <p className="admin-copy">
           按文章维度聚合阅读、点赞和评论表现，方便快速判断哪些内容在工作。

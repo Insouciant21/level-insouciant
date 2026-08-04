@@ -23,7 +23,7 @@ export default async function AdminCommentsPage() {
   return (
     <section className="admin-surface p-4 sm:p-6">
       <div className="flex flex-col gap-2">
-        <p className="admin-kicker">Comment Moderation</p>
+        <p className="admin-kicker-accent">Comment Moderation</p>
         <h1 className="admin-title">评论管理</h1>
         <p className="admin-copy">
           可以隐藏、恢复或删除评论。对某条评论执行操作时，会同步作用到它下面的所有楼中楼回复。

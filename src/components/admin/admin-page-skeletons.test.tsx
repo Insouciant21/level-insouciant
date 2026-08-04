@@ -101,6 +101,103 @@ describe("admin page skeleton compositions", () => {
     }
   })
 
+  it("keeps top-level loading kickers green", () => {
+    const pages = [
+      <AdminDashboardPageSkeleton key="dashboard" />,
+      <AdminArticlesPageSkeleton key="articles" />,
+      <AdminCommentsPageSkeleton key="comments" />,
+      <AdminTagsPageSkeleton key="tags" />,
+      <AdminStatsPageSkeleton key="stats" />,
+      <AdminAccountPageSkeleton key="account" />,
+      <AdminSettingsPageSkeleton key="settings" />,
+      <AdminArticleEditorPageSkeleton key="editor" />,
+      <AdminArticleHistoryPageSkeleton key="history" />,
+    ]
+
+    for (const page of pages) {
+      const { container } = render(page)
+      const topLevelKicker = container.querySelector(
+        '[data-admin-skeleton-kicker="top-level"]'
+      )
+
+      expect(topLevelKicker?.className).toContain("admin-kicker-accent")
+    }
+  })
+
+  it("matches dashboard metric card geometry", () => {
+    const { container } = render(<AdminDashboardPageSkeleton />)
+    const cards = container.querySelectorAll("[data-skeleton-metric-card]")
+
+    expect(cards).toHaveLength(7)
+
+    for (const card of cards) {
+      expect(
+        card.querySelector("[data-skeleton-metric-icon]")?.className
+      ).toContain("size-8")
+      expect(
+        card.querySelector("[data-skeleton-metric-value]")?.className
+      ).toContain("h-9")
+      expect(
+        card.querySelector("[data-skeleton-metric-hint]")?.className
+      ).toContain("mt-2")
+    }
+  })
+
+  it("uses page-specific header geometry", () => {
+    const { container: dashboard } = render(<AdminDashboardPageSkeleton />)
+    const dashboardHeader = dashboard.querySelector(
+      '[data-admin-skeleton-header="dashboard"]'
+    )
+
+    expect(dashboardHeader?.className).toContain("pb-6")
+    expect(dashboardHeader?.querySelector("h1")?.className).toContain(
+      "text-3xl"
+    )
+
+    const { container: articles } = render(<AdminArticlesPageSkeleton />)
+    const standardHeader = articles.querySelector(
+      '[data-admin-skeleton-header="standard"]'
+    )
+
+    expect(standardHeader?.className).not.toContain("border-b")
+    expect(
+      standardHeader?.querySelector("[data-admin-skeleton-header-content]")
+        ?.className
+    ).toContain("gap-2")
+    expect(standardHeader?.querySelector("h1")?.className).not.toContain("mt-3")
+
+    const { container: account } = render(<AdminAccountPageSkeleton />)
+    const accountHeader = account.querySelector(
+      '[data-admin-skeleton-header="account"]'
+    )
+
+    expect(accountHeader?.className).toContain("pb-5")
+    expect(accountHeader?.querySelector("h1")?.className).toContain("text-3xl")
+  })
+
+  it("matches the real form control heights", () => {
+    const { container } = render(<AdminArticleEditorPageSkeleton />)
+    const controls = Array.from(
+      container.querySelectorAll(
+        "[data-skeleton-editor-field] > [data-skeleton-tone]"
+      )
+    )
+
+    expect(controls.length).toBeGreaterThan(0)
+    expect(controls.some((control) => control.className.includes("h-24"))).toBe(
+      true
+    )
+    expect(controls.some((control) => control.className.includes("h-10"))).toBe(
+      true
+    )
+
+    const { container: settings } = render(<AdminSettingsPageSkeleton />)
+    expect(settings.querySelector("header.admin-surface")).not.toBeNull()
+    expect(
+      settings.querySelector(".site-settings-form.admin-surface")
+    ).not.toBeNull()
+  })
+
   it("keeps list, account, editor, and table labels visible while records load", () => {
     const pages = [
       {

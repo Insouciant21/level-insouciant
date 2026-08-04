@@ -82,7 +82,7 @@ export default async function AdminArticleHistoryPage({
     <section className="admin-surface p-4 sm:p-6">
       <div className="flex flex-col gap-4 border-b border-white/10 pb-5">
         <div className="flex flex-wrap items-center gap-3">
-          <p className="admin-kicker">Revision History</p>
+          <p className="admin-kicker-accent">Revision History</p>
           <span
             className={`admin-status-pill ${article.draft ? "admin-status-draft" : "admin-status-live"}`}
           >

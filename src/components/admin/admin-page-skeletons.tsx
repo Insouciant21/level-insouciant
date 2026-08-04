@@ -90,17 +90,34 @@ function AdminMetricCardSkeleton({
   hint?: string
 }) {
   return (
-    <article className="admin-surface min-w-0 px-5 py-5">
-      {label ? (
-        <p className="admin-kicker">{label}</p>
-      ) : (
-        <AdminSkeleton tone="soft" className="h-4 w-24 max-w-full" />
-      )}
-      <AdminSkeleton className="mt-4 h-8 w-16" />
+    <article
+      data-skeleton-metric-card
+      className="admin-surface min-w-0 px-5 py-5"
+    >
+      <div className="flex items-center justify-between gap-3">
+        {label ? (
+          <p className="admin-kicker">{label}</p>
+        ) : (
+          <AdminSkeleton tone="soft" className="h-4 w-24 max-w-full" />
+        )}
+        <div data-skeleton-metric-icon className="size-8 shrink-0 rounded-md">
+          <AdminAccentSkeleton className="size-full rounded-md" />
+        </div>
+      </div>
+      <div data-skeleton-metric-value className="mt-4 h-9 w-16">
+        <AdminSkeleton className="size-full" />
+      </div>
       {hint ? (
-        <p className="mt-3 text-xs leading-5 text-[#748073]">{hint}</p>
+        <p
+          data-skeleton-metric-hint
+          className="mt-2 text-xs leading-5 text-[#748073]"
+        >
+          {hint}
+        </p>
       ) : (
-        <AdminSkeleton tone="soft" className="mt-3 h-4 w-full" />
+        <div data-skeleton-metric-hint className="mt-2 h-5 w-full">
+          <AdminSkeleton tone="soft" className="size-full" />
+        </div>
       )}
     </article>
   )
@@ -236,6 +253,7 @@ function AdminListCardSkeleton({
 }
 
 function AdminPageHeaderSkeleton({
+  variant = "standard",
   titleWidth = "w-56",
   descWidth = "max-w-2xl",
   kicker = "accent",
@@ -247,6 +265,7 @@ function AdminPageHeaderSkeleton({
   actionText,
   statusText,
 }: {
+  variant?: "standard" | "dashboard" | "account"
   titleWidth?: string
   descWidth?: string
   kicker?: "accent" | "default"
@@ -258,47 +277,124 @@ function AdminPageHeaderSkeleton({
   actionText?: string
   statusText?: string
 }) {
-  return (
-    <header className="flex min-w-0 flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
-      <div className="min-w-0">
-        {kickerText ? (
-          <p
-            className={
-              kicker === "accent" ? "admin-kicker-accent" : "admin-kicker"
-            }
-          >
-            {kickerText}
-          </p>
-        ) : kicker === "accent" ? (
-          <AdminAccentSkeleton className="h-4 w-32 max-w-full" />
-        ) : (
-          <AdminSkeleton tone="soft" className="h-4 w-28 max-w-full" />
-        )}
-        {titleText ? (
-          <h1 className="admin-title mt-3 max-w-full">{titleText}</h1>
-        ) : (
-          <AdminSkeleton className={cn("mt-3 h-10 max-w-full", titleWidth)} />
-        )}
-        {descriptionText ? (
-          <p className={cn("admin-copy mt-2", descWidth)}>{descriptionText}</p>
-        ) : (
-          <AdminSkeleton
-            tone="soft"
-            className={cn("mt-2 h-4 w-full", descWidth)}
-          />
-        )}
-      </div>
+  const kickerClass =
+    kicker === "accent" ? "admin-kicker-accent" : "admin-kicker"
+  const titleClass =
+    variant === "standard"
+      ? "admin-title max-w-full"
+      : "max-w-full text-3xl font-semibold tracking-tight text-[#edf3e9] sm:text-4xl"
+  const descriptionClass = cn(
+    "admin-copy",
+    variant === "standard" ? null : "mt-2",
+    descWidth
+  )
+  const kickerNode = kickerText ? (
+    <p data-admin-skeleton-kicker="top-level" className={kickerClass}>
+      {kickerText}
+    </p>
+  ) : (
+    <div data-admin-skeleton-kicker="top-level">
+      {kicker === "accent" ? (
+        <AdminAccentSkeleton className="h-4 w-32 max-w-full" />
+      ) : (
+        <AdminSkeleton tone="soft" className="h-4 w-28 max-w-full" />
+      )}
+    </div>
+  )
+  const titleNode = titleText ? (
+    <h1 className={titleClass}>{titleText}</h1>
+  ) : (
+    <AdminSkeleton
+      className={cn(
+        variant === "standard" ? "h-8" : "h-10",
+        "max-w-full",
+        titleWidth
+      )}
+    />
+  )
+  const descriptionNode = descriptionText ? (
+    <p className={descriptionClass}>{descriptionText}</p>
+  ) : (
+    <AdminSkeleton
+      tone="soft"
+      className={cn(
+        "h-4 w-full",
+        variant === "standard" ? null : "mt-2",
+        descWidth
+      )}
+    />
+  )
+  const actionNode = actionText ? (
+    <AdminStaticAction size="default" className="w-full sm:w-auto">
+      {actionText}
+    </AdminStaticAction>
+  ) : action ? (
+    <AdminAccentSkeleton className="h-10 w-28" />
+  ) : null
+  const statusNode = statusText ? (
+    <AdminStaticStatus>{statusText}</AdminStaticStatus>
+  ) : status ? (
+    <AdminAccentSkeleton className="h-7 w-24" />
+  ) : null
 
-      {actionText ? (
-        <AdminStaticAction size="default">{actionText}</AdminStaticAction>
-      ) : action ? (
-        <AdminAccentSkeleton className="h-10 w-28" />
-      ) : null}
-      {statusText ? (
-        <AdminStaticStatus>{statusText}</AdminStaticStatus>
-      ) : status ? (
-        <AdminAccentSkeleton className="h-7 w-24" />
-      ) : null}
+  if (variant === "dashboard") {
+    return (
+      <header
+        data-admin-skeleton-header="dashboard"
+        className="flex min-w-0 flex-col border-b border-white/10 pb-6"
+      >
+        {kickerNode}
+        <div className="mt-3 flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
+            {titleNode}
+            {descriptionNode}
+          </div>
+          {statusNode}
+        </div>
+      </header>
+    )
+  }
+
+  if (variant === "account") {
+    return (
+      <header
+        data-admin-skeleton-header="account"
+        className="flex min-w-0 flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between"
+      >
+        <div className="min-w-0">
+          {kickerNode}
+          <div className="mt-3">
+            {titleNode}
+            {descriptionNode}
+          </div>
+        </div>
+        {statusNode ? (
+          <div className="flex flex-wrap items-center gap-3">{statusNode}</div>
+        ) : null}
+      </header>
+    )
+  }
+
+  const hasAside = Boolean(actionNode || statusNode)
+
+  return (
+    <header
+      data-admin-skeleton-header="standard"
+      className={cn(
+        "flex min-w-0 flex-col",
+        hasAside ? "gap-4 lg:flex-row lg:items-end lg:justify-between" : "gap-2"
+      )}
+    >
+      <div
+        data-admin-skeleton-header-content
+        className="flex min-w-0 flex-col gap-2"
+      >
+        {kickerNode}
+        {titleNode}
+        {descriptionNode}
+      </div>
+      {actionNode}
+      {statusNode}
     </header>
   )
 }
@@ -317,7 +413,10 @@ function AdminEditorFieldSkeleton({
   label?: string
 }) {
   return (
-    <div className={cn("grid min-w-0 gap-2", className)}>
+    <div
+      data-skeleton-editor-field
+      className={cn("grid min-w-0 gap-2", className)}
+    >
       {label ? (
         <label className="text-sm font-medium text-[#dce6d8]">{label}</label>
       ) : (
@@ -326,7 +425,7 @@ function AdminEditorFieldSkeleton({
       <AdminSkeleton
         className={cn(
           "min-w-0",
-          multiline ? "h-28 min-h-[7rem]" : "h-12",
+          multiline ? "h-24 min-h-24" : "h-10",
           contentClassName
         )}
       />
@@ -347,7 +446,12 @@ function AdminLoginPageSkeleton() {
               <ShieldCheck className="size-5" aria-hidden="true" />
             </div>
             <div className="space-y-3">
-              <p className="admin-kicker-accent">Admin Access</p>
+              <p
+                data-admin-skeleton-kicker="top-level"
+                className="admin-kicker-accent"
+              >
+                Admin Access
+              </p>
               <h1 className="text-3xl font-semibold tracking-tight text-[#edf3e9] sm:text-4xl">
                 登录后台控制台
               </h1>
@@ -375,11 +479,11 @@ function AdminLoginPageSkeleton() {
           </div>
           <div className="grid gap-2">
             <label className="text-sm font-medium text-[#dce6d8]">邮箱</label>
-            <AdminSkeleton className="h-11 w-full" />
+            <AdminSkeleton className="h-10 w-full" />
           </div>
           <div className="grid gap-2">
             <label className="text-sm font-medium text-[#dce6d8]">密码</label>
-            <AdminSkeleton className="h-11 w-full" />
+            <AdminSkeleton className="h-10 w-full" />
           </div>
           <AdminStaticAction size="default" className="w-full justify-center">
             进入控制台
@@ -454,6 +558,7 @@ function AdminDashboardPageSkeleton() {
   return (
     <div data-skeleton-layout="admin-dashboard" className="grid min-w-0 gap-8">
       <AdminPageHeaderSkeleton
+        variant="dashboard"
         titleText="后台概览"
         descriptionText="这里汇总公开记录、草稿、互动数据和用户规模"
         kickerText="Operations Console"
@@ -604,7 +709,7 @@ function AdminTagsPageSkeleton() {
 
               <div className="grid min-w-0 gap-3 xl:min-w-[24rem]">
                 <div className="flex min-w-0 flex-col gap-3 sm:flex-row">
-                  <AdminSkeleton className="h-12 min-w-0 flex-1" />
+                  <AdminSkeleton className="h-10 min-w-0 flex-1" />
                   <AdminStaticAction
                     variant="outline"
                     className="w-full sm:w-24"
@@ -649,7 +754,7 @@ function AdminStatsPageSkeleton() {
             <col className="w-[7rem]" />
           </colgroup>
           <thead className="bg-white/[0.04]">
-            <tr className="h-11 text-left">
+            <tr className="h-10 text-left">
               {[
                 "文章",
                 "状态",
@@ -661,7 +766,7 @@ function AdminStatsPageSkeleton() {
               ].map((label) => (
                 <th
                   key={label}
-                  className="px-4 py-2 text-xs font-medium text-[#9aa79a]"
+                  className="px-4 py-3 text-xs font-medium text-[#9aa79a]"
                 >
                   {label}
                 </th>
@@ -696,6 +801,7 @@ function AdminAccountPageSkeleton() {
   return (
     <section className="admin-surface min-w-0 p-4 sm:p-6">
       <AdminPageHeaderSkeleton
+        variant="account"
         kickerText="Account Console"
         titleText="我的资料"
         descriptionText="管理管理员账号资料、密码，以及你在站内留下的评论记录。"
@@ -705,14 +811,14 @@ function AdminAccountPageSkeleton() {
 
       <div className="mt-6 grid min-w-0 gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <div className="grid min-w-0 gap-6">
-          <section className="admin-surface-muted min-w-0 px-5 py-5">
+          <section className="admin-surface-muted min-w-0 px-4 py-4 sm:px-5 sm:py-5">
             <div className="flex min-w-0 items-start gap-4">
-              <AdminSkeleton className="size-16 shrink-0" />
+              <AdminSkeleton className="size-16 shrink-0 rounded-lg" />
               <div className="min-w-0 flex-1">
-                <AdminSkeleton className="h-6 w-28 max-w-full" />
+                <AdminSkeleton className="h-7 w-28 max-w-full" />
                 <AdminSkeleton
                   tone="soft"
-                  className="mt-2 h-4 w-44 max-w-full"
+                  className="mt-1 h-5 w-44 max-w-full"
                 />
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className="admin-status-pill admin-status-live">
@@ -741,7 +847,7 @@ function AdminAccountPageSkeleton() {
           />
         </div>
 
-        <section className="admin-surface-muted min-w-0 px-5 py-5">
+        <section className="admin-surface-muted min-w-0 px-4 py-4 sm:px-5 sm:py-5">
           <div className="flex min-w-0 flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               <p className="admin-kicker">My Comments</p>
@@ -752,7 +858,7 @@ function AdminAccountPageSkeleton() {
             <AdminSkeleton tone="soft" className="h-7 w-20" />
           </div>
 
-          <div className="mt-5 grid min-w-0 gap-3">
+          <div className="mt-5 grid min-w-0 gap-4">
             {Array.from({ length: 3 }).map((_, index) => (
               <AdminListCardSkeleton
                 key={index}
@@ -782,7 +888,7 @@ function AdminAccountFormSkeleton({
   submitText?: string
 }) {
   return (
-    <section className="admin-surface-muted min-w-0 px-5 py-5">
+    <section className="admin-surface-muted min-w-0 px-4 py-4 sm:px-5 sm:py-5">
       <div className="mb-5">
         {kickerText ? (
           <p className="admin-kicker">{kickerText}</p>
@@ -817,81 +923,195 @@ function AdminAccountFormSkeleton({
   )
 }
 
-function AdminSettingsPageSkeleton() {
+function AdminSettingsLinkEditorSkeleton({
+  title,
+  itemCount = 2,
+}: {
+  title: string
+  itemCount?: number
+}) {
   return (
-    <section
-      data-skeleton-layout="admin-settings"
-      className="admin-surface min-w-0 p-4 sm:p-6 lg:p-7"
-    >
-      <div className="flex min-w-0 flex-col gap-3 border-b border-white/10 pb-5">
-        <p className="admin-kicker-accent">Site Settings</p>
-        <div className="min-w-0">
-          <h1 className="admin-title">站点设置</h1>
-          <p className="admin-copy mt-2 max-w-xl">
-            正在载入站点身份、页面内容、链接与 SEO 配置。
-          </p>
-        </div>
+    <section className="grid gap-4 border-t border-white/10 pt-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-lg font-semibold text-[#edf3e9]">{title}</h2>
+        <AdminStaticAction variant="outline" size="sm">
+          添加{title}
+        </AdminStaticAction>
       </div>
 
-      <div className="mt-6 grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-start">
-        <section className="admin-surface-muted min-w-0 px-4 py-5 sm:px-6 sm:py-6">
-          <div className="border-b border-white/10 pb-4">
-            <p className="admin-kicker">Identity And SEO</p>
-            <h2 className="mt-2 text-xl font-semibold text-[#edf3e9]">
-              站点身份与 SEO
-            </h2>
+      <div className="grid gap-4">
+        {Array.from({ length: itemCount }).map((_, index) => (
+          <div
+            key={index}
+            className="grid gap-4 border border-white/10 bg-[#171b16] p-4 lg:grid-cols-[minmax(0,1fr)_auto]"
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <AdminEditorFieldSkeleton label="类型" labelWidth="w-10" />
+              <AdminEditorFieldSkeleton label="标签" labelWidth="w-10" />
+              <AdminEditorFieldSkeleton label="显示内容" labelWidth="w-16" />
+              <AdminEditorFieldSkeleton label="链接地址" labelWidth="w-16" />
+            </div>
+            <div className="flex items-start justify-end gap-2 lg:flex-col">
+              {Array.from({ length: 5 }).map((__, actionIndex) => (
+                <AdminSkeleton
+                  key={actionIndex}
+                  tone="soft"
+                  className="size-7 shrink-0 rounded-md"
+                />
+              ))}
+            </div>
           </div>
-          <div className="mt-5 grid min-w-0 gap-5">
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function AdminSettingsPageSkeleton() {
+  return (
+    <div data-skeleton-layout="admin-settings" className="grid min-w-0 gap-6">
+      <header className="admin-surface min-w-0 p-4 sm:p-6 lg:p-7">
+        <p
+          data-admin-skeleton-kicker="top-level"
+          className="admin-kicker-accent"
+        >
+          Site Settings
+        </p>
+        <h1 className="admin-title mt-2">站点设置</h1>
+      </header>
+
+      <div className="site-settings-form admin-surface grid min-w-0 gap-7 p-4 sm:p-6 lg:p-7">
+        <section className="grid gap-4">
+          <h2 className="text-lg font-semibold text-[#edf3e9]">站点与 SEO</h2>
+          <div className="grid gap-5 lg:grid-cols-2">
             <AdminEditorFieldSkeleton label="站点名称" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton label="作者名称" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton label="联系邮箱" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton label="站点地址" labelWidth="w-20" />
             <AdminEditorFieldSkeleton
               label="站点描述"
               labelWidth="w-20"
               multiline
             />
-            <AdminEditorFieldSkeleton label="站点地址" labelWidth="w-20" />
-            <AdminEditorFieldSkeleton label="SEO 关键词" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton
+              label="默认 OG 图片替代文本"
+              labelWidth="w-36"
+            />
+            <AdminEditorFieldSkeleton
+              label="SEO 关键词（逗号分隔）"
+              labelWidth="w-40"
+              multiline
+            />
           </div>
         </section>
 
-        <div className="grid min-w-0 gap-6">
-          <section className="admin-surface-muted min-w-0 px-4 py-5 sm:px-6 sm:py-6">
-            <div className="border-b border-white/10 pb-4">
-              <p className="admin-kicker">Home And Profile</p>
-              <h2 className="mt-2 text-xl font-semibold text-[#edf3e9]">
-                首页与维护者摘要
-              </h2>
+        <section className="grid gap-4 border-t border-white/10 pt-5">
+          <h2 className="text-lg font-semibold text-[#edf3e9]">首页 Hero</h2>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <AdminEditorFieldSkeleton label="眉题" labelWidth="w-10" />
+            <AdminEditorFieldSkeleton label="标题" labelWidth="w-10" />
+            <AdminEditorFieldSkeleton
+              label="描述"
+              labelWidth="w-10"
+              multiline
+            />
+            <div className="grid gap-5">
+              <AdminEditorFieldSkeleton label="主按钮文字" labelWidth="w-24" />
+              <AdminEditorFieldSkeleton label="主按钮地址" labelWidth="w-24" />
             </div>
-            <div className="mt-5 grid min-w-0 gap-5">
-              <AdminEditorFieldSkeleton label="Hero 标题" labelWidth="w-20" />
+            <div className="grid gap-5">
+              <AdminEditorFieldSkeleton label="次按钮文字" labelWidth="w-24" />
+              <AdminEditorFieldSkeleton label="次按钮地址" labelWidth="w-24" />
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-4 border-t border-white/10 pt-5">
+          <h2 className="text-lg font-semibold text-[#edf3e9]">个人资料</h2>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <AdminEditorFieldSkeleton label="资料标题" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton label="状态" labelWidth="w-10" />
+            <AdminEditorFieldSkeleton label="位置" labelWidth="w-10" />
+            <AdminEditorFieldSkeleton
+              label="摘要"
+              labelWidth="w-10"
+              multiline
+            />
+          </div>
+        </section>
+
+        <section className="grid gap-4 border-t border-white/10 pt-5">
+          <h2 className="text-lg font-semibold text-[#edf3e9]">About</h2>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <AdminEditorFieldSkeleton
+              label="须知页面元标题"
+              labelWidth="w-28"
+            />
+            <AdminEditorFieldSkeleton label="须知页标题" labelWidth="w-24" />
+            <AdminEditorFieldSkeleton
+              label="须知页描述"
+              labelWidth="w-24"
+              multiline
+            />
+            <AdminEditorFieldSkeleton label="档案节点标签" labelWidth="w-24" />
+            <AdminEditorFieldSkeleton label="状态标签" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton label="状态值" labelWidth="w-16" />
+            <AdminEditorFieldSkeleton label="联系标题" labelWidth="w-20" />
+            <AdminEditorFieldSkeleton
+              label="引言"
+              labelWidth="w-10"
+              multiline
+            />
+            <AdminEditorFieldSkeleton
+              label="介绍"
+              labelWidth="w-10"
+              multiline
+            />
+            <AdminEditorFieldSkeleton
+              label="原则"
+              labelWidth="w-10"
+              multiline
+            />
+            <div className="grid gap-5">
               <AdminEditorFieldSkeleton
-                label="维护者摘要"
-                labelWidth="w-24"
-                multiline
+                label="档案入口文字"
+                labelWidth="w-28"
+              />
+              <AdminEditorFieldSkeleton
+                label="档案入口地址"
+                labelWidth="w-28"
               />
             </div>
-          </section>
+            <div className="grid gap-5">
+              <AdminEditorFieldSkeleton
+                label="传输入口文字"
+                labelWidth="w-28"
+              />
+              <AdminEditorFieldSkeleton
+                label="传输入口地址"
+                labelWidth="w-28"
+              />
+            </div>
+          </div>
+        </section>
 
-          <section className="admin-surface-muted min-w-0 px-4 py-5 sm:px-6 sm:py-6">
-            <div className="border-b border-white/10 pb-4">
-              <p className="admin-kicker">Links And Footer</p>
-              <h2 className="mt-2 text-xl font-semibold text-[#edf3e9]">
-                联系方式与页脚
-              </h2>
-            </div>
-            <div className="mt-5 grid min-w-0 gap-4">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <AdminSkeleton
-                  key={index}
-                  tone="soft"
-                  className="h-12 w-full"
-                />
-              ))}
-              <AdminAccentSkeleton className="mt-1 h-10 w-full sm:w-28" />
-            </div>
-          </section>
+        <AdminSettingsLinkEditorSkeleton title="联系方式" itemCount={3} />
+
+        <section className="grid gap-4 border-t border-white/10 pt-5">
+          <AdminEditorFieldSkeleton
+            label="页脚结束语"
+            labelWidth="w-24"
+            multiline
+          />
+        </section>
+
+        <AdminSettingsLinkEditorSkeleton title="页脚链接" itemCount={3} />
+
+        <div className="flex justify-end border-t border-white/10 pt-5">
+          <AdminStaticAction>保存站点设置</AdminStaticAction>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
 
@@ -907,7 +1127,10 @@ function AdminArticleEditorPageSkeleton({
     >
       <div className="flex min-w-0 flex-col gap-3 border-b border-white/10 pb-5">
         <div className="flex min-w-0 flex-wrap items-center gap-3">
-          <p className="admin-kicker-accent">
+          <p
+            data-admin-skeleton-kicker="top-level"
+            className="admin-kicker-accent"
+          >
             {mode === "create" ? "New Article" : "Edit Article"}
           </p>
           <AdminSkeleton tone="soft" className="h-7 w-24" />
@@ -1036,13 +1259,18 @@ function AdminArticleHistoryPageSkeleton() {
     <section className="admin-surface min-w-0 p-4 sm:p-6">
       <div className="flex min-w-0 flex-col gap-4 border-b border-white/10 pb-5">
         <div className="flex min-w-0 flex-wrap items-center gap-3">
-          <p className="admin-kicker">Revision History</p>
+          <p
+            data-admin-skeleton-kicker="top-level"
+            className="admin-kicker-accent"
+          >
+            Revision History
+          </p>
           <AdminAccentSkeleton className="h-7 w-20" />
         </div>
 
         <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
-            <AdminSkeleton className="h-10 w-64 max-w-full" />
+            <AdminSkeleton className="h-8 w-64 max-w-full" />
             <p className="admin-copy mt-2 max-w-xl">
               这里会保存每一次创建、编辑、发布、隐藏、标签变更和版本恢复后的快照。
             </p>
