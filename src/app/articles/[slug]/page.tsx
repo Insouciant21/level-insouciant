@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import dynamic from "next/dynamic"
-import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
@@ -154,12 +153,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
               {article.cover ? (
                 <div className="group relative mt-8 overflow-hidden rounded-md border border-[#73766f]/38 bg-[#c6bd99] shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_18px_42px_-34px_rgba(0,0,0,0.34)] grayscale-[0.24] sepia-[0.22]">
-                  <Image
+                  {/* Object-storage domains are runtime-configured, so this URL cannot be statically allowlisted. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={article.cover}
                     alt={article.title}
-                    width={1600}
-                    height={880}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 896px"
                     className="h-[14rem] w-full object-cover opacity-85 mix-blend-multiply transition duration-[3000ms] group-hover:scale-105 group-hover:opacity-100 sm:h-[18rem] md:h-[22rem]"
                   />
                 </div>

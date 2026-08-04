@@ -3,13 +3,23 @@
 import * as React from "react"
 import { evaluate } from "@mdx-js/mdx"
 import Link from "next/link"
-import { ExternalLink, History, Save, Send } from "lucide-react"
+import {
+  ExternalLink,
+  History,
+  ImagePlus,
+  LoaderCircle,
+  Save,
+  Send,
+  Trash2,
+} from "lucide-react"
 import * as jsxRuntime from "react/jsx-runtime"
 import rehypeKatex from "rehype-katex"
 import remarkMath from "remark-math"
 
 import { AdminDatePicker } from "@/components/admin/admin-date-picker"
+import { ArticleRichEditor } from "@/components/admin/article-rich-editor"
 import { useEditorScrollSync } from "@/components/admin/editor-scroll-sync"
+import { MediaPicker } from "@/components/admin/media/media-picker"
 import { Button } from "@/components/ui/button"
 import { MdxEditor } from "@/components/admin/mdx-editor"
 import { Input } from "@/components/ui/input"
@@ -17,7 +27,10 @@ import { Label } from "@/components/ui/label"
 import { PerfectScrollbar } from "@/components/ui/perfect-scrollbar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
+import { uploadMediaFile } from "@/components/admin/media/media-api"
+import { canUseVisualEditor } from "@/lib/mdx-editor/tiptap"
 import { normalizeMdxSource } from "@/lib/mdx"
+import { hasMissingImageAlt } from "@/lib/media/references"
 import { cn } from "@/lib/utils"
 
 type AdminArticleEditorFormProps = {
@@ -61,9 +74,15 @@ function AdminArticleEditorForm({
   const [previewLoading, setPreviewLoading] = React.useState(true)
   const [previewError, setPreviewError] = React.useState<string | null>(null)
   const [isWideLayout, setIsWideLayout] = React.useState(false)
+  const [isCoverUploading, setIsCoverUploading] = React.useState(false)
+  const [coverUploadError, setCoverUploadError] = React.useState<string | null>(
+    null
+  )
+  const [imageAltError, setImageAltError] = React.useState<string | null>(null)
   const [activeEditorView, setActiveEditorView] = React.useState<
-    "source" | "preview"
-  >("source")
+    "visual" | "source" | "preview"
+  >(() => (canUseVisualEditor(values.content) ? "visual" : "source"))
+  const visualEditorAvailable = canUseVisualEditor(draft.content)
   const sourceScrollRef = React.useRef<HTMLElement | null>(null)
   const previewScrollRef = React.useRef<HTMLElement | null>(null)
 
@@ -88,7 +107,11 @@ function AdminArticleEditorForm({
     }
   }, [])
 
-  useEditorScrollSync(sourceScrollRef, previewScrollRef, isWideLayout)
+  useEditorScrollSync(
+    sourceScrollRef,
+    previewScrollRef,
+    isWideLayout && activeEditorView === "source"
+  )
 
   const previewComponents = {
     h2: (props: React.ComponentPropsWithoutRef<"h2">) => (
@@ -203,6 +226,50 @@ function AdminArticleEditorForm({
     }
   }
 
+  async function handleCoverUpload(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const file = event.target.files?.[0]
+    event.target.value = ""
+
+    if (!file) {
+      return
+    }
+
+    setCoverUploadError(null)
+    setIsCoverUploading(true)
+
+    try {
+      const asset = await uploadMediaFile(file)
+      setDraft((current) => ({
+        ...current,
+        cover: asset.publicUrl,
+      }))
+    } catch (error) {
+      setCoverUploadError(
+        error instanceof Error ? error.message : "封面上传失败"
+      )
+    } finally {
+      setIsCoverUploading(false)
+    }
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    if (hasMissingImageAlt(draft.content)) {
+      event.preventDefault()
+      setImageAltError("请为正文中的每张图片填写 alt 文本后再保存。")
+      return
+    }
+
+    setImageAltError(null)
+  }
+
+  const showingSourceEditor =
+    activeEditorView === "source" ||
+    (activeEditorView === "visual" && !visualEditorAvailable)
+  const showingVisualEditor =
+    activeEditorView === "visual" && visualEditorAvailable
+
   return (
     <section className="admin-surface p-4 sm:p-6 lg:p-7">
       <div className="flex flex-col gap-3 border-b border-white/10 pb-5">
@@ -248,7 +315,7 @@ function AdminArticleEditorForm({
         {message ? <p className="admin-copy">{message}</p> : null}
       </div>
 
-      <form action={action}>
+      <form action={action} onSubmit={handleSubmit}>
         <section
           data-editor-section="metadata"
           className="border-b border-white/10 py-6"
@@ -369,15 +436,82 @@ function AdminArticleEditorForm({
                 <Label htmlFor="article-cover" className="text-[#dce6d8]">
                   封面（可选）
                 </Label>
-                <Input
-                  id="article-cover"
-                  type="text"
-                  name="cover"
-                  value={draft.cover}
-                  onChange={handleFieldChange("cover")}
-                  placeholder="留空则不显示封面"
-                  className="admin-input"
-                />
+                <div className="flex flex-col gap-2">
+                  <Input
+                    id="article-cover"
+                    type="text"
+                    name="cover"
+                    value={draft.cover}
+                    onChange={handleFieldChange("cover")}
+                    placeholder="留空则不显示封面"
+                    className="admin-input"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <MediaPicker
+                      onSelect={(asset) => {
+                        setDraft((current) => ({
+                          ...current,
+                          cover: asset.publicUrl,
+                        }))
+                        setCoverUploadError(null)
+                      }}
+                      buttonLabel="选择媒体"
+                    />
+                    <input
+                      id="article-cover-upload"
+                      className="sr-only"
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={handleCoverUpload}
+                      aria-label="上传封面"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={isCoverUploading}
+                      onClick={() =>
+                        document.getElementById("article-cover-upload")?.click()
+                      }
+                    >
+                      {isCoverUploading ? (
+                        <LoaderCircle className="size-3.5 animate-spin" aria-hidden="true" />
+                      ) : (
+                        <ImagePlus className="size-3.5" aria-hidden="true" />
+                      )}
+                      {isCoverUploading ? "上传中…" : "上传封面"}
+                    </Button>
+                    {draft.cover ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setDraft((current) => ({ ...current, cover: "" }))
+                          setCoverUploadError(null)
+                        }}
+                      >
+                        <Trash2 className="size-3.5" aria-hidden="true" />
+                        清空封面
+                      </Button>
+                    ) : null}
+                  </div>
+                </div>
+                {coverUploadError ? (
+                  <p className="text-xs text-[var(--admin-danger)]">
+                    {coverUploadError}
+                  </p>
+                ) : null}
+                {draft.cover ? (
+                  <div className="mt-1 overflow-hidden border border-white/10 bg-[#10130f]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={draft.cover}
+                      alt="当前文章封面"
+                      className="h-28 w-full object-cover"
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
@@ -385,11 +519,30 @@ function AdminArticleEditorForm({
         </section>
 
         <section data-editor-workbench className="mt-6">
-          {!isWideLayout ? (
-            <div
-              aria-label="编辑视图"
-              className="mb-4 grid grid-cols-2 border border-white/10 bg-white/[0.03] p-1"
-            >
+          <div
+            aria-label="编辑视图"
+            className="mb-4 grid grid-cols-3 border border-white/10 bg-white/[0.03] p-1"
+          >
+              <button
+                type="button"
+                aria-pressed={activeEditorView === "visual"}
+                aria-controls="article-editor-visual-panel"
+                disabled={!visualEditorAvailable}
+                title={
+                  visualEditorAvailable
+                    ? "使用可视化编辑器"
+                    : "当前正文包含复杂 MDX，请使用源码模式"
+                }
+                className={cn(
+                  "min-h-10 px-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45",
+                  activeEditorView === "visual"
+                    ? "bg-[var(--safety-exit-green)]/15 text-[var(--safety-exit-green-strong)]"
+                    : "text-[#9aa79a] hover:bg-white/[0.05] hover:text-[#edf3e9]"
+                )}
+                onClick={() => setActiveEditorView("visual")}
+              >
+                可视化
+              </button>
               <button
                 type="button"
                 aria-pressed={activeEditorView === "source"}
@@ -418,11 +571,10 @@ function AdminArticleEditorForm({
               >
                 效果
               </button>
-            </div>
-          ) : null}
+          </div>
 
           <div className="grid min-w-0 gap-6 xl:grid-cols-2 xl:items-start">
-            {isWideLayout || activeEditorView === "source" ? (
+            {showingSourceEditor ? (
               <section
                 id="article-editor-source-panel"
                 data-editor-panel="source"
@@ -443,7 +595,9 @@ function AdminArticleEditorForm({
                       MDX 源码
                     </h2>
                   </div>
-                  <p className="shrink-0 text-xs text-[#748073]">可编辑</p>
+                  <p className="shrink-0 text-xs text-[#748073]">
+                    {visualEditorAvailable ? "可编辑" : "复杂 MDX / 源码"}
+                  </p>
                 </div>
                 <div className="h-[32rem] min-h-0 overflow-hidden">
                   <MdxEditor
@@ -460,6 +614,42 @@ function AdminArticleEditorForm({
                     }}
                   />
                 </div>
+              </section>
+            ) : null}
+
+            {showingVisualEditor ? (
+              <section
+                id="article-editor-visual-panel"
+                data-editor-panel="visual"
+                data-testid="article-editor-visual-panel"
+                aria-labelledby="article-editor-visual-heading"
+                className="min-w-0 overflow-hidden border border-white/10 bg-[#10130f]"
+              >
+                <div
+                  data-editor-panel-header
+                  className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-3 sm:px-5"
+                >
+                  <div className="min-w-0">
+                    <p className="admin-kicker-accent">Structured Editor</p>
+                    <h2
+                      id="article-editor-visual-heading"
+                      className="mt-1 text-lg font-semibold tracking-tight text-[#edf3e9]"
+                    >
+                      可视化编辑器
+                    </h2>
+                  </div>
+                  <p className="shrink-0 text-xs text-[#748073]">正文保存为 MDX</p>
+                </div>
+                <ArticleRichEditor
+                  value={draft.content}
+                  ariaLabel="文章可视化编辑器"
+                  onChange={(content) => {
+                    setDraft((current) => ({
+                      ...current,
+                      content,
+                    }))
+                  }}
+                />
               </section>
             ) : null}
 
@@ -575,6 +765,15 @@ function AdminArticleEditorForm({
                   </PerfectScrollbar>
                 </section>
               </aside>
+            ) : null}
+
+            {imageAltError ? (
+              <p
+                role="alert"
+                className="border-t border-[var(--admin-danger)]/20 pt-4 text-sm text-[var(--admin-danger)] xl:order-4 xl:col-span-2"
+              >
+                {imageAltError}
+              </p>
             ) : null}
           </div>
         </section>

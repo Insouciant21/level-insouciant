@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 import {
   countImageReference,
   extractImageReferences,
+  hasMissingImageAlt,
   removeImageReferences,
 } from "@/lib/media/references"
 
@@ -40,6 +41,16 @@ describe("MDX image references", () => {
         `${firstImageUrl}/`
       )
     ).toBe(1)
+  })
+
+  it("detects image nodes that still need alt text", () => {
+    expect(hasMissingImageAlt(`![](${firstImageUrl})`)).toBe(true)
+    expect(hasMissingImageAlt(`![A useful description](${firstImageUrl})`)).toBe(
+      false
+    )
+    expect(hasMissingImageAlt("```md\n![](" + firstImageUrl + ")\n```")).toBe(
+      false
+    )
   })
 
   it("removes standalone and inline image references without stringifying MDX", () => {

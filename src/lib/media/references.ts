@@ -14,6 +14,7 @@ type MdxPosition = {
 type MdxNode = {
   type: string
   url?: string
+  alt?: string | null
   children?: MdxNode[]
   position?: MdxPosition
 }
@@ -151,6 +152,26 @@ export function countImageReference(source: string, publicUrl: string): number {
         : count,
     0
   )
+}
+
+export function hasMissingImageAlt(source: string): boolean {
+  let tree: MdxNode
+
+  try {
+    tree = parseMdx(source)
+  } catch {
+    return false
+  }
+
+  let missingAlt = false
+
+  visitImageNodes(tree, (imageNode) => {
+    if (typeof imageNode.alt !== "string" || !imageNode.alt.trim()) {
+      missingAlt = true
+    }
+  })
+
+  return missingAlt
 }
 
 export function removeImageReferences(

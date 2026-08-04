@@ -11,7 +11,9 @@ import {
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { AdminArticleEditorForm } from "@/components/admin/admin-article-editor-form"
+import { uploadMediaFile } from "@/components/admin/media/media-api"
 import { MdxEditor } from "@/components/admin/mdx-editor"
+import type { MediaAssetSummary } from "@/lib/media/assets"
 
 const { lineWrapping } = vi.hoisted(() => ({
   lineWrapping: { type: "line-wrapping" },
@@ -106,6 +108,12 @@ vi.mock("@mdx-js/mdx", () => ({
   }),
 }))
 
+vi.mock("@/components/admin/media/media-api", () => ({
+  fetchMediaAssetDetails: vi.fn(),
+  fetchMediaAssets: vi.fn(),
+  uploadMediaFile: vi.fn(),
+}))
+
 const values = {
   slug: "test-article",
   title: "Test article",
@@ -157,6 +165,7 @@ function defineScrollMetrics(
 
 afterEach(() => {
   cleanup()
+  vi.clearAllMocks()
   vi.unstubAllGlobals()
 })
 
@@ -245,7 +254,7 @@ describe("AdminArticleEditorForm", () => {
     expect(publishedAt?.value).toBe("2026-08-12")
   })
 
-  it("separates metadata from the desktop source and preview workbench", async () => {
+  it("separates metadata from the desktop visual editor and preview workbench", async () => {
     mockMatchMedia(true)
 
     const { container } = render(
@@ -264,14 +273,14 @@ describe("AdminArticleEditorForm", () => {
 
     await waitFor(() => {
       expect(
-        container.querySelector('[data-editor-panel="source"]')
+        container.querySelector('[data-editor-panel="visual"]')
       ).not.toBeNull()
       expect(
         container.querySelector('[data-editor-panel="preview"]')
       ).not.toBeNull()
     })
 
-    expect(screen.getByRole("heading", { name: "MDX 源码" })).not.toBeNull()
+    expect(screen.getByRole("heading", { name: "可视化编辑器" })).not.toBeNull()
     expect(screen.getByRole("heading", { name: "实时效果" })).not.toBeNull()
 
     const panelHeaders = Array.from(
@@ -332,6 +341,8 @@ describe("AdminArticleEditorForm", () => {
       />
     )
 
+    fireEvent.click(screen.getByRole("button", { name: "源码" }))
+
     await waitFor(() => {
       expect(
         container.querySelector('[data-editor-panel="preview"]')
@@ -362,6 +373,8 @@ describe("AdminArticleEditorForm", () => {
       />
     )
 
+    fireEvent.click(screen.getByRole("button", { name: "源码" }))
+
     await waitFor(() => {
       expect(
         container.querySelector('[data-editor-panel="preview"]')
@@ -380,7 +393,7 @@ describe("AdminArticleEditorForm", () => {
     expect(target.scrollTop).toBe(300)
   })
 
-  it("switches between source and preview panels on mobile", async () => {
+  it("switches between visual, source, and preview panels on mobile", async () => {
     mockMatchMedia(false)
 
     render(
@@ -392,11 +405,17 @@ describe("AdminArticleEditorForm", () => {
       />
     )
 
-    expect(screen.getByTestId("article-editor-source-panel")).not.toBeNull()
+    expect(screen.getByTestId("article-editor-visual-panel")).not.toBeNull()
     expect(screen.queryByTestId("article-editor-preview-panel")).toBeNull()
     expect(
-      screen.getByRole("button", { name: "源码" }).getAttribute("aria-pressed")
+      screen.getByRole("button", { name: "可视化" }).getAttribute("aria-pressed")
     ).toBe("true")
+
+    fireEvent.click(screen.getByRole("button", { name: "源码" }))
+
+    await waitFor(() => {
+      expect(screen.getByTestId("article-editor-source-panel")).not.toBeNull()
+    })
 
     fireEvent.click(screen.getByRole("button", { name: "效果" }))
 
@@ -432,5 +451,72 @@ describe("AdminArticleEditorForm", () => {
 
     expect(contentField).not.toBeNull()
     expect((contentField as HTMLInputElement).value).toBe(values.content)
+  })
+
+  it("serializes an uploaded cover URL through the hidden cover field", async () => {
+    const asset: MediaAssetSummary = {
+      id: "cover-asset",
+      displayName: "cover.png",
+      provider: "r2",
+      objectKey: "images/2026/08/cover.png",
+      publicUrl: "https://cdn.example.com/cover.png",
+      originalFilename: "cover.png",
+      mimeType: "image/png",
+      sizeBytes: 10,
+      status: "ACTIVE",
+      createdAt: "2026-08-04T00:00:00.000Z",
+      updatedAt: "2026-08-04T00:00:00.000Z",
+      linkedArticleCount: 0,
+    }
+    vi.mocked(uploadMediaFile).mockResolvedValue(asset)
+
+    render(
+      <AdminArticleEditorForm
+        mode="create"
+        action={vi.fn()}
+        values={{ ...values, cover: "" }}
+        statusLabel="Draft"
+      />
+    )
+
+    const file = new File([Buffer.from("cover")], "cover.png", {
+      type: "image/png",
+    })
+    fireEvent.change(screen.getByLabelText("上传封面"), {
+      target: { files: [file] },
+    })
+
+    await waitFor(() => {
+      expect(uploadMediaFile).toHaveBeenCalledWith(file)
+    })
+    await waitFor(() => {
+      expect(
+        (document.querySelector('input[name="cover"]') as HTMLInputElement)
+          .value
+      ).toBe(asset.publicUrl)
+    })
+    expect(screen.getByAltText("当前文章封面")).toBeTruthy()
+  })
+
+  it("blocks saving when the source contains an image without alt text", () => {
+    const action = vi.fn()
+
+    render(
+      <AdminArticleEditorForm
+        mode="create"
+        action={action}
+        values={{ ...values, content: `![](${"https://cdn.example.com/image.png"})` }}
+        statusLabel="Draft"
+      />
+    )
+
+    fireEvent.submit(
+      screen.getByRole("button", { name: "保存草稿" }).closest("form") as HTMLFormElement
+    )
+
+    expect(action).not.toHaveBeenCalled()
+    expect(screen.getByRole("alert").textContent).toContain(
+      "请为正文中的每张图片填写 alt 文本后再保存。"
+    )
   })
 })
