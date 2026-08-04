@@ -102,12 +102,6 @@ vi.mock("@uiw/react-codemirror", () => ({
   },
 }))
 
-vi.mock("@mdx-js/mdx", () => ({
-  evaluate: vi.fn().mockResolvedValue({
-    default: () => null,
-  }),
-}))
-
 vi.mock("@/components/admin/media/media-api", () => ({
   fetchMediaAssetDetails: vi.fn(),
   fetchMediaAssets: vi.fn(),
@@ -125,48 +119,9 @@ const values = {
   content: "# Draft content",
 }
 
-function mockMatchMedia(matches: boolean) {
-  vi.stubGlobal(
-    "matchMedia",
-    (query: string) =>
-      ({
-        matches,
-        media: query,
-        onchange: null,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      }) as MediaQueryList
-  )
-}
-
-function defineScrollMetrics(
-  element: HTMLElement,
-  metrics: { scrollHeight: number; clientHeight: number }
-) {
-  Object.defineProperties(element, {
-    scrollTop: {
-      configurable: true,
-      value: 0,
-      writable: true,
-    },
-    scrollHeight: {
-      configurable: true,
-      value: metrics.scrollHeight,
-    },
-    clientHeight: {
-      configurable: true,
-      value: metrics.clientHeight,
-    },
-  })
-}
-
 afterEach(() => {
   cleanup()
   vi.clearAllMocks()
-  vi.unstubAllGlobals()
 })
 
 describe("MdxEditor", () => {
@@ -209,21 +164,6 @@ describe("MdxEditor", () => {
     expect(editor?.getAttribute("data-line-wrapping")).toBe("true")
   })
 
-  it("exposes the CodeMirror scroll container", async () => {
-    const scrollContainerRef = { current: null as HTMLElement | null }
-
-    render(
-      <MdxEditor
-        value="# Draft"
-        onChange={vi.fn()}
-        scrollContainerRef={scrollContainerRef}
-      />
-    )
-
-    await waitFor(() => {
-      expect(scrollContainerRef.current).not.toBeNull()
-    })
-  })
 })
 
 describe("AdminArticleEditorForm", () => {
@@ -254,9 +194,7 @@ describe("AdminArticleEditorForm", () => {
     expect(publishedAt?.value).toBe("2026-08-12")
   })
 
-  it("separates metadata from the desktop visual editor and preview workbench", async () => {
-    mockMatchMedia(true)
-
+  it("keeps metadata separate from the desktop visual editor workbench", async () => {
     const { container } = render(
       <AdminArticleEditorForm
         mode="edit"
@@ -275,20 +213,17 @@ describe("AdminArticleEditorForm", () => {
       expect(
         container.querySelector('[data-editor-panel="visual"]')
       ).not.toBeNull()
-      expect(
-        container.querySelector('[data-editor-panel="preview"]')
-      ).not.toBeNull()
     })
 
     expect(screen.getByRole("heading", { name: "可视化编辑器" })).not.toBeNull()
-    expect(screen.getByRole("heading", { name: "实时效果" })).not.toBeNull()
+    expect(screen.queryByRole("heading", { name: "实时效果" })).toBeNull()
+    expect(screen.queryByRole("button", { name: "效果" })).toBeNull()
 
     const panelHeaders = Array.from(
       container.querySelectorAll("[data-editor-panel-header]")
     )
 
-    expect(panelHeaders).toHaveLength(2)
-    expect(panelHeaders[0]?.className).toBe(panelHeaders[1]?.className)
+    expect(panelHeaders).toHaveLength(1)
   })
 
   it("keeps the editor header compact and avoids a duplicate metadata divider", () => {
@@ -329,10 +264,8 @@ describe("AdminArticleEditorForm", () => {
     expect(container.querySelector("form")?.className).not.toContain("mt-6")
   })
 
-  it("uses themed scrollbars for the source and preview surfaces", async () => {
-    mockMatchMedia(true)
-
-    const { container } = render(
+  it("uses a themed scrollbar for the source editor", () => {
+    render(
       <AdminArticleEditorForm
         mode="edit"
         action={vi.fn()}
@@ -342,60 +275,16 @@ describe("AdminArticleEditorForm", () => {
     )
 
     fireEvent.click(screen.getByRole("button", { name: "源码" }))
-
-    await waitFor(() => {
-      expect(
-        container.querySelector('[data-editor-panel="preview"]')
-      ).not.toBeNull()
-    })
 
     expect(
       screen
         .getByTestId("codemirror-scroll")
         .classList.contains("perfect-scrollbar")
     ).toBe(true)
-    expect(
-      screen
-        .getByTestId("article-editor-preview-scroll")
-        .classList.contains("perfect-scrollbar")
-    ).toBe(true)
+    expect(screen.queryByTestId("article-editor-preview-scroll")).toBeNull()
   })
 
-  it("syncs desktop source scrolling to the preview proportionally", async () => {
-    mockMatchMedia(true)
-
-    const { container } = render(
-      <AdminArticleEditorForm
-        mode="edit"
-        action={vi.fn()}
-        values={values}
-        statusLabel="已发布"
-      />
-    )
-
-    fireEvent.click(screen.getByRole("button", { name: "源码" }))
-
-    await waitFor(() => {
-      expect(
-        container.querySelector('[data-editor-panel="preview"]')
-      ).not.toBeNull()
-    })
-
-    const source = screen.getByTestId("codemirror-scroll")
-    const target = screen.getByTestId("article-editor-preview-scroll")
-
-    defineScrollMetrics(source, { scrollHeight: 650, clientHeight: 150 })
-    defineScrollMetrics(target, { scrollHeight: 1150, clientHeight: 150 })
-
-    source.scrollTop = 150
-    fireEvent.scroll(source)
-
-    expect(target.scrollTop).toBe(300)
-  })
-
-  it("switches between visual, source, and preview panels on mobile", async () => {
-    mockMatchMedia(false)
-
+  it("switches between visual and source panels on mobile", async () => {
     render(
       <AdminArticleEditorForm
         mode="create"
@@ -407,6 +296,7 @@ describe("AdminArticleEditorForm", () => {
 
     expect(screen.getByTestId("article-editor-visual-panel")).not.toBeNull()
     expect(screen.queryByTestId("article-editor-preview-panel")).toBeNull()
+    expect(screen.queryByRole("button", { name: "效果" })).toBeNull()
     expect(
       screen.getByRole("button", { name: "可视化" }).getAttribute("aria-pressed")
     ).toBe("true")
@@ -417,11 +307,9 @@ describe("AdminArticleEditorForm", () => {
       expect(screen.getByTestId("article-editor-source-panel")).not.toBeNull()
     })
 
-    fireEvent.click(screen.getByRole("button", { name: "效果" }))
-
     await waitFor(() => {
-      expect(screen.queryByTestId("article-editor-source-panel")).toBeNull()
-      expect(screen.getByTestId("article-editor-preview-panel")).not.toBeNull()
+      expect(screen.queryByTestId("article-editor-visual-panel")).toBeNull()
+      expect(screen.getByTestId("article-editor-source-panel")).not.toBeNull()
     })
     expect(
       document.querySelector('input[type="hidden"][name="content"]')

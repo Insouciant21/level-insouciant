@@ -1124,29 +1124,29 @@ function AdminArticleEditorPageSkeleton({
       <section data-editor-workbench className="mt-6">
         <div className="mb-4 grid grid-cols-2 border border-white/10 bg-white/[0.03] p-1 xl:hidden">
           <AdminStaticAction
-            variant="secondary"
+            variant="outline"
             className="min-h-10 rounded-none"
+          >
+            可视化
+          </AdminStaticAction>
+          <AdminStaticAction
+            variant="secondary"
+            className="min-h-10 rounded-none text-[#9aa79a]"
           >
             源码
           </AdminStaticAction>
-          <AdminStaticAction
-            variant="outline"
-            className="min-h-10 rounded-none text-[#9aa79a]"
-          >
-            效果
-          </AdminStaticAction>
         </div>
 
-        <div className="grid min-w-0 gap-6 xl:grid-cols-2 xl:items-start">
+        <div className="grid min-w-0 gap-6">
           <section
-            data-editor-panel="source"
+            data-editor-panel="visual"
             className="min-w-0 overflow-hidden border border-white/10 bg-[#10130f]"
           >
             <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-3 sm:px-5">
               <div className="min-w-0">
-                <p className="admin-kicker-accent">MDX Source</p>
+                <p className="admin-kicker-accent">Structured Editor</p>
                 <h2 className="mt-1 text-lg font-semibold tracking-tight text-[#edf3e9]">
-                  MDX 源码
+                  可视化编辑器
                 </h2>
               </div>
               <AdminSkeleton tone="soft" className="h-4 w-12" />
@@ -1156,33 +1156,7 @@ function AdminArticleEditorPageSkeleton({
             </div>
           </section>
 
-          <section
-            data-editor-panel="preview"
-            className="hidden min-w-0 overflow-hidden border border-white/10 bg-[#10130f] xl:block"
-          >
-            <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 bg-white/[0.02] px-4 py-3 sm:px-5">
-              <div className="min-w-0">
-                <p className="admin-kicker-accent">Live Preview</p>
-                <h2 className="mt-1 text-lg font-semibold tracking-tight text-[#edf3e9]">
-                  实时效果
-                </h2>
-              </div>
-              <AdminSkeleton tone="soft" className="h-4 w-24 max-w-full" />
-            </div>
-
-            <div className="h-[32rem] min-h-0 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
-              <div className="grid min-w-0 content-start gap-4">
-                <AdminSkeleton className="h-6 w-24" />
-                <AdminSkeleton className="h-14 w-full" />
-                <AdminSkeleton className="h-14 w-4/5 max-w-full" />
-                <AdminSkeleton tone="soft" className="h-5 w-full" />
-                <AdminSkeleton tone="soft" className="h-5 w-5/6 max-w-full" />
-                <AdminSkeleton tone="soft" className="h-64 w-full rounded-md" />
-              </div>
-            </div>
-          </section>
-
-          <div className="flex min-w-0 flex-wrap items-center justify-end gap-3 border-t border-white/10 pt-5 xl:col-span-2">
+          <div className="flex min-w-0 flex-wrap items-center justify-end gap-3 border-t border-white/10 pt-5">
             <div className="flex flex-wrap gap-3">
               <AdminStaticAction variant="outline">保存草稿</AdminStaticAction>
               <AdminStaticAction>发布更新</AdminStaticAction>

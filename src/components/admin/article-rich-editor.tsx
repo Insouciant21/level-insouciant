@@ -183,9 +183,6 @@ function ArticleRichEditor({
         onSelectMedia={selectMedia}
         onEditImage={openSelectedImage}
       />
-      <div className="border-b border-white/10 px-3 py-2 text-xs text-[#748073]">
-        可视化编辑支持 Markdown、链接、列表、公式和图片；复杂 MDX 请切换到源码模式。
-      </div>
       <EditorContent editor={editor} />
       {uploadError ? (
         <p className="border-t border-[var(--admin-danger)]/20 bg-[var(--admin-danger)]/10 px-4 py-2.5 text-xs text-[var(--admin-danger)]">

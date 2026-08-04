@@ -60,6 +60,16 @@ describe("SiteSettingsForm", () => {
     expect(screen.getByRole("option", { name: "哔哩哔哩" })).toBeTruthy()
   })
 
+  it("keeps the contact kind menu free of a native scrollbar edge", () => {
+    render(<SiteSettingsForm siteConfig={defaultSiteConfig} />)
+
+    fireEvent.click(screen.getAllByRole("combobox")[0])
+
+    expect(
+      document.querySelector('[data-slot="select-viewport"]')?.className
+    ).toContain("select-viewport-no-scrollbar")
+  })
+
   it("serializes contact additions, ordering, enabled state, and removals", () => {
     render(<SiteSettingsForm siteConfig={defaultSiteConfig} />)
 

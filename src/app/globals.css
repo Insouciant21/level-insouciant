@@ -285,6 +285,14 @@
   ::-webkit-scrollbar-thumb:hover {
     background-color: var(--scrollbar-thumb-hover);
   }
+
+  .select-viewport-no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .select-viewport-no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer components {
@@ -1361,6 +1369,11 @@
 .prose-block blockquote {
   @apply border-l-4 border-destructive bg-destructive/6 px-6 py-5 text-foreground/92;
   font-family: var(--font-sans), "Noto Sans SC", "PingFang SC", sans-serif;
+}
+
+.prose-block del,
+.prose-block s {
+  @apply line-through;
 }
 
 .prose-block hr {

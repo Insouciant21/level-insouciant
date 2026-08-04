@@ -39,6 +39,16 @@ vi.mock("@/components/admin/media/media-api", () => ({
 afterEach(cleanup)
 
 describe("ArticleRichEditor", () => {
+  it("does not render the removed visual editor guidance copy", () => {
+    render(<ArticleRichEditor value="# Draft" onChange={vi.fn()} />)
+
+    expect(
+      screen.queryByText(
+        "可视化编辑支持 Markdown、链接、列表、公式和图片；复杂 MDX 请切换到源码模式。"
+      )
+    ).toBeNull()
+  })
+
   it("requires alt text before inserting an existing media asset", async () => {
     const onChange = vi.fn()
     render(<ArticleRichEditor value="# Draft" onChange={onChange} />)

@@ -14,7 +14,6 @@ type MdxEditorProps = {
   id?: string
   ariaLabel?: string
   className?: string
-  scrollContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
 const mdxEditorTheme = EditorView.theme(
@@ -60,7 +59,6 @@ function MdxEditor({
   id,
   ariaLabel = "MDX editor",
   className,
-  scrollContainerRef,
 }: MdxEditorProps) {
   const extensions = React.useMemo(
     () => [markdown(), EditorView.lineWrapping],
@@ -79,17 +77,13 @@ function MdxEditor({
       scrollElement.classList.add("perfect-scrollbar")
       perfectScrollbarElementRef.current = scrollElement
 
-      if (scrollContainerRef) {
-        scrollContainerRef.current = scrollElement
-      }
-
       perfectScrollbarRef.current = createPerfectScrollbarController(
         scrollElement,
         PerfectScrollbarPrimitive
       )
       perfectScrollbarRef.current.update()
     },
-    [scrollContainerRef]
+    []
   )
 
   React.useEffect(() => {
@@ -101,13 +95,8 @@ function MdxEditor({
       scrollElement?.classList.remove("perfect-scrollbar")
       perfectScrollbarElementRef.current = null
 
-      if (scrollContainerRef) {
-        if (scrollContainerRef.current === scrollElement) {
-          scrollContainerRef.current = null
-        }
-      }
     }
-  }, [scrollContainerRef])
+  }, [])
 
   React.useEffect(() => {
     perfectScrollbarRef.current?.update()

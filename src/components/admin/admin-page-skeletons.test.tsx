@@ -267,10 +267,8 @@ describe("admin page skeleton compositions", () => {
           "发布日期",
           "标签",
           "封面（可选）",
-          "MDX Source",
-          "MDX 源码",
-          "Live Preview",
-          "实时效果",
+          "Structured Editor",
+          "可视化编辑器",
           "保存草稿",
           "发布更新",
         ],
@@ -299,13 +297,11 @@ describe("admin page skeleton compositions", () => {
     ).not.toBeNull()
     expect(container.querySelector("[data-editor-workbench]")).not.toBeNull()
     expect(
-      container.querySelector('[data-editor-panel="source"]')
+      container.querySelector('[data-editor-panel="visual"]')
     ).not.toBeNull()
-    expect(
-      container.querySelector('[data-editor-panel="preview"]')
-    ).not.toBeNull()
-    expectVisibleAdminCopy(container, "MDX 源码")
-    expectVisibleAdminCopy(container, "实时效果")
+    expect(container.querySelector('[data-editor-panel="preview"]')).toBeNull()
+    expectVisibleAdminCopy(container, "可视化编辑器")
+    expect(container.textContent).not.toContain("实时效果")
     expect(container.textContent).not.toContain(
       "使用结构化字段加原始 MDX 正文编辑，保存即生成修订记录。"
     )
@@ -349,11 +345,9 @@ describe("admin page skeleton compositions", () => {
     ).not.toBeNull()
     expect(container.querySelector("[data-editor-workbench]")).not.toBeNull()
     expect(
-      container.querySelector('[data-editor-panel="source"]')
+      container.querySelector('[data-editor-panel="visual"]')
     ).not.toBeNull()
-    expect(
-      container.querySelector('[data-editor-panel="preview"]')
-    ).not.toBeNull()
+    expect(container.querySelector('[data-editor-panel="preview"]')).toBeNull()
     expect(container.querySelector(".h-\\[32rem\\]")).not.toBeNull()
   })
 

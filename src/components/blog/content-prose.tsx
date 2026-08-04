@@ -2,6 +2,7 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import rehypeKatex from "rehype-katex"
 import rehypePrettyCode from "rehype-pretty-code"
+import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 
 import { CodeBlockFigure } from "@/components/blog/code-block-figure"
@@ -56,7 +57,10 @@ function ContentProse({ source }: ContentProseProps) {
         source={normalizedSource}
         options={{
           mdxOptions: {
-            remarkPlugins: [[remarkMath, { singleDollarTextMath: true }]],
+            remarkPlugins: [
+              remarkGfm,
+              [remarkMath, { singleDollarTextMath: true }],
+            ],
             rehypePlugins: [
               [rehypeKatex],
               [

@@ -69,7 +69,7 @@ function SelectViewport({
   return (
     <SelectPrimitive.Viewport
       data-slot="select-viewport"
-      className={cn("p-0.5", className)}
+      className={cn("select-viewport-no-scrollbar p-0.5", className)}
       {...props}
     />
   )
