@@ -5,19 +5,14 @@ import {
   Contact,
   ExternalLink,
   FileStack,
-  Gamepad2,
-  Github,
-  Globe2,
   Link as LinkIcon,
-  Mail,
   Zap,
-  type LucideIcon,
 } from "lucide-react"
 
 import { MotionReveal } from "@/components/motion/page-transition"
 import { PageShell } from "@/components/blog/page-shell"
 import { createPageMetadata } from "@/lib/seo"
-import type { ContactKind } from "@/lib/site"
+import { contactIconByKind } from "@/lib/contact-kinds"
 import { getSiteConfig } from "@/lib/site-config"
 
 const aboutArticleClass =
@@ -30,14 +25,6 @@ const aboutWarningHighlightClass =
   "border border-[#8a4f34]/70 bg-[#181b17] px-5 py-4 text-[#d9d1ad] shadow-[inset_0_1px_0_rgba(255,252,225,0.08),0_18px_38px_-30px_rgba(0,0,0,0.46)]"
 const aboutAccessLinkClass =
   "flex items-center justify-between border-b border-[#73766f]/42 pb-2 transition duration-500 hover:border-[#8a4f34]/48 hover:text-destructive"
-const contactIconByKind: Record<ContactKind, LucideIcon> = {
-  github: Github,
-  email: Mail,
-  steam: Gamepad2,
-  website: Globe2,
-  custom: LinkIcon,
-}
-
 function isExternalHttpHref(href: string) {
   try {
     const url = new URL(href)

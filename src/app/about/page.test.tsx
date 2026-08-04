@@ -72,6 +72,38 @@ const customSiteConfig = {
       enabled: true,
     },
     {
+      id: "twitter",
+      kind: "twitter",
+      label: "Twitter",
+      value: "twitter.com/maintainer",
+      href: "https://twitter.com/maintainer",
+      enabled: true,
+    },
+    {
+      id: "linkedin",
+      kind: "linkedin",
+      label: "LinkedIn",
+      value: "linkedin.com/in/maintainer",
+      href: "https://linkedin.com/in/maintainer",
+      enabled: true,
+    },
+    {
+      id: "netease",
+      kind: "netease",
+      label: "网易云音乐",
+      value: "网易云音乐 / maintainer",
+      href: "https://music.163.com/#/user/home?id=1",
+      enabled: true,
+    },
+    {
+      id: "bilibili",
+      kind: "bilibili",
+      label: "哔哩哔哩",
+      value: "space.bilibili.com/1",
+      href: "https://space.bilibili.com/1",
+      enabled: true,
+    },
+    {
       id: "internal",
       kind: "website",
       label: "Internal Dossier",
@@ -142,6 +174,21 @@ describe("AboutPage", () => {
       within(customContact as HTMLElement).getByText("custom.example.test")
     ).toBeTruthy()
     expect(customContact?.querySelector(".lucide-link")).not.toBeNull()
+
+    for (const [label, iconClass] of [
+      ["Twitter", "lucide-twitter"],
+      ["LinkedIn", "lucide-linkedin"],
+      ["网易云音乐", "lucide-music-2"],
+      ["哔哩哔哩", "lucide-tv-minimal"],
+    ]) {
+      const contact = screen.getByText(label).closest("li")
+
+      expect(
+        contact?.querySelector(`.${iconClass}`),
+        `expected ${label} to render ${iconClass}`
+      ).not.toBeNull()
+    }
+
     expect(container.textContent).not.toContain("github.com/Insouciant21")
   })
 })

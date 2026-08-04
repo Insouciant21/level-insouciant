@@ -56,4 +56,19 @@ describe("SiteHeader", () => {
     expect(header?.className).not.toContain("bg-background/92")
     expect(status.className).toContain("site-status-pill")
   })
+
+  it("centers the primary navigation independently from edge controls", async () => {
+    render(await SiteHeader())
+
+    const header = document.querySelector("header")
+    const inner = header?.firstElementChild as HTMLElement | null
+    const navigation = screen.getByRole("navigation", { name: "主导航" })
+    const userMenu = screen.getByRole("button", { name: "账户" })
+
+    expect(inner?.className).toContain(
+      "grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+    )
+    expect(navigation.className).toContain("justify-self-center")
+    expect(userMenu.closest("nav")).toBeNull()
+  })
 })
