@@ -451,9 +451,8 @@ export async function deleteMediaAsset(
     }
   })
 
-  const storage = getObjectStorageProvider(toProviderKey(asset.provider))
-
   try {
+    const storage = getObjectStorageProvider(toProviderKey(asset.provider))
     await storage.delete(asset.objectKey)
     await prisma.mediaAsset.delete({
       where: { id },

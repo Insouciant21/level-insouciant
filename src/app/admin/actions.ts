@@ -15,6 +15,7 @@ import {
   setArticleDraftState,
   updateManagedArticle,
 } from "@/lib/content-admin"
+import { hasMissingImageAlt } from "@/lib/media/references"
 import { parseManagedArticleFormData } from "@/lib/validation/form-data"
 
 function getString(formData: FormData, key: string) {
@@ -23,7 +24,13 @@ function getString(formData: FormData, key: string) {
 
 function getArticlePayload(formData: FormData) {
   try {
-    return parseManagedArticleFormData(formData)
+    const payload = parseManagedArticleFormData(formData)
+
+    if (hasMissingImageAlt(payload.content)) {
+      throw new Error("ARTICLE_IMAGE_ALT_REQUIRED")
+    }
+
+    return payload
   } catch (error) {
     if (error instanceof ZodError) {
       throw new Error("INVALID_ARTICLE_INPUT")

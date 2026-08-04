@@ -20,7 +20,10 @@ type AdminEditArticlePageProps = {
 
 const errorMessages: Record<string, string> = {
   ARTICLE_NOT_FOUND: "没有找到这篇文章。",
+  ARTICLE_IMAGE_ALT_REQUIRED: "请为正文中的每张图片填写 alt 文本后再保存。",
   INVALID_ARTICLE_INPUT: "文章信息不完整，请把必填内容补全后再保存。",
+  MEDIA_REQUEST_FAILED: "媒体操作失败，请稍后重试。",
+  MEDIA_STORAGE_NOT_CONFIGURED: "图片存储尚未配置，请联系管理员。",
 }
 
 export async function generateMetadata(): Promise<Metadata> {

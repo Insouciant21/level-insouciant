@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { revalidatePath } from "next/cache"
 
 import { getCurrentAdmin } from "@/lib/auth"
 import {
@@ -7,6 +8,10 @@ import {
   retryMediaAssetDeletion,
 } from "@/lib/media/assets"
 import { DELETE, PATCH } from "@/app/api/admin/media/[id]/route"
+
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+}))
 
 vi.mock("@/lib/auth", () => ({
   getCurrentAdmin: vi.fn(),
@@ -99,6 +104,7 @@ describe("DELETE /api/admin/media/:id", () => {
       status: "DELETED",
       affectedArticleCount: 2,
     })
+    expect(revalidatePath).toHaveBeenCalledWith("/articles/[slug]", "page")
   })
 
   it("uses the retry service for failed object deletion", async () => {

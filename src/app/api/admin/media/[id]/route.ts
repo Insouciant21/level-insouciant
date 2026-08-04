@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { revalidatePath } from "next/cache"
 
 import { getCurrentAdmin } from "@/lib/auth"
 import {
@@ -11,6 +12,16 @@ type RouteProps = {
   params: Promise<{
     id: string
   }>
+}
+
+function revalidatePublicMediaContent() {
+  revalidatePath("/")
+  revalidatePath("/articles")
+  revalidatePath("/tags")
+  revalidatePath("/categories")
+  revalidatePath("/search")
+  revalidatePath("/articles/[slug]", "page")
+  revalidatePath("/admin/media")
 }
 
 function getServiceErrorResponse(error: unknown) {
@@ -94,6 +105,11 @@ export async function DELETE(request: Request, { params }: RouteProps) {
     const result = isRetry
       ? await retryMediaAssetDeletion(id)
       : await deleteMediaAsset(id, admin.id)
+
+    if (!isRetry || result.affectedArticleCount > 0) {
+      revalidatePublicMediaContent()
+    }
+
     return NextResponse.json(result)
   } catch (error) {
     return getServiceErrorResponse(error)

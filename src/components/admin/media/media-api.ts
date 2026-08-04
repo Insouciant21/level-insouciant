@@ -4,6 +4,7 @@ import type {
   MediaListQuery,
   MediaListResult,
 } from "@/lib/media/assets"
+import { getMediaErrorMessage } from "@/lib/media/errors"
 
 async function parseResponse<T>(response: Response): Promise<T> {
   const payload = (await response.json()) as T | { error?: string }
@@ -13,7 +14,7 @@ async function parseResponse<T>(response: Response): Promise<T> {
       typeof payload === "object" && payload !== null && "error" in payload
         ? payload.error
         : undefined
-    throw new Error(errorCode || "MEDIA_REQUEST_FAILED")
+    throw new Error(getMediaErrorMessage(errorCode || "MEDIA_REQUEST_FAILED"))
   }
 
   return payload as T
