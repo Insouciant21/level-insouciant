@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { afterEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest"
 
 import { ArticleRichEditor } from "@/components/admin/article-rich-editor"
 import type { MediaAssetSummary } from "@/lib/media/assets"
@@ -35,6 +35,11 @@ vi.mock("@/components/admin/media/media-picker", () => ({
 vi.mock("@/components/admin/media/media-api", () => ({
   uploadMediaFile: vi.fn(),
 }))
+
+beforeAll(() => {
+  Range.prototype.getClientRects = () => [] as unknown as DOMRectList
+  Range.prototype.getBoundingClientRect = () => new DOMRect()
+})
 
 afterEach(cleanup)
 

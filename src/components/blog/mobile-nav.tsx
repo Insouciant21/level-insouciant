@@ -29,6 +29,7 @@ type MobileNavProps = {
 
 function MobileNav({ user, config }: MobileNavProps) {
   const accountHref = user?.role === "ADMIN" ? "/admin/dashboard" : "/account"
+  const avatarUrl = user?.image?.trim() || null
 
   return (
     <Sheet>
@@ -72,8 +73,13 @@ function MobileNav({ user, config }: MobileNavProps) {
 
         <div className="mt-auto border-t border-border/60 pt-5">
           <div className="flex items-center gap-3 px-3">
-            <span className="flex size-9 items-center justify-center border border-[#73766f]/45 bg-[#aaa891]/42 text-muted-foreground">
-              <UserRound className="size-4" />
+            <span
+              className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#73766f]/45 bg-[#aaa891]/42 bg-cover bg-center text-muted-foreground"
+              data-testid="mobile-nav-user-avatar"
+              style={avatarUrl ? { backgroundImage: `url(${avatarUrl})` } : undefined}
+              aria-hidden="true"
+            >
+              {avatarUrl ? null : <UserRound className="size-4" />}
             </span>
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">
