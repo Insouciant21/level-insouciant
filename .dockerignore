@@ -1,0 +1,13 @@
+.git
+.next
+node_modules
+coverage
+.env*
+!.env.example
+.codex
+.superpowers
+.worktrees
+docs/superpowers
+ui_sample
+*.log
+*.tsbuildinfo
