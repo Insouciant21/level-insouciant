@@ -1,6 +1,7 @@
 import { toString } from "mdast-util-to-string"
 import { slug as githubSlug } from "github-slugger"
 import remarkMdx from "remark-mdx"
+import remarkMath from "remark-math"
 import remarkParse from "remark-parse"
 import { unified } from "unified"
 import { visit } from "unist-util-visit"
@@ -41,7 +42,11 @@ export function extractTableOfContents(source: string): TocItem[] {
   const items: TocItem[] = []
 
   try {
-    const tree = unified().use(remarkParse).use(remarkMdx).parse(source)
+    const tree = unified()
+      .use(remarkParse)
+      .use(remarkMdx)
+      .use(remarkMath, { singleDollarTextMath: true })
+      .parse(source)
 
     visit(tree, "heading", (node) => {
       if (node.depth !== 2 && node.depth !== 3) {

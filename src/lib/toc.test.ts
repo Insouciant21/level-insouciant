@@ -26,4 +26,21 @@ describe("extractTableOfContents", () => {
       { id: "systems-and-links-2", text: "Systems and links", depth: 2 },
     ])
   })
+
+  it("extracts headings from articles containing block math", () => {
+    const source = [
+      "## 数学公式",
+      "",
+      "$$",
+      String.raw`V\ge k \Rightarrow V-E{V} \ge k - \left(1-\dfrac{\epsilon}{2}\right)k = \dfrac{\epsilon k}{2}`,
+      "$$",
+      "",
+      "### 结论",
+    ].join("\n")
+
+    expect(extractTableOfContents(source)).toEqual([
+      { id: "数学公式", text: "数学公式", depth: 2 },
+      { id: "结论", text: "结论", depth: 3 },
+    ])
+  })
 })
