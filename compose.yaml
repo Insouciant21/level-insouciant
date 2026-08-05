@@ -32,6 +32,8 @@ services:
       - .env
     environment:
       <<: *runtime-environment
+      AUTH_TRUST_HOST: "true"
+      AUTH_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:21544}
       HOSTNAME: 0.0.0.0
       PORT: 3000
       NODE_ENV: production
