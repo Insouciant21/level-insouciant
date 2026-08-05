@@ -20,7 +20,7 @@ function SiteFrame({ children, header, footer }: SiteFrameProps) {
     <div
       className={cn(
         "flex min-h-svh flex-col",
-        isPublicRoute ? "site-console relative overflow-x-hidden" : null
+        isPublicRoute ? "site-console relative overflow-x-clip" : null
       )}
     >
       {isPublicRoute ? (
