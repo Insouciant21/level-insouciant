@@ -48,13 +48,8 @@ function ArticleTableOfContents({
 
   if (variant === "desktop-floating") {
     return (
-      <aside className="hidden xl:block">
-        <div
-          className="fixed top-32 z-30 w-[320px]"
-          style={{ right: "max(2rem, calc((100vw - 1200px) / 2))" }}
-        >
-          {indexCard}
-        </div>
+      <aside className="hidden xl:sticky xl:top-32 xl:block xl:self-start">
+        {indexCard}
       </aside>
     )
   }

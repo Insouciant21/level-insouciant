@@ -15,7 +15,7 @@ import { ArticleTableOfContents } from "@/components/blog/article-table-of-conte
 afterEach(cleanup)
 
 describe("ArticleTableOfContents", () => {
-  it("keeps the desktop index fixed without an internal scrollbar", () => {
+  it("keeps the desktop index sticky inside the article boundary without an internal scrollbar", () => {
     const { container } = render(
       <ArticleTableOfContents
         items={[
@@ -28,15 +28,13 @@ describe("ArticleTableOfContents", () => {
 
     const navigation = screen.getByRole("navigation", { name: "文章目录" })
     const desktopSlot = navigation.closest("aside")
-    const floatingPanel = navigation.parentElement
 
     expect(desktopSlot?.className).toContain("hidden")
     expect(desktopSlot?.className).toContain("xl:block")
-    expect(floatingPanel?.className).toContain("fixed")
-    expect(floatingPanel?.className).toContain("top-32")
-    expect(floatingPanel?.className).toContain("w-[320px]")
-    expect(floatingPanel?.style.right).toContain("max(")
-    expect(floatingPanel?.style.right).toContain("1200px")
+    expect(desktopSlot?.className).toContain("xl:sticky")
+    expect(desktopSlot?.className).toContain("xl:top-32")
+    expect(desktopSlot?.className).toContain("xl:self-start")
+    expect(container.querySelector(".fixed")).toBeNull()
     expect(container.querySelector(".perfect-scrollbar")).toBeNull()
     expect(container.querySelector("[tabindex]")).toBeNull()
   })
