@@ -13,7 +13,7 @@ async function SiteHeader() {
 
   return (
     <header className="site-header-shell sticky top-0 z-40 overflow-visible border-b backdrop-blur-sm">
-      <div className="mx-auto grid w-full max-w-[88rem] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-5 px-5 py-4 sm:px-6 lg:px-8">
+      <div className="mx-auto grid w-full max-w-[88rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-5 px-5 py-4 sm:px-6 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:px-8">
         <div className="flex min-w-0 items-center gap-4 justify-self-start">
           <Link href="/" className="utility-brand-link shrink-0">
             <span className="signal-beacon" aria-hidden="true">

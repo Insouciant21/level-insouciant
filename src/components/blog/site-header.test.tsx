@@ -65,8 +65,9 @@ describe("SiteHeader", () => {
     const navigation = screen.getByRole("navigation", { name: "主导航" })
     const userMenu = screen.getByRole("button", { name: "账户" })
 
+    expect(inner?.className).toContain("grid-cols-[minmax(0,1fr)_auto]")
     expect(inner?.className).toContain(
-      "grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+      "md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
     )
     expect(navigation.className).toContain("justify-self-center")
     expect(userMenu.closest("nav")).toBeNull()
