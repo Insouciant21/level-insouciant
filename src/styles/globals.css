@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "perfect-scrollbar/css/perfect-scrollbar.css";
+@import "perfect-scrollbar/css/perfect-scrollbar.css" layer(components);
 
 @source inline(
   "public-summary-panel public-summary-panel-document public-summary-card public-summary-card-muted public-summary-chip"
@@ -299,10 +299,14 @@
   .perfect-scrollbar.ps {
     position: relative;
     overscroll-behavior: contain;
+    scrollbar-width: none;
   }
 
-  .perfect-scrollbar.ps > .ps__rail-x,
-  .perfect-scrollbar.ps > .ps__thumb-x {
+  .perfect-scrollbar.ps::-webkit-scrollbar {
+    display: none;
+  }
+
+  .perfect-scrollbar.ps > .ps__rail-x {
     display: none;
   }
 
@@ -311,7 +315,7 @@
     background-color: transparent;
   }
 
-  .perfect-scrollbar.ps > .ps__thumb-y {
+  .perfect-scrollbar.ps > .ps__rail-y > .ps__thumb-y {
     right: 3px;
     width: 3px;
     border-radius: 999px;
@@ -1086,6 +1090,8 @@
     --admin-accent-foreground: #182015;
     --admin-warning: #e2b86c;
     --admin-danger: #f08b81;
+    --scrollbar-thumb: rgb(154 167 154 / 34%);
+    --scrollbar-thumb-hover: rgb(154 167 154 / 52%);
   }
 
   .admin-console {
