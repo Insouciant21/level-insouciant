@@ -1,6 +1,13 @@
-import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react"
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from "react"
 
-
+import { Copy, Check } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 type CodeBlockFigureProps = {
@@ -29,7 +36,9 @@ function getNodeText(node: ReactNode): string {
   return ""
 }
 
-function getLanguageLabel(preElement: ReactElement<{ [key: string]: unknown }>) {
+function getLanguageLabel(
+  preElement: ReactElement<{ [key: string]: unknown }>
+) {
   const directLanguage = preElement.props["data-language"]
 
   if (typeof directLanguage === "string" && directLanguage.length > 0) {
@@ -61,16 +70,22 @@ function getLanguageLabel(preElement: ReactElement<{ [key: string]: unknown }>) 
 
 function CodeBlockFigure({ children }: CodeBlockFigureProps) {
   const nodes = Children.toArray(children)
-  const preNode = nodes.find((node) => isElementWithProps(node) && node.type === "pre")
+  const preNode = nodes.find(
+    (node) => isElementWithProps(node) && node.type === "pre"
+  )
   const titleNode = nodes.find(
-    (node) => isElementWithProps(node) && "data-rehype-pretty-code-title" in node.props
+    (node) =>
+      isElementWithProps(node) && "data-rehype-pretty-code-title" in node.props
   )
 
   if (!preNode || !isElementWithProps(preNode)) {
     return <figure className="my-8 max-w-full">{children}</figure>
   }
 
-  const code = getNodeText((preNode.props.children ?? "") as ReactNode).replace(/\n$/, "")
+  const code = getNodeText((preNode.props.children ?? "") as ReactNode).replace(
+    /\n$/,
+    ""
+  )
   const title = titleNode ? getNodeText(titleNode) : ""
   const language = getLanguageLabel(preNode)
   const label = title || language
@@ -83,11 +98,26 @@ function CodeBlockFigure({ children }: CodeBlockFigureProps) {
             {label}
           </p>
         </div>
-        <button type="button" data-copy-code={code} aria-label="复制代码" className="code-block-copy-button h-8 rounded-full border px-3 text-sm">复制</button>
+        <Button
+          type="button"
+          size="sm"
+          variant="ghost"
+          data-copy-code={code}
+          data-copied="false"
+          aria-label="复制代码"
+          className="code-block-copy-button group h-8 rounded-full border px-3"
+        >
+          <Copy className="size-4 group-data-[copied=true]:hidden" />
+          <Check className="hidden size-4 group-data-[copied=true]:block" />
+          <span data-copy-label>复制</span>
+        </Button>
       </div>
 
       {cloneElement(preNode, {
-        className: cn("code-block-pre w-full max-w-full", preNode.props.className as string | undefined),
+        className: cn(
+          "code-block-pre w-full max-w-full",
+          preNode.props.className as string | undefined
+        ),
       })}
     </figure>
   )

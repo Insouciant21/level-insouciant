@@ -164,12 +164,21 @@ const signal = getArchiveSignal(article)
     if (!button) return
     try {
       await navigator.clipboard.writeText(button.dataset.copyCode ?? "")
-      button.textContent = "已复制"
+      button.dataset.copied = "true"
+      button.setAttribute("aria-label", "代码已复制")
+      const label = button.querySelector("[data-copy-label]")
+      if (label) label.textContent = "已复制"
     } catch {
-      button.textContent = "复制失败"
+      const label = button.querySelector("[data-copy-label]")
+      if (label) label.textContent = "复制失败"
     }
     setTimeout(() => {
-      if (button.isConnected) button.textContent = "复制"
+      if (button.isConnected) {
+        button.dataset.copied = "false"
+        button.setAttribute("aria-label", "复制代码")
+        const label = button.querySelector("[data-copy-label]")
+        if (label) label.textContent = "复制"
+      }
     }, 2000)
   })
 </script>
