@@ -1,6 +1,6 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 
-import { getArchiveHref } from "@/lib/content"
+import { getArchiveHref } from "@/lib/content-presentation"
 import { cn } from "@/lib/utils"
 import type { ArchiveItem } from "@/types/blog"
 

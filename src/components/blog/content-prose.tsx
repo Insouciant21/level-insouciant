@@ -1,5 +1,8 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
-import { MDXRemote } from "next-mdx-remote/rsc"
+import { compile, run } from "@mdx-js/mdx"
+import * as runtime from "react/jsx-runtime"
+import { createHash } from "node:crypto"
+import { renderToStaticMarkup } from "react-dom/server"
 import rehypeKatex from "rehype-katex"
 import rehypePrettyCode from "rehype-pretty-code"
 import remarkGfm from "remark-gfm"
@@ -7,12 +10,8 @@ import remarkMath from "remark-math"
 
 import { CodeBlockFigure } from "@/components/blog/code-block-figure"
 import { normalizeMdxSource } from "@/lib/mdx"
-import { createHeadingIdFactory } from "@/lib/toc"
+import { createHeadingIdFactory, extractTableOfContents } from "@/lib/toc"
 import { cn } from "@/lib/utils"
-
-type ContentProseProps = {
-  source: string
-}
 
 type HeadingLevel = 2 | 3
 
@@ -26,13 +25,18 @@ function getPlainText(children: ReactNode): string {
   }
 
   if (children && typeof children === "object" && "props" in children) {
-    return getPlainText((children as { props?: { children?: ReactNode } }).props?.children ?? "")
+    return getPlainText(
+      (children as { props?: { children?: ReactNode } }).props?.children ?? ""
+    )
   }
 
   return ""
 }
 
-function createHeadingRenderer(getId: (value: string) => string, level: HeadingLevel) {
+function createHeadingRenderer(
+  getId: (value: string) => string,
+  level: HeadingLevel
+) {
   const Tag = `h${level}` as const
 
   return function Heading(props: ComponentPropsWithoutRef<typeof Tag>) {
@@ -47,36 +51,58 @@ function createHeadingRenderer(getId: (value: string) => string, level: HeadingL
   }
 }
 
-function ContentProse({ source }: ContentProseProps) {
-  const getId = createHeadingIdFactory()
-  const normalizedSource = normalizeMdxSource(source)
-
-  return (
-    <div className="prose-block min-w-0">
-      <MDXRemote
-        source={normalizedSource}
-        options={{
-          mdxOptions: {
-            remarkPlugins: [
-              remarkGfm,
-              [remarkMath, { singleDollarTextMath: true }],
-            ],
-            rehypePlugins: [
-              [rehypeKatex],
-              [
-                rehypePrettyCode,
-                {
-                  theme: "github-light",
-                  keepBackground: false,
-                  defaultLang: {
-                    block: "text",
-                    inline: "text",
-                  },
-                },
-              ],
-            ],
+// Cache compiled trusted author content, never page HTML or authenticated results.
+const compiled = new Map<string, string>()
+let compiledBytes = 0
+const MAX_CACHE_BYTES = 16 * 1024 * 1024
+async function compileSource(source: string) {
+  const key = createHash("sha256")
+    .update("mdx3-gfm-math-pretty-v2\0" + source)
+    .digest("hex")
+  const cached = compiled.get(key)
+  if (cached !== undefined) return cached
+  const code = String(
+    await compile(normalizeMdxSource(source), {
+      outputFormat: "function-body",
+      remarkPlugins: [remarkGfm, [remarkMath, { singleDollarTextMath: true }]],
+      rehypePlugins: [
+        rehypeKatex,
+        [
+          rehypePrettyCode,
+          {
+            theme: "github-light",
+            keepBackground: false,
+            defaultLang: { block: "text", inline: "text" },
           },
-        }}
+        ],
+      ],
+    })
+  )
+  const bytes = Buffer.byteLength(code)
+  if (bytes <= MAX_CACHE_BYTES && !compiled.has(key)) {
+    while (compiled.size >= 64 || compiledBytes + bytes > MAX_CACHE_BYTES) {
+      const oldest = compiled.keys().next().value!
+      compiledBytes -= Buffer.byteLength(compiled.get(oldest)!)
+      compiled.delete(oldest)
+    }
+    compiled.set(key, code)
+    compiledBytes += bytes
+  }
+  return code
+}
+export async function renderMdx(source: string) {
+  const { default: Content } = await run(await compileSource(source), {
+    ...runtime,
+    baseUrl: import.meta.url,
+  })
+  const headings = extractTableOfContents(source)
+  const fallbackId = createHeadingIdFactory()
+  let headingIndex = 0
+  const getId = (text: string) =>
+    headings[headingIndex++]?.id ?? fallbackId(text)
+  return renderToStaticMarkup(
+    <div className="prose-block min-w-0">
+      <Content
         components={{
           figure: CodeBlockFigure,
           h2: createHeadingRenderer(getId, 2),
@@ -86,5 +112,3 @@ function ContentProse({ source }: ContentProseProps) {
     </div>
   )
 }
-
-export { ContentProse }

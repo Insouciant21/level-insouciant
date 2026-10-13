@@ -11,7 +11,7 @@ import {
   Trash2,
 } from "lucide-react"
 
-import { updateSiteSettingsAction } from "@/app/admin/settings-actions"
+import { updateSiteSettingsAction } from "@/lib/action-links"
 import { AdminSelect } from "@/components/admin/admin-select"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -363,7 +363,7 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
   }
 
   return (
-    <form
+    <form method="post"
       action={updateSiteSettingsAction}
       className="site-settings-form admin-surface grid gap-7 p-4 sm:p-6 lg:p-7"
     >

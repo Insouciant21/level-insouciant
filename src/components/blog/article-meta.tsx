@@ -1,4 +1,4 @@
-import { formatDisplayDate } from "@/lib/content"
+import { formatDisplayDate } from "@/lib/content-presentation"
 
 type ArticleMetaProps = {
   date: string

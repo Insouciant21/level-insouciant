@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode } from "react"
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import {
   BarChart3,
   ChevronRight,
@@ -17,9 +17,9 @@ import {
   UserRound,
   type LucideIcon,
 } from "lucide-react"
-import { usePathname } from "next/navigation"
+import { usePathname } from "@/lib/navigation"
 
-import { logoutAction } from "@/app/actions/auth"
+import { logoutAction } from "@/lib/action-links"
 import { Button } from "@/components/ui/button"
 import { PerfectScrollbar } from "@/components/ui/perfect-scrollbar"
 import {
@@ -233,7 +233,7 @@ function AdminMobileNav({
                   </Link>
                 </SheetClose>
                 <SheetClose asChild>
-                  <form action={logoutAction}>
+                  <form method="post" action={logoutAction}>
                     <input
                       type="hidden"
                       name="redirectTo"
@@ -371,7 +371,7 @@ function AdminShell({
                 <ExternalLink className="size-3.5" aria-hidden="true" />
                 查看站点
               </Link>
-              <form action={logoutAction}>
+              <form method="post" action={logoutAction}>
                 <input type="hidden" name="redirectTo" value="/admin/login" />
                 <Button
                   type="submit"

@@ -43,6 +43,7 @@ export function getAccountNotice(params: AccountPageSearchParams) {
 
 export function formatAccountCommentDate(value: string) {
   return new Intl.DateTimeFormat("zh-CN", {
+    timeZone: "Asia/Shanghai",
     year: "numeric",
     month: "long",
     day: "numeric",

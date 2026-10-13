@@ -1,0 +1,19 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Page from "@/views/tags-tag-index"
+import { load, generateMetadata } from "@/server/pages/tags-tag-index"
+const input = {
+  params: Promise.resolve(Astro.params as { tag: string }),
+  searchParams: Promise.resolve(Object.fromEntries(Astro.url.searchParams)),
+}
+const data = await load(input)
+const metadata = await generateMetadata(input)
+---
+
+<BaseLayout metadata={metadata} protectedAdmin={false}>
+  <Page
+    {...data}
+    location={Astro.url.pathname + Astro.url.search}
+    client:load
+  />
+</BaseLayout>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import { motion as Motion } from "motion/react"
 import { Cpu, DatabaseZap, Terminal } from "lucide-react"
 
@@ -135,7 +135,7 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
           <Cpu className="h-5 w-5 text-[#73766f]" />
         </header>
 
-        <form
+        <form method="post"
           onSubmit={(event) => {
             event.preventDefault()
 

@@ -1,6 +1,6 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 
-import { formatDisplayDate } from "@/lib/content"
+import { formatDisplayDate } from "@/lib/content-presentation"
 import type { ArticleSummary } from "@/types/blog"
 
 type TagAggregateSectionProps = {

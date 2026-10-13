@@ -1,7 +1,7 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
-import { formatDisplayDate } from "@/lib/content"
+import { formatDisplayDate } from "@/lib/content-presentation"
 import { cn } from "@/lib/utils"
 import type { ArticleSummary } from "@/types/blog"
 

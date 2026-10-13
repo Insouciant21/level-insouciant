@@ -2,7 +2,7 @@
 
 [简体中文](./README.md)
 
-Level Insouciant is a self-hosted small blog CMS built with Next.js and PostgreSQL. It combines a responsive public blog with an administration console, making it suitable both as a deployable personal blog and as a foundation for custom content-driven sites.
+Level Insouciant is a self-hosted small blog CMS built with Astro and PostgreSQL. It combines a responsive public blog with an administration console, making it suitable both as a deployable personal blog and as a foundation for custom content-driven sites.
 
 Live demo: [blog.moeblue.top](https://blog.moeblue.top)
 
@@ -19,11 +19,11 @@ Live demo: [blog.moeblue.top](https://blog.moeblue.top)
 
 ## Technology
 
-- Next.js 16, React 19, and TypeScript
+- Astro 7 SSR + Node adapter, React 19, and TypeScript
 - Tailwind CSS 4, Radix UI, and Motion
 - Tiptap, CodeMirror, and MDX
 - PostgreSQL and Prisma 7
-- Auth.js 5
+- Auth.js Core
 - Vitest, Testing Library, and ESLint
 - pnpm 11 and Docker Compose
 
@@ -46,7 +46,7 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
-The development server runs at <http://localhost:3000> by default. Set `NEXT_PUBLIC_SITE_URL` to the URL you actually use during development.
+The development server runs at <http://localhost:4321> by default. Set `SITE_URL` to the URL you actually use during development.
 
 ## Environment variables
 
@@ -58,7 +58,7 @@ The development server runs at <http://localhost:3000> by default. Set `NEXT_PUB
 | ------------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `DATABASE_URL`           | Yes      | PostgreSQL connection URL used by the application and, by default, migrations.                                             |
 | `DIRECT_URL`             | No       | Direct migration URL for providers where the runtime URL uses a connection pooler.                                         |
-| `NEXT_PUBLIC_SITE_URL`   | Yes      | Complete public site URL used by authentication callbacks, SEO, and build output. Rebuild the Web image after changing it. |
+| `SITE_URL`   | Yes      | Public site URL for SEO; restart after changing it. The legacy `NEXT_PUBLIC_SITE_URL` is also accepted. |
 | `AUTH_SECRET`            | Yes      | Random secret used by Auth.js to protect sessions and tokens.                                                              |
 | `ADMIN_EMAIL`            | Yes      | Bootstrap administrator email address.                                                                                     |
 | `ADMIN_PASSWORD`         | Yes      | Bootstrap administrator password. The administrator is created on the first login with these credentials.                  |
@@ -101,7 +101,7 @@ title: Example article
 desc: A short article summary
 date: 2026-08-05
 tags:
-  - Next.js
+  - Astro
 category: Engineering
 cover: ""
 draft: true
@@ -133,7 +133,11 @@ Article body.
 
 ```text
 src/
-├── app/          Next.js pages, layouts, Route Handlers, and metadata routes
+├── pages/        Astro SSR pages, API endpoints, and metadata routes
+├── layouts/      HTML document, SEO, and assets
+├── views/        React page views and interactive islands
+├── server/       Server loaders, operations, and HTTP handlers
+├── actions/      Astro Actions form entrypoints
 ├── components/   Blog, administration, and shared UI components
 ├── config/       Site-level constants
 ├── hooks/        Shared React Hooks

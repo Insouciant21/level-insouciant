@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Page from "@/views/articles-index"
+import { load, generateMetadata } from "@/server/pages/articles-index"
+const data = await load()
+const metadata = await generateMetadata()
+---
+
+<BaseLayout metadata={metadata} protectedAdmin={false}>
+  <Page
+    {...data}
+    location={Astro.url.pathname + Astro.url.search}
+    client:load
+  />
+</BaseLayout>

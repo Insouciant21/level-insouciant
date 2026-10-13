@@ -171,7 +171,7 @@ describe("AdminArticleEditorForm", () => {
     const { container } = render(
       <AdminArticleEditorForm
         mode="edit"
-        action={vi.fn()}
+        action="?action=test"
         values={values}
         statusLabel="已发布"
       />
@@ -198,7 +198,7 @@ describe("AdminArticleEditorForm", () => {
     const { container } = render(
       <AdminArticleEditorForm
         mode="edit"
-        action={vi.fn()}
+        action="?action=test"
         values={values}
         statusLabel="已发布"
       />
@@ -230,7 +230,7 @@ describe("AdminArticleEditorForm", () => {
     const { container } = render(
       <AdminArticleEditorForm
         mode="edit"
-        action={vi.fn()}
+        action="?action=test"
         values={values}
         statusLabel="已发布"
       />
@@ -255,7 +255,7 @@ describe("AdminArticleEditorForm", () => {
     const { container } = render(
       <AdminArticleEditorForm
         mode="edit"
-        action={vi.fn()}
+        action="?action=test"
         values={values}
         statusLabel="已发布"
       />
@@ -268,7 +268,7 @@ describe("AdminArticleEditorForm", () => {
     render(
       <AdminArticleEditorForm
         mode="edit"
-        action={vi.fn()}
+        action="?action=test"
         values={values}
         statusLabel="已发布"
       />
@@ -288,7 +288,7 @@ describe("AdminArticleEditorForm", () => {
     render(
       <AdminArticleEditorForm
         mode="create"
-        action={vi.fn()}
+        action="?action=test"
         values={values}
         statusLabel="新文章 / 未发布"
       />
@@ -327,7 +327,7 @@ describe("AdminArticleEditorForm", () => {
     render(
       <AdminArticleEditorForm
         mode="create"
-        action={vi.fn()}
+        action="?action=test"
         values={values}
         statusLabel="Draft"
       />
@@ -361,7 +361,7 @@ describe("AdminArticleEditorForm", () => {
     render(
       <AdminArticleEditorForm
         mode="create"
-        action={vi.fn()}
+        action="?action=test"
         values={{ ...values, cover: "" }}
         statusLabel="Draft"
       />
@@ -387,7 +387,7 @@ describe("AdminArticleEditorForm", () => {
   })
 
   it("blocks saving when the source contains an image without alt text", () => {
-    const action = vi.fn()
+    const action = "?action=test"
 
     render(
       <AdminArticleEditorForm
@@ -398,11 +398,11 @@ describe("AdminArticleEditorForm", () => {
       />
     )
 
-    fireEvent.submit(
+    const submitted = fireEvent.submit(
       screen.getByRole("button", { name: "保存草稿" }).closest("form") as HTMLFormElement
     )
 
-    expect(action).not.toHaveBeenCalled()
+    expect(submitted).toBe(false)
     expect(screen.getByRole("alert").textContent).toContain(
       "请为正文中的每张图片填写 alt 文本后再保存。"
     )

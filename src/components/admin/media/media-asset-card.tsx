@@ -101,7 +101,6 @@ function MediaAssetCard({
         aria-label={`查看媒体详情 ${asset.displayName}`}
       >
         <div className="aspect-[16/10] overflow-hidden bg-black/20">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={asset.publicUrl}
             alt={asset.displayName}

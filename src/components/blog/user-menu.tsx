@@ -1,9 +1,9 @@
 "use client"
 
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import { UserRound } from "lucide-react"
 
-import { logoutAction } from "@/app/actions/auth"
+import { logoutAction } from "@/lib/action-links"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -79,7 +79,7 @@ function UserMenu({ user }: UserMenuProps) {
                 注销
               </button>
             </DropdownMenuItem>
-            <form
+            <form method="post"
               id="site-user-logout"
               action={logoutAction}
               className="hidden"

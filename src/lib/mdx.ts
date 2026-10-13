@@ -1,3 +1,5 @@
+import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
 import remarkMdx from "remark-mdx"
 import remarkParse from "remark-parse"
 import remarkStringify from "remark-stringify"
@@ -46,6 +48,8 @@ function normalizeCodeBlockContent(content: string) {
 const mdxNormalizationProcessor = unified()
   .use(remarkParse)
   .use(remarkMdx)
+  .use(remarkGfm)
+  .use(remarkMath, { singleDollarTextMath: true })
   .use(() => (tree) => {
     visit(tree, "code", (node) => {
       const codeNode = node as {

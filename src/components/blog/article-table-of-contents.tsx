@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 
 import { PerfectScrollbar } from "@/components/ui/perfect-scrollbar"
 import { cn } from "@/lib/utils"

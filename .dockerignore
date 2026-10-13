@@ -11,3 +11,6 @@ docs/superpowers
 ui_sample
 *.log
 *.tsbuildinfo
+
+dist
+.astro

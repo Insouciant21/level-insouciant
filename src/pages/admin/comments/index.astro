@@ -1,0 +1,17 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Page from "@/views/admin-comments-index"
+import { load } from "@/server/pages/admin-comments-index"
+import { requireAdmin } from "@/lib/auth"
+await requireAdmin()
+const data = await load()
+const metadata = undefined
+---
+
+<BaseLayout metadata={metadata} protectedAdmin={true}>
+  <Page
+    {...data}
+    location={Astro.url.pathname + Astro.url.search}
+    client:load
+  />
+</BaseLayout>

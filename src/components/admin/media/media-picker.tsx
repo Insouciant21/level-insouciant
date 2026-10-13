@@ -102,7 +102,6 @@ function MediaPicker({
                   aria-label={`选择媒体 ${asset.displayName}`}
                 >
                   <div className="aspect-square bg-black/20">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={asset.publicUrl} alt="" className="size-full object-cover transition group-hover:scale-105" />
                   </div>
                   <span className="block truncate px-2 py-1.5 text-[0.68rem] text-[#c6d2c1]">{asset.displayName}</span>

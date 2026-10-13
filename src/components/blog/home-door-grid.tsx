@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import { motion as Motion, useReducedMotion } from "motion/react"
 
 import { getArchiveSignal } from "@/lib/archive-presentation"

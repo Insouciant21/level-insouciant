@@ -1,4 +1,4 @@
-import { cache } from "react"
+import { cache } from "@/server/request-context"
 
 import { getManagedArticles } from "@/lib/content-admin"
 import { prisma } from "@/lib/prisma"

@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
-import { cache } from "react"
+import { redirect } from "@/server/request-context"
+import { cache } from "@/server/request-context"
 
 import { auth } from "@/auth"
 import { getUserDisplayName as getCredentialsUserDisplayName } from "@/lib/auth-credentials"
@@ -13,7 +13,7 @@ export const getCurrentUser = cache(async function getCurrentUser() {
   }
 
   if (!process.env.DATABASE_URL) {
-    return session.user
+    return null
   }
 
   const freshUser = await prisma.user.findUnique({
@@ -30,7 +30,7 @@ export const getCurrentUser = cache(async function getCurrentUser() {
   })
 
   if (!freshUser) {
-    return session.user
+    return null
   }
 
   return {

@@ -1,4 +1,4 @@
-import { cache } from "react"
+import { cache } from "@/server/request-context"
 
 import { isAuthStorageEnabled } from "@/lib/auth-credentials"
 import { prisma } from "@/lib/prisma"
@@ -23,7 +23,13 @@ export function parseStoredSiteConfig(value: unknown): SiteConfig {
 
 export const getSiteConfig = cache(async (): Promise<SiteConfig> => {
   if (!isAuthStorageEnabled()) {
-    return defaultSiteConfig
+    return {
+      ...defaultSiteConfig,
+      url:
+        process.env.SITE_URL ??
+        process.env.NEXT_PUBLIC_SITE_URL ??
+        defaultSiteConfig.url,
+    }
   }
 
   try {
@@ -32,7 +38,12 @@ export const getSiteConfig = cache(async (): Promise<SiteConfig> => {
       select: { data: true },
     })
 
-    return parseStoredSiteConfig(stored?.data)
+    const config = parseStoredSiteConfig(stored?.data)
+    return {
+      ...config,
+      url:
+        process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? config.url,
+    }
   } catch {
     return defaultSiteConfig
   }

@@ -1,28 +1,8 @@
 import { Prisma } from "@prisma/client"
 import type { Article as ArticleRecord } from "@prisma/client"
 
-import type { ArchiveItem, Article, ArticleSummary } from "@/types/blog"
+import type { Article, ArticleSummary } from "@/types/blog"
 import { prisma } from "@/lib/prisma"
-
-function slugifySegment(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-}
-
-function decodeRouteSegment(value: string) {
-  try {
-    return decodeURIComponent(value)
-  } catch {
-    return value
-  }
-}
-
-export function toArchiveSlug(value: string) {
-  return slugifySegment(decodeRouteSegment(value))
-}
 
 function toArticleSummary(record: ArticleRecord): ArticleSummary {
   return {
@@ -261,14 +241,6 @@ export async function searchArticles(query: string) {
   )
 }
 
-export function formatDisplayDate(date: string) {
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(date))
-}
 
-export function getArchiveHref(type: "tags" | "categories", item: Pick<ArchiveItem, "slug">) {
-  return `/${type}/${item.slug}`
-}
+export { formatDisplayDate, getArchiveHref, toArchiveSlug } from "./content-presentation"
+import { toArchiveSlug } from "./content-presentation"

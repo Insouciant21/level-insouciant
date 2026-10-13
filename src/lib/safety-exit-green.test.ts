@@ -24,7 +24,7 @@ const source = collectSourceFiles(sourceRoot)
   .map((filePath) => readFileSync(filePath, "utf8"))
   .join("\n")
 
-const globals = readFileSync(path.join(sourceRoot, "app/globals.css"), "utf8")
+const globals = readFileSync(path.join(sourceRoot, "styles/globals.css"), "utf8")
 const homeHero = readFileSync(
   path.join(sourceRoot, "components/blog/home-hero.tsx"),
   "utf8"
@@ -33,7 +33,7 @@ const homeHero = readFileSync(
 describe("safety exit green palette", () => {
   it("defines the approved shared safety-exit tokens", () => {
     const globals = readFileSync(
-      path.join(sourceRoot, "app/globals.css"),
+      path.join(sourceRoot, "styles/globals.css"),
       "utf8"
     )
 

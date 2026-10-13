@@ -1,11 +1,11 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import { ExternalLink, KeyRound, Save, Trash2 } from "lucide-react"
 
 import {
   changePasswordAction,
   deleteOwnCommentAction,
   updateProfileAction,
-} from "@/app/account/actions"
+} from "@/lib/action-links"
 import { PageShell } from "@/components/blog/page-shell"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -93,7 +93,7 @@ export function UserAccountView({
                 </h2>
               </div>
 
-              <form action={updateProfileAction} className="grid gap-4">
+              <form method="post" action={updateProfileAction} className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="profile-name">昵称</Label>
                   <Input
@@ -147,7 +147,7 @@ export function UserAccountView({
                 </h2>
               </div>
 
-              <form action={changePasswordAction} className="grid gap-4">
+              <form method="post" action={changePasswordAction} className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="current-password">原密码</Label>
                   <Input
@@ -252,7 +252,7 @@ export function UserAccountView({
                       {comment.content}
                     </p>
 
-                    <form action={deleteOwnCommentAction} className="mt-4">
+                    <form method="post" action={deleteOwnCommentAction} className="mt-4">
                       <input
                         type="hidden"
                         name="commentId"
@@ -366,7 +366,7 @@ export function AdminAccountView({
               </h2>
             </div>
 
-            <form action={updateProfileAction} className="grid gap-4">
+            <form method="post" action={updateProfileAction} className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="admin-profile-name" className="text-[#dce6d8]">
                   昵称
@@ -433,7 +433,7 @@ export function AdminAccountView({
               </h2>
             </div>
 
-            <form action={changePasswordAction} className="grid gap-4">
+            <form method="post" action={changePasswordAction} className="grid gap-4">
               <div className="grid gap-2">
                 <Label
                   htmlFor="admin-current-password"
@@ -564,7 +564,7 @@ export function AdminAccountView({
                         </Link>
                       </Button>
 
-                      <form action={deleteOwnCommentAction}>
+                      <form method="post" action={deleteOwnCommentAction}>
                         <input
                           type="hidden"
                           name="commentId"

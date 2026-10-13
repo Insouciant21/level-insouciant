@@ -2,7 +2,7 @@
 
 [English](./README.en.md)
 
-Level Insouciant 是一个基于 Next.js 和 PostgreSQL 的自托管小型博客 CMS。它同时提供面向读者的响应式博客和面向维护者的管理后台，适合作为个人博客直接部署，也可以作为内容型网站的二次开发基础。
+Level Insouciant 是一个基于 Astro 和 PostgreSQL 的自托管小型博客 CMS。它同时提供面向读者的响应式博客和面向维护者的管理后台，适合作为个人博客直接部署，也可以作为内容型网站的二次开发基础。
 
 在线演示：[blog.moeblue.top](https://blog.moeblue.top)
 
@@ -19,11 +19,11 @@ Level Insouciant 是一个基于 Next.js 和 PostgreSQL 的自托管小型博客
 
 ## 技术栈
 
-- Next.js 16、React 19、TypeScript
+- Astro 7 SSR + Node adapter、React 19、TypeScript
 - Tailwind CSS 4、Radix UI、Motion
 - Tiptap、CodeMirror、MDX
 - PostgreSQL、Prisma 7
-- Auth.js 5
+- Auth.js Core
 - Vitest、Testing Library、ESLint
 - pnpm 11、Docker Compose
 
@@ -46,7 +46,7 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
-开发服务器默认运行在 <http://localhost:3000>。本地开发时请将 `NEXT_PUBLIC_SITE_URL` 设置为实际访问地址。
+开发服务器默认运行在 <http://localhost:4321>。本地开发时请将 `SITE_URL` 设置为实际访问地址。
 
 ## 环境变量
 
@@ -58,7 +58,7 @@ pnpm dev
 | ------------------------ | ---- | --------------------------------------------------------------------------------- |
 | `DATABASE_URL`           | 是   | PostgreSQL 连接地址，应用运行和默认迁移连接使用。                                 |
 | `DIRECT_URL`             | 否   | 迁移专用直连地址，适用于运行时使用连接池地址的数据库服务。                        |
-| `NEXT_PUBLIC_SITE_URL`   | 是   | 对外访问的完整站点地址，用于认证回调、SEO 和构建输出。修改后需重新构建 Web 镜像。 |
+| `SITE_URL`   | 是   | 对外访问的完整站点地址，用于 SEO；修改后重启服务。兼容旧的 `NEXT_PUBLIC_SITE_URL`。 |
 | `AUTH_SECRET`            | 是   | Auth.js 用于保护会话和令牌的随机密钥。                                            |
 | `ADMIN_EMAIL`            | 是   | 初始管理员邮箱。                                                                  |
 | `ADMIN_PASSWORD`         | 是   | 初始管理员密码。首次使用这组凭据登录时创建管理员。                                |
@@ -101,7 +101,7 @@ title: 示例文章
 desc: 文章摘要
 date: 2026-08-05
 tags:
-  - Next.js
+  - Astro
 category: 技术
 cover: ""
 draft: true
@@ -133,7 +133,11 @@ slug: example-post
 
 ```text
 src/
-├── app/          Next.js 页面、布局、Route Handlers 和元数据路由
+├── pages/        Astro SSR 页面、API 和元数据路由
+├── layouts/      HTML 布局、SEO 与静态资源
+├── views/        React 页面视图及交互岛
+├── server/       服务端加载器、业务操作和 HTTP 处理
+├── actions/      Astro Actions 表单入口
 ├── components/   博客、后台和通用 UI 组件
 ├── config/       站点级常量
 ├── hooks/        React Hooks
@@ -154,3 +158,13 @@ content/          本地文章导入源文件（默认不纳入 Git）
 - 更新生产环境前请同时备份 PostgreSQL 和对象存储。
 - `docker compose up --build -d` 会先运行 `prisma migrate deploy`，迁移失败时 Web 服务不会启动。
 - 如果更换数据库容器名称、网络或数据库名，请同步调整 `compose.yaml` 中的网络与覆盖变量。
+
+## Astro 运行架构
+
+Node adapter 以 SSR 模式运行，入口为 `dist/server/entry.mjs`。文章正文在服务器编译 MDX，表格、公式和代码高亮直接输出 HTML；目录、阅读进度和评论使用独立 React 岛。编辑器、媒体库及账户页面保留完整 React 交互，各自提供 Query/Message 上下文。
+
+公开页面使用 Astro ClientRouter；后台使用完整页面导航。文章、用户、修订记录与 API URL 保持不变。登录使用 Auth.js Core 和新的会话 Cookie，升级后需要重新登录一次。数据库读缓存仅在单次请求内有效，页面 HTML 不缓存；可信作者的 MDX 编译结果采用有容量限制的内存缓存。
+
+反向代理需传递真实 Host 和 HTTPS 协议。`astro.config.mjs` 的 `security.allowedDomains` 应包含部署域名，以允许可信代理的转发头。写请求要求匹配的 `Origin`，图片上传上限仍为 50 MB。健康检查为 `/api/health`。
+
+发布与回滚步骤见 [部署说明](docs/astro-deployment.md)。

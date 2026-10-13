@@ -1,0 +1,175 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import { ArrowLeft } from "lucide-react"
+import { ArticleCard } from "@/components/blog/article-card"
+import { ArticlePaginationNav } from "@/components/blog/article-pagination-nav"
+import { ArticleReadingSurface } from "@/components/blog/article-reading-surface"
+import { ArticleTableOfContents } from "@/components/blog/article-table-of-contents"
+import ArticleEngagementIsland from "@/components/blog/article-engagement-island"
+import { MotionReveal } from "@/components/motion/page-transition"
+import { TagList } from "@/components/blog/tag-list"
+import { renderMdx } from "@/components/blog/content-prose"
+import { getArchiveSignal } from "@/lib/archive-presentation"
+import {
+  getArticleBySlug,
+  getArticlePagination,
+  getRelatedArticles,
+  formatDisplayDate,
+} from "@/lib/content"
+import { createArticleMetadata, createArticleJsonLd } from "@/lib/seo"
+import { getSiteConfig } from "@/lib/site-config"
+import { extractTableOfContents } from "@/lib/toc"
+import { notFound } from "@/server/request-context"
+const articleDocumentPanelClass = "public-summary-panel-document"
+const articleHeaderBadgeClass =
+  "public-summary-chip border-[#73766f]/55 bg-[#d9d1ad]/58 px-3 py-1.5 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
+
+const { slug } = Astro.params
+if (!slug) notFound()
+const [article, siteConfig] = await Promise.all([
+  getArticleBySlug(slug),
+  getSiteConfig(),
+])
+
+if (!article) {
+  notFound()
+}
+
+const [relatedArticles, pagination] = await Promise.all([
+  getRelatedArticles(article),
+  getArticlePagination(article.slug),
+])
+const tocItems = extractTableOfContents(article.content)
+const signal = getArchiveSignal(article)
+---
+
+<BaseLayout metadata={createArticleMetadata(article, siteConfig)}>
+  <main class="relative z-10 mx-auto flex w-full max-w-[88rem] flex-1 flex-col gap-12 px-5 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+    <script
+      type="application/ld+json"
+      set:html={createArticleJsonLd(article, siteConfig)}
+    />
+    <div class="pointer-events-none fixed inset-0 opacity-[0.02]">
+      <div class="h-full w-full bg-[radial-gradient(ellipse_at_top,#ffbf00_0%,transparent_60%)]" />
+    </div>
+
+    <div class="mx-auto grid w-full max-w-[1200px] gap-8 md:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
+      <ArticleReadingSurface client:load>
+        <MotionReveal client:load variant="left">
+          <div
+            class={`${articleDocumentPanelClass} mx-auto w-full max-w-4xl px-4 py-6 sm:px-8 sm:py-8 md:px-16 md:py-12`}
+          >
+            <a
+              href="/articles"
+              class="inline-flex items-center gap-2 text-sm font-semibold tracking-[0.22em] text-muted-foreground uppercase transition duration-500 hover:text-foreground"
+            >
+              <ArrowLeft className="size-4" />
+              返回档案索引
+            </a>
+
+            <header class="mt-6 border-b border-[#181b17]/72 pb-8 shadow-[0_1px_0_rgba(255,252,225,0.14)]">
+              <div class="flex flex-wrap items-center justify-between gap-4 text-[0.72rem] font-bold tracking-[0.28em] text-muted-foreground uppercase">
+                <span>M.E.G. Database // Archive File</span>
+                <span>{formatDisplayDate(article.date)}</span>
+              </div>
+
+              <h1 class="mt-5 font-serif text-4xl leading-[0.95] font-bold tracking-tight text-balance break-words text-foreground sm:text-5xl md:text-7xl">
+                {article.title}
+              </h1>
+              <p class="mt-5 max-w-3xl text-base leading-8 text-foreground/78 md:text-lg">
+                {article.desc}
+              </p>
+
+              <div class="mt-6 flex flex-wrap gap-3 text-[0.72rem] font-semibold tracking-[0.26em] uppercase">
+                <span class="border border-[#181b17] bg-[#181b17] px-3 py-1.5 text-[#d9d1ad]">
+                  Code: {signal.designation}
+                </span>
+                <span class={articleHeaderBadgeClass}>
+                  Category: {article.category}
+                </span>
+              </div>
+
+              <div class="mt-6">
+                <TagList tags={article.tags} />
+              </div>
+            </header>
+
+            {article.cover ? (
+              <div class="group relative mt-8 overflow-hidden rounded-md border border-[#73766f]/38 bg-[#c6bd99] shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_18px_42px_-34px_rgba(0,0,0,0.34)] grayscale-[0.24] sepia-[0.22]">
+                {/* Object-storage domains are runtime-configured, so this URL cannot be statically allowlisted. */}
+                <img
+                  src={article.cover}
+                  alt={article.title}
+                  class="h-[14rem] w-full object-cover opacity-85 mix-blend-multiply transition duration-[3000ms] group-hover:scale-105 group-hover:opacity-100 sm:h-[18rem] md:h-[22rem]"
+                />
+              </div>
+            ) : null}
+
+            <ArticleTableOfContents
+              client:load
+              items={tocItems}
+              className="mt-8 xl:hidden"
+            />
+
+            <div class="mt-10">
+              <Fragment set:html={await renderMdx(article.content)} />
+            </div>
+          </div>
+        </MotionReveal>
+      </ArticleReadingSurface>
+
+      <ArticleTableOfContents
+        client:load
+        items={tocItems}
+        variant="desktop-floating"
+      />
+    </div>
+
+    <MotionReveal client:load delay={0.2}>
+      <ArticleEngagementIsland
+        slug={article.slug}
+        location={Astro.url.pathname}
+        client:visible
+      />
+    </MotionReveal>
+
+    <MotionReveal client:load delay={0.25}>
+      <ArticlePaginationNav
+        previous={pagination?.previous ?? null}
+        next={pagination?.next ?? null}
+      />
+    </MotionReveal>
+
+    {relatedArticles.length > 0 ? (
+      <MotionReveal client:load delay={0.3}>
+        <section class="grid gap-5">
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h2 class="text-xl font-semibold tracking-tight">相关文章</h2>
+            <p class="text-sm text-muted-foreground">根据标签与分类自动关联</p>
+          </div>
+          {relatedArticles.map((entry) => (
+            <ArticleCard article={entry} />
+          ))}
+        </section>
+      </MotionReveal>
+    ) : null}
+  </main>
+</BaseLayout>
+<script>
+  document.addEventListener("click", async (event) => {
+    const button =
+      event.target instanceof Element
+        ? event.target.closest<HTMLButtonElement>("[data-copy-code]")
+        : null
+    if (!button) return
+    try {
+      await navigator.clipboard.writeText(button.dataset.copyCode ?? "")
+      button.textContent = "已复制"
+    } catch {
+      button.textContent = "复制失败"
+    }
+    setTimeout(() => {
+      if (button.isConnected) button.textContent = "复制"
+    }, 2000)
+  })
+</script>

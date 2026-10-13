@@ -1,0 +1,86 @@
+import { removeTagAction, renameTagAction } from "@/lib/action-links"
+import { ArrowRightLeft, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+
+import type { load } from "@/server/pages/admin-tags-index"
+import { IslandProvider } from "@/components/providers/island-provider"
+function View({ tags }: Awaited<ReturnType<typeof load>>) {
+  return (
+    <section className="admin-surface p-4 sm:p-6">
+      <div className="flex flex-col gap-2">
+        <p className="admin-kicker-accent">Tag Operations</p>
+        <h1 className="admin-title">标签管理</h1>
+      </div>
+
+      <div className="mt-6 grid gap-4">
+        {tags.length > 0 ? (
+          tags.map((tag) => (
+            <Card
+              key={tag.name}
+              size="sm"
+              className="admin-surface-muted px-4 py-4 text-[#edf3e9] sm:px-5 sm:py-5"
+            >
+              <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h2 className="text-lg font-semibold tracking-tight text-[#edf3e9]">
+                      {tag.name}
+                    </h2>
+                    <span className="admin-status-pill admin-status-muted">
+                      {tag.count} 篇文章
+                    </span>
+                  </div>
+                  <p className="admin-copy mt-3">
+                    关联文章：{tag.articleSlugs.join("、")}
+                  </p>
+                </div>
+
+                <div className="grid gap-3 xl:min-w-[24rem]">
+                  <form
+                    method="post"
+                    action={renameTagAction}
+                    className="flex flex-col gap-3 sm:flex-row"
+                  >
+                    <input type="hidden" name="sourceTag" value={tag.name} />
+                    <Input
+                      type="text"
+                      name="targetTag"
+                      required
+                      placeholder={`将 ${tag.name} 改成...`}
+                      className="admin-input min-w-0 flex-1"
+                    />
+                    <Button type="submit" variant="outline" size="sm">
+                      <ArrowRightLeft className="size-3.5" aria-hidden="true" />
+                      重命名
+                    </Button>
+                  </form>
+
+                  <form method="post" action={removeTagAction}>
+                    <input type="hidden" name="sourceTag" value={tag.name} />
+                    <Button type="submit" variant="destructive" size="sm">
+                      <Trash2 className="size-3.5" aria-hidden="true" />
+                      从所有文章中移除
+                    </Button>
+                  </form>
+                </div>
+              </div>
+            </Card>
+          ))
+        ) : (
+          <div className="admin-empty">当前还没有可管理的标签。</div>
+        )}
+      </div>
+    </section>
+  )
+}
+export default function Page(
+  props: Awaited<ReturnType<typeof load>> & { location: string }
+) {
+  return (
+    <IslandProvider location={props.location}>
+      <View {...props} />
+    </IslandProvider>
+  )
+}

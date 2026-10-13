@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { SiteSettingsForm } from "@/components/admin/site-settings-form"
 import { defaultSiteConfig } from "@/lib/site"
 
-vi.mock("@/app/admin/settings-actions", () => ({
+vi.mock("@/lib/action-links", () => ({
   updateSiteSettingsAction: vi.fn(),
 }))
 

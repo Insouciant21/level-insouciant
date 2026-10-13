@@ -4,7 +4,8 @@ import { cleanup, render, screen } from "@testing-library/react"
 import type { ComponentProps, ReactNode } from "react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-vi.mock("next/link", () => ({
+vi.mock("@/lib/navigation", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/lib/navigation")>(),
   default: ({ children, ...props }: ComponentProps<"a">) => (
     <a {...props}>{children}</a>
   ),

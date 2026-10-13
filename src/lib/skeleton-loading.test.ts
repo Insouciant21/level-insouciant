@@ -1,12 +1,9 @@
-import { existsSync } from "node:fs"
-import path from "node:path"
-
+import { readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
-
-describe("loading route selectors", () => {
-  it("does not provide a skeleton loading route for the about page", () => {
-    expect(
-      existsSync(path.join(process.cwd(), "src/app/about/loading.tsx"))
-    ).toBe(false)
+describe("Astro document", () => {
+  it("keeps the page slot outside client-only rendering", () => {
+    const layout = readFileSync(new URL("../layouts/BaseLayout.astro", import.meta.url), "utf8")
+    expect(layout).toContain("<slot />")
+    expect(layout).not.toContain("client:only")
   })
 })

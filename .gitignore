@@ -44,3 +44,7 @@ content/
 docs/superpowers/
 .superpowers/
 .worktrees/
+
+# Astro
+/.astro/
+/dist/

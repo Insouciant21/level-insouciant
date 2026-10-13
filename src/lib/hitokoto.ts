@@ -27,7 +27,6 @@ function createHitokotoUrl(slot: number) {
 async function fetchHitokoto(slot: number) {
   try {
     const response = await fetch(createHitokotoUrl(slot), {
-      next: { revalidate: 3600 },
       signal: AbortSignal.timeout(4000),
     })
 
@@ -45,7 +44,7 @@ async function fetchHitokoto(slot: number) {
   }
 }
 
-async function getHitokotoQuotes(count = 3) {
+async function fetchHitokotoQuotes(count: number) {
   const quotes: Array<string | null> = []
 
   for (let slot = 0; slot < count; slot += 1) {
@@ -61,4 +60,14 @@ async function getHitokotoQuotes(count = 3) {
   )
 }
 
-export { getHitokotoQuotes }
+let cached: { expires: number; quotes: Promise<string[]> } | undefined
+export async function getHitokotoQuotes(count = 3) {
+  if (count !== 3) return fetchHitokotoQuotes(count)
+  if (!cached || cached.expires <= Date.now()) {
+    cached = {
+      expires: Date.now() + 3_600_000,
+      quotes: fetchHitokotoQuotes(count),
+    }
+  }
+  return cached.quotes
+}

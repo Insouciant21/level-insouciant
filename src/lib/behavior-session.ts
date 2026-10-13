@@ -1,12 +1,11 @@
 import { randomUUID } from "node:crypto"
 
-import type { NextResponse } from "next/server"
-import { cookies } from "next/headers"
+import { requestContext } from "@/server/request-context"
 
 import { BEHAVIOR_VISITOR_COOKIE } from "@/lib/behavior"
 
 export async function getOrCreateBehaviorViewerId() {
-  const cookieStore = await cookies()
+  const cookieStore = requestContext().context.cookies
   const existing = cookieStore.get(BEHAVIOR_VISITOR_COOKIE)?.value
 
   if (existing) {
@@ -23,7 +22,7 @@ export async function getOrCreateBehaviorViewerId() {
 }
 
 export function attachBehaviorViewerCookie(
-  response: NextResponse,
+  response: Response,
   input: {
     viewerId: string
     shouldSet: boolean
@@ -33,7 +32,7 @@ export function attachBehaviorViewerCookie(
     return response
   }
 
-  response.cookies.set(BEHAVIOR_VISITOR_COOKIE, input.viewerId, {
+  requestContext().context.cookies.set(BEHAVIOR_VISITOR_COOKIE, input.viewerId, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

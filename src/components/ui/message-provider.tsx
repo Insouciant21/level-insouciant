@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { CheckCircle2, Info, TriangleAlert, X, XCircle } from "lucide-react"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname, useSearchParams } from "@/lib/navigation"
 import { Toast } from "radix-ui"
 
 import { cn } from "@/lib/utils"

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import { Eye, Heart, MessageSquare, SendHorizonal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -59,6 +59,7 @@ type CommentCardProps = {
 
 function formatCommentDate(value: string) {
   return new Intl.DateTimeFormat("zh-CN", {
+    timeZone: "Asia/Shanghai",
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -312,6 +313,7 @@ function CommentCard({
 
       {isReplying ? (
         <form
+          method="post"
           className="mt-4 grid gap-4 border-t border-border/55 pt-4"
           onSubmit={(event) => {
             event.preventDefault()
@@ -704,7 +706,11 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               </p>
             </div>
 
-            <form className="mt-5 grid gap-4" onSubmit={handleSubmitComment}>
+            <form
+              method="post"
+              className="mt-5 grid gap-4"
+              onSubmit={handleSubmitComment}
+            >
               <div className="grid gap-2">
                 <Label htmlFor="article-comment" className="text-foreground">
                   评论内容

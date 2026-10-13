@@ -1,0 +1,7 @@
+---
+import { getCurrentAdmin } from "@/lib/auth"
+return Astro.redirect(
+  (await getCurrentAdmin()) ? "/admin/dashboard" : "/admin/login",
+  302
+)
+---

@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata } from "@/types/seo"
 
 import type { Article } from "@/types/blog"
 import { defaultSiteConfig, type SiteConfig } from "@/lib/site"

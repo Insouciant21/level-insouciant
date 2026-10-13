@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 
 import { ArticleMeta } from "@/components/blog/article-meta"
 import { CategoryBadge } from "@/components/blog/category-badge"

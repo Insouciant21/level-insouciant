@@ -1,0 +1,21 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Page from "@/views/admin-articles-new-index"
+import { load, generateMetadata } from "@/server/pages/admin-articles-new-index"
+import { requireAdmin } from "@/lib/auth"
+await requireAdmin()
+const input = {
+  params: Promise.resolve(Astro.params),
+  searchParams: Promise.resolve(Object.fromEntries(Astro.url.searchParams)),
+}
+const data = await load(input)
+const metadata = await generateMetadata()
+---
+
+<BaseLayout metadata={metadata} protectedAdmin={true}>
+  <Page
+    {...data}
+    location={Astro.url.pathname + Astro.url.search}
+    client:load
+  />
+</BaseLayout>

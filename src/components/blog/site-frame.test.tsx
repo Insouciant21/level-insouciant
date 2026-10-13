@@ -1,30 +1,9 @@
-// @vitest-environment jsdom
-
-import { cleanup, render } from "@testing-library/react"
-import { afterEach, describe, expect, it, vi } from "vitest"
-
-vi.mock("next/navigation", () => ({
-  usePathname: () => "/articles/hello-insous",
-}))
-
-import { SiteFrame } from "@/components/blog/site-frame"
-
-afterEach(cleanup)
-
-describe("SiteFrame", () => {
-  it("clips horizontal decoration without becoming the sticky scroll container", () => {
-    const { container } = render(
-      <SiteFrame
-        header={<header>Header</header>}
-        footer={<footer>Footer</footer>}
-      >
-        <main>Article</main>
-      </SiteFrame>
-    )
-
-    const frame = container.firstElementChild as HTMLElement | null
-
-    expect(frame?.className).toContain("overflow-x-clip")
-    expect(frame?.className).not.toContain("overflow-x-hidden")
+import { readFileSync } from "node:fs"
+import { describe, expect, it } from "vitest"
+describe("Astro site frame", () => {
+  it("clips decoration without becoming the sticky scroll container", () => {
+    const layout = readFileSync(new URL("../../layouts/BaseLayout.astro", import.meta.url), "utf8")
+    expect(layout).toContain("site-console relative overflow-x-clip")
+    expect(layout).not.toContain("overflow-x-hidden")
   })
 })

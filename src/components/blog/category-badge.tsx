@@ -1,7 +1,7 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 
 import { Badge } from "@/components/ui/badge"
-import { toArchiveSlug } from "@/lib/content"
+import { toArchiveSlug } from "@/lib/content-presentation"
 
 type CategoryBadgeProps = {
   category: string

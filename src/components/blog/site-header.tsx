@@ -1,16 +1,14 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 
 import { UserMenu } from "@/components/blog/user-menu"
 import { MobileNav } from "@/components/blog/mobile-nav"
-import { getCurrentUser } from "@/lib/auth"
-import { getSiteConfig } from "@/lib/site-config"
+import type { getCurrentUser } from "@/lib/auth"
+import type { getSiteConfig } from "@/lib/site-config"
 
-async function SiteHeader() {
-  const [user, siteConfig] = await Promise.all([
-    getCurrentUser(),
-    getSiteConfig(),
-  ])
-
+function SiteHeader({ user, siteConfig }: {
+  user: Awaited<ReturnType<typeof getCurrentUser>>
+  siteConfig: Awaited<ReturnType<typeof getSiteConfig>>
+}) {
   return (
     <header className="site-header-shell sticky top-0 z-40 overflow-visible border-b backdrop-blur-sm">
       <div className="mx-auto grid w-full max-w-[88rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-5 px-5 py-4 sm:px-6 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:px-8">

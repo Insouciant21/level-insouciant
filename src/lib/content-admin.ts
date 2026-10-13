@@ -1,5 +1,5 @@
 import type { Prisma, User } from "@prisma/client"
-import { cache } from "react"
+import { cache } from "@/server/request-context"
 
 import type { ArticleSummary } from "@/types/blog"
 import {

@@ -84,7 +84,7 @@ const defaultEmail = "insouciant21@outlook.com"
 export const defaultSiteConfig: SiteConfig = {
   name: "Level Insouciant",
   description: "一间过于安静的房间",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://level-insouciant.local",
+  url: "https://blog.moeblue.top",
   author: "Insouciant21",
   email: defaultEmail,
   locale: "zh_CN",

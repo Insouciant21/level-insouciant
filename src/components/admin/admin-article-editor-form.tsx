@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import {
   ExternalLink,
   History,
@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils"
 
 type AdminArticleEditorFormProps = {
   mode: "create" | "edit"
-  action: (formData: FormData) => void | Promise<void>
+  action: string
   values: {
     slug: string
     title: string
@@ -167,7 +167,7 @@ function AdminArticleEditorForm({
         {message ? <p className="admin-copy">{message}</p> : null}
       </div>
 
-      <form action={action} onSubmit={handleSubmit}>
+      <form method="post" action={action} onSubmit={handleSubmit}>
         <section
           data-editor-section="metadata"
           className="border-b border-white/10 py-6"
@@ -356,7 +356,6 @@ function AdminArticleEditorForm({
                 ) : null}
                 {draft.cover ? (
                   <div className="mt-1 overflow-hidden border border-white/10 bg-[#10130f]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={draft.cover}
                       alt="当前文章封面"

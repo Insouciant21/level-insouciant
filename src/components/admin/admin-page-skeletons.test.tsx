@@ -20,7 +20,7 @@ import {
   AdminTagsPageSkeleton,
 } from "@/components/admin/admin-page-skeletons"
 
-vi.mock("@/app/account/actions", () => ({
+vi.mock("@/lib/action-links", () => ({
   changePasswordAction: vi.fn(),
   deleteOwnCommentAction: vi.fn(),
   updateProfileAction: vi.fn(),

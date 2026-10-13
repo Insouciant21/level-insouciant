@@ -65,7 +65,6 @@ function MediaAssetDetailsPanel({
       {details ? (
         <div className="mt-5 grid gap-4">
           <div className="overflow-hidden border border-white/10 bg-black/20">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={details.publicUrl} alt={details.displayName} className="max-h-64 w-full object-contain" />
           </div>
           <div>

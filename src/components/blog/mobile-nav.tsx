@@ -1,9 +1,9 @@
 "use client"
 
-import Link from "next/link"
+import Link from "@/lib/navigation"
 import { ArrowUpRight, Menu, UserRound } from "lucide-react"
 
-import { logoutAction } from "@/app/actions/auth"
+import { logoutAction } from "@/lib/action-links"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -102,7 +102,7 @@ function MobileNav({ user, config }: MobileNavProps) {
                     {user.role === "ADMIN" ? "进入后台" : "进入资料页"}
                   </Link>
                 </SheetClose>
-                <form action={logoutAction}>
+                <form method="post" action={logoutAction}>
                   <input type="hidden" name="redirectTo" value="/" />
                   <Button
                     type="submit"

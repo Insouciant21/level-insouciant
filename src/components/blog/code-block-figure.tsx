@@ -1,6 +1,6 @@
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react"
 
-import { CodeBlockCopyButton } from "@/components/blog/code-block-copy-button"
+
 import { cn } from "@/lib/utils"
 
 type CodeBlockFigureProps = {
@@ -83,7 +83,7 @@ function CodeBlockFigure({ children }: CodeBlockFigureProps) {
             {label}
           </p>
         </div>
-        <CodeBlockCopyButton code={code} />
+        <button type="button" data-copy-code={code} aria-label="复制代码" className="code-block-copy-button h-8 rounded-full border px-3 text-sm">复制</button>
       </div>
 
       {cloneElement(preNode, {

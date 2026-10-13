@@ -1,0 +1,11 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import NotFound from "@/views/not-found"
+Astro.response.status = 404
+---
+
+<BaseLayout
+  metadata={{ title: "文章不存在", robots: { index: false, follow: true } }}
+>
+  <NotFound client:load />
+</BaseLayout>

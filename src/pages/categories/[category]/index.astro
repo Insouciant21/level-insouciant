@@ -1,0 +1,22 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import Page from "@/views/categories-category-index"
+import {
+  load,
+  generateMetadata,
+} from "@/server/pages/categories-category-index"
+const input = {
+  params: Promise.resolve(Astro.params as { category: string }),
+  searchParams: Promise.resolve(Object.fromEntries(Astro.url.searchParams)),
+}
+const data = await load(input)
+const metadata = await generateMetadata(input)
+---
+
+<BaseLayout metadata={metadata} protectedAdmin={false}>
+  <Page
+    {...data}
+    location={Astro.url.pathname + Astro.url.search}
+    client:load
+  />
+</BaseLayout>

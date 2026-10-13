@@ -1,9 +1,8 @@
-import Link from "next/link"
+import Link from "@/lib/navigation"
 
-import { getSiteConfig } from "@/lib/site-config"
+import type { getSiteConfig } from "@/lib/site-config"
 
-async function SiteFooter() {
-  const siteConfig = await getSiteConfig()
+function SiteFooter({ siteConfig }: {siteConfig: Awaited<ReturnType<typeof getSiteConfig>>}) {
   const footerLinks = siteConfig.footer.links.filter((link) => link.enabled)
 
   return (

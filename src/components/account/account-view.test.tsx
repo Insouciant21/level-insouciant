@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import type { AccountProfile } from "@/lib/account"
 
-vi.mock("@/app/account/actions", () => ({
+vi.mock("@/lib/action-links", () => ({
   changePasswordAction: vi.fn(),
   deleteOwnCommentAction: vi.fn(),
   updateProfileAction: vi.fn(),
