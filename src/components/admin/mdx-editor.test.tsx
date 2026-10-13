@@ -264,7 +264,7 @@ describe("AdminArticleEditorForm", () => {
     expect(container.querySelector("form")?.className).not.toContain("mt-6")
   })
 
-  it("uses a themed scrollbar for the source editor", () => {
+  it("uses a themed scrollbar for the source editor", async () => {
     render(
       <AdminArticleEditorForm
         mode="edit"
@@ -277,8 +277,7 @@ describe("AdminArticleEditorForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "源码" }))
 
     expect(
-      screen
-        .getByTestId("codemirror-scroll")
+      (await screen.findByTestId("codemirror-scroll"))
         .classList.contains("perfect-scrollbar")
     ).toBe(true)
     expect(screen.queryByTestId("article-editor-preview-scroll")).toBeNull()

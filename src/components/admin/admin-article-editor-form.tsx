@@ -12,15 +12,14 @@ import {
   Trash2,
 } from "lucide-react"
 import { AdminDatePicker } from "@/components/admin/admin-date-picker"
-import { ArticleRichEditor } from "@/components/admin/article-rich-editor"
+import { DeferredRichEditor, DeferredMdxEditor } from "@/components/admin/deferred-article-editor"
 import { MediaPicker } from "@/components/admin/media/media-picker"
 import { Button } from "@/components/ui/button"
-import { MdxEditor } from "@/components/admin/mdx-editor"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { uploadMediaFile } from "@/components/admin/media/media-api"
-import { canUseVisualEditor } from "@/lib/mdx-editor/tiptap"
+import { canUseVisualEditor } from "@/lib/mdx-editor/visual-support"
 import { hasMissingImageAlt } from "@/lib/media/references"
 import { cn } from "@/lib/utils"
 
@@ -437,7 +436,7 @@ function AdminArticleEditorForm({
                   </p>
                 </div>
                 <div className="h-[32rem] min-h-0 overflow-hidden">
-                  <MdxEditor
+                  <DeferredMdxEditor
                     id="article-content"
                     ariaLabel="MDX 源码编辑器"
                     value={draft.content}
@@ -476,7 +475,7 @@ function AdminArticleEditorForm({
                   </div>
                   <p className="shrink-0 text-xs text-[#748073]">正文保存为 MDX</p>
                 </div>
-                <ArticleRichEditor
+                <DeferredRichEditor
                   value={draft.content}
                   ariaLabel="文章可视化编辑器"
                   onChange={(content) => {

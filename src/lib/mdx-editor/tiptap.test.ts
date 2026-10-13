@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 
+import { canUseVisualEditor } from "@/lib/mdx-editor/visual-support"
 import { Editor } from "@tiptap/core"
 import { describe, expect, it } from "vitest"
 
 import {
-  canUseVisualEditor,
   createArticleEditorExtensions,
 } from "@/lib/mdx-editor/tiptap"
 
