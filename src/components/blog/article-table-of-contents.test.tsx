@@ -35,7 +35,7 @@ describe("ArticleTableOfContents", () => {
     expect(desktopSlot?.className).toContain("xl:top-32")
     expect(desktopSlot?.className).toContain("xl:self-start")
     expect(container.querySelector(".fixed")).toBeNull()
-    expect(container.querySelector(".perfect-scrollbar")).toBeNull()
+    expect(container.querySelector(".perfect-scrollbar.ps")).not.toBeNull()
     const scrollRegion = screen.getByRole("region", { name: "文章目录滚动区域" })
     expect(scrollRegion.tabIndex).toBe(0)
     expect(scrollRegion.contains(navigation)).toBe(true)

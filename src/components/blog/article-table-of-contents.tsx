@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { PerfectScrollbar } from "@/components/ui/perfect-scrollbar"
 import { cn } from "@/lib/utils"
 import type { TocItem } from "@/lib/toc"
 
@@ -49,14 +50,14 @@ function ArticleTableOfContents({
   if (variant === "desktop-floating") {
     return (
       <aside className="hidden xl:sticky xl:top-32 xl:block xl:self-start">
-        <div
+        <PerfectScrollbar
           role="region"
           aria-label="文章目录滚动区域"
           tabIndex={0}
-          className="max-h-[calc(100svh-9rem)] overflow-y-auto overscroll-contain [scrollbar-gutter:stable] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="max-h-[calc(100svh-9rem)] overflow-y-auto overscroll-contain focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           {indexCard}
-        </div>
+        </PerfectScrollbar>
       </aside>
     )
   }
