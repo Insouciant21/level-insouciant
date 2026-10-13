@@ -45,11 +45,19 @@ async function checkScrollbar(page, region, name) {
   )
 
   await page.mouse.move(0, 0)
-  await page.waitForTimeout(250)
+  await page.waitForFunction(
+    (el) => getComputedStyle(el).width === "3px",
+    await thumb.elementHandle(),
+    { timeout: 5000 }
+  )
   assert.equal(await rail.evaluate((el) => getComputedStyle(el).width), "9px")
   assert.equal(await thumb.evaluate((el) => getComputedStyle(el).width), "3px")
   await thumb.hover()
-  await page.waitForTimeout(250)
+  await page.waitForFunction(
+    (el) => getComputedStyle(el).width === "5px",
+    await thumb.elementHandle(),
+    { timeout: 5000 }
+  )
   assert.equal(
     await rail.evaluate((el) => getComputedStyle(el).backgroundColor),
     "rgba(0, 0, 0, 0)"
