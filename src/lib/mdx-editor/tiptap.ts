@@ -4,6 +4,7 @@ import Link from "@tiptap/extension-link"
 import Mathematics from "@tiptap/extension-mathematics"
 import { Markdown } from "@tiptap/markdown"
 import type { AnyExtension } from "@tiptap/core"
+import { TableKit } from "@tiptap/extension-table"
 import StarterKit from "@tiptap/starter-kit"
 
 export const ARTICLE_IMAGE_MIME_TYPES = [
@@ -66,6 +67,7 @@ export function createArticleEditorExtensions(options: {
         throwOnError: false,
       },
     }),
+    TableKit,
     Markdown,
   ]
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { useEditorState } from "@tiptap/react"
 import type { Editor } from "@tiptap/core"
 import {
   Bold,
@@ -13,12 +14,20 @@ import {
   Quote,
   Redo2,
   Strikethrough,
+  Table2,
   Type,
   Undo2,
 } from "lucide-react"
 
 import { MediaPicker } from "@/components/admin/media/media-picker"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import type { MediaAssetSummary } from "@/lib/media/assets"
 
 type ArticleEditorToolbarProps = {
@@ -34,6 +43,10 @@ function ArticleEditorToolbar({
   onSelectMedia,
   onEditImage,
 }: ArticleEditorToolbarProps) {
+  const inTable = useEditorState({
+    editor,
+    selector: ({ editor: currentEditor }) => currentEditor?.isActive("table") ?? false,
+  })
   const inputId = "article-editor-image-upload"
 
   function toggleLink() {
@@ -86,6 +99,27 @@ function ArticleEditorToolbar({
       <ToolbarButton label="链接" active={editor?.isActive("link")} onClick={toggleLink}>
         <Link2 className="size-4" />
       </ToolbarButton>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button type="button" variant="ghost" size="icon-sm" aria-label="表格" title="表格" disabled={!editor}>
+            <Table2 className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem disabled={!!inTable} onSelect={() => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+            插入表格
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().addRowBefore().run()}>在上方插入行</DropdownMenuItem>
+          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().addRowAfter().run()}>在下方插入行</DropdownMenuItem>
+          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().addColumnBefore().run()}>在左侧插入列</DropdownMenuItem>
+          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().addColumnAfter().run()}>在右侧插入列</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().deleteRow().run()}>删除当前行</DropdownMenuItem>
+          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().deleteColumn().run()}>删除当前列</DropdownMenuItem>
+          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().deleteTable().run()}>删除表格</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <ToolbarDivider />
       <label className="inline-flex">
         <span className="sr-only">上传正文图片</span>

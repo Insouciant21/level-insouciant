@@ -1498,3 +1498,23 @@
   background-color: var(--code-block-char-highlight);
   box-shadow: 0 0 0 0.18rem var(--code-block-char-highlight-ring);
 }
+
+
+/* Keep wide editor tables scrollable without stretching the form. */
+.article-rich-prose table {
+  @apply my-5 block max-w-full border-collapse overflow-x-auto;
+}
+
+.article-rich-prose th,
+.article-rich-prose td {
+  @apply relative min-w-32 border border-white/20 px-3 py-2 text-left align-top;
+}
+
+.article-rich-prose th {
+  @apply bg-white/10 font-semibold;
+}
+
+.article-rich-prose .selectedCell::after {
+  content: "";
+  @apply pointer-events-none absolute inset-0 bg-white/10;
+}

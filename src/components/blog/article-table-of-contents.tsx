@@ -49,7 +49,14 @@ function ArticleTableOfContents({
   if (variant === "desktop-floating") {
     return (
       <aside className="hidden xl:sticky xl:top-32 xl:block xl:self-start">
-        {indexCard}
+        <div
+          role="region"
+          aria-label="文章目录滚动区域"
+          tabIndex={0}
+          className="max-h-[calc(100svh-9rem)] overflow-y-auto overscroll-contain [scrollbar-gutter:stable] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          {indexCard}
+        </div>
       </aside>
     )
   }

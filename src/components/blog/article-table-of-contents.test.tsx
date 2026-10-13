@@ -15,7 +15,7 @@ import { ArticleTableOfContents } from "@/components/blog/article-table-of-conte
 afterEach(cleanup)
 
 describe("ArticleTableOfContents", () => {
-  it("keeps the desktop index sticky inside the article boundary without an internal scrollbar", () => {
+  it("keeps the desktop index sticky inside the article boundary with an accessible internal scrollbar", () => {
     const { container } = render(
       <ArticleTableOfContents
         items={[
@@ -36,6 +36,10 @@ describe("ArticleTableOfContents", () => {
     expect(desktopSlot?.className).toContain("xl:self-start")
     expect(container.querySelector(".fixed")).toBeNull()
     expect(container.querySelector(".perfect-scrollbar")).toBeNull()
-    expect(container.querySelector("[tabindex]")).toBeNull()
+    const scrollRegion = screen.getByRole("region", { name: "文章目录滚动区域" })
+    expect(scrollRegion.tabIndex).toBe(0)
+    expect(scrollRegion.contains(navigation)).toBe(true)
+    expect(scrollRegion.className).toContain("overflow-y-auto")
+    expect(scrollRegion.className).toContain("overscroll-contain")
   })
 })
