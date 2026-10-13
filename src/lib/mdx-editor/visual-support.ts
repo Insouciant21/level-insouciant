@@ -5,19 +5,26 @@ export function canUseVisualEditor(source: string): boolean {
     return true
   }
 
-  if (/^\s*(import|export)\s+/m.test(source)) {
+  // Ignore complete math spans before checking for MDX expressions. Keep
+  // escaped dollars and incomplete formulas in the conservative fallback.
+  const nonMathSource = source.replace(
+    /(?<![\\$])\$\$[^$]+\$\$(?!\$)|(?<![\\$])\$[^$\n]+\$(?!\$)/g,
+    ""
+  )
+
+  if (/^\s*(import|export)\s+/m.test(nonMathSource)) {
     return false
   }
 
-  if (/<\/?[A-Za-z][^>]*>/.test(source)) {
+  if (/<\/?[A-Za-z][^>]*>/.test(nonMathSource)) {
     return false
   }
 
-  if (/(^|[^\\])\{[^}\n]+\}/.test(source)) {
+  if (/(^|[^\\])\{[^}\n]+\}/.test(nonMathSource)) {
     return false
   }
 
-  if (/^---\s*$/m.test(source)) {
+  if (/^---\s*$/m.test(nonMathSource)) {
     return false
   }
 

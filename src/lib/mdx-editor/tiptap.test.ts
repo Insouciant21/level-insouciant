@@ -95,3 +95,48 @@ describe("Markdown table round trips", () => {
     }
   })
 })
+
+describe("LaTeX visual editing", () => {
+  const source = String.raw`Inline $\frac{a}{b} + x^{2}$.
+
+$$
+\begin{aligned}
+x &= \frac{1}{2} \\
+y &= \sqrt{x}
+\end{aligned}
+$$`
+
+  it("allows braces inside math while retaining the MDX safety fallback", () => {
+    expect(canUseVisualEditor(source)).toBe(true)
+    expect(canUseVisualEditor(source + "\n\n{runtimeValue}")).toBe(false)
+    expect(canUseVisualEditor(source + "\n\n<Chart />")).toBe(false)
+    expect(canUseVisualEditor(String.raw`Escaped \$ {runtimeValue} \$`)).toBe(false)
+    expect(canUseVisualEditor("Unclosed $x^{2}")).toBe(false)
+  })
+
+  it("preserves inline and block LaTeX after editing and reloading", () => {
+    const makeEditor = (content: string) => new Editor({
+      extensions: createArticleEditorExtensions({ onFiles: () => undefined }),
+      content,
+      contentType: "markdown",
+    })
+    const editor = makeEditor(source)
+    try {
+      const formulas = (instance: Editor) => {
+        const result: string[] = []
+        instance.state.doc.descendants(node => {
+          if (node.type.name === "inlineMath" || node.type.name === "blockMath") {
+            result.push(node.attrs.latex)
+          }
+        })
+        return result
+      }
+      expect(formulas(editor)).toHaveLength(2)
+      editor.commands.insertContentAt(1, "Updated ")
+      const reloaded = makeEditor(editor.getMarkdown())
+      try {
+        expect(formulas(reloaded)).toEqual(formulas(editor))
+      } finally { reloaded.destroy() }
+    } finally { editor.destroy() }
+  })
+})

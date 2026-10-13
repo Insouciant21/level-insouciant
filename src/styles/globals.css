@@ -1070,6 +1070,7 @@
     );
   }
 
+  body:has(.admin-console),
   .admin-console {
     --admin-background: #10130f;
     --admin-main: #151914;
@@ -1085,6 +1086,9 @@
     --admin-accent-foreground: #182015;
     --admin-warning: #e2b86c;
     --admin-danger: #f08b81;
+  }
+
+  .admin-console {
     position: relative;
     z-index: 1;
     isolation: isolate;
@@ -1294,6 +1298,12 @@
   .admin-console [data-slot="button"][data-variant="ghost"]:hover {
     border-color: var(--admin-border) !important;
     background-color: rgb(255 255 255 / 6%) !important;
+    color: var(--admin-foreground) !important;
+  }
+
+  .admin-console [data-slot="button"][data-variant="ghost"][aria-expanded="true"] {
+    border-color: var(--admin-border-strong) !important;
+    background-color: rgb(255 255 255 / 10%) !important;
     color: var(--admin-foreground) !important;
   }
 
@@ -1517,4 +1527,30 @@
 .article-rich-prose .selectedCell::after {
   content: "";
   @apply pointer-events-none absolute inset-0 bg-white/10;
+}
+
+/* Radix portals are siblings of the admin shell, not its descendants. */
+body:has(.admin-console) [data-slot="dropdown-menu-content"] {
+  border-color: var(--admin-border-strong);
+  background: var(--admin-surface);
+  color: var(--admin-foreground);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 40%);
+}
+
+body:has(.admin-console) [data-slot="dropdown-menu-item"]:not([data-variant="destructive"]):focus {
+  background: rgb(255 255 255 / 8%);
+  color: var(--admin-foreground);
+}
+
+body:has(.admin-console) [data-slot="dropdown-menu-item"][data-disabled] {
+  color: var(--admin-subtle);
+  opacity: 1;
+}
+
+body:has(.admin-console) [data-slot="dropdown-menu-separator"] {
+  background: var(--admin-border);
+}
+
+body:has(.admin-console) [data-slot="dropdown-menu-label"] {
+  color: var(--admin-muted);
 }
