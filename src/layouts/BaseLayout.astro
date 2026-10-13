@@ -164,10 +164,35 @@ const location = Astro.url.pathname + Astro.url.search
   </body>
 </html>
 <style is:global>
+  /* Match the previous self-hosted font metrics and CJK fallback order. */
+  @font-face {
+    font-family: "Barlow Condensed Fallback";
+    src: local("Arial");
+    ascent-override: 130.73%;
+    descent-override: 26.15%;
+    line-gap-override: 0%;
+    size-adjust: 76.49%;
+  }
+  @font-face {
+    font-family: "Cormorant Garamond Fallback";
+    src: local("Times New Roman");
+    ascent-override: 95.27%;
+    descent-override: 29.59%;
+    line-gap-override: 0%;
+    size-adjust: 96.98%;
+  }
+  @font-face {
+    font-family: "IBM Plex Mono Fallback";
+    src: local("Arial");
+    ascent-override: 76.16%;
+    descent-override: 20.43%;
+    line-gap-override: 0%;
+    size-adjust: 134.59%;
+  }
   :root {
-    --font-sans: "Barlow Condensed", sans-serif;
-    --font-serif: "Cormorant Garamond", serif;
-    --font-mono: "IBM Plex Mono", monospace;
+    --font-sans: "Barlow Condensed", "Barlow Condensed Fallback";
+    --font-serif: "Cormorant Garamond", "Cormorant Garamond Fallback";
+    --font-mono: "IBM Plex Mono", "IBM Plex Mono Fallback";
   }
 </style>
 <script>
