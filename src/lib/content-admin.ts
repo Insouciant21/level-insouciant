@@ -7,6 +7,7 @@ import {
   createArticleRevisionSnapshot,
 } from "@/lib/content-search"
 import { prisma } from "@/lib/prisma"
+import { formatArchiveCode } from "@/lib/archive-presentation"
 import {
   managedArticleInputSchema,
   type ManagedArticleInput,
@@ -52,6 +53,7 @@ const userNameSelect = {
 
 const managedArticleSummarySelect = {
   id: true,
+  archiveNumber: true,
   slug: true,
   title: true,
   desc: true,
@@ -121,6 +123,7 @@ function formatUserName(user: Pick<User, "name" | "email"> | null | undefined) {
 function toManagedArticleSummary(record: ManagedArticleSummaryRecord): ManagedArticleSummary {
   return {
     id: record.id,
+    archiveCode: formatArchiveCode(record.archiveNumber),
     slug: record.slug,
     title: record.title,
     desc: record.desc,

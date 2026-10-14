@@ -3,9 +3,11 @@ import type { Article as ArticleRecord } from "@prisma/client"
 
 import type { Article, ArticleSummary } from "@/types/blog"
 import { prisma } from "@/lib/prisma"
+import { formatArchiveCode } from "@/lib/archive-presentation"
 
 function toArticleSummary(record: ArticleRecord): ArticleSummary {
   return {
+    archiveCode: formatArchiveCode(record.archiveNumber),
     title: record.title,
     desc: record.desc,
     date: record.publishedAt.toISOString(),
@@ -185,6 +187,7 @@ export async function searchArticles(query: string) {
   const rows = await prisma.$queryRaw<
     Array<{
       id: string
+      archiveNumber: bigint
       slug: string
       title: string
       desc: string
@@ -199,6 +202,7 @@ export async function searchArticles(query: string) {
   >(Prisma.sql`
     SELECT
       "id",
+      "archiveNumber",
       "slug",
       "title",
       "desc",
@@ -223,6 +227,7 @@ export async function searchArticles(query: string) {
   return rows.map((row) =>
     toArticleSummary({
       id: row.id,
+      archiveNumber: row.archiveNumber,
       slug: row.slug,
       title: row.title,
       desc: row.desc,

@@ -4,23 +4,20 @@ type ArchiveSignal = {
   designation: string
 }
 
-function hashString(value: string) {
-  let hash = 0
-
-  for (let index = 0; index < value.length; index += 1) {
-    hash = (hash * 31 + value.charCodeAt(index)) >>> 0
-  }
-
-  return hash
+export function formatArchiveCode(sequence: bigint): string {
+  const prefixIndex = sequence - 1n
+  const prefix = String.fromCharCode(
+    65 + Number((prefixIndex / 26n) % 26n),
+    65 + Number(prefixIndex % 26n)
+  )
+  // Prefixes can repeat; the full database sequence makes each code unique.
+  return `${prefix}-${sequence.toString().padStart(4, "0")}`
 }
 
 export function getArchiveSignal(
-  article: Pick<ArticleSummary, "slug" | "title" | "category" | "tags">
+  article: Pick<ArticleSummary, "archiveCode">
 ): ArchiveSignal {
-  const hash = hashString(`${article.slug}:${article.category}:${article.tags.join("|")}`)
-  const designation = `L-${String((hash % 48) + 1).padStart(2, "0")}`
-
   return {
-    designation,
+    designation: article.archiveCode,
   }
 }

@@ -45,6 +45,7 @@ model User {
 
 model Article {
   id                 String            @id @default(cuid())
+  archiveNumber      BigInt            @unique @default(autoincrement())
   slug               String            @unique
   title              String
   desc               String

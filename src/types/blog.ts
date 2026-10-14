@@ -9,9 +9,11 @@ export type ArticleFrontmatter = {
   slug: string
 }
 
-export type ArticleSummary = ArticleFrontmatter
+export type ArticleSummary = ArticleFrontmatter & {
+  archiveCode: string
+}
 
-export type Article = ArticleFrontmatter & {
+export type Article = ArticleSummary & {
   content: string
 }
 
