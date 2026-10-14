@@ -100,6 +100,21 @@ async function checkScrollbar(page, region, name) {
   )
 }
 
+async function waitForOverflow(page, region, active) {
+  await page.waitForFunction(
+    ({ element, active }) =>
+      element.classList.contains("ps--active-y") === active,
+    { element: await region.elementHandle(), active },
+    { timeout: 5000 }
+  )
+  assert.equal(
+    await region
+      .locator(":scope > .ps__rail-y")
+      .evaluate((el) => getComputedStyle(el).display),
+    active ? "block" : "none"
+  )
+}
+
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   const errors = []
@@ -128,10 +143,32 @@ try {
     // Load at a short height to exercise the sidebar's own scroll region.
     await page.setViewportSize({ width: 1440, height: 600 })
     await page.reload({ waitUntil: "domcontentloaded" })
-    await checkScrollbar(
-      page,
-      page.locator('[aria-label="后台侧栏"]'),
-      "sidebar"
+    const sidebar = page.locator('[aria-label="后台侧栏"]')
+    await checkScrollbar(page, sidebar, "sidebar")
+    await page.setViewportSize({ width: 1440, height: 1200 })
+    await waitForOverflow(page, sidebar, false)
+    await sidebar.hover()
+    assert.equal(
+      await sidebar.locator(":scope > .ps__rail-y").isVisible(),
+      false
+    )
+    await page.setViewportSize({ width: 1440, height: 600 })
+    await waitForOverflow(page, sidebar, true)
+    await page.setViewportSize({ width: 1440, height: 1200 })
+    await waitForOverflow(page, sidebar, false)
+    await page.getByRole("navigation", { name: "后台导航" }).evaluate((el) => {
+      const extra = document.createElement("div")
+      extra.dataset.scrollbarValidation = ""
+      extra.style.height = "1300px"
+      el.appendChild(extra)
+    })
+    await waitForOverflow(page, sidebar, true)
+    await page
+      .locator("[data-scrollbar-validation]")
+      .evaluate((el) => el.remove())
+    await waitForOverflow(page, sidebar, false)
+    console.log(
+      "PASS sidebar: hides without overflow, updates after viewport and content changes"
     )
     await page.goto(base + "/admin/articles/new")
     await page.waitForFunction(

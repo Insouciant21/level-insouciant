@@ -315,6 +315,10 @@
     background-color: transparent;
   }
 
+  .perfect-scrollbar.ps:not(.ps--active-y) > .ps__rail-y {
+    display: none;
+  }
+
   .perfect-scrollbar.ps > .ps__rail-y > .ps__thumb-y {
     right: 3px;
     width: 3px;

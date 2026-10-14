@@ -28,10 +28,53 @@ function createPerfectScrollbarController(
     ...defaultPerfectScrollbarOptions,
     ...options,
   })
+  let frame: number | undefined
+  const observedChildren = new Set<Element>()
+  const resizeObserver =
+    typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(() => {
+          if (frame !== undefined) return
+          frame = requestAnimationFrame(() => {
+            frame = undefined
+            instance.update()
+          })
+        })
+
+  function observeContent() {
+    if (!resizeObserver) return
+    const children = new Set(
+      [...element.children].filter(
+        (child) => !child.matches(".ps__rail-x, .ps__rail-y")
+      )
+    )
+    for (const child of observedChildren) {
+      if (!children.has(child)) {
+        resizeObserver.unobserve(child)
+        observedChildren.delete(child)
+      }
+    }
+    for (const child of children) {
+      if (!observedChildren.has(child)) {
+        resizeObserver.observe(child)
+        observedChildren.add(child)
+      }
+    }
+  }
+
+  resizeObserver?.observe(element)
+  observeContent()
 
   return {
-    update: () => instance.update(),
-    destroy: () => instance.destroy(),
+    update: () => {
+      observeContent()
+      instance.update()
+    },
+    destroy: () => {
+      resizeObserver?.disconnect()
+      if (frame !== undefined) cancelAnimationFrame(frame)
+      instance.destroy()
+    },
   }
 }
 
