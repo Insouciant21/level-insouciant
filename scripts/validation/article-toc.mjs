@@ -13,6 +13,10 @@ try {
   )
   const region = page.getByRole("region", { name: "文章目录滚动区域" })
   await region.waitFor({ timeout: 20000 })
+  const card = page
+    .getByRole("navigation", { name: "文章目录" })
+    .filter({ has: region })
+  const heading = card.getByRole("heading", { name: "目录", exact: true })
   await page.waitForFunction(
     () =>
       document
@@ -34,13 +38,27 @@ try {
   assert.equal(await region.locator(".ps__rail-y").count(), 1)
   await page.evaluate(() => window.scrollTo(0, 1200))
   await page.waitForTimeout(400)
+  const cardBox = await card.boundingBox()
   const box = await region.boundingBox()
-  assert.ok(Math.abs(box.y - 128) < 4)
+  const headingBefore = await heading.boundingBox()
+  assert.ok(Math.abs(cardBox.y - 128) < 4)
+  assert.ok(cardBox.height <= 756)
+  assert.ok(box.y > headingBefore.y + headingBefore.height)
   await page.mouse.move(box.x + 100, box.y + 100)
   await page.mouse.wheel(0, 4000)
   await page.waitForTimeout(400)
   assert.equal(await page.evaluate(() => window.scrollY), 1200)
   assert.ok(await region.evaluate((el) => el.scrollTop > 0))
+  const headingAfter = await heading.boundingBox()
+  assert.ok(
+    Math.abs(headingAfter.y - headingBefore.y) < 1,
+    "TOC heading stays fixed"
+  )
+  assert.equal(
+    await card.getByText("Known Index", { exact: true }).isVisible(),
+    true
+  )
+  await card.screenshot({ path: "/tmp/astro-toc-fixed-header.png" })
   await region.getByRole("link", { name: "天气后效", exact: true }).click()
   await page.waitForTimeout(800)
   assert.equal(
@@ -69,7 +87,9 @@ try {
       () => document.documentElement.scrollWidth <= innerWidth
     )
   )
-  console.log("PASS: live desktop scrolling, bottom anchor, mobile layout")
+  console.log(
+    "PASS: fixed TOC heading, independent desktop scrolling, bottom anchor, mobile layout"
+  )
 } finally {
   await browser.close()
 }
