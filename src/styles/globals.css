@@ -1349,8 +1349,14 @@
 
 .prose-block {
   @apply max-w-full min-w-0 text-[1rem] leading-8 text-foreground sm:text-[1.06rem] sm:leading-9;
-  font-family: var(--font-serif), "Noto Serif SC", "Songti SC", Georgia, serif;
+  /* Reading text needs full-height numerals, unlike the display serif. */
+  font-family: "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+  font-variant-numeric: lining-nums;
   overflow-wrap: anywhere;
+}
+
+.prose-block :is(h1, h2, h3, h4, h5, h6) {
+  font-family: inherit;
 }
 
 .prose-block > * + * {
@@ -1388,7 +1394,6 @@
 
 .prose-block blockquote {
   @apply border-l-4 border-destructive bg-destructive/6 px-6 py-5 text-foreground/92;
-  font-family: var(--font-sans), "Noto Sans SC", "PingFang SC", sans-serif;
 }
 
 .prose-block del,
@@ -1403,6 +1408,7 @@
 .prose-block .katex {
   color: inherit;
   font-size: 1em;
+  font-variant-numeric: normal;
 }
 
 .prose-block .katex-display {
@@ -1428,6 +1434,7 @@
 
 .prose-block table {
   @apply my-8 block max-w-full border-collapse overflow-x-auto;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .prose-block th,
