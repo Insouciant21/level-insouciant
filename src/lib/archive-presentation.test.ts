@@ -3,13 +3,13 @@ import { formatArchiveCode, getArchiveSignal } from "@/lib/archive-presentation"
 
 describe("automatic archive codes", () => {
   it("assigns changing letters and an unrestricted sequence number", () => {
-    expect(formatArchiveCode(1n)).toBe("AA-0001")
-    expect(formatArchiveCode(2n)).toBe("AB-0002")
-    expect(formatArchiveCode(26n)).toBe("AZ-0026")
-    expect(formatArchiveCode(27n)).toBe("BA-0027")
-    expect(formatArchiveCode(676n)).toBe("ZZ-0676")
-    expect(formatArchiveCode(677n)).toBe("AA-0677")
-    expect(formatArchiveCode(10000n)).toMatch(/^[A-Z]{2}-10000$/)
+    expect(formatArchiveCode(1n)).toBe("A-0001")
+    expect(formatArchiveCode(2n)).toBe("B-0002")
+    expect(formatArchiveCode(26n)).toBe("Z-0026")
+    expect(formatArchiveCode(27n)).toBe("A-0027")
+    expect(formatArchiveCode(676n)).toBe("Z-0676")
+    expect(formatArchiveCode(677n)).toBe("A-0677")
+    expect(formatArchiveCode(10000n)).toMatch(/^[A-Z]-10000$/)
   })
 
   it("does not collide when prefixes repeat or numbers exceed JS integer precision", () => {
@@ -24,18 +24,18 @@ describe("automatic archive codes", () => {
 
   it("uses the assigned code regardless of changes to article metadata", () => {
     const article = {
-      archiveCode: "AQ-0017",
+      archiveCode: "Q-0017",
       title: "Before",
       category: "Notes",
       tags: ["one"],
     }
-    expect(getArchiveSignal(article).designation).toBe("AQ-0017")
+    expect(getArchiveSignal(article).designation).toBe("Q-0017")
     const updated = {
       ...article,
       title: "After",
       category: "Other",
       tags: ["two"],
     }
-    expect(getArchiveSignal(updated).designation).toBe("AQ-0017")
+    expect(getArchiveSignal(updated).designation).toBe("Q-0017")
   })
 })

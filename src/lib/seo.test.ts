@@ -37,7 +37,7 @@ const customSiteConfig = {
 } satisfies SiteConfig
 
 const article = {
-  archiveCode: "AA-0001",
+  archiveCode: "A-0001",
   slug: "configured-entry",
   title: "Configured Entry",
   desc: "An entry from the configured archive.",

@@ -19,7 +19,7 @@ describe("TagAggregateSection", () => {
           count: 1,
           articles: [
             {
-              archiveCode: "AA-0001",
+              archiveCode: "A-0001",
               title: "Level Insouciant",
               desc: "关于一座安静得不合常理的后室层级的开放档案。",
               date: "2026-03-31",

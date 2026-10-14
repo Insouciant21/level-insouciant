@@ -43,7 +43,7 @@ async function search() {
 async function pageCode(slug) {
   const response = await fetch(`${base}/articles/${slug}`)
   assert.equal(response.status, 200)
-  return (await response.text()).match(/Code:\s*([A-Z]{2}-\d{4,})/)?.[1]
+  return (await response.text()).match(/Code:\s*([A-Z]-\d{4,})/)?.[1]
 }
 try {
   const existing = await prisma.article.findMany({
@@ -70,7 +70,7 @@ try {
   const results = await search()
   assert.equal(results.length, created.length)
   assert.ok(
-    results.every((article) => /^[A-Z]{2}-\d{4,}$/.test(article.archiveCode))
+    results.every((article) => /^[A-Z]-\d{4,}$/.test(article.archiveCode))
   )
   assert.equal(
     new Set(results.map((article) => article.archiveCode)).size,

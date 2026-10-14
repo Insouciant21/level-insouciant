@@ -26,7 +26,7 @@ import { HomeDoorGrid } from "@/components/blog/home-door-grid"
 import type { ArticleSummary } from "@/types/blog"
 
 const article: ArticleSummary = {
-  archiveCode: "AA-0001",
+  archiveCode: "A-0001",
   title: "A durable personal system",
   desc: "A short description for the archive card.",
   date: "2026-03-12",
