@@ -170,6 +170,38 @@ try {
     console.log(
       "PASS sidebar: hides without overflow, updates after viewport and content changes"
     )
+    // Fractional CSS heights reproduce browser zoom / display scaling rounding.
+    for (const height of [1199.5, 1199.75, 1199.25]) {
+      await sidebar.evaluate((el, height) => {
+        el.style.flex = "none"
+        el.style.height = `${height}px`
+      }, height)
+      await page.waitForTimeout(250)
+      const dimensions = await sidebar.evaluate((el) => {
+        el.scrollTop = 10000
+        const maxScroll = el.scrollTop
+        el.scrollTop = 0
+        return {
+          maxScroll,
+          content: el.scrollHeight,
+          viewport: el.clientHeight,
+        }
+      })
+      assert.equal(dimensions.maxScroll, 0)
+      assert.equal(dimensions.content, dimensions.viewport)
+      await waitForOverflow(page, sidebar, false)
+      await sidebar.hover()
+      assert.equal(
+        await sidebar.locator(":scope > .ps__rail-y").isVisible(),
+        false
+      )
+    }
+    await sidebar.evaluate((el) => el.removeAttribute("style"))
+    await page.setViewportSize({ width: 1440, height: 600 })
+    await waitForOverflow(page, sidebar, true)
+    console.log(
+      "PASS sidebar: fractional heights hide a zero-range scrollbar, true overflow remains scrollable"
+    )
     await page.goto(base + "/admin/articles/new")
     await page.waitForFunction(
       () =>

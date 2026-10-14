@@ -2,6 +2,7 @@ export type PerfectScrollbarOptions = {
   suppressScrollX?: boolean
   wheelPropagation?: boolean
   wheelSpeed?: number
+  scrollYMarginOffset?: number
 }
 
 export type PerfectScrollbarInstance = {
@@ -17,6 +18,8 @@ export type PerfectScrollbarConstructor = new (
 export const defaultPerfectScrollbarOptions = {
   suppressScrollX: true,
   wheelPropagation: false,
+  // The library floors bounding-box heights; zoom can create a false 1px overflow.
+  scrollYMarginOffset: 1,
 } satisfies PerfectScrollbarOptions
 
 function createPerfectScrollbarController(

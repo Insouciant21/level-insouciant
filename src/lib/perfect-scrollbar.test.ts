@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from "vitest"
+import PerfectScrollbarPrimitive from "perfect-scrollbar"
 
 import {
   createPerfectScrollbarController,
@@ -116,5 +117,34 @@ describe("createPerfectScrollbarController", () => {
     expect(disconnect).toHaveBeenCalledOnce()
     expect(cancel).toHaveBeenCalledWith(2)
     expect(instance.destroy).toHaveBeenCalledOnce()
+  })
+
+  it("hides a fractional-height region with no scroll range and shows real overflow", () => {
+    const element = document.createElement("div")
+    let contentHeight = 1001
+    Object.defineProperties(element, {
+      clientHeight: { value: 1001 },
+      scrollHeight: { get: () => contentHeight },
+      scrollWidth: { value: 256 },
+    })
+    element.getBoundingClientRect = () => new DOMRect(0, 0, 256, 1000.5)
+    document.body.appendChild(element)
+    const controller = createPerfectScrollbarController(
+      element,
+      PerfectScrollbarPrimitive
+    )
+    try {
+      expect(element.scrollHeight).toBe(element.clientHeight)
+      expect(element.classList.contains("ps--active-y")).toBe(false)
+      contentHeight = 1200
+      controller.update()
+      expect(element.classList.contains("ps--active-y")).toBe(true)
+      contentHeight = 1001
+      controller.update()
+      expect(element.classList.contains("ps--active-y")).toBe(false)
+    } finally {
+      controller.destroy()
+      element.remove()
+    }
   })
 })
