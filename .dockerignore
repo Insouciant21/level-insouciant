@@ -7,7 +7,7 @@ coverage
 .codex
 .superpowers
 .worktrees
-docs/superpowers
+docs/
 ui_sample
 *.log
 *.tsbuildinfo

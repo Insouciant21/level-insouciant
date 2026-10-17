@@ -166,5 +166,3 @@ Node adapter 以 SSR 模式运行，入口为 `dist/server/entry.mjs`。文章�
 公开页面使用 Astro ClientRouter；后台使用完整页面导航。文章、用户、修订记录与 API URL 保持不变。登录使用 Auth.js Core 和新的会话 Cookie，升级后需要重新登录一次。数据库读缓存仅在单次请求内有效，页面 HTML 不缓存；可信作者的 MDX 编译结果采用有容量限制的内存缓存。
 
 反向代理需传递真实 Host 和 HTTPS 协议。`astro.config.mjs` 的 `security.allowedDomains` 应包含部署域名，以允许可信代理的转发头。写请求要求匹配的 `Origin`，图片上传上限仍为 50 MB。健康检查为 `/api/health`。
-
-发布与回滚步骤见 [部署说明](docs/astro-deployment.md)。
