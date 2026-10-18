@@ -41,11 +41,17 @@ describe("SiteSettingsForm", () => {
     expect(screen.getByLabelText("站点描述").classList.contains("admin-input")).toBe(true)
     expect(screen.queryByLabelText("描述")).toBeNull()
     expect(screen.queryByLabelText("页脚结束语")).toBeNull()
+    expect(screen.queryByLabelText("主按钮文字")).toBeNull()
+    expect(screen.queryByLabelText("主按钮地址")).toBeNull()
+    expect(screen.queryByLabelText("次按钮文字")).toBeNull()
+    expect(screen.queryByLabelText("次按钮地址")).toBeNull()
     expect((screen.getByLabelText("须知页标题") as HTMLInputElement).value).toBe("Moeblue")
     expect(screen.getByRole("button", { name: "添加联系方式" })).toBeTruthy()
 
     const settings = getSerializedSettings()
     expect(settings.hero).not.toHaveProperty("description")
+    expect(settings.hero).not.toHaveProperty("primaryAction")
+    expect(settings.hero).not.toHaveProperty("secondaryAction")
     expect(settings.footer).not.toHaveProperty("closing")
   })
 

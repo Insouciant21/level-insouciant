@@ -29,11 +29,7 @@ function getEditableSettings(siteConfig: SiteConfig): SiteConfigData {
     author: siteConfig.author,
     email: siteConfig.email,
     url: siteConfig.url,
-    hero: {
-      ...siteConfig.hero,
-      primaryAction: { ...siteConfig.hero.primaryAction },
-      secondaryAction: { ...siteConfig.hero.secondaryAction },
-    },
+    hero: { ...siteConfig.hero },
     about: {
       ...siteConfig.about,
       archiveAccess: { ...siteConfig.about.archiveAccess },
@@ -263,17 +259,6 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
     setSettings((current) => ({ ...current, hero: { ...current.hero, [field]: value } }))
   }
 
-  function updateHeroAction(
-    action: "primaryAction" | "secondaryAction",
-    field: "label" | "href",
-    value: string
-  ) {
-    setSettings((current) => ({
-      ...current,
-      hero: { ...current.hero, [action]: { ...current.hero[action], [field]: value } },
-    }))
-  }
-
   function updateAbout(field: Exclude<keyof SiteConfigData["about"], "archiveAccess" | "transmission">, value: string) {
     setSettings((current) => ({ ...current, about: { ...current.about, [field]: value } }))
   }
@@ -387,14 +372,6 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
         <div className="grid gap-5 lg:grid-cols-2">
           <Field id="hero-eyebrow" label="眉题" value={settings.hero.eyebrow} onChange={(value) => updateHero("eyebrow", value)} />
           <Field id="hero-title" label="标题" value={settings.hero.title} onChange={(value) => updateHero("title", value)} />
-          <div className="grid gap-5">
-            <Field id="hero-primary-label" label="主按钮文字" value={settings.hero.primaryAction.label} onChange={(value) => updateHeroAction("primaryAction", "label", value)} />
-            <Field id="hero-primary-href" label="主按钮地址" value={settings.hero.primaryAction.href} onChange={(value) => updateHeroAction("primaryAction", "href", value)} />
-          </div>
-          <div className="grid gap-5">
-            <Field id="hero-secondary-label" label="次按钮文字" value={settings.hero.secondaryAction.label} onChange={(value) => updateHeroAction("secondaryAction", "label", value)} />
-            <Field id="hero-secondary-href" label="次按钮地址" value={settings.hero.secondaryAction.href} onChange={(value) => updateHeroAction("secondaryAction", "href", value)} />
-          </div>
         </div>
       </section>
 

@@ -968,14 +968,6 @@ function AdminSettingsPageSkeleton() {
           <div className="grid gap-5 lg:grid-cols-2">
             <AdminEditorFieldSkeleton label="眉题" labelWidth="w-10" />
             <AdminEditorFieldSkeleton label="标题" labelWidth="w-10" />
-            <div className="grid gap-5">
-              <AdminEditorFieldSkeleton label="主按钮文字" labelWidth="w-24" />
-              <AdminEditorFieldSkeleton label="主按钮地址" labelWidth="w-24" />
-            </div>
-            <div className="grid gap-5">
-              <AdminEditorFieldSkeleton label="次按钮文字" labelWidth="w-24" />
-              <AdminEditorFieldSkeleton label="次按钮地址" labelWidth="w-24" />
-            </div>
           </div>
         </section>
 

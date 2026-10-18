@@ -88,8 +88,6 @@ const legacySiteLinkSchema = siteLinkSchema.extend({
 const heroSchema = z.object({
   eyebrow: singleLineText(100),
   title: singleLineText(100),
-  primaryAction: actionSchema,
-  secondaryAction: actionSchema,
 })
 
 const aboutSchema = z.object({
@@ -147,8 +145,6 @@ export const siteConfigOverridesSchema = z.object({
     .object({
       eyebrow: singleLineText(100).optional(),
       title: singleLineText(100).optional(),
-      primaryAction: actionSchema.partial().optional(),
-      secondaryAction: actionSchema.partial().optional(),
     })
     .partial()
     .optional(),
@@ -286,14 +282,6 @@ export function mergeSiteConfig(overrides: unknown): SiteConfig {
     hero: {
       ...defaultSiteConfig.hero,
       ...parsed.hero,
-      primaryAction: {
-        ...defaultSiteConfig.hero.primaryAction,
-        ...parsed.hero?.primaryAction,
-      },
-      secondaryAction: {
-        ...defaultSiteConfig.hero.secondaryAction,
-        ...parsed.hero?.secondaryAction,
-      },
     },
     about: {
       ...defaultSiteConfig.about,

@@ -101,11 +101,15 @@ describe("site settings validation", () => {
 
   it("strips removed fields from legacy stored overrides", () => {
     const parsed = mergeSiteConfig({
-      hero: { description: "legacy hero copy" },
+      hero: {
+        description: "legacy hero copy",
+        primaryAction: { label: "Legacy", href: "/legacy" },
+        secondaryAction: { label: "Legacy", href: "/legacy" },
+      },
       footer: { closing: "legacy footer copy" },
     })
 
-    expect(parsed.hero).not.toHaveProperty("description")
+    expect(parsed.hero).toEqual(defaultSiteConfig.hero)
     expect(parsed.footer).not.toHaveProperty("closing")
   })
 })

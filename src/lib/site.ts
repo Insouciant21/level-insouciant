@@ -32,8 +32,6 @@ export type SiteConfigData = {
   hero: {
     eyebrow: string
     title: string
-    primaryAction: SiteAction
-    secondaryAction: SiteAction
   }
   about: {
     metadataTitle: string
@@ -100,14 +98,6 @@ export const defaultSiteConfig: SiteConfig = {
   hero: {
     eyebrow: "Archive Notes",
     title: "Level Insouciant",
-    primaryAction: {
-      href: "/articles",
-      label: "进入层级档案",
-    },
-    secondaryAction: {
-      href: "/about",
-      label: "阅读生存须知",
-    },
   },
   about: {
     metadataTitle: "生存须知",
