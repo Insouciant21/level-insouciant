@@ -17,18 +17,13 @@ afterEach(cleanup)
 
 describe("HomeHero", () => {
   it("renders the title without calls to action or a divider", () => {
-    render(
-      <HomeHero
-        eyebrow="Archive Notes"
-        title="Level Insouciant"
-        stats={[{ label: "公开记录", value: "03" }]}
-      />
-    )
+    render(<HomeHero eyebrow="Archive Notes" title="Level Insouciant" />)
 
     const heading = screen.getByRole("heading", { name: "Level Insouciant" })
 
     expect(heading.parentElement?.querySelector("h1 + p")).toBeNull()
     expect(screen.queryByRole("link")).toBeNull()
     expect(document.querySelector(".site-section-header")).toBeNull()
+    expect(document.querySelector(".site-metric-card")).toBeNull()
   })
 })

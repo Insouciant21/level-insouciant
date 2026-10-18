@@ -14,25 +14,12 @@ export async function load() {
     ])
   const doorArticles = allArticles.slice(0, 6)
 
-  const heroStats = [
-    { label: "公开记录", value: String(allArticles.length).padStart(2, "0") },
-    {
-      label: "关键词索引",
-      value: String(archiveOverview.tags.length).padStart(2, "0"),
-    },
-    {
-      label: "分类层级",
-      value: String(archiveOverview.categories.length).padStart(2, "0"),
-    },
-  ]
-
   return {
     siteConfig,
     archiveOverview,
     allArticles,
     hitokotoQuotes,
     doorArticles,
-    heroStats,
   }
 }
 export async function generateMetadata(): Promise<Metadata> {

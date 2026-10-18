@@ -14,32 +14,15 @@ function View({
   allArticles,
   hitokotoQuotes,
   doorArticles,
-  heroStats,
 }: Awaited<ReturnType<typeof load>>) {
   return (
     <PageShell className="gap-10 pt-8 sm:pt-10 lg:gap-12 lg:pt-10">
       <HomeHero
         eyebrow={siteConfig.hero.eyebrow}
         title={siteConfig.hero.title}
-        stats={heroStats}
       />
 
-      <section className="grid gap-5">
-        <header className="site-section-header items-start">
-          <div>
-            <p className="utility-kicker">Facility Hub // Entry Node</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-              分叉走廊
-            </h2>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground sm:text-base">
-              挑一扇门，继续向里走
-            </p>
-          </div>
-          <span className="site-status-pill self-center">
-            {doorArticles.length} 个入口
-          </span>
-        </header>
-
+      <section>
         {doorArticles.length > 0 ? (
           <HomeDoorGrid articles={doorArticles} />
         ) : (
