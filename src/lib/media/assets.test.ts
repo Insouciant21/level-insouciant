@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { prisma } from "@/lib/prisma"
+import { publicPageCache } from "@/server/public-page-cache"
 import {
   createMediaAsset,
   deleteMediaAsset,
@@ -85,6 +86,7 @@ const tx = {
 
 function resetMocks() {
   vi.clearAllMocks()
+  publicPageCache.clear()
   vi.mocked(createObjectKey).mockReturnValue(asset.objectKey)
   vi.mocked(getActiveMediaProvider).mockReturnValue("r2")
   vi.mocked(getObjectStorageProvider).mockReturnValue(storageProvider)
@@ -167,7 +169,12 @@ describe("media asset service", () => {
   it("lists assets with linked and unlinked filters", async () => {
     vi.mocked(prisma.mediaAsset.findMany).mockResolvedValue([
       asset,
-      { ...asset, id: "asset-2", displayName: "unused.png", publicUrl: "https://cdn.example.com/unused.png" },
+      {
+        ...asset,
+        id: "asset-2",
+        displayName: "unused.png",
+        publicUrl: "https://cdn.example.com/unused.png",
+      },
     ] as never)
     vi.mocked(prisma.article.findMany).mockResolvedValue([article] as never)
 
@@ -175,7 +182,9 @@ describe("media asset service", () => {
       total: 1,
       items: [{ id: asset.id, linkedArticleCount: 1 }],
     })
-    await expect(listMediaAssets({ status: "unlinked" })).resolves.toMatchObject({
+    await expect(
+      listMediaAssets({ status: "unlinked" })
+    ).resolves.toMatchObject({
       total: 1,
       items: [{ id: "asset-2", linkedArticleCount: 0 }],
     })
@@ -220,9 +229,11 @@ describe("media asset service", () => {
       status: "DELETE_FAILED",
     } as never)
 
-    await expect(deleteMediaAsset("asset-1", "admin-1")).resolves.toMatchObject({
-      status: "DELETE_FAILED",
-    })
+    await expect(deleteMediaAsset("asset-1", "admin-1")).resolves.toMatchObject(
+      {
+        status: "DELETE_FAILED",
+      }
+    )
     expect(prisma.mediaAsset.update).toHaveBeenCalledWith({
       where: { id: asset.id },
       data: { status: "DELETE_FAILED" },
@@ -241,6 +252,28 @@ describe("media asset service", () => {
     expect(prisma.mediaAsset.delete).toHaveBeenCalledWith({
       where: { id: asset.id },
     })
+  })
+
+  it("refreshes rewritten article HTML before object storage deletion completes", async () => {
+    vi.mocked(prisma.mediaAsset.findUnique).mockResolvedValue(asset as never)
+    vi.mocked(prisma.article.findMany).mockResolvedValue([article] as never)
+    const request = new Request(
+      "https://blog.moeblue.top/articles/first-article"
+    )
+    const render = async () =>
+      new Response("rewritten article", {
+        headers: { "content-type": "text/html" },
+      })
+    await (await publicPageCache.respond(request, render)).text()
+
+    let cacheStatus: string | null = null
+    storageProvider.delete.mockImplementationOnce(async () => {
+      const response = await publicPageCache.respond(request, render)
+      cacheStatus = response.headers.get("x-page-cache")
+      await response.text()
+    })
+    await deleteMediaAsset(asset.id, "admin-1")
+    expect(cacheStatus).toBe("MISS")
   })
 
   it("does not mutate the database when an affected article cannot be rewritten", async () => {

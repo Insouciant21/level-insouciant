@@ -1,5 +1,6 @@
 import type { Prisma, User } from "@prisma/client"
 import { cache } from "@/server/request-context"
+import { invalidatePublicPages } from "@/server/public-page-cache"
 
 import type { ArticleSummary } from "@/types/blog"
 import {
@@ -251,7 +252,7 @@ export async function createManagedArticle(input: ManagedArticleInput, editorUse
     throw new Error("ARTICLE_SLUG_TAKEN")
   }
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const article = await tx.article.create({
       data: {
         slug: normalized.slug,
@@ -271,6 +272,8 @@ export async function createManagedArticle(input: ManagedArticleInput, editorUse
     await createArticleRevisionSnapshot(tx, article, editorUserId, "Article created")
     return article
   })
+  invalidatePublicPages()
+  return result
 }
 
 export async function updateManagedArticle(slug: string, input: ManagedArticleInput, editorUserId: string) {
@@ -283,7 +286,7 @@ export async function updateManagedArticle(slug: string, input: ManagedArticleIn
     throw new Error("ARTICLE_NOT_FOUND")
   }
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const article = await tx.article.update({
       where: { slug },
       data: {
@@ -303,6 +306,8 @@ export async function updateManagedArticle(slug: string, input: ManagedArticleIn
     await createArticleRevisionSnapshot(tx, article, editorUserId, "Article updated")
     return article
   })
+  invalidatePublicPages()
+  return result
 }
 
 export async function setArticleDraftState(slug: string, draft: boolean, editorUserId: string) {
@@ -314,7 +319,7 @@ export async function setArticleDraftState(slug: string, draft: boolean, editorU
     throw new Error("ARTICLE_NOT_FOUND")
   }
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const updated = await tx.article.update({
       where: { slug },
       data: {
@@ -331,6 +336,8 @@ export async function setArticleDraftState(slug: string, draft: boolean, editorU
     )
     return updated
   })
+  invalidatePublicPages()
+  return result
 }
 
 export async function deleteArticleBySlug(slug: string) {
@@ -359,6 +366,7 @@ export async function deleteArticleBySlug(slug: string) {
       where: { slug },
     }),
   ])
+  invalidatePublicPages()
 }
 
 export type ManagedTagSummary = {
@@ -418,6 +426,7 @@ export async function renameTagAcrossArticles(fromTag: string, toTag: string, ed
       )
     }
   })
+  invalidatePublicPages()
 }
 
 export async function removeTagAcrossArticles(tagToRemove: string, editorUserId: string) {
@@ -461,6 +470,7 @@ export async function removeTagAcrossArticles(tagToRemove: string, editorUserId:
       )
     }
   })
+  invalidatePublicPages()
 }
 
 export const getArticleRevisionHistory = cache(async function getArticleRevisionHistory(
@@ -527,7 +537,7 @@ export async function restoreArticleRevision(slug: string, revisionId: string, e
     throw new Error("REVISION_NOT_FOUND")
   }
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const updated = await tx.article.update({
       where: { id: article.id },
       data: {
@@ -558,4 +568,6 @@ export async function restoreArticleRevision(slug: string, revisionId: string, e
     )
     return updated
   })
+  invalidatePublicPages()
+  return result
 }

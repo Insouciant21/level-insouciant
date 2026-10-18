@@ -10,6 +10,7 @@ import {
   createArticleRevisionSnapshot,
 } from "@/lib/content-search"
 import { prisma } from "@/lib/prisma"
+import { invalidatePublicPages } from "@/server/public-page-cache"
 import {
   countImageReference,
   removeImageReferences,
@@ -450,6 +451,8 @@ export async function deleteMediaAsset(
       )
     }
   })
+
+  if (rewrites.length > 0) invalidatePublicPages()
 
   try {
     const storage = getObjectStorageProvider(toProviderKey(asset.provider))

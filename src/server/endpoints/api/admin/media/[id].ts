@@ -12,8 +12,6 @@ type RouteProps = {
   }>
 }
 
-function revalidatePublicMediaContent() {}
-
 function getServiceErrorResponse(error: unknown) {
   const code = error instanceof Error ? error.message : "MEDIA_REQUEST_FAILED"
 
@@ -117,10 +115,6 @@ export async function DELETE(request: Request, { params }: RouteProps) {
     const result = isRetry
       ? await retryMediaAssetDeletion(id)
       : await deleteMediaAsset(id, admin.id)
-
-    if (!isRetry || result.affectedArticleCount > 0) {
-      revalidatePublicMediaContent()
-    }
 
     return Response.json(result)
   } catch (error) {

@@ -1,4 +1,5 @@
 import { cache } from "@/server/request-context"
+import { invalidatePublicPages } from "@/server/public-page-cache"
 
 import { isAuthStorageEnabled } from "@/lib/auth-credentials"
 import { prisma } from "@/lib/prisma"
@@ -61,4 +62,5 @@ export async function saveSiteConfig(data: SiteConfigData): Promise<void> {
     create: { id: SITE_CONFIG_ID, data: normalized },
     update: { data: normalized },
   })
+  invalidatePublicPages()
 }

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { isAuthStorageEnabled } from "@/lib/auth-credentials"
 import { prisma } from "@/lib/prisma"
 import { defaultSiteConfig } from "@/lib/site"
+import { publicPageCache } from "@/server/public-page-cache"
 import {
   getSiteConfig,
   parseStoredSiteConfig,
@@ -26,6 +27,7 @@ vi.mock("@/lib/prisma", () => ({
 describe("site config repository", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    publicPageCache.clear()
   })
 
   it("returns defaults without a database", async () => {
@@ -63,7 +65,9 @@ describe("site config repository", () => {
 
   it("falls back when reading stored settings fails", async () => {
     vi.mocked(isAuthStorageEnabled).mockReturnValue(true)
-    vi.mocked(prisma.siteConfig.findUnique).mockRejectedValue(new Error("database down"))
+    vi.mocked(prisma.siteConfig.findUnique).mockRejectedValue(
+      new Error("database down")
+    )
 
     await expect(getSiteConfig()).resolves.toMatchObject({
       name: "Level Insouciant",
@@ -95,7 +99,31 @@ describe("site config repository", () => {
   it("rejects writes without a database", async () => {
     vi.mocked(isAuthStorageEnabled).mockReturnValue(false)
 
-    await expect(saveSiteConfig(defaultSiteConfig)).rejects.toThrow("DATABASE_NOT_CONFIGURED")
+    await expect(saveSiteConfig(defaultSiteConfig)).rejects.toThrow(
+      "DATABASE_NOT_CONFIGURED"
+    )
     expect(prisma.siteConfig.upsert).not.toHaveBeenCalled()
+  })
+
+  it("refreshes cached public HTML only after settings have been saved", async () => {
+    vi.mocked(isAuthStorageEnabled).mockReturnValue(true)
+    const request = new Request("https://blog.moeblue.top/")
+    const render = async () =>
+      new Response("site name", { headers: { "content-type": "text/html" } })
+    await (await publicPageCache.respond(request, render)).text()
+
+    vi.mocked(prisma.siteConfig.upsert).mockRejectedValueOnce(
+      new Error("db down")
+    )
+    await expect(saveSiteConfig(defaultSiteConfig)).rejects.toThrow("db down")
+    const unchanged = await publicPageCache.respond(request, render)
+    expect(unchanged.headers.get("x-page-cache")).toBe("HIT")
+    await unchanged.text()
+
+    vi.mocked(prisma.siteConfig.upsert).mockResolvedValue({} as never)
+    await saveSiteConfig(defaultSiteConfig)
+    const updated = await publicPageCache.respond(request, render)
+    expect(updated.headers.get("x-page-cache")).toBe("MISS")
+    await updated.text()
   })
 })

@@ -163,6 +163,8 @@ content/          本地文章导入源文件（默认不纳入 Git）
 
 Node adapter 以 SSR 模式运行，入口为 `dist/server/entry.mjs`。文章正文在服务器编译 MDX，表格、公式和代码高亮直接输出 HTML；目录、阅读进度和评论使用独立 React 岛。编辑器、媒体库及账户页面保留完整 React 交互，各自提供 Query/Message 上下文。
 
-公开页面使用 Astro ClientRouter；后台使用完整页面导航。文章、用户、修订记录与 API URL 保持不变。登录使用 Auth.js Core 和新的会话 Cookie，升级后需要重新登录一次。数据库读缓存仅在单次请求内有效，页面 HTML 不缓存；可信作者的 MDX 编译结果采用有容量限制的内存缓存。
+公开页面使用 Astro ClientRouter；后台使用完整页面导航。文章、用户、修订记录与 API URL 保持不变。登录使用 Auth.js Core 和新的会话 Cookie，升级后需要重新登录一次。数据库读缓存仅在单次请求内有效；可信作者的 MDX 编译结果采用有容量限制的内存缓存。
+
+生产环境为未登录访客缓存公开页面 HTML，保留首次请求的流式输出。进程缓存有效期为 60 秒，最多保存 64 页、总计 16 MiB，单页超过 2 MiB 时跳过。文章、标签、站点设置及媒体引用保存后立即清空缓存，无需重新构建。登录访问、其他 Cookie（访客统计 Cookie 除外）、查询参数、后台和 API 跳过缓存；浏览器与 CDN 仍使用 `private, no-store`。响应头 `X-Page-Cache: HIT/MISS` 可用于检查命中，设置 `PUBLIC_PAGE_CACHE=0` 可关闭缓存。直接 SQL 或导入脚本修改的数据最多等待 60 秒生效；进程重启会清空缓存，多实例部署需要共享失效机制。
 
 反向代理需传递真实 Host 和 HTTPS 协议。`astro.config.mjs` 的 `security.allowedDomains` 应包含部署域名，以允许可信代理的转发头。写请求要求匹配的 `Origin`，图片上传上限仍为 50 MB。健康检查为 `/api/health`。
