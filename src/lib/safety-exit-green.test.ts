@@ -14,7 +14,8 @@ function collectSourceFiles(directory: string): string[] {
       return collectSourceFiles(entryPath)
     }
 
-    return /\.(?:css|ts|tsx)$/.test(entry.name) && !entry.name.includes(".test.")
+    return /\.(?:css|ts|tsx)$/.test(entry.name) &&
+      !entry.name.includes(".test.")
       ? [entryPath]
       : []
   })
@@ -24,9 +25,8 @@ const source = collectSourceFiles(sourceRoot)
   .map((filePath) => readFileSync(filePath, "utf8"))
   .join("\n")
 
-const globals = readFileSync(path.join(sourceRoot, "styles/globals.css"), "utf8")
-const homeHero = readFileSync(
-  path.join(sourceRoot, "components/blog/home-hero.tsx"),
+const globals = readFileSync(
+  path.join(sourceRoot, "styles/globals.css"),
   "utf8"
 )
 
@@ -42,13 +42,10 @@ describe("safety exit green palette", () => {
     expect(globals).toContain("--safety-exit-green-strong: #62d99a;")
   })
 
-  it("scopes the restored grass green to the home hero and atmosphere", () => {
+  it("scopes the restored grass green to the home atmosphere", () => {
     expect(globals).toContain("--home-accent-green-rgb: 162 201 87;")
     expect(globals).toContain("--home-accent-green: #a2c957;")
-    expect(globals).toContain(
-      "rgb(var(--home-accent-green-rgb) / 11%),"
-    )
-    expect(homeHero).toContain("home-hero-primary-action")
+    expect(globals).toContain("rgb(var(--home-accent-green-rgb) / 11%),")
   })
 
   it("does not retain the previous grass-green literals or token", () => {
@@ -56,9 +53,7 @@ describe("safety exit green palette", () => {
     expect(source.match(/#a2c957/gi)).toHaveLength(1)
     expect(source.match(/162 201 87/g)).toHaveLength(1)
     expect(source).not.toMatch(/#b8d77c|#d0ec93|#a9c77a/i)
-    expect(source).not.toMatch(
-      /rgb\((?:162 201 87|184 215 124)\s*\//i
-    )
+    expect(source).not.toMatch(/rgb\((?:162 201 87|184 215 124)\s*\//i)
   })
 
   it("does not retain unrelated green utilities or literals", () => {

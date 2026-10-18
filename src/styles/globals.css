@@ -310,10 +310,6 @@
     background-color: var(--scrollbar-thumb-hover);
   }
 
-  .home-hero-primary-action {
-    --primary: var(--home-accent-green);
-  }
-
   .public-summary-panel,
   .public-summary-panel-document,
   .public-summary-card {

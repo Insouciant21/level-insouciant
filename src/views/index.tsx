@@ -21,8 +21,6 @@ function View({
       <HomeHero
         eyebrow={siteConfig.hero.eyebrow}
         title={siteConfig.hero.title}
-        primaryAction={siteConfig.hero.primaryAction}
-        secondaryAction={siteConfig.hero.secondaryAction}
         stats={heroStats}
       />
 
