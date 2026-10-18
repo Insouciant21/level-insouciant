@@ -139,10 +139,35 @@
     @apply bg-background text-foreground antialiased;
     min-height: 100svh;
     background-image:
+      radial-gradient(
+        circle at 18% 22%,
+        rgb(27 27 22 / 2.8%) 0 1px,
+        transparent 1.7px
+      ),
+      radial-gradient(
+        circle at 79% 18%,
+        rgb(78 63 43 / 2%) 0 1.1px,
+        transparent 1.7px
+      ),
+      radial-gradient(
+        circle at 28% 72%,
+        rgb(78 63 43 / 2%) 0 1.2px,
+        transparent 1.8px
+      ),
+      radial-gradient(
+        circle at 72% 76%,
+        rgb(78 63 43 / 1.6%) 0 1px,
+        transparent 1.5px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgb(24 27 23 / 3%) 0 1px,
+        transparent 1px 4px
+      ),
       radial-gradient(circle at 50% 10rem, var(--hero-glow), transparent 27rem),
       radial-gradient(
         circle at 72% 26%,
-        rgb(var(--safety-exit-green-rgb) / 10%),
+        rgb(var(--home-accent-green-rgb) / 11%),
         transparent 30rem
       ),
       radial-gradient(
@@ -150,6 +175,7 @@
         rgb(238 233 214 / 24%),
         transparent 36rem
       ),
+      radial-gradient(circle at center, transparent 34%, rgb(0 0 0 / 8%) 100%),
       linear-gradient(to bottom, rgb(27 27 22 / 5%), transparent 11rem),
       linear-gradient(
         180deg,
@@ -157,76 +183,20 @@
         var(--background) 48%,
         rgb(170 168 145 / 72%)
       );
-    background-attachment: fixed;
-    letter-spacing: 0.01em;
-  }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.24;
-    background-image:
-      radial-gradient(
-        circle at 18% 22%,
-        var(--paper-speck) 0 1px,
-        transparent 1.6px
-      ),
-      radial-gradient(
-        circle at 79% 18%,
-        rgb(78 63 43 / 5%) 0 1.1px,
-        transparent 1.7px
-      ),
-      radial-gradient(
-        circle at 28% 72%,
-        rgb(78 63 43 / 5%) 0 1.2px,
-        transparent 1.8px
-      ),
-      radial-gradient(
-        circle at 72% 76%,
-        rgb(78 63 43 / 4%) 0 1px,
-        transparent 1.5px
-      ),
-      linear-gradient(
-        118deg,
-        transparent 0,
-        var(--paper-crease) 17%,
-        transparent 39%
-      ),
-      linear-gradient(
-        12deg,
-        transparent 0,
-        var(--paper-wash) 28%,
-        transparent 54%,
-        rgb(255 255 255 / 10%) 72%,
-        transparent 100%
-      );
     background-size:
       190px 190px,
       230px 230px,
       210px 210px,
       250px 250px,
+      100% 4px,
+      auto,
+      auto,
+      auto,
       100% 100%,
-      100% 100%;
-    mix-blend-mode: multiply;
-  }
-
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background:
-      linear-gradient(rgb(255 255 255 / 0%) 50%, rgb(24 27 23 / 100%) 50%),
-      radial-gradient(circle at center, transparent 34%, rgb(0 0 0 / 26%) 100%);
-    background-size:
-      100% 5px,
+      auto,
       auto;
-    opacity: 0.28;
-    animation: utility-luminance-drift 16s ease-in-out infinite;
+    background-attachment: scroll;
+    letter-spacing: 0.01em;
   }
 
   h1,
@@ -340,116 +310,8 @@
     background-color: var(--scrollbar-thumb-hover);
   }
 
-  body:has(.site-console)::before,
-  body:has(.site-console)::after {
-    display: none;
-  }
-
-  .site-console .public-atmosphere-scanline {
-    display: none;
-  }
-
-  .public-atmosphere-base {
-    background:
-      radial-gradient(
-        circle at 46% 8rem,
-        rgb(197 139 47 / 16%),
-        transparent 28rem
-      ),
-      radial-gradient(
-        circle at 82% 22%,
-        rgb(var(--home-accent-green-rgb) / 11%),
-        transparent 34rem
-      ),
-      radial-gradient(
-        circle at 14% 82%,
-        rgb(115 118 111 / 22%),
-        transparent 30rem
-      ),
-      linear-gradient(
-        180deg,
-        var(--maintenance-cream),
-        var(--stale-office-yellow) 48%,
-        rgb(170 168 145 / 82%)
-      );
-    animation: utility-luminance-drift 18s ease-in-out infinite;
-  }
-
   .home-hero-primary-action {
     --primary: var(--home-accent-green);
-  }
-
-  .public-atmosphere-grain {
-    opacity: 0.08;
-    mix-blend-mode: multiply;
-    background-image:
-      radial-gradient(
-        circle at 18% 22%,
-        rgb(27 27 22 / 42%) 0 1px,
-        transparent 1.7px
-      ),
-      radial-gradient(
-        circle at 78% 16%,
-        rgb(27 27 22 / 32%) 0 1.1px,
-        transparent 1.8px
-      ),
-      radial-gradient(
-        circle at 30% 72%,
-        rgb(27 27 22 / 28%) 0 1.2px,
-        transparent 1.9px
-      ),
-      radial-gradient(
-        circle at 74% 78%,
-        rgb(255 252 225 / 30%) 0 1px,
-        transparent 1.6px
-      ),
-      linear-gradient(
-        105deg,
-        transparent 0,
-        rgb(255 252 225 / 22%) 24%,
-        transparent 42%,
-        rgb(27 27 22 / 9%) 78%,
-        transparent 100%
-      );
-    background-size:
-      200px 200px,
-      240px 240px,
-      220px 220px,
-      260px 260px,
-      100% 100%;
-  }
-
-  .public-atmosphere-scanline {
-    opacity: 0.045;
-    mix-blend-mode: multiply;
-    background:
-      linear-gradient(rgb(255 255 255 / 0%) 50%, rgb(24 27 23 / 100%) 50%),
-      linear-gradient(
-        90deg,
-        rgb(197 139 47 / 20%),
-        rgb(var(--safety-exit-green-rgb) / 14%),
-        rgb(115 118 111 / 12%)
-      );
-    background-size:
-      100% 6px,
-      5px 100%;
-    animation: utility-scanline-refresh 11s linear infinite;
-  }
-
-  .public-atmosphere-vignette {
-    background:
-      radial-gradient(
-        circle at center,
-        transparent 28%,
-        rgb(24 27 23 / 30%) 100%
-      ),
-      linear-gradient(
-        90deg,
-        rgb(24 27 23 / 10%),
-        transparent 16%,
-        transparent 84%,
-        rgb(24 27 23 / 14%)
-      );
   }
 
   .public-summary-panel,
@@ -625,7 +487,11 @@
     inset: 0;
     background:
       linear-gradient(rgb(255 255 255 / 0%) 50%, rgb(24 27 23 / 100%) 50%),
-      radial-gradient(circle at 18% 0, rgb(var(--safety-exit-green-rgb) / 10%), transparent 19rem);
+      radial-gradient(
+        circle at 18% 0,
+        rgb(var(--safety-exit-green-rgb) / 10%),
+        transparent 19rem
+      );
     background-size:
       100% 6px,
       auto;
@@ -718,13 +584,11 @@
     transition:
       transform 1200ms cubic-bezier(0.17, 0.67, 0.16, 1),
       border-color 1000ms ease,
-      box-shadow 1200ms ease,
-      filter 1200ms ease;
+      box-shadow 1200ms ease;
   }
 
   .door-card:hover {
     transform: translateY(-0.22rem);
-    filter: brightness(0.985) saturate(0.94);
   }
 
   .door-card__shade {
@@ -761,14 +625,11 @@
       ),
       linear-gradient(180deg, rgb(24 27 23 / 18%), rgb(24 27 23 / 46%));
     opacity: 0;
-    transition:
-      opacity 1100ms ease,
-      backdrop-filter 1100ms ease;
+    transition: opacity 1100ms ease;
   }
 
   .door-card:hover .door-card__overlay {
     opacity: 1;
-    backdrop-filter: blur(1px);
   }
 
   .door-card__signage {
@@ -833,8 +694,8 @@
     );
     mix-blend-mode: screen;
     transform: translateX(-120%) skewX(-10deg);
-    animation: level-insouciant-skeleton-scan 1.7s cubic-bezier(0.18, 0.82, 0.16, 1)
-      infinite;
+    animation: level-insouciant-skeleton-scan 1.7s
+      cubic-bezier(0.18, 0.82, 0.16, 1) infinite;
   }
 
   .level-insouciant-skeleton::after {
@@ -933,24 +794,7 @@
     }
   }
 
-  @keyframes utility-scanline-refresh {
-    0% {
-      background-position:
-        0 0,
-        0 0;
-    }
-
-    100% {
-      background-position:
-        0 48px,
-        5px 0;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    body::after,
-    .public-atmosphere-base,
-    .public-atmosphere-scanline,
     .site-header-shell::before,
     .signal-beacon__halo,
     .signal-beacon__core {
@@ -1311,7 +1155,8 @@
     color: var(--admin-foreground) !important;
   }
 
-  .admin-console [data-slot="button"][data-variant="ghost"][aria-expanded="true"] {
+  .admin-console
+    [data-slot="button"][data-variant="ghost"][aria-expanded="true"] {
     border-color: var(--admin-border-strong) !important;
     background-color: rgb(255 255 255 / 10%) !important;
     color: var(--admin-foreground) !important;
@@ -1526,7 +1371,6 @@
   box-shadow: 0 0 0 0.18rem var(--code-block-char-highlight-ring);
 }
 
-
 /* Keep wide editor tables scrollable without stretching the form. */
 .article-rich-prose table {
   @apply my-5 block max-w-full border-collapse overflow-x-auto;
@@ -1554,7 +1398,8 @@ body:has(.admin-console) [data-slot="dropdown-menu-content"] {
   box-shadow: 0 16px 40px rgb(0 0 0 / 40%);
 }
 
-body:has(.admin-console) [data-slot="dropdown-menu-item"]:not([data-variant="destructive"]):focus {
+body:has(.admin-console)
+  [data-slot="dropdown-menu-item"]:not([data-variant="destructive"]):focus {
   background: rgb(255 255 255 / 8%);
   color: var(--admin-foreground);
 }

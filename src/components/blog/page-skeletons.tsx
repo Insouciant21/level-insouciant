@@ -28,7 +28,7 @@ function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
         </div>
 
         <div className="mt-auto min-w-0">
-          <div className="door-card__panel min-w-0 border px-4 py-4 backdrop-blur-sm">
+          <div className="door-card__panel min-w-0 border px-4 py-4">
             <Skeleton tone="soft" className="h-3 w-32 max-w-full" />
             <Skeleton tone="neutral" className="mt-4 h-10 w-full max-w-lg" />
             <Skeleton tone="neutral" className="mt-2 h-10 w-4/5 max-w-md" />

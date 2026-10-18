@@ -51,7 +51,6 @@ function HomeDoorCard({
           ? undefined
           : {
               y: -4,
-              filter: "brightness(0.985) saturate(0.94)",
               transition: { duration: 1.2, ease: [0.17, 0.67, 0.16, 1] },
             }
       }
@@ -87,7 +86,7 @@ function HomeDoorCard({
         </div>
 
         <div className="mt-auto">
-          <div className="door-card__panel border px-4 py-4 shadow-[0_18px_30px_-28px_rgba(0,0,0,0.28)] backdrop-blur-sm group-hover:shadow-[0_26px_40px_-24px_rgba(0,0,0,0.34)]">
+          <div className="door-card__panel border px-4 py-4 shadow-[0_18px_30px_-28px_rgba(0,0,0,0.28)] group-hover:shadow-[0_26px_40px_-24px_rgba(0,0,0,0.34)]">
             <p className="text-[0.66rem] font-semibold tracking-[0.24em] text-muted-foreground uppercase sm:text-[0.68rem] sm:tracking-[0.28em]">
               {article.category}
             </p>

@@ -118,26 +118,6 @@ const location = Astro.url.pathname + Astro.url.search
         !isAdmin && "site-console relative overflow-x-clip",
       ]}
     >
-      {!isAdmin && (
-        <>
-          <div
-            aria-hidden="true"
-            class="public-atmosphere-base pointer-events-none fixed inset-0 z-[1]"
-          />
-          <div
-            aria-hidden="true"
-            class="public-atmosphere-grain pointer-events-none fixed inset-0 z-[1]"
-          />
-          <div
-            aria-hidden="true"
-            class="public-atmosphere-scanline pointer-events-none fixed inset-0 z-[1]"
-          />
-          <div
-            aria-hidden="true"
-            class="public-atmosphere-vignette pointer-events-none fixed inset-0 z-[1]"
-          />
-        </>
-      )}
       <div
         class:list={["flex min-h-svh flex-col", !isAdmin && "relative z-10"]}
       >
