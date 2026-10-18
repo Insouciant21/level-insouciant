@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto"
 import { toString } from "mdast-util-to-string"
 import { slug as githubSlug } from "github-slugger"
 import remarkMdx from "remark-mdx"
@@ -11,6 +12,9 @@ export type TocItem = {
   text: string
   depth: 2 | 3
 }
+
+const tocCache = new Map<string, TocItem[]>()
+const MAX_TOC_CACHE_ENTRIES = 128
 
 function stripMarkdownSyntax(value: string) {
   return value
@@ -38,6 +42,14 @@ export function createHeadingIdFactory() {
 }
 
 export function extractTableOfContents(source: string): TocItem[] {
+  const key = createHash("sha256").update(source).digest("hex")
+  const cached = tocCache.get(key)
+  if (cached) {
+    tocCache.delete(key)
+    tocCache.set(key, cached)
+    return cached
+  }
+
   const nextId = createHeadingIdFactory()
   const items: TocItem[] = []
 
@@ -63,6 +75,11 @@ export function extractTableOfContents(source: string): TocItem[] {
   } catch {
     return []
   }
+
+  if (tocCache.size >= MAX_TOC_CACHE_ENTRIES) {
+    tocCache.delete(tocCache.keys().next().value!)
+  }
+  tocCache.set(key, items)
 
   return items
 }

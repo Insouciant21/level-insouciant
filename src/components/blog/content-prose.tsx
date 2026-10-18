@@ -51,10 +51,17 @@ function createHeadingRenderer(
   }
 }
 
-// Cache compiled trusted author content, never page HTML or authenticated results.
+// Cache trusted author content only, never authenticated page HTML.
 const compiled = new Map<string, string>()
 let compiledBytes = 0
+const rendered = new Map<string, string>()
+let renderedBytes = 0
 const MAX_CACHE_BYTES = 16 * 1024 * 1024
+
+function sourceKey(source: string) {
+  return createHash("sha256").update(source).digest("hex")
+}
+
 async function compileSource(source: string) {
   const key = createHash("sha256")
     .update("mdx3-gfm-math-pretty-v2\0" + source)
@@ -91,6 +98,14 @@ async function compileSource(source: string) {
   return code
 }
 export async function renderMdx(source: string) {
+  const key = sourceKey(source)
+  const cachedHtml = rendered.get(key)
+  if (cachedHtml !== undefined) {
+    rendered.delete(key)
+    rendered.set(key, cachedHtml)
+    return cachedHtml
+  }
+
   const { default: Content } = await run(await compileSource(source), {
     ...runtime,
     baseUrl: import.meta.url,
@@ -100,7 +115,7 @@ export async function renderMdx(source: string) {
   let headingIndex = 0
   const getId = (text: string) =>
     headings[headingIndex++]?.id ?? fallbackId(text)
-  return renderToStaticMarkup(
+  const html = renderToStaticMarkup(
     <div className="prose-block min-w-0">
       <Content
         components={{
@@ -111,4 +126,17 @@ export async function renderMdx(source: string) {
       />
     </div>
   )
+
+  const bytes = Buffer.byteLength(html)
+  if (bytes <= MAX_CACHE_BYTES && !rendered.has(key)) {
+    while (rendered.size >= 64 || renderedBytes + bytes > MAX_CACHE_BYTES) {
+      const oldest = rendered.keys().next().value!
+      renderedBytes -= Buffer.byteLength(rendered.get(oldest)!)
+      rendered.delete(oldest)
+    }
+    rendered.set(key, html)
+    renderedBytes += bytes
+  }
+
+  return html
 }

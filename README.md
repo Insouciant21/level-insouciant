@@ -54,16 +54,16 @@ pnpm dev
 
 ### 应用与认证
 
-| 变量                     | 必需 | 说明                                                                              |
-| ------------------------ | ---- | --------------------------------------------------------------------------------- |
-| `DATABASE_URL`           | 是   | PostgreSQL 连接地址，应用运行和默认迁移连接使用。                                 |
-| `DIRECT_URL`             | 否   | 迁移专用直连地址，适用于运行时使用连接池地址的数据库服务。                        |
-| `SITE_URL`   | 是   | 对外访问的完整站点地址，用于 SEO；修改后重启服务。兼容旧的 `NEXT_PUBLIC_SITE_URL`。 |
-| `AUTH_SECRET`            | 是   | Auth.js 用于保护会话和令牌的随机密钥。                                            |
-| `ADMIN_EMAIL`            | 是   | 初始管理员邮箱。                                                                  |
-| `ADMIN_PASSWORD`         | 是   | 初始管理员密码。首次使用这组凭据登录时创建管理员。                                |
-| `DATABASE_HOST_OVERRIDE` | 否   | 容器运行时替换 `DATABASE_URL` 主机；Compose 已设置为 `postgresql`。               |
-| `DATABASE_NAME_OVERRIDE` | 否   | 容器运行时替换数据库名；Compose 已设置为 `level-insouciant`。                     |
+| 变量                     | 必需 | 说明                                                                                |
+| ------------------------ | ---- | ----------------------------------------------------------------------------------- |
+| `DATABASE_URL`           | 是   | PostgreSQL 连接地址，应用运行和默认迁移连接使用。                                   |
+| `DIRECT_URL`             | 否   | 迁移专用直连地址，适用于运行时使用连接池地址的数据库服务。                          |
+| `SITE_URL`               | 是   | 对外访问的完整站点地址，用于 SEO；修改后重启服务。兼容旧的 `NEXT_PUBLIC_SITE_URL`。 |
+| `AUTH_SECRET`            | 是   | Auth.js 用于保护会话和令牌的随机密钥。                                              |
+| `ADMIN_EMAIL`            | 是   | 初始管理员邮箱。                                                                    |
+| `ADMIN_PASSWORD`         | 是   | 初始管理员密码。首次使用这组凭据登录时创建管理员。                                  |
+| `DATABASE_HOST_OVERRIDE` | 否   | 容器运行时替换 `DATABASE_URL` 主机；Compose 已设置为 `postgresql`。                 |
+| `DATABASE_NAME_OVERRIDE` | 否   | 容器运行时替换数据库名；Compose 已设置为 `level-insouciant`。                       |
 
 `ADMIN_EMAIL` 和 `ADMIN_PASSWORD` 只用于按需创建初始管理员：当数据库中不存在该邮箱，并且首次登录提交的凭据与环境变量一致时，系统创建管理员账号。账号创建后，修改环境变量不会修改数据库中的现有密码；请在后台账号页面维护账号信息。
 
@@ -161,10 +161,10 @@ content/          本地文章导入源文件（默认不纳入 Git）
 
 ## Astro 运行架构
 
-Node adapter 以 SSR 模式运行，入口为 `dist/server/entry.mjs`。文章正文在服务器编译 MDX，表格、公式和代码高亮直接输出 HTML；目录、阅读进度和评论使用独立 React 岛。编辑器、媒体库及账户页面保留完整 React 交互，各自提供 Query/Message 上下文。
+Node adapter 以 SSR 模式运行，入口为 `dist/server/entry.mjs`。文章正文在服务器编译 MDX，表格、公式和代码高亮直接输出 HTML；可信作者的 MDX 编译结果、最终正文 HTML 和目录数据均使用有容量限制的内存缓存。目录、阅读进度和评论使用独立 React 岛。编辑器、媒体库及账户页面保留完整 React 交互，各自提供 Query/Message 上下文。
 
 公开页面使用 Astro ClientRouter；后台使用完整页面导航。文章、用户、修订记录与 API URL 保持不变。登录使用 Auth.js Core 和新的会话 Cookie，升级后需要重新登录一次。数据库读缓存仅在单次请求内有效；可信作者的 MDX 编译结果采用有容量限制的内存缓存。
 
-生产环境为未登录访客缓存公开页面 HTML，保留首次请求的流式输出。进程缓存有效期为 60 秒，最多保存 64 页、总计 16 MiB，单页超过 2 MiB 时跳过。文章、标签、站点设置及媒体引用保存后立即清空缓存，无需重新构建。登录访问、其他 Cookie（访客统计 Cookie 除外）、查询参数、后台和 API 跳过缓存；浏览器与 CDN 仍使用 `private, no-store`。响应头 `X-Page-Cache: HIT/MISS` 可用于检查命中，设置 `PUBLIC_PAGE_CACHE=0` 可关闭缓存。直接 SQL 或导入脚本修改的数据最多等待 60 秒生效；进程重启会清空缓存，多实例部署需要共享失效机制。
+生产环境为未登录访客缓存公开页面 HTML，保留首次请求的流式输出。进程缓存有效期为 60 秒，最多保存 64 页、总计 16 MiB，单页超过 2 MiB 时跳过。文章、标签、站点设置及媒体引用保存后立即清空缓存，无需重新构建。登录访问、其他 Cookie（访客统计 Cookie 除外）、查询参数、后台和 API 跳过缓存。动态 HTML 与 API 默认 `private, no-store`；RSS、sitemap、robots 和 OG 图片由路由声明公共缓存。响应头 `X-Page-Cache: HIT/MISS` 可用于检查命中，设置 `PUBLIC_PAGE_CACHE=0` 可关闭缓存。直接 SQL 或导入脚本修改的数据最多等待 60 秒生效；进程重启会清空缓存，多实例部署需要共享失效机制。
 
 反向代理需传递真实 Host 和 HTTPS 协议。`astro.config.mjs` 的 `security.allowedDomains` 应包含部署域名，以允许可信代理的转发头。写请求要求匹配的 `Origin`，图片上传上限仍为 50 MB。健康检查为 `/api/health`。

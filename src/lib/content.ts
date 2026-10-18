@@ -1,11 +1,36 @@
 import { Prisma } from "@prisma/client"
-import type { Article as ArticleRecord } from "@prisma/client"
 
 import type { Article, ArticleSummary } from "@/types/blog"
 import { prisma } from "@/lib/prisma"
 import { formatArchiveCode } from "@/lib/archive-presentation"
+import { cache } from "@/server/request-context"
 
-function toArticleSummary(record: ArticleRecord): ArticleSummary {
+const articleSummarySelect = {
+  archiveNumber: true,
+  slug: true,
+  title: true,
+  desc: true,
+  publishedAt: true,
+  tags: true,
+  category: true,
+  cover: true,
+  draft: true,
+} satisfies Prisma.ArticleSelect
+
+const articleDetailSelect = {
+  ...articleSummarySelect,
+  content: true,
+} satisfies Prisma.ArticleSelect
+
+type ArticleSummaryRecord = Prisma.ArticleGetPayload<{
+  select: typeof articleSummarySelect
+}>
+
+type ArticleDetailRecord = Prisma.ArticleGetPayload<{
+  select: typeof articleDetailSelect
+}>
+
+function toArticleSummary(record: ArticleSummaryRecord): ArticleSummary {
   return {
     archiveCode: formatArchiveCode(record.archiveNumber),
     title: record.title,
@@ -19,7 +44,7 @@ function toArticleSummary(record: ArticleRecord): ArticleSummary {
   }
 }
 
-function toArticle(record: ArticleRecord): Article {
+function toArticle(record: ArticleDetailRecord): Article {
   return {
     ...toArticleSummary(record),
     content: record.content,
@@ -31,22 +56,53 @@ async function listArticleRecords(options?: { includeDrafts?: boolean }) {
 
   return prisma.article.findMany({
     where: includeDrafts ? undefined : { draft: false },
+    select: articleSummarySelect,
     orderBy: {
       publishedAt: "desc",
     },
   })
 }
 
-export async function getAllArticles(options?: { includeDrafts?: boolean }) {
+async function getAllArticlesUncached(options?: { includeDrafts?: boolean }) {
   const records = await listArticleRecords(options)
   return records.map(toArticleSummary)
 }
 
-export async function getArticleBySlug(slug: string, options?: { includeDrafts?: boolean }) {
+/** Summary reads omit article bodies and are reused within one request. */
+const getAllArticlesByDraftPreference = cache(async (includeDrafts: boolean) =>
+  getAllArticlesUncached(includeDrafts ? { includeDrafts } : undefined)
+)
+
+export function getAllArticles(options?: { includeDrafts?: boolean }) {
+  return getAllArticlesByDraftPreference(options?.includeDrafts ?? false)
+}
+
+export async function getArticleSummaryBySlug(
+  slug: string,
+  options?: { includeDrafts?: boolean }
+) {
+  const includeDrafts = options?.includeDrafts ?? false
+  const record = await prisma.article.findUnique({
+    where: { slug },
+    select: articleSummarySelect,
+  })
+
+  if (!record || (!includeDrafts && record.draft)) {
+    return null
+  }
+
+  return toArticleSummary(record)
+}
+
+export async function getArticleBySlug(
+  slug: string,
+  options?: { includeDrafts?: boolean }
+) {
   const includeDrafts = options?.includeDrafts ?? false
 
   const record = await prisma.article.findUnique({
     where: { slug },
+    select: articleDetailSelect,
   })
 
   if (!record) {
@@ -58,6 +114,15 @@ export async function getArticleBySlug(slug: string, options?: { includeDrafts?:
   }
 
   return toArticle(record)
+}
+
+export async function isArticlePublished(slug: string) {
+  const record = await prisma.article.findUnique({
+    where: { slug },
+    select: { draft: true },
+  })
+
+  return Boolean(record && !record.draft)
 }
 
 function countArchiveItems(items: string[]) {
@@ -106,7 +171,9 @@ async function filterArticlesByArchive(
 
   const name =
     archiveType === "tag"
-      ? matched.flatMap((article) => article.tags).find((tag) => toArchiveSlug(tag) === normalizedSlug)
+      ? matched
+          .flatMap((article) => article.tags)
+          .find((tag) => toArchiveSlug(tag) === normalizedSlug)
       : matched[0]?.category
 
   if (!name) {
@@ -128,7 +195,10 @@ export async function getArticlesByCategory(slug: string) {
 }
 
 export async function getArchiveOverview() {
-  const [tags, categories] = await Promise.all([getAllTags(), getAllCategories()])
+  const [tags, categories] = await Promise.all([
+    getAllTags(),
+    getAllCategories(),
+  ])
 
   return {
     tags,
@@ -224,28 +294,12 @@ export async function searchArticles(query: string) {
     LIMIT 50
   `)
 
-  return rows.map((row) =>
-    toArticleSummary({
-      id: row.id,
-      archiveNumber: row.archiveNumber,
-      slug: row.slug,
-      title: row.title,
-      desc: row.desc,
-      category: row.category,
-      tags: row.tags,
-      cover: row.cover,
-      draft: row.draft,
-      publishedAt: row.publishedAt,
-      content: "",
-      searchDocument: "",
-      legacySourcePath: null,
-      lastEditedByUserId: null,
-      createdAt: row.publishedAt,
-      updatedAt: row.publishedAt,
-    })
-  )
+  return rows.map((row) => toArticleSummary(row))
 }
 
-
-export { formatDisplayDate, getArchiveHref, toArchiveSlug } from "./content-presentation"
+export {
+  formatDisplayDate,
+  getArchiveHref,
+  toArchiveSlug,
+} from "./content-presentation"
 import { toArchiveSlug } from "./content-presentation"

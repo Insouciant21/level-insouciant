@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/auth"
-import { getArticleBySlug } from "@/lib/content"
+import { isArticlePublished } from "@/lib/content"
 import { toggleLike } from "@/lib/behavior"
 
 type RouteProps = {
@@ -10,9 +10,7 @@ type RouteProps = {
 
 export async function POST(_request: Request, { params }: RouteProps) {
   const { slug } = await params
-  const article = await getArticleBySlug(slug)
-
-  if (!article) {
+  if (!(await isArticlePublished(slug))) {
     return Response.json({ error: "NOT_FOUND" }, { status: 404 })
   }
 

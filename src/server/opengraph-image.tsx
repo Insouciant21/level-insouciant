@@ -9,6 +9,11 @@ export const size = {
 
 export const contentType = "image/png"
 
+const responseHeaders = {
+  "content-type": "image/png",
+  "cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
+}
+
 export default async function OpenGraphImage() {
   const siteConfig = await getSiteConfig()
 
@@ -63,6 +68,9 @@ export default async function OpenGraphImage() {
         {siteConfig.url}
       </div>
     </div>,
-    size
+    {
+      ...size,
+      headers: responseHeaders,
+    }
   )
 }

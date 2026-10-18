@@ -10,6 +10,6 @@ const metadata = await generateMetadata()
   <Page
     {...data}
     location={Astro.url.pathname + Astro.url.search}
-    client:load
+    client:idle
   />
 </BaseLayout>

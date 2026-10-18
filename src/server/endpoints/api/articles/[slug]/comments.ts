@@ -6,7 +6,7 @@ import {
   isBehaviorStorageEnabled,
   listComments,
 } from "@/lib/behavior"
-import { getArticleBySlug } from "@/lib/content"
+import { isArticlePublished } from "@/lib/content"
 import { parseCommentRequestBody } from "@/lib/validation/form-data"
 
 type RouteProps = {
@@ -17,9 +17,7 @@ type RouteProps = {
 
 export async function GET(_request: Request, { params }: RouteProps) {
   const { slug } = await params
-  const article = await getArticleBySlug(slug)
-
-  if (!article) {
+  if (!(await isArticlePublished(slug))) {
     return Response.json({ error: "NOT_FOUND" }, { status: 404 })
   }
 
@@ -29,9 +27,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
 
 export async function POST(request: Request, { params }: RouteProps) {
   const { slug } = await params
-  const article = await getArticleBySlug(slug)
-
-  if (!article) {
+  if (!(await isArticlePublished(slug))) {
     return Response.json({ error: "NOT_FOUND" }, { status: 404 })
   }
 

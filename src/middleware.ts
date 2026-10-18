@@ -49,7 +49,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
         const headers = new Headers(response.headers)
         for (const cookie of requestStorage.getStore()!.headers.getSetCookie())
           headers.append("set-cookie", cookie)
-        headers.set("cache-control", "private, no-store")
+        if (!headers.has("cache-control")) {
+          headers.set("cache-control", "private, no-store")
+        }
         headers.set("x-content-type-options", "nosniff")
         return new Response(response.body, {
           status: response.status,

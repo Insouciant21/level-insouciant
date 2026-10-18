@@ -1,7 +1,7 @@
 import { ImageResponse } from "@vercel/og"
 import { notFound } from "@/server/request-context"
 
-import { getArticleBySlug } from "@/lib/content"
+import { getArticleSummaryBySlug } from "@/lib/content"
 import { getSiteConfig } from "@/lib/site-config"
 
 export const size = {
@@ -10,6 +10,11 @@ export const size = {
 }
 
 export const contentType = "image/png"
+
+const responseHeaders = {
+  "content-type": "image/png",
+  "cache-control": "public, s-maxage=300, stale-while-revalidate=86400",
+}
 
 type ArticleOgImageProps = {
   params: Promise<{
@@ -22,7 +27,7 @@ export default async function ArticleOpenGraphImage({
 }: ArticleOgImageProps) {
   const { slug } = await params
   const [article, siteConfig] = await Promise.all([
-    getArticleBySlug(slug),
+    getArticleSummaryBySlug(slug),
     getSiteConfig(),
   ])
 
@@ -103,6 +108,9 @@ export default async function ArticleOpenGraphImage({
         ))}
       </div>
     </div>,
-    size
+    {
+      ...size,
+      headers: responseHeaders,
+    }
   )
 }

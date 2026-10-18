@@ -54,8 +54,8 @@ const signal = getArchiveSignal(article)
     </div>
 
     <div class="mx-auto grid w-full max-w-[1200px] gap-8 md:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
-      <ArticleReadingSurface client:load>
-        <MotionReveal client:load variant="left">
+      <ArticleReadingSurface client:idle>
+        <MotionReveal client:idle variant="left">
           <div
             class={`${articleDocumentPanelClass} mx-auto w-full max-w-4xl px-4 py-6 sm:px-8 sm:py-8 md:px-16 md:py-12`}
           >
@@ -106,7 +106,7 @@ const signal = getArchiveSignal(article)
             ) : null}
 
             <ArticleTableOfContents
-              client:load
+              client:media="(max-width: 1279px)"
               items={tocItems}
               className="mt-8 xl:hidden"
             />
@@ -119,13 +119,13 @@ const signal = getArchiveSignal(article)
       </ArticleReadingSurface>
 
       <ArticleTableOfContents
-        client:load
+        client:media="(min-width: 1280px)"
         items={tocItems}
         variant="desktop-floating"
       />
     </div>
 
-    <MotionReveal client:load delay={0.2}>
+    <MotionReveal client:visible delay={0.2}>
       <ArticleEngagementIsland
         slug={article.slug}
         location={Astro.url.pathname}
@@ -133,7 +133,7 @@ const signal = getArchiveSignal(article)
       />
     </MotionReveal>
 
-    <MotionReveal client:load delay={0.25}>
+    <MotionReveal client:visible delay={0.25}>
       <ArticlePaginationNav
         previous={pagination?.previous ?? null}
         next={pagination?.next ?? null}
@@ -141,7 +141,7 @@ const signal = getArchiveSignal(article)
     </MotionReveal>
 
     {relatedArticles.length > 0 ? (
-      <MotionReveal client:load delay={0.3}>
+      <MotionReveal client:visible delay={0.3}>
         <section class="grid gap-5">
           <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="text-xl font-semibold tracking-tight">相关文章</h2>
