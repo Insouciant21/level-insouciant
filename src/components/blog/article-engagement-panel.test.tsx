@@ -113,11 +113,11 @@ describe("ArticleEngagementPanel", () => {
     }
 
     const view = render(<Harness visible />)
-    await screen.findByText("43 次阅读")
+    await screen.findByLabelText("阅读次数：43")
 
     view.rerender(<Harness visible={false} />)
     view.rerender(<Harness visible />)
-    await screen.findByText("43 次阅读")
+    await screen.findByLabelText("阅读次数：43")
 
     expect(engagementCalls).toBe(1)
     expect(commentsCalls).toBe(1)
@@ -126,17 +126,19 @@ describe("ArticleEngagementPanel", () => {
   it("renders comments before likes in the engagement summary", async () => {
     renderPanel()
 
-    const views = await screen.findByText("42 次阅读")
-    const comments = await screen.findByText("0 条评论")
-    const likes = await screen.findByRole("button", { name: "3 次点赞" })
+    const views = await screen.findByLabelText("阅读次数：42")
+    const comments = await screen.findByLabelText("评论数：0")
+    const likes = await screen.findByRole("button", { name: "点赞数：3" })
 
+    expect(views.textContent).toBe("42")
+    expect(comments.textContent).toBe("0")
+    expect(likes.textContent).toBe("3")
+    expect(screen.queryByText(/\d+ 次阅读|\d+ 条评论|\d+ 次点赞/)).toBeNull()
     expect(
-      views.compareDocumentPosition(comments) &
-        Node.DOCUMENT_POSITION_FOLLOWING
+      views.compareDocumentPosition(comments) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy()
     expect(
-      comments.compareDocumentPosition(likes) &
-        Node.DOCUMENT_POSITION_FOLLOWING
+      comments.compareDocumentPosition(likes) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy()
   })
 
@@ -165,9 +167,9 @@ describe("ArticleEngagementPanel", () => {
     )
 
     renderPanel()
-    const likeButton = await screen.findByRole("button", { name: "3 次点赞" })
+    const likeButton = await screen.findByRole("button", { name: "点赞数：3" })
     fireEvent.click(likeButton)
-    await screen.findByRole("button", { name: "4 次点赞" })
+    await screen.findByRole("button", { name: "点赞数：4" })
 
     fireEvent.change(screen.getByLabelText("评论内容"), {
       target: { value: "A new comment" },
@@ -175,7 +177,7 @@ describe("ArticleEngagementPanel", () => {
     fireEvent.click(screen.getByRole("button", { name: "提交评论" }))
 
     await screen.findByText("A new comment")
-    expect(screen.getByText("1 条已加载")).toBeTruthy()
+    expect(screen.queryByText(/条已加载/)).toBeNull()
   })
 
   it("maps a 401 like response to the existing login message", async () => {
@@ -187,7 +189,7 @@ describe("ArticleEngagementPanel", () => {
     )
 
     renderPanel()
-    fireEvent.click(await screen.findByRole("button", { name: "3 次点赞" }))
+    fireEvent.click(await screen.findByRole("button", { name: "点赞数：3" }))
 
     await waitFor(() => {
       expect(screen.getByText("请先登录，再进行点赞。")).toBeTruthy()

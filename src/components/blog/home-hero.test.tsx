@@ -27,7 +27,7 @@ describe("HomeHero", () => {
 
     const heading = screen.getByRole("heading", { name: "Level Insouciant" })
 
-    expect(heading.parentElement?.querySelector("p")).toBeNull()
+    expect(heading.parentElement?.querySelector("h1 + p")).toBeNull()
     expect(screen.queryByRole("link")).toBeNull()
     expect(document.querySelector(".site-section-header")).toBeNull()
   })

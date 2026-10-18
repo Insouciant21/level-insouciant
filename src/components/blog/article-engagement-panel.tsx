@@ -68,13 +68,6 @@ function formatCommentDate(value: string) {
   }).format(new Date(value))
 }
 
-function countComments(comments: Comment[]): number {
-  return comments.reduce(
-    (total, comment) => total + 1 + countComments(comment.replies),
-    0
-  )
-}
-
 function insertComment(comments: Comment[], incoming: Comment): Comment[] {
   if (!incoming.parentId) {
     return [incoming, ...comments]
@@ -581,7 +574,6 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
   }
 
   const loginHref = `/login?next=${encodeURIComponent(`/articles/${slug}#article-engagement`)}`
-  const loadedCommentsCount = countComments(comments)
 
   return (
     <section
@@ -597,17 +589,27 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <div className={engagementChipClass}>
+          <div
+            className={engagementChipClass}
+            role="status"
+            aria-label={`阅读次数：${loading ? "加载中" : snapshot.views}`}
+          >
             <span className="inline-flex items-center gap-2">
-              <Eye className="size-4" />
-              {loading ? "..." : snapshot.views} 次阅读
+              <Eye className="size-4" aria-hidden="true" />
+              <span aria-hidden="true">{loading ? "..." : snapshot.views}</span>
             </span>
           </div>
 
-          <div className={engagementChipClass}>
+          <div
+            className={engagementChipClass}
+            role="status"
+            aria-label={`评论数：${loading ? "加载中" : snapshot.commentsCount}`}
+          >
             <span className="inline-flex items-center gap-2">
-              <MessageSquare className="size-4" />
-              {loading ? "..." : snapshot.commentsCount} 条评论
+              <MessageSquare className="size-4" aria-hidden="true" />
+              <span aria-hidden="true">
+                {loading ? "..." : snapshot.commentsCount}
+              </span>
             </span>
           </div>
 
@@ -620,18 +622,25 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
                 snapshot.likedByViewer ? primaryActionClass : outlineActionClass
               }
               disabled={likeMutation.isPending}
+              aria-label={`点赞数：${snapshot.likes}`}
               onClick={() => {
                 void handleToggleLike()
               }}
             >
-              <Heart className="size-4" />
-              {snapshot.likes} 次点赞
+              <Heart className="size-4" aria-hidden="true" />
+              <span aria-hidden="true">{snapshot.likes}</span>
             </Button>
           ) : (
-            <div className={engagementChipClass}>
+            <div
+              className={engagementChipClass}
+              role="status"
+              aria-label={`点赞数：${loading ? "加载中" : snapshot.likes}`}
+            >
               <span className="inline-flex items-center gap-2">
-                <Heart className="size-4" />
-                {loading ? "..." : snapshot.likes} 次点赞
+                <Heart className="size-4" aria-hidden="true" />
+                <span aria-hidden="true">
+                  {loading ? "..." : snapshot.likes}
+                </span>
               </span>
             </div>
           )}
@@ -640,16 +649,11 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
         <div className="grid gap-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="utility-kicker">Field Notes</p>
-              <h3 className="mt-2 text-lg font-semibold tracking-tight text-foreground">
-                最新评论
-              </h3>
-            </div>
-            <span className={engagementChipClass}>
-              {loadedCommentsCount} 条已加载
-            </span>
+          <div>
+            <p className="utility-kicker">Field Notes</p>
+            <h3 className="mt-2 text-lg font-semibold tracking-tight text-foreground">
+              最新评论
+            </h3>
           </div>
 
           {comments.length > 0 ? (
