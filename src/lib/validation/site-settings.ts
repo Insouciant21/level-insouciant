@@ -86,7 +86,6 @@ const legacySiteLinkSchema = siteLinkSchema.extend({
 })
 
 const heroSchema = z.object({
-  eyebrow: singleLineText(100),
   title: singleLineText(100),
 })
 
@@ -143,7 +142,6 @@ export const siteConfigOverridesSchema = z.object({
   url: canonicalSiteUrlSchema.optional(),
   hero: z
     .object({
-      eyebrow: singleLineText(100).optional(),
       title: singleLineText(100).optional(),
     })
     .partial()

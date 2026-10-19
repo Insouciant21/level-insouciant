@@ -966,7 +966,6 @@ function AdminSettingsPageSkeleton() {
         <section className="grid gap-4 border-t border-white/10 pt-5">
           <h2 className="text-lg font-semibold text-[#edf3e9]">首页 Hero</h2>
           <div className="grid gap-5 lg:grid-cols-2">
-            <AdminEditorFieldSkeleton label="眉题" labelWidth="w-10" />
             <AdminEditorFieldSkeleton label="标题" labelWidth="w-10" />
           </div>
         </section>

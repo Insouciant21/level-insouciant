@@ -41,6 +41,7 @@ describe("SiteSettingsForm", () => {
     expect(screen.getByLabelText("站点描述").classList.contains("admin-input")).toBe(true)
     expect(screen.queryByLabelText("描述")).toBeNull()
     expect(screen.queryByLabelText("页脚结束语")).toBeNull()
+    expect(screen.queryByLabelText("眉题")).toBeNull()
     expect(screen.queryByLabelText("主按钮文字")).toBeNull()
     expect(screen.queryByLabelText("主按钮地址")).toBeNull()
     expect(screen.queryByLabelText("次按钮文字")).toBeNull()
@@ -50,6 +51,7 @@ describe("SiteSettingsForm", () => {
 
     const settings = getSerializedSettings()
     expect(settings.hero).not.toHaveProperty("description")
+    expect(settings.hero).not.toHaveProperty("eyebrow")
     expect(settings.hero).not.toHaveProperty("primaryAction")
     expect(settings.hero).not.toHaveProperty("secondaryAction")
     expect(settings.footer).not.toHaveProperty("closing")

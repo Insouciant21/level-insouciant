@@ -102,6 +102,7 @@ describe("site settings validation", () => {
   it("strips removed fields from legacy stored overrides", () => {
     const parsed = mergeSiteConfig({
       hero: {
+        eyebrow: "Legacy Eyebrow",
         description: "legacy hero copy",
         primaryAction: { label: "Legacy", href: "/legacy" },
         secondaryAction: { label: "Legacy", href: "/legacy" },

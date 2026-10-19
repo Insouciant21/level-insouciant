@@ -255,7 +255,7 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
     setSettings((current) => ({ ...current, [field]: value }))
   }
 
-  function updateHero(field: "eyebrow" | "title", value: string) {
+  function updateHero(field: "title", value: string) {
     setSettings((current) => ({ ...current, hero: { ...current.hero, [field]: value } }))
   }
 
@@ -370,7 +370,6 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
       <section className="grid gap-4 border-t border-white/10 pt-5">
         <h2 className="text-lg font-semibold text-[#edf3e9]">首页 Hero</h2>
         <div className="grid gap-5 lg:grid-cols-2">
-          <Field id="hero-eyebrow" label="眉题" value={settings.hero.eyebrow} onChange={(value) => updateHero("eyebrow", value)} />
           <Field id="hero-title" label="标题" value={settings.hero.title} onChange={(value) => updateHero("title", value)} />
         </div>
       </section>

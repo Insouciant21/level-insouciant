@@ -40,7 +40,7 @@ export default async function OpenGraphImage() {
           color: "#4a4a4a",
         }}
       >
-        {siteConfig.hero.eyebrow}
+        Facility Hub // Entry Node
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div

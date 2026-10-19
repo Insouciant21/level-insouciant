@@ -17,10 +17,7 @@ function View({
 }: Awaited<ReturnType<typeof load>>) {
   return (
     <PageShell className="gap-10 pt-8 sm:pt-10 lg:gap-12 lg:pt-10">
-      <HomeHero
-        eyebrow={siteConfig.hero.eyebrow}
-        title={siteConfig.hero.title}
-      />
+      <HomeHero title={siteConfig.hero.title} />
 
       <section>
         {doorArticles.length > 0 ? (

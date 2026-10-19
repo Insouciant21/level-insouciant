@@ -30,7 +30,6 @@ export type SiteConfigData = {
   email: string
   url: string
   hero: {
-    eyebrow: string
     title: string
   }
   about: {
@@ -96,7 +95,6 @@ export const defaultSiteConfig: SiteConfig = {
     { href: "/about", label: "须知" },
   ],
   hero: {
-    eyebrow: "Archive Notes",
     title: "Level Insouciant",
   },
   about: {
