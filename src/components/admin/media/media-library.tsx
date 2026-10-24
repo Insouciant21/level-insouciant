@@ -1,20 +1,21 @@
 "use client"
 
 import { useCallback, useState } from "react"
-import { ChevronLeft, ChevronRight, Images, RefreshCw, Search } from "lucide-react"
-
 import {
-  fetchMediaAssets,
-} from "@/components/admin/media/media-api"
+  ChevronLeft,
+  ChevronRight,
+  Images,
+  RefreshCw,
+  Search,
+} from "lucide-react"
+
+import { fetchMediaAssets } from "@/components/admin/media/media-api"
 import { MediaAssetCard } from "@/components/admin/media/media-asset-card"
 import { MediaAssetDetailsPanel } from "@/components/admin/media/media-asset-details"
 import { MediaUploadQueue } from "@/components/admin/media/media-upload-queue"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type {
-  MediaListResult,
-  MediaListStatus,
-} from "@/lib/media/assets"
+import type { MediaListResult, MediaListStatus } from "@/lib/media/assets"
 
 type MediaLibraryProps = {
   initialData: MediaListResult
@@ -30,11 +31,7 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
   const [error, setError] = useState<string | null>(null)
 
   const reload = useCallback(
-    async (
-      nextPage = page,
-      nextQuery = query,
-      nextStatus = status
-    ) => {
+    async (nextPage = page, nextQuery = query, nextStatus = status) => {
       setIsLoading(true)
       setError(null)
 
@@ -48,7 +45,9 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
         setData(result)
         setPage(result.page)
       } catch (fetchError) {
-        setError(fetchError instanceof Error ? fetchError.message : "媒体库加载失败")
+        setError(
+          fetchError instanceof Error ? fetchError.message : "媒体库加载失败"
+        )
       } finally {
         setIsLoading(false)
       }
@@ -96,7 +95,10 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs text-[#748073]">
-            <Images className="size-4 text-[var(--safety-exit-green-strong)]" aria-hidden="true" />
+            <Images
+              className="size-4 text-[var(--safety-exit-green-strong)]"
+              aria-hidden="true"
+            />
             共 {data.total} 个媒体资源
           </div>
         </div>
@@ -104,7 +106,10 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
         <div className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_12rem_auto]">
           <label className="relative block">
             <span className="sr-only">搜索媒体</span>
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[#748073]" aria-hidden="true" />
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[#748073]"
+              aria-hidden="true"
+            />
             <Input
               type="search"
               value={query}
@@ -118,7 +123,9 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
             <span className="sr-only">关联状态</span>
             <select
               value={status}
-              onChange={(event) => handleFilterChange(query, event.target.value as MediaListStatus)}
+              onChange={(event) =>
+                handleFilterChange(query, event.target.value as MediaListStatus)
+              }
               aria-label="关联状态"
               className="admin-input h-10 w-full"
             >
@@ -127,8 +134,16 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
               <option value="unlinked">未关联</option>
             </select>
           </label>
-          <Button type="button" variant="outline" onClick={() => void reload()} disabled={isLoading}>
-            <RefreshCw className={isLoading ? "size-4 animate-spin" : "size-4"} aria-hidden="true" />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => void reload()}
+            disabled={isLoading}
+          >
+            <RefreshCw
+              className={isLoading ? "size-4 animate-spin" : "size-4"}
+              aria-hidden="true"
+            />
             刷新
           </Button>
         </div>
@@ -142,7 +157,11 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
         </div>
       ) : null}
 
-      <div className={selectedId ? "grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]" : "block"}>
+      <div
+        className={
+          selectedId ? "grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]" : "block"
+        }
+      >
         <div>
           {data.items.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">

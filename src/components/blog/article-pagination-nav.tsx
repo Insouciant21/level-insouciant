@@ -45,7 +45,7 @@ function PaginationItem({ article, label, direction }: PaginationItemProps) {
     >
       <div
         className={cn(
-          "flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground",
+          "flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.24em] text-muted-foreground uppercase",
           isPrevious ? "justify-start" : "justify-start sm:justify-end"
         )}
       >
@@ -55,7 +55,7 @@ function PaginationItem({ article, label, direction }: PaginationItemProps) {
       </div>
 
       <div className="space-y-3">
-        <p className="text-lg font-semibold tracking-tight text-foreground text-balance">
+        <p className="text-lg font-semibold tracking-tight text-balance text-foreground">
           {article.title}
         </p>
         <p className="text-sm leading-7 text-muted-foreground">

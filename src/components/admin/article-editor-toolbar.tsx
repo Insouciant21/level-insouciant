@@ -45,7 +45,8 @@ function ArticleEditorToolbar({
 }: ArticleEditorToolbarProps) {
   const inTable = useEditorState({
     editor,
-    selector: ({ editor: currentEditor }) => currentEditor?.isActive("table") ?? false,
+    selector: ({ editor: currentEditor }) =>
+      currentEditor?.isActive("table") ?? false,
   })
   const inputId = "article-editor-image-upload"
 
@@ -67,57 +68,153 @@ function ArticleEditorToolbar({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-white/10 bg-white/[0.03] p-2" aria-label="文章格式工具栏">
-      <ToolbarButton label="粗体" active={editor?.isActive("bold")} onClick={() => editor?.chain().focus().toggleBold().run()}>
+    <div
+      className="flex flex-wrap items-center gap-1 border-b border-white/10 bg-white/[0.03] p-2"
+      aria-label="文章格式工具栏"
+    >
+      <ToolbarButton
+        label="粗体"
+        active={editor?.isActive("bold")}
+        onClick={() => editor?.chain().focus().toggleBold().run()}
+      >
         <Bold className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="斜体" active={editor?.isActive("italic")} onClick={() => editor?.chain().focus().toggleItalic().run()}>
+      <ToolbarButton
+        label="斜体"
+        active={editor?.isActive("italic")}
+        onClick={() => editor?.chain().focus().toggleItalic().run()}
+      >
         <Italic className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="删除线" active={editor?.isActive("strike")} onClick={() => editor?.chain().focus().toggleStrike().run()}>
+      <ToolbarButton
+        label="删除线"
+        active={editor?.isActive("strike")}
+        onClick={() => editor?.chain().focus().toggleStrike().run()}
+      >
         <Strikethrough className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="行内代码" active={editor?.isActive("code")} onClick={() => editor?.chain().focus().toggleCode().run()}>
+      <ToolbarButton
+        label="行内代码"
+        active={editor?.isActive("code")}
+        onClick={() => editor?.chain().focus().toggleCode().run()}
+      >
         <Code2 className="size-4" />
       </ToolbarButton>
       <ToolbarDivider />
-      <ToolbarButton label="二级标题" active={editor?.isActive("heading", { level: 2 })} onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}>
+      <ToolbarButton
+        label="二级标题"
+        active={editor?.isActive("heading", { level: 2 })}
+        onClick={() =>
+          editor?.chain().focus().toggleHeading({ level: 2 }).run()
+        }
+      >
         <Heading2 className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="段落" active={editor?.isActive("paragraph")} onClick={() => editor?.chain().focus().setParagraph().run()}>
+      <ToolbarButton
+        label="段落"
+        active={editor?.isActive("paragraph")}
+        onClick={() => editor?.chain().focus().setParagraph().run()}
+      >
         <Type className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="无序列表" active={editor?.isActive("bulletList")} onClick={() => editor?.chain().focus().toggleBulletList().run()}>
+      <ToolbarButton
+        label="无序列表"
+        active={editor?.isActive("bulletList")}
+        onClick={() => editor?.chain().focus().toggleBulletList().run()}
+      >
         <List className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="有序列表" active={editor?.isActive("orderedList")} onClick={() => editor?.chain().focus().toggleOrderedList().run()}>
+      <ToolbarButton
+        label="有序列表"
+        active={editor?.isActive("orderedList")}
+        onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+      >
         <ListOrdered className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="引用" active={editor?.isActive("blockquote")} onClick={() => editor?.chain().focus().toggleBlockquote().run()}>
+      <ToolbarButton
+        label="引用"
+        active={editor?.isActive("blockquote")}
+        onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+      >
         <Quote className="size-4" />
       </ToolbarButton>
-      <ToolbarButton label="链接" active={editor?.isActive("link")} onClick={toggleLink}>
+      <ToolbarButton
+        label="链接"
+        active={editor?.isActive("link")}
+        onClick={toggleLink}
+      >
         <Link2 className="size-4" />
       </ToolbarButton>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button type="button" variant="ghost" size="icon-sm" aria-label="表格" title="表格" disabled={!editor}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label="表格"
+            title="表格"
+            disabled={!editor}
+          >
             <Table2 className="size-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem disabled={!!inTable} onSelect={() => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+          <DropdownMenuItem
+            disabled={!!inTable}
+            onSelect={() =>
+              editor
+                ?.chain()
+                .focus()
+                .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                .run()
+            }
+          >
             插入表格
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().addRowBefore().run()}>在上方插入行</DropdownMenuItem>
-          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().addRowAfter().run()}>在下方插入行</DropdownMenuItem>
-          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().addColumnBefore().run()}>在左侧插入列</DropdownMenuItem>
-          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().addColumnAfter().run()}>在右侧插入列</DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={!inTable}
+            onSelect={() => editor?.chain().focus().addRowBefore().run()}
+          >
+            在上方插入行
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={!inTable}
+            onSelect={() => editor?.chain().focus().addRowAfter().run()}
+          >
+            在下方插入行
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={!inTable}
+            onSelect={() => editor?.chain().focus().addColumnBefore().run()}
+          >
+            在左侧插入列
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={!inTable}
+            onSelect={() => editor?.chain().focus().addColumnAfter().run()}
+          >
+            在右侧插入列
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().deleteRow().run()}>删除当前行</DropdownMenuItem>
-          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().deleteColumn().run()}>删除当前列</DropdownMenuItem>
-          <DropdownMenuItem disabled={!inTable} onSelect={() => editor?.chain().focus().deleteTable().run()}>删除表格</DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={!inTable}
+            onSelect={() => editor?.chain().focus().deleteRow().run()}
+          >
+            删除当前行
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={!inTable}
+            onSelect={() => editor?.chain().focus().deleteColumn().run()}
+          >
+            删除当前列
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={!inTable}
+            onSelect={() => editor?.chain().focus().deleteTable().run()}
+          >
+            删除表格
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <ToolbarDivider />
@@ -134,7 +231,14 @@ function ArticleEditorToolbar({
             event.target.value = ""
           }}
         />
-        <Button type="button" variant="ghost" size="icon-sm" onClick={() => document.getElementById(inputId)?.click()} aria-label="上传正文图片" title="上传正文图片">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => document.getElementById(inputId)?.click()}
+          aria-label="上传正文图片"
+          title="上传正文图片"
+        >
           <ImagePlus className="size-4" />
         </Button>
       </label>
@@ -145,10 +249,16 @@ function ArticleEditorToolbar({
         </ToolbarButton>
       ) : null}
       <span className="ml-auto flex items-center gap-1">
-        <ToolbarButton label="撤销" onClick={() => editor?.chain().focus().undo().run()}>
+        <ToolbarButton
+          label="撤销"
+          onClick={() => editor?.chain().focus().undo().run()}
+        >
           <Undo2 className="size-4" />
         </ToolbarButton>
-        <ToolbarButton label="重做" onClick={() => editor?.chain().focus().redo().run()}>
+        <ToolbarButton
+          label="重做"
+          onClick={() => editor?.chain().focus().redo().run()}
+        >
           <Redo2 className="size-4" />
         </ToolbarButton>
       </span>
@@ -175,7 +285,11 @@ function ToolbarButton({
       aria-label={label}
       title={label}
       aria-pressed={active}
-      className={active ? "bg-[var(--safety-exit-green)]/15 text-[var(--safety-exit-green-strong)]" : undefined}
+      className={
+        active
+          ? "bg-[var(--safety-exit-green)]/15 text-[var(--safety-exit-green-strong)]"
+          : undefined
+      }
       onClick={onClick}
     >
       {children}

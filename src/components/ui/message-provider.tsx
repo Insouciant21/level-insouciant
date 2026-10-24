@@ -154,11 +154,16 @@ const errorMessages: Record<string, string> = {
   USER_NOT_FOUND: "没有找到当前账号。",
 }
 
-function isAdminNoticeKey(value: string): value is keyof typeof adminNoticeMessages {
+function isAdminNoticeKey(
+  value: string
+): value is keyof typeof adminNoticeMessages {
   return value in adminNoticeMessages
 }
 
-function getRouteMessage(pathname: string, searchParams: URLSearchParams): MessagePayload | null {
+function getRouteMessage(
+  pathname: string,
+  searchParams: URLSearchParams
+): MessagePayload | null {
   const notice = searchParams.get("notice")
 
   if (pathname.startsWith("/admin") && notice && isAdminNoticeKey(notice)) {
@@ -178,7 +183,10 @@ function getRouteMessage(pathname: string, searchParams: URLSearchParams): Messa
   }
 
   for (const [key, message] of Object.entries(accountMessages)) {
-    if ((pathname === "/account" || pathname === "/admin/account") && searchParams.has(key)) {
+    if (
+      (pathname === "/account" || pathname === "/admin/account") &&
+      searchParams.has(key)
+    ) {
       return message
     }
   }
@@ -240,10 +248,7 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
     setOpen(true)
   }, [])
 
-  const contextValue = React.useMemo(
-    () => ({ showMessage }),
-    [showMessage]
-  )
+  const contextValue = React.useMemo(() => ({ showMessage }), [showMessage])
 
   const Icon = message ? toneIcons[message.tone] : Info
 
@@ -263,7 +268,7 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
             open={open}
             onOpenChange={setOpen}
             className={cn(
-              "pointer-events-auto grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 border px-4 py-4 shadow-[0_24px_48px_-30px_rgba(0,0,0,0.5)] outline-none transition data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+              "pointer-events-auto grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 border px-4 py-4 shadow-[0_24px_48px_-30px_rgba(0,0,0,0.5)] transition outline-none data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
               isAdminRoute
                 ? "border-[#333333] bg-[#111111] text-[#e0e0e0]"
                 : "border-[#73766f]/55 bg-[#d9d1ad]/95 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_24px_48px_-34px_rgba(0,0,0,0.42)]"
@@ -288,7 +293,7 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
             <div className="min-w-0">
               <Toast.Title
                 className={cn(
-                  "text-sm font-semibold uppercase tracking-[0.22em]",
+                  "text-sm font-semibold tracking-[0.22em] uppercase",
                   isAdminRoute ? "text-[#e0e0e0]" : "text-foreground"
                 )}
               >
@@ -318,7 +323,7 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
             </Toast.Close>
           </Toast.Root>
         ) : null}
-        <Toast.Viewport className="fixed right-4 top-4 z-[90] grid w-[calc(100vw-2rem)] max-w-sm gap-3 sm:right-6 sm:top-6" />
+        <Toast.Viewport className="fixed top-4 right-4 z-[90] grid w-[calc(100vw-2rem)] max-w-sm gap-3 sm:top-6 sm:right-6" />
       </Toast.Provider>
     </MessageContext.Provider>
   )

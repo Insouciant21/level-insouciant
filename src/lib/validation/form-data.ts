@@ -75,9 +75,7 @@ export function parsePasswordChangeFormData(
   })
 }
 
-export function parseSiteSettingsFormData(
-  formData: FormData
-): SiteConfigData {
+export function parseSiteSettingsFormData(formData: FormData): SiteConfigData {
   return siteConfigDataSchema.parse(
     JSON.parse(getFormString(formData, "settings"))
   )

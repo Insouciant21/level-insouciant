@@ -104,12 +104,9 @@ function MediaUploadQueue({ onUploaded }: MediaUploadQueueProps) {
               ? {
                   ...item,
                   status: "error",
-                  error:
-                    error instanceof Error
-                      ? error.message
-                      : "上传失败",
+                  error: error instanceof Error ? error.message : "上传失败",
                 }
-            : item
+              : item
           )
         )
       }
@@ -150,12 +147,14 @@ function MediaUploadQueue({ onUploaded }: MediaUploadQueueProps) {
   }
 
   function retryItem(item: QueueItem) {
-    const pendingItem = { ...item, status: "pending" as const, error: undefined }
+    const pendingItem = {
+      ...item,
+      status: "pending" as const,
+      error: undefined,
+    }
     pendingRef.current.push(pendingItem)
     setQueue((current) =>
-      current.map((item) =>
-        item.id === pendingItem.id ? pendingItem : item
-      )
+      current.map((item) => (item.id === pendingItem.id ? pendingItem : item))
     )
     void processQueue()
   }
@@ -180,7 +179,10 @@ function MediaUploadQueue({ onUploaded }: MediaUploadQueueProps) {
         tabIndex={0}
         aria-label="图片上传区域"
       >
-        <ImagePlus className="mx-auto size-7 text-[var(--safety-exit-green-strong)]" aria-hidden="true" />
+        <ImagePlus
+          className="mx-auto size-7 text-[var(--safety-exit-green-strong)]"
+          aria-hidden="true"
+        />
         <p className="mt-3 text-sm font-semibold text-[#edf3e9]">
           上传图片到媒体库
         </p>
@@ -188,10 +190,16 @@ function MediaUploadQueue({ onUploaded }: MediaUploadQueueProps) {
           支持选择、拖拽和粘贴；JPG、PNG、WebP、GIF，单张最大 50 MB
         </p>
         <div className="mt-4 flex flex-wrap justify-center gap-2">
-          <Button type="button" size="sm" onClick={() => inputRef.current?.click()}>
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => inputRef.current?.click()}
+          >
             选择图片
           </Button>
-          <span className="self-center text-xs text-[#748073]">或拖到这里 / Ctrl+V</span>
+          <span className="self-center text-xs text-[#748073]">
+            或拖到这里 / Ctrl+V
+          </span>
         </div>
         <input
           ref={inputRef}
@@ -212,22 +220,42 @@ function MediaUploadQueue({ onUploaded }: MediaUploadQueueProps) {
               className="flex items-center gap-3 border border-white/10 bg-black/10 px-3 py-2.5"
             >
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm text-[#edf3e9]">{item.file.name}</p>
+                <p className="truncate text-sm text-[#edf3e9]">
+                  {item.file.name}
+                </p>
                 <p className="mt-0.5 text-xs text-[#748073]">
                   {formatFileSize(item.file.size)}
                   {item.status === "error" ? ` · ${item.error}` : null}
                 </p>
               </div>
               {item.status === "uploading" ? (
-                <LoaderCircle className="size-4 animate-spin text-[var(--safety-exit-green)]" aria-label="上传中" />
+                <LoaderCircle
+                  className="size-4 animate-spin text-[var(--safety-exit-green)]"
+                  aria-label="上传中"
+                />
               ) : item.status === "success" ? (
-                <Check className="size-4 text-[var(--safety-exit-green)]" aria-label="上传成功" />
+                <Check
+                  className="size-4 text-[var(--safety-exit-green)]"
+                  aria-label="上传成功"
+                />
               ) : item.status === "error" ? (
-                <Button type="button" variant="ghost" size="icon-xs" onClick={() => retryItem(item)} aria-label={`重试上传 ${item.file.name}`}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  onClick={() => retryItem(item)}
+                  aria-label={`重试上传 ${item.file.name}`}
+                >
                   <RotateCcw className="size-3.5" />
                 </Button>
               ) : null}
-              <Button type="button" variant="ghost" size="icon-xs" onClick={() => removeItem(item.id)} aria-label={`移除 ${item.file.name}`}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                onClick={() => removeItem(item.id)}
+                aria-label={`移除 ${item.file.name}`}
+              >
                 <X className="size-3.5" />
               </Button>
             </div>

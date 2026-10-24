@@ -38,7 +38,9 @@ function MediaPicker({
       })
       setItems(result.items)
     } catch (fetchError) {
-      setError(fetchError instanceof Error ? fetchError.message : "媒体读取失败")
+      setError(
+        fetchError instanceof Error ? fetchError.message : "媒体读取失败"
+      )
     } finally {
       setIsLoading(false)
     }
@@ -61,15 +63,28 @@ function MediaPicker({
       </Button>
 
       {open ? (
-        <div className="mt-3 border border-white/10 bg-[#10130f] p-3" role="dialog" aria-label="选择媒体">
+        <div
+          className="mt-3 border border-white/10 bg-[#10130f] p-3"
+          role="dialog"
+          aria-label="选择媒体"
+        >
           <div className="flex items-center justify-between gap-3">
             <p className="text-sm font-semibold text-[#edf3e9]">选择媒体</p>
-            <Button type="button" variant="ghost" size="icon-xs" onClick={closePicker} aria-label="关闭媒体选择器">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              onClick={closePicker}
+              aria-label="关闭媒体选择器"
+            >
               <X className="size-3.5" />
             </Button>
           </div>
           <div className="relative mt-3">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-[#748073]" aria-hidden="true" />
+            <Search
+              className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-[#748073]"
+              aria-hidden="true"
+            />
             <Input
               type="search"
               value={query}
@@ -83,7 +98,9 @@ function MediaPicker({
               className="admin-input h-9 pl-8 text-xs"
             />
           </div>
-          {error ? <p className="mt-3 text-xs text-[var(--admin-danger)]">{error}</p> : null}
+          {error ? (
+            <p className="mt-3 text-xs text-[var(--admin-danger)]">{error}</p>
+          ) : null}
           {isLoading ? (
             <div className="flex items-center gap-2 py-6 text-xs text-[#9aa79a]">
               <LoaderCircle className="size-3.5 animate-spin" /> 正在读取…
@@ -102,14 +119,22 @@ function MediaPicker({
                   aria-label={`选择媒体 ${asset.displayName}`}
                 >
                   <div className="aspect-square bg-black/20">
-                    <img src={asset.publicUrl} alt="" className="size-full object-cover transition group-hover:scale-105" />
+                    <img
+                      src={asset.publicUrl}
+                      alt=""
+                      className="size-full object-cover transition group-hover:scale-105"
+                    />
                   </div>
-                  <span className="block truncate px-2 py-1.5 text-[0.68rem] text-[#c6d2c1]">{asset.displayName}</span>
+                  <span className="block truncate px-2 py-1.5 text-[0.68rem] text-[#c6d2c1]">
+                    {asset.displayName}
+                  </span>
                 </button>
               ))}
             </div>
           ) : (
-            <p className="py-6 text-center text-xs text-[#748073]">没有可选择的媒体。</p>
+            <p className="py-6 text-center text-xs text-[#748073]">
+              没有可选择的媒体。
+            </p>
           )}
         </div>
       ) : null}

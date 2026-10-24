@@ -21,7 +21,9 @@ export type DashboardOverview = {
   usersCount: number
 }
 
-export type ArticleStatItem = Awaited<ReturnType<typeof getManagedArticles>>[number] & {
+export type ArticleStatItem = Awaited<
+  ReturnType<typeof getManagedArticles>
+>[number] & {
   views: number
   likes: number
   comments: number
@@ -67,52 +69,61 @@ type CommentCountGroupRecord = CountGroupRecord & {
   status: CommentStatus
 }
 
-export const getDashboardOverview = cache(async function getDashboardOverview(): Promise<DashboardOverview> {
-  const articles = await getManagedArticles()
-  const publishedCount = articles.filter((article) => !article.draft).length
-  const draftCount = articles.length - publishedCount
-  const tagsCount = new Set(articles.flatMap((article) => article.tags)).size
+export const getDashboardOverview = cache(
+  async function getDashboardOverview(): Promise<DashboardOverview> {
+    const articles = await getManagedArticles()
+    const publishedCount = articles.filter((article) => !article.draft).length
+    const draftCount = articles.length - publishedCount
+    const tagsCount = new Set(articles.flatMap((article) => article.tags)).size
 
-  if (!process.env.DATABASE_URL) {
+    if (!process.env.DATABASE_URL) {
+      return {
+        publishedCount,
+        draftCount,
+        tagsCount,
+        totalViews: 0,
+        totalLikes: 0,
+        totalComments: 0,
+        hiddenComments: 0,
+        usersCount: 0,
+      }
+    }
+
+    const [totalViews, totalLikes, commentGroups, usersCount] =
+      await Promise.all([
+        prisma.pageView.count(),
+        prisma.articleLike.count(),
+        prisma.comment.groupBy({
+          by: ["status"],
+          _count: {
+            _all: true,
+          },
+        }),
+        prisma.user.count(),
+      ])
+    const totalComments =
+      commentGroups.find((entry) => entry.status === COMMENT_STATUS.APPROVED)
+        ?._count._all ?? 0
+    const hiddenComments =
+      commentGroups.find((entry) => entry.status === COMMENT_STATUS.HIDDEN)
+        ?._count._all ?? 0
+
     return {
       publishedCount,
       draftCount,
       tagsCount,
-      totalViews: 0,
-      totalLikes: 0,
-      totalComments: 0,
-      hiddenComments: 0,
-      usersCount: 0,
+      totalViews,
+      totalLikes,
+      totalComments,
+      hiddenComments,
+      usersCount,
     }
   }
+)
 
-  const [totalViews, totalLikes, commentGroups, usersCount] = await Promise.all([
-    prisma.pageView.count(),
-    prisma.articleLike.count(),
-    prisma.comment.groupBy({
-      by: ["status"],
-      _count: {
-        _all: true,
-      },
-    }),
-    prisma.user.count(),
-  ])
-  const totalComments = commentGroups.find((entry) => entry.status === COMMENT_STATUS.APPROVED)?._count._all ?? 0
-  const hiddenComments = commentGroups.find((entry) => entry.status === COMMENT_STATUS.HIDDEN)?._count._all ?? 0
-
-  return {
-    publishedCount,
-    draftCount,
-    tagsCount,
-    totalViews,
-    totalLikes,
-    totalComments,
-    hiddenComments,
-    usersCount,
-  }
-})
-
-export const getArticleStats = cache(async function getArticleStats(): Promise<ArticleStatItem[]> {
+export const getArticleStats = cache(async function getArticleStats(): Promise<
+  ArticleStatItem[]
+> {
   const articles = await getManagedArticles()
 
   if (!process.env.DATABASE_URL) {
@@ -150,8 +161,12 @@ export const getArticleStats = cache(async function getArticleStats(): Promise<A
     }),
   ])
 
-  const viewsMap = new Map(viewGroups.map((entry) => [entry.articleSlug, entry._count._all]))
-  const likesMap = new Map(likeGroups.map((entry) => [entry.articleSlug, entry._count._all]))
+  const viewsMap = new Map(
+    viewGroups.map((entry) => [entry.articleSlug, entry._count._all])
+  )
+  const likesMap = new Map(
+    likeGroups.map((entry) => [entry.articleSlug, entry._count._all])
+  )
   const approvedCommentsMap = new Map<string, number>()
   const hiddenCommentsMap = new Map<string, number>()
 
@@ -171,53 +186,63 @@ export const getArticleStats = cache(async function getArticleStats(): Promise<A
       comments: approvedCommentsMap.get(article.slug) ?? 0,
       hiddenComments: hiddenCommentsMap.get(article.slug) ?? 0,
     }))
-    .sort((left, right) => right.views - left.views || right.likes - left.likes || left.title.localeCompare(right.title))
+    .sort(
+      (left, right) =>
+        right.views - left.views ||
+        right.likes - left.likes ||
+        left.title.localeCompare(right.title)
+    )
 })
 
-export const getAdminComments = cache(async function getAdminComments(): Promise<AdminCommentItem[]> {
-  if (!process.env.DATABASE_URL) {
-    return [] as AdminCommentItem[]
+export const getAdminComments = cache(
+  async function getAdminComments(): Promise<AdminCommentItem[]> {
+    if (!process.env.DATABASE_URL) {
+      return [] as AdminCommentItem[]
+    }
+
+    const comments: AdminCommentRecord[] = await prisma.comment.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        articleSlug: true,
+        authorName: true,
+        content: true,
+        status: true,
+        createdAt: true,
+        parentId: true,
+        parent: {
+          select: {
+            authorName: true,
+          },
+        },
+        _count: {
+          select: {
+            replies: true,
+          },
+        },
+      },
+    })
+
+    return comments.map((comment) => ({
+      id: comment.id,
+      articleSlug: comment.articleSlug,
+      authorName: comment.authorName,
+      content: comment.content,
+      status: comment.status,
+      createdAt: comment.createdAt.toISOString(),
+      parentId: comment.parentId,
+      parentAuthorName: comment.parent?.authorName ?? null,
+      repliesCount: comment._count.replies,
+    })) satisfies AdminCommentItem[]
   }
+)
 
-  const comments: AdminCommentRecord[] = await prisma.comment.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    select: {
-      id: true,
-      articleSlug: true,
-      authorName: true,
-      content: true,
-      status: true,
-      createdAt: true,
-      parentId: true,
-      parent: {
-        select: {
-          authorName: true,
-        },
-      },
-      _count: {
-        select: {
-          replies: true,
-        },
-      },
-    },
-  })
-
-  return comments.map((comment) => ({
-    id: comment.id,
-    articleSlug: comment.articleSlug,
-    authorName: comment.authorName,
-    content: comment.content,
-    status: comment.status,
-    createdAt: comment.createdAt.toISOString(),
-    parentId: comment.parentId,
-    parentAuthorName: comment.parent?.authorName ?? null,
-    repliesCount: comment._count.replies,
-  })) satisfies AdminCommentItem[]
-})
-
-export async function setCommentStatus(commentId: string, status: CommentStatus) {
+export async function setCommentStatus(
+  commentId: string,
+  status: CommentStatus
+) {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_NOT_CONFIGURED")
   }

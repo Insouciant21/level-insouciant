@@ -9,8 +9,7 @@ type ArchiveSectionProps = {
   type: "tags" | "categories"
 }
 
-const archivePanelClass =
-  "public-summary-panel"
+const archivePanelClass = "public-summary-panel"
 const archiveEntryClass =
   "public-summary-card flex items-center justify-between px-4 py-3.5 transition duration-700 hover:-translate-y-0.5 hover:border-foreground/20 hover:bg-[#d9d1ad]/50 hover:shadow-[inset_0_1px_0_rgba(255,252,225,0.18),0_20px_42px_-34px_rgba(0,0,0,0.42)]"
 
@@ -29,7 +28,9 @@ function ArchiveSection({ title, items, type }: ArchiveSectionProps) {
               className={archiveEntryClass}
             >
               <span>{item.name}</span>
-              <span className="text-sm text-muted-foreground">{item.count}</span>
+              <span className="text-sm text-muted-foreground">
+                {item.count}
+              </span>
             </Link>
           </li>
         ))}

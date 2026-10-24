@@ -1,15 +1,12 @@
 import { describe, expect, it } from "vitest"
 
-import {
-  buildPublicUrl,
-  createObjectKey,
-} from "@/lib/media/storage"
+import { buildPublicUrl, createObjectKey } from "@/lib/media/storage"
 
 describe("media storage utilities", () => {
   it("joins a public base URL and object key without duplicate slashes", () => {
-    expect(buildPublicUrl("https://cdn.example.com/media/", "images/a.png")).toBe(
-      "https://cdn.example.com/media/images/a.png"
-    )
+    expect(
+      buildPublicUrl("https://cdn.example.com/media/", "images/a.png")
+    ).toBe("https://cdn.example.com/media/images/a.png")
   })
 
   it("creates an immutable image object key with a safe extension", () => {

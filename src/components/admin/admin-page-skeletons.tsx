@@ -324,9 +324,7 @@ function AdminPageHeaderSkeleton({
       >
         {kickerNode}
         <div className="mt-3 flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="min-w-0">
-            {titleNode}
-          </div>
+          <div className="min-w-0">{titleNode}</div>
           {statusNode}
         </div>
       </header>
@@ -341,9 +339,7 @@ function AdminPageHeaderSkeleton({
       >
         <div className="min-w-0">
           {kickerNode}
-          <div className="mt-3">
-            {titleNode}
-          </div>
+          <div className="mt-3">{titleNode}</div>
         </div>
         {statusNode ? (
           <div className="flex flex-wrap items-center gap-3">{statusNode}</div>

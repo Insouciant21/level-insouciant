@@ -31,11 +31,7 @@ export function validateImageFileMetadata(input: {
   }
 
   const mimeType = input.mimeType as AcceptedImageMime
-  const extension = input.filename
-    .trim()
-    .toLowerCase()
-    .split(".")
-    .pop()
+  const extension = input.filename.trim().toLowerCase().split(".").pop()
 
   if (!extension || !MIME_EXTENSIONS[mimeType].includes(extension)) {
     throw mediaError("INVALID_MEDIA_TYPE")

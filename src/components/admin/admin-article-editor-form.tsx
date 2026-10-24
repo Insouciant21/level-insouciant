@@ -12,7 +12,10 @@ import {
   Trash2,
 } from "lucide-react"
 import { AdminDatePicker } from "@/components/admin/admin-date-picker"
-import { DeferredRichEditor, DeferredMdxEditor } from "@/components/admin/deferred-article-editor"
+import {
+  DeferredRichEditor,
+  DeferredMdxEditor,
+} from "@/components/admin/deferred-article-editor"
 import { MediaPicker } from "@/components/admin/media/media-picker"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -77,9 +80,7 @@ function AdminArticleEditorForm({
     }
   }
 
-  async function handleCoverUpload(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+  async function handleCoverUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     event.target.value = ""
 
@@ -326,7 +327,10 @@ function AdminArticleEditorForm({
                       }
                     >
                       {isCoverUploading ? (
-                        <LoaderCircle className="size-3.5 animate-spin" aria-hidden="true" />
+                        <LoaderCircle
+                          className="size-3.5 animate-spin"
+                          aria-hidden="true"
+                        />
                       ) : (
                         <ImagePlus className="size-3.5" aria-hidden="true" />
                       )}
@@ -473,7 +477,9 @@ function AdminArticleEditorForm({
                       可视化编辑器
                     </h2>
                   </div>
-                  <p className="shrink-0 text-xs text-[#748073]">正文保存为 MDX</p>
+                  <p className="shrink-0 text-xs text-[#748073]">
+                    正文保存为 MDX
+                  </p>
                 </div>
                 <DeferredRichEditor
                   value={draft.content}

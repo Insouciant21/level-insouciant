@@ -12,8 +12,7 @@ type TagAggregateSectionProps = {
   }
 }
 
-const tagPanelClass =
-  "public-summary-panel"
+const tagPanelClass = "public-summary-panel"
 const tagEntryClass =
   "public-summary-card group px-4 py-4 transition duration-700 hover:-translate-y-0.5 hover:border-foreground/20 hover:bg-[#d9d1ad]/50 hover:shadow-[inset_0_1px_0_rgba(255,252,225,0.18),0_20px_42px_-34px_rgba(0,0,0,0.42)]"
 
@@ -29,7 +28,7 @@ function TagAggregateSection({ tag }: TagAggregateSectionProps) {
           <h2 className="mt-2 text-3xl font-semibold tracking-tight">
             <Link
               href={`/tags/${tag.slug}`}
-              className="transition duration-500 hover:text-destructive focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50"
+              className="transition duration-500 hover:text-destructive focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
             >
               {tag.name}
             </Link>

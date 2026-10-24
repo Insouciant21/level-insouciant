@@ -23,13 +23,13 @@ function visitImageNodes(
   tree: MdxNode,
   visitor: (node: MdxNode, parent: MdxNode | undefined) => void
 ) {
-  visit(
-    tree as never,
-    "image",
-    ((node: unknown, _index: number | undefined, parent: unknown) => {
-      visitor(node as MdxNode, parent as MdxNode | undefined)
-    }) as never
-  )
+  visit(tree as never, "image", ((
+    node: unknown,
+    _index: number | undefined,
+    parent: unknown
+  ) => {
+    visitor(node as MdxNode, parent as MdxNode | undefined)
+  }) as never)
 }
 
 function normalizeReferenceUrl(url: string): string {
@@ -221,8 +221,7 @@ export function removeImageReferences(
 
   for (const range of uniqueRanges) {
     rewrittenSource =
-      rewrittenSource.slice(0, range.start) +
-      rewrittenSource.slice(range.end)
+      rewrittenSource.slice(0, range.start) + rewrittenSource.slice(range.end)
   }
 
   return { source: rewrittenSource, removed }

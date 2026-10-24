@@ -5,7 +5,7 @@ import type { ComponentProps, ReactNode } from "react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 vi.mock("@/lib/navigation", async (importOriginal) => ({
-  ...await importOriginal<typeof import("@/lib/navigation")>(),
+  ...(await importOriginal<typeof import("@/lib/navigation")>()),
   default: ({ children, ...props }: ComponentProps<"a">) => (
     <a {...props}>{children}</a>
   ),
@@ -42,13 +42,31 @@ afterEach(() => {
 
 describe("SiteHeader", () => {
   it("renders the resolved configured site name", async () => {
-    render(<SiteHeader user={null} siteConfig={{...defaultSiteConfig, name: "Custom Archive", description: "Configured archive description"}} />)
+    render(
+      <SiteHeader
+        user={null}
+        siteConfig={{
+          ...defaultSiteConfig,
+          name: "Custom Archive",
+          description: "Configured archive description",
+        }}
+      />
+    )
 
     expect(screen.getByText("Custom Archive", { exact: true })).toBeTruthy()
   })
 
   it("uses the same translucent public surface language as the page", async () => {
-    render(<SiteHeader user={null} siteConfig={{...defaultSiteConfig, name: "Custom Archive", description: "Configured archive description"}} />)
+    render(
+      <SiteHeader
+        user={null}
+        siteConfig={{
+          ...defaultSiteConfig,
+          name: "Custom Archive",
+          description: "Configured archive description",
+        }}
+      />
+    )
 
     const header = document.querySelector("header")
     const status = screen.getByText("Archive Sync", { exact: true })
@@ -60,7 +78,16 @@ describe("SiteHeader", () => {
   })
 
   it("centers the primary navigation independently from edge controls", async () => {
-    render(<SiteHeader user={null} siteConfig={{...defaultSiteConfig, name: "Custom Archive", description: "Configured archive description"}} />)
+    render(
+      <SiteHeader
+        user={null}
+        siteConfig={{
+          ...defaultSiteConfig,
+          name: "Custom Archive",
+          description: "Configured archive description",
+        }}
+      />
+    )
 
     const header = document.querySelector("header")
     const inner = header?.firstElementChild as HTMLElement | null

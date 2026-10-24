@@ -119,7 +119,12 @@ function MediaAssetCard({
               autoFocus
               className="admin-input h-9"
             />
-            <Button type="button" size="sm" onClick={handleRename} disabled={isBusy}>
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleRename}
+              disabled={isBusy}
+            >
               保存
             </Button>
           </div>
@@ -160,7 +165,12 @@ function MediaAssetCard({
             <FilePenLine className="size-3.5" aria-hidden="true" />
             {isRenaming ? "取消" : "改名"}
           </Button>
-          <Button type="button" variant="ghost" size="sm" onClick={copyPublicUrl}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={copyPublicUrl}
+          >
             <Copy className="size-3.5" aria-hidden="true" />
             复制 URL
           </Button>
@@ -172,7 +182,9 @@ function MediaAssetCard({
               onClick={() => void handleDelete(true)}
               disabled={isBusy}
             >
-              {isBusy ? <LoaderCircle className="size-3.5 animate-spin" /> : null}
+              {isBusy ? (
+                <LoaderCircle className="size-3.5 animate-spin" />
+              ) : null}
               重试删除
             </Button>
           ) : (
@@ -183,7 +195,11 @@ function MediaAssetCard({
               onClick={() => void handleDelete()}
               disabled={isBusy || asset.status === "DELETING"}
             >
-              {isBusy ? <LoaderCircle className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" aria-hidden="true" />}
+              {isBusy ? (
+                <LoaderCircle className="size-3.5 animate-spin" />
+              ) : (
+                <Trash2 className="size-3.5" aria-hidden="true" />
+              )}
               删除
             </Button>
           )}

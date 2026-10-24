@@ -11,8 +11,12 @@ function EmptyState({ title, description }: EmptyStateProps) {
     <section className={emptyStatePanelClass}>
       <div className="mx-auto max-w-2xl space-y-4">
         <p className="utility-kicker">No Public Record Yet</p>
-        <h2 className="text-2xl font-semibold tracking-tight text-balance">{title}</h2>
-        <p className="text-sm leading-8 text-muted-foreground sm:text-base">{description}</p>
+        <h2 className="text-2xl font-semibold tracking-tight text-balance">
+          {title}
+        </h2>
+        <p className="text-sm leading-8 text-muted-foreground sm:text-base">
+          {description}
+        </p>
       </div>
     </section>
   )

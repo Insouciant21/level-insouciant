@@ -5,7 +5,7 @@ import type { ComponentProps, ReactNode } from "react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 vi.mock("@/lib/navigation", async (importOriginal) => ({
-  ...await importOriginal<typeof import("@/lib/navigation")>(),
+  ...(await importOriginal<typeof import("@/lib/navigation")>()),
   default: ({ children, ...props }: ComponentProps<"a">) => (
     <a {...props}>{children}</a>
   ),
@@ -19,8 +19,12 @@ vi.mock("@/components/ui/sheet", () => ({
   Sheet: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
   SheetTrigger: ({ children }: { children?: ReactNode }) => <>{children}</>,
   SheetClose: ({ children }: { children?: ReactNode }) => <>{children}</>,
-  SheetContent: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
-  SheetHeader: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+  SheetContent: ({ children }: { children?: ReactNode }) => (
+    <div>{children}</div>
+  ),
+  SheetHeader: ({ children }: { children?: ReactNode }) => (
+    <div>{children}</div>
+  ),
   SheetTitle: ({ children }: { children?: ReactNode }) => <h2>{children}</h2>,
   SheetDescription: ({ children }: { children?: ReactNode }) => (
     <p>{children}</p>

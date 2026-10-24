@@ -42,9 +42,12 @@ export async function fetchMediaAssets(
   }
 
   const search = params.toString()
-  const response = await fetch(`/api/admin/media${search ? `?${search}` : ""}`, {
-    cache: "no-store",
-  })
+  const response = await fetch(
+    `/api/admin/media${search ? `?${search}` : ""}`,
+    {
+      cache: "no-store",
+    }
+  )
 
   return parseResponse<MediaListResult>(response)
 }

@@ -6,7 +6,8 @@ import { motion as Motion, useReducedMotion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
-type TransitionVariant = "fade" | "fadeUp" | "left" | "right" | "scale" | "panel" | "terminal" | "wipe"
+type TransitionVariant =
+  "fade" | "fadeUp" | "left" | "right" | "scale" | "panel" | "terminal" | "wipe"
 type TransitionState = {
   initial: TargetAndTransition
   animate: TargetAndTransition

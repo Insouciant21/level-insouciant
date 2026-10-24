@@ -107,10 +107,7 @@ const articleForMediaSelect = {
   publishedAt: true,
 } as const
 
-const listableAssetStatuses: MediaAssetStatus[] = [
-  "ACTIVE",
-  "DELETE_FAILED",
-]
+const listableAssetStatuses: MediaAssetStatus[] = ["ACTIVE", "DELETE_FAILED"]
 
 function normalizeAssetUrl(url: string): string {
   const trimmed = url.trim()
@@ -271,9 +268,7 @@ export async function listMediaAssets(
   return {
     items: filtered
       .slice(start, start + pageSize)
-      .map(({ asset, references }) =>
-        toMediaAssetSummary(asset, references)
-      ),
+      .map(({ asset, references }) => toMediaAssetSummary(asset, references)),
     page,
     pageSize,
     total,
@@ -378,7 +373,10 @@ async function buildArticleRewrites(
     let rewrittenContent: string
 
     try {
-      rewrittenContent = removeImageReferences(article.content, asset.publicUrl).source
+      rewrittenContent = removeImageReferences(
+        article.content,
+        asset.publicUrl
+      ).source
     } catch {
       throw new Error("MEDIA_REFERENCE_REWRITE_FAILED")
     }

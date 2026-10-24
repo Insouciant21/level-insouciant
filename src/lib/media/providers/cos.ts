@@ -27,7 +27,8 @@ export function createCosStorageProvider(
   client?: CosClient
 ): ObjectStorageProvider {
   const cosClient =
-    client ?? new COS({ SecretId: config.secretId, SecretKey: config.secretKey })
+    client ??
+    new COS({ SecretId: config.secretId, SecretKey: config.secretKey })
 
   return {
     async upload(input: ObjectUploadInput): Promise<void> {

@@ -37,7 +37,7 @@ describe("public page skeleton compositions", () => {
     const { container } = render(<ArticlesPageSkeleton />)
     const intro = container.querySelector(".site-section-header")
 
-    expect(intro?.querySelector("[aria-hidden=\"true\"]")).toBeNull()
+    expect(intro?.querySelector('[aria-hidden="true"]')).toBeNull()
     expect(intro?.querySelector("h1")?.textContent).toBe("层级档案")
     expect(intro?.querySelector("p")?.textContent).toBe("Archive")
     expect(intro?.querySelectorAll("p")).toHaveLength(1)
@@ -47,15 +47,20 @@ describe("public page skeleton compositions", () => {
   })
 
   it.each([
-    ["categories", <ArchiveDirectoryPageSkeleton key="categories" />, "Categories", "分类归档"],
+    [
+      "categories",
+      <ArchiveDirectoryPageSkeleton key="categories" />,
+      "Categories",
+      "分类归档",
+    ],
     ["tags", <TagsPageSkeleton key="tags" />, "Tags", "标签归档"],
-  ] satisfies [string, ReactElement, string, string][]) (
+  ] satisfies [string, ReactElement, string, string][])(
     "%s intro title stays visible while data loads",
     (_, skeleton, eyebrow, title) => {
       const { container } = render(skeleton)
       const intro = container.querySelector(".site-section-header")
 
-      expect(intro?.querySelector("[aria-hidden=\"true\"]")).toBeNull()
+      expect(intro?.querySelector('[aria-hidden="true"]')).toBeNull()
       expect(intro?.querySelector("h1")?.textContent).toBe(title)
       expect(intro?.querySelector("p")?.textContent).toBe(eyebrow)
       expect(intro?.querySelectorAll("p")).toHaveLength(1)

@@ -18,7 +18,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { contactKindOptions } from "@/lib/contact-kinds"
-import type { ContactKind, SiteConfig, SiteConfigData, SiteLink } from "@/lib/site"
+import type {
+  ContactKind,
+  SiteConfig,
+  SiteConfigData,
+  SiteLink,
+} from "@/lib/site"
 
 type EditableTextField = "name" | "description" | "author" | "email" | "url"
 
@@ -57,7 +62,11 @@ function newLink(): SiteLink {
 }
 
 function isSafeLinkHref(value: string) {
-  if (value.startsWith("/") && !value.startsWith("//") && !value.startsWith("/\\")) {
+  if (
+    value.startsWith("/") &&
+    !value.startsWith("//") &&
+    !value.startsWith("/\\")
+  ) {
     return true
   }
 
@@ -73,7 +82,11 @@ type LinkEditorProps = {
   title: string
   links: SiteLink[]
   onAdd: () => void
-  onUpdate: (index: number, field: keyof SiteLink, value: string | ContactKind) => void
+  onUpdate: (
+    index: number,
+    field: keyof SiteLink,
+    value: string | ContactKind
+  ) => void
   onRemove: (index: number) => void
   onMove: (index: number, direction: -1 | 1) => void
   onToggle: (index: number) => void
@@ -121,7 +134,9 @@ function LinkEditor({
                 <Input
                   id={`${title}-${index}-label`}
                   value={link.label}
-                  onChange={(event) => onUpdate(index, "label", event.target.value)}
+                  onChange={(event) =>
+                    onUpdate(index, "label", event.target.value)
+                  }
                   className="admin-input"
                 />
               </div>
@@ -130,7 +145,9 @@ function LinkEditor({
                 <Input
                   id={`${title}-${index}-value`}
                   value={link.value}
-                  onChange={(event) => onUpdate(index, "value", event.target.value)}
+                  onChange={(event) =>
+                    onUpdate(index, "value", event.target.value)
+                  }
                   className="admin-input"
                 />
               </div>
@@ -143,7 +160,9 @@ function LinkEditor({
                   autoComplete="url"
                   spellCheck={false}
                   value={link.href}
-                  onChange={(event) => onUpdate(index, "href", event.target.value)}
+                  onChange={(event) =>
+                    onUpdate(index, "href", event.target.value)
+                  }
                   className="admin-input"
                   placeholder="/about 或 https://..."
                 />
@@ -159,7 +178,11 @@ function LinkEditor({
                 title={link.enabled ? "禁用" : "启用"}
                 onClick={() => onToggle(index)}
               >
-                {link.enabled ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
+                {link.enabled ? (
+                  <Eye aria-hidden="true" />
+                ) : (
+                  <EyeOff aria-hidden="true" />
+                )}
               </Button>
               <Button
                 type="button"
@@ -249,18 +272,32 @@ function Field({
 }
 
 export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
-  const [settings, setSettings] = useState(() => getEditableSettings(siteConfig))
+  const [settings, setSettings] = useState(() =>
+    getEditableSettings(siteConfig)
+  )
 
   function updateTopLevel(field: EditableTextField, value: string) {
     setSettings((current) => ({ ...current, [field]: value }))
   }
 
   function updateHero(field: "title", value: string) {
-    setSettings((current) => ({ ...current, hero: { ...current.hero, [field]: value } }))
+    setSettings((current) => ({
+      ...current,
+      hero: { ...current.hero, [field]: value },
+    }))
   }
 
-  function updateAbout(field: Exclude<keyof SiteConfigData["about"], "archiveAccess" | "transmission">, value: string) {
-    setSettings((current) => ({ ...current, about: { ...current.about, [field]: value } }))
+  function updateAbout(
+    field: Exclude<
+      keyof SiteConfigData["about"],
+      "archiveAccess" | "transmission"
+    >,
+    value: string
+  ) {
+    setSettings((current) => ({
+      ...current,
+      about: { ...current.about, [field]: value },
+    }))
   }
 
   function updateAboutAction(
@@ -270,12 +307,21 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
   ) {
     setSettings((current) => ({
       ...current,
-      about: { ...current.about, [action]: { ...current.about[action], [field]: value } },
+      about: {
+        ...current.about,
+        [action]: { ...current.about[action], [field]: value },
+      },
     }))
   }
 
-  function updateProfile(field: keyof SiteConfigData["profile"], value: string) {
-    setSettings((current) => ({ ...current, profile: { ...current.profile, [field]: value } }))
+  function updateProfile(
+    field: keyof SiteConfigData["profile"],
+    value: string
+  ) {
+    setSettings((current) => ({
+      ...current,
+      profile: { ...current.profile, [field]: value },
+    }))
   }
 
   function updateLink(
@@ -285,7 +331,8 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
     value: string | ContactKind
   ) {
     setSettings((current) => {
-      const links = collection === "contacts" ? current.contacts : current.footer.links
+      const links =
+        collection === "contacts" ? current.contacts : current.footer.links
       const nextLinks = links.map((link, linkIndex) =>
         linkIndex === index ? { ...link, [field]: value } : link
       )
@@ -300,13 +347,20 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
     setSettings((current) =>
       collection === "contacts"
         ? { ...current, contacts: [...current.contacts, newLink()] }
-        : { ...current, footer: { ...current.footer, links: [...current.footer.links, newLink()] } }
+        : {
+            ...current,
+            footer: {
+              ...current.footer,
+              links: [...current.footer.links, newLink()],
+            },
+          }
     )
   }
 
   function removeLink(collection: "contacts" | "footer", index: number) {
     setSettings((current) => {
-      const links = collection === "contacts" ? current.contacts : current.footer.links
+      const links =
+        collection === "contacts" ? current.contacts : current.footer.links
       const nextLinks = links.filter((_, linkIndex) => linkIndex !== index)
 
       return collection === "contacts"
@@ -315,9 +369,14 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
     })
   }
 
-  function moveLink(collection: "contacts" | "footer", index: number, direction: -1 | 1) {
+  function moveLink(
+    collection: "contacts" | "footer",
+    index: number,
+    direction: -1 | 1
+  ) {
     setSettings((current) => {
-      const links = collection === "contacts" ? current.contacts : current.footer.links
+      const links =
+        collection === "contacts" ? current.contacts : current.footer.links
       const targetIndex = index + direction
 
       if (targetIndex < 0 || targetIndex >= links.length) {
@@ -336,7 +395,8 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
 
   function toggleLink(collection: "contacts" | "footer", index: number) {
     setSettings((current) => {
-      const links = collection === "contacts" ? current.contacts : current.footer.links
+      const links =
+        collection === "contacts" ? current.contacts : current.footer.links
       const nextLinks = links.map((link, linkIndex) =>
         linkIndex === index ? { ...link, enabled: !link.enabled } : link
       )
@@ -348,62 +408,229 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
   }
 
   return (
-    <form method="post"
+    <form
+      method="post"
       action={updateSiteSettingsAction}
       className="site-settings-form admin-surface grid gap-7 p-4 sm:p-6 lg:p-7"
     >
-      <input type="hidden" name="settings" value={JSON.stringify(settings)} readOnly />
+      <input
+        type="hidden"
+        name="settings"
+        value={JSON.stringify(settings)}
+        readOnly
+      />
 
       <section className="grid gap-4">
         <h2 className="text-lg font-semibold text-[#edf3e9]">站点与 SEO</h2>
         <div className="grid gap-5 lg:grid-cols-2">
-          <Field id="site-name" label="站点名称" value={settings.name} onChange={(value) => updateTopLevel("name", value)} />
-          <Field id="site-author" label="作者名称" value={settings.author} onChange={(value) => updateTopLevel("author", value)} />
-          <Field id="site-email" label="联系邮箱" value={settings.email} onChange={(value) => updateTopLevel("email", value)} />
-          <Field id="site-url" label="站点地址" value={settings.url} onChange={(value) => updateTopLevel("url", value)} />
-          <Field id="site-description" label="站点描述" value={settings.description} onChange={(value) => updateTopLevel("description", value)} multiline />
-          <Field id="site-og-alt" label="默认 OG 图片替代文本" value={settings.seo.defaultOgImageAlt} onChange={(value) => setSettings((current) => ({ ...current, seo: { ...current.seo, defaultOgImageAlt: value } }))} />
-          <Field id="site-keywords" label="SEO 关键词（逗号分隔）" value={settings.seo.keywords.join(", ")} onChange={(value) => setSettings((current) => ({ ...current, seo: { ...current.seo, keywords: value.split(",").map((keyword) => keyword.trim()).filter(Boolean) } }))} multiline />
+          <Field
+            id="site-name"
+            label="站点名称"
+            value={settings.name}
+            onChange={(value) => updateTopLevel("name", value)}
+          />
+          <Field
+            id="site-author"
+            label="作者名称"
+            value={settings.author}
+            onChange={(value) => updateTopLevel("author", value)}
+          />
+          <Field
+            id="site-email"
+            label="联系邮箱"
+            value={settings.email}
+            onChange={(value) => updateTopLevel("email", value)}
+          />
+          <Field
+            id="site-url"
+            label="站点地址"
+            value={settings.url}
+            onChange={(value) => updateTopLevel("url", value)}
+          />
+          <Field
+            id="site-description"
+            label="站点描述"
+            value={settings.description}
+            onChange={(value) => updateTopLevel("description", value)}
+            multiline
+          />
+          <Field
+            id="site-og-alt"
+            label="默认 OG 图片替代文本"
+            value={settings.seo.defaultOgImageAlt}
+            onChange={(value) =>
+              setSettings((current) => ({
+                ...current,
+                seo: { ...current.seo, defaultOgImageAlt: value },
+              }))
+            }
+          />
+          <Field
+            id="site-keywords"
+            label="SEO 关键词（逗号分隔）"
+            value={settings.seo.keywords.join(", ")}
+            onChange={(value) =>
+              setSettings((current) => ({
+                ...current,
+                seo: {
+                  ...current.seo,
+                  keywords: value
+                    .split(",")
+                    .map((keyword) => keyword.trim())
+                    .filter(Boolean),
+                },
+              }))
+            }
+            multiline
+          />
         </div>
       </section>
 
       <section className="grid gap-4 border-t border-white/10 pt-5">
         <h2 className="text-lg font-semibold text-[#edf3e9]">首页 Hero</h2>
         <div className="grid gap-5 lg:grid-cols-2">
-          <Field id="hero-title" label="标题" value={settings.hero.title} onChange={(value) => updateHero("title", value)} />
+          <Field
+            id="hero-title"
+            label="标题"
+            value={settings.hero.title}
+            onChange={(value) => updateHero("title", value)}
+          />
         </div>
       </section>
 
       <section className="grid gap-4 border-t border-white/10 pt-5">
         <h2 className="text-lg font-semibold text-[#edf3e9]">个人资料</h2>
         <div className="grid gap-5 lg:grid-cols-2">
-          <Field id="profile-title" label="资料标题" value={settings.profile.title} onChange={(value) => updateProfile("title", value)} />
-          <Field id="profile-status" label="状态" value={settings.profile.status} onChange={(value) => updateProfile("status", value)} />
-          <Field id="profile-location" label="位置" value={settings.profile.location} onChange={(value) => updateProfile("location", value)} />
-          <Field id="profile-summary" label="摘要" value={settings.profile.summary} onChange={(value) => updateProfile("summary", value)} multiline />
+          <Field
+            id="profile-title"
+            label="资料标题"
+            value={settings.profile.title}
+            onChange={(value) => updateProfile("title", value)}
+          />
+          <Field
+            id="profile-status"
+            label="状态"
+            value={settings.profile.status}
+            onChange={(value) => updateProfile("status", value)}
+          />
+          <Field
+            id="profile-location"
+            label="位置"
+            value={settings.profile.location}
+            onChange={(value) => updateProfile("location", value)}
+          />
+          <Field
+            id="profile-summary"
+            label="摘要"
+            value={settings.profile.summary}
+            onChange={(value) => updateProfile("summary", value)}
+            multiline
+          />
         </div>
       </section>
 
       <section className="grid gap-4 border-t border-white/10 pt-5">
         <h2 className="text-lg font-semibold text-[#edf3e9]">About</h2>
         <div className="grid gap-5 lg:grid-cols-2">
-          <Field id="about-metadata-title" label="须知页面元标题" value={settings.about.metadataTitle} onChange={(value) => updateAbout("metadataTitle", value)} />
-          <Field id="about-display-title" label="须知页标题" value={settings.about.displayTitle} onChange={(value) => updateAbout("displayTitle", value)} />
-          <Field id="about-metadata-description" label="须知页描述" value={settings.about.metadataDescription} onChange={(value) => updateAbout("metadataDescription", value)} multiline />
-          <Field id="about-archive-node" label="档案节点标签" value={settings.about.archiveNodeLabel} onChange={(value) => updateAbout("archiveNodeLabel", value)} />
-          <Field id="about-status-label" label="状态标签" value={settings.about.statusLabel} onChange={(value) => updateAbout("statusLabel", value)} />
-          <Field id="about-status-value" label="状态值" value={settings.about.statusValue} onChange={(value) => updateAbout("statusValue", value)} />
-          <Field id="about-contact-heading" label="联系标题" value={settings.about.contactHeading} onChange={(value) => updateAbout("contactHeading", value)} />
-          <Field id="about-quote" label="引言" value={settings.about.quote} onChange={(value) => updateAbout("quote", value)} multiline />
-          <Field id="about-intro" label="介绍" value={settings.about.intro} onChange={(value) => updateAbout("intro", value)} multiline />
-          <Field id="about-principles" label="原则" value={settings.about.principles} onChange={(value) => updateAbout("principles", value)} multiline />
+          <Field
+            id="about-metadata-title"
+            label="须知页面元标题"
+            value={settings.about.metadataTitle}
+            onChange={(value) => updateAbout("metadataTitle", value)}
+          />
+          <Field
+            id="about-display-title"
+            label="须知页标题"
+            value={settings.about.displayTitle}
+            onChange={(value) => updateAbout("displayTitle", value)}
+          />
+          <Field
+            id="about-metadata-description"
+            label="须知页描述"
+            value={settings.about.metadataDescription}
+            onChange={(value) => updateAbout("metadataDescription", value)}
+            multiline
+          />
+          <Field
+            id="about-archive-node"
+            label="档案节点标签"
+            value={settings.about.archiveNodeLabel}
+            onChange={(value) => updateAbout("archiveNodeLabel", value)}
+          />
+          <Field
+            id="about-status-label"
+            label="状态标签"
+            value={settings.about.statusLabel}
+            onChange={(value) => updateAbout("statusLabel", value)}
+          />
+          <Field
+            id="about-status-value"
+            label="状态值"
+            value={settings.about.statusValue}
+            onChange={(value) => updateAbout("statusValue", value)}
+          />
+          <Field
+            id="about-contact-heading"
+            label="联系标题"
+            value={settings.about.contactHeading}
+            onChange={(value) => updateAbout("contactHeading", value)}
+          />
+          <Field
+            id="about-quote"
+            label="引言"
+            value={settings.about.quote}
+            onChange={(value) => updateAbout("quote", value)}
+            multiline
+          />
+          <Field
+            id="about-intro"
+            label="介绍"
+            value={settings.about.intro}
+            onChange={(value) => updateAbout("intro", value)}
+            multiline
+          />
+          <Field
+            id="about-principles"
+            label="原则"
+            value={settings.about.principles}
+            onChange={(value) => updateAbout("principles", value)}
+            multiline
+          />
           <div className="grid gap-5">
-            <Field id="about-archive-label" label="档案入口文字" value={settings.about.archiveAccess.label} onChange={(value) => updateAboutAction("archiveAccess", "label", value)} />
-            <Field id="about-archive-href" label="档案入口地址" value={settings.about.archiveAccess.href} onChange={(value) => updateAboutAction("archiveAccess", "href", value)} />
+            <Field
+              id="about-archive-label"
+              label="档案入口文字"
+              value={settings.about.archiveAccess.label}
+              onChange={(value) =>
+                updateAboutAction("archiveAccess", "label", value)
+              }
+            />
+            <Field
+              id="about-archive-href"
+              label="档案入口地址"
+              value={settings.about.archiveAccess.href}
+              onChange={(value) =>
+                updateAboutAction("archiveAccess", "href", value)
+              }
+            />
           </div>
           <div className="grid gap-5">
-            <Field id="about-transmission-label" label="传输入口文字" value={settings.about.transmission.label} onChange={(value) => updateAboutAction("transmission", "label", value)} />
-            <Field id="about-transmission-href" label="传输入口地址" value={settings.about.transmission.href} onChange={(value) => updateAboutAction("transmission", "href", value)} />
+            <Field
+              id="about-transmission-label"
+              label="传输入口文字"
+              value={settings.about.transmission.label}
+              onChange={(value) =>
+                updateAboutAction("transmission", "label", value)
+              }
+            />
+            <Field
+              id="about-transmission-href"
+              label="传输入口地址"
+              value={settings.about.transmission.href}
+              onChange={(value) =>
+                updateAboutAction("transmission", "href", value)
+              }
+            />
           </div>
         </div>
       </section>
@@ -412,7 +639,9 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
         title="联系方式"
         links={settings.contacts}
         onAdd={() => addLink("contacts")}
-        onUpdate={(index, field, value) => updateLink("contacts", index, field, value)}
+        onUpdate={(index, field, value) =>
+          updateLink("contacts", index, field, value)
+        }
         onRemove={(index) => removeLink("contacts", index)}
         onMove={(index, direction) => moveLink("contacts", index, direction)}
         onToggle={(index) => toggleLink("contacts", index)}
@@ -422,7 +651,9 @@ export function SiteSettingsForm({ siteConfig }: { siteConfig: SiteConfig }) {
         title="页脚链接"
         links={settings.footer.links}
         onAdd={() => addLink("footer")}
-        onUpdate={(index, field, value) => updateLink("footer", index, field, value)}
+        onUpdate={(index, field, value) =>
+          updateLink("footer", index, field, value)
+        }
         onRemove={(index) => removeLink("footer", index)}
         onMove={(index, direction) => moveLink("footer", index, direction)}
         onToggle={(index) => toggleLink("footer", index)}

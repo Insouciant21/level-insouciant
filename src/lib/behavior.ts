@@ -96,7 +96,10 @@ export async function getEngagementSnapshot(
   }
 }
 
-export async function recordPageView(articleSlug: string, viewerId: string): Promise<{ views: number }> {
+export async function recordPageView(
+  articleSlug: string,
+  viewerId: string
+): Promise<{ views: number }> {
   if (!isBehaviorStorageEnabled()) {
     return { views: 0 }
   }
@@ -177,7 +180,9 @@ export async function toggleLike(
   }
 }
 
-export async function listComments(articleSlug: string): Promise<PublicComment[]> {
+export async function listComments(
+  articleSlug: string
+): Promise<PublicComment[]> {
   if (!isBehaviorStorageEnabled()) {
     return [] as PublicComment[]
   }
@@ -242,7 +247,11 @@ export async function createComment(
       },
     })
 
-    if (!parent || parent.articleSlug !== articleSlug || parent.status !== APPROVED_COMMENT_STATUS) {
+    if (
+      !parent ||
+      parent.articleSlug !== articleSlug ||
+      parent.status !== APPROVED_COMMENT_STATUS
+    ) {
       throw new Error("INVALID_REPLY_TARGET")
     }
   }
@@ -301,11 +310,14 @@ function buildCommentTree(records: PublicCommentRecord[]): PublicComment[] {
   }
 
   return roots.sort(
-    (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
+    (left, right) =>
+      new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
   )
 }
 
-function toPublicComment(record: PublicCommentRecord | CreatedCommentRecord): PublicComment {
+function toPublicComment(
+  record: PublicCommentRecord | CreatedCommentRecord
+): PublicComment {
   return {
     id: record.id,
     authorName: record.authorName,

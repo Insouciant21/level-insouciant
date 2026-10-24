@@ -19,7 +19,10 @@ export const registrationInputSchema = z.object({
 })
 
 export const profileInputSchema = z.object({
-  name: z.string().trim().transform((value) => value.slice(0, 60)),
+  name: z
+    .string()
+    .trim()
+    .transform((value) => value.slice(0, 60)),
   email: normalizedEmail,
   avatarUrl: z.string().trim(),
 })

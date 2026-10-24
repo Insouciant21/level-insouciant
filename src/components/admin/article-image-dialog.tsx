@@ -40,7 +40,12 @@ function ArticleImageDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-label="编辑图片属性">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label="编辑图片属性"
+    >
       <div className="admin-surface w-full max-w-lg p-5 sm:p-6">
         <div className="flex items-start gap-3">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-[var(--safety-exit-green)]/12 text-[var(--safety-exit-green-strong)]">
@@ -51,14 +56,23 @@ function ArticleImageDialog({
             <h2 className="mt-1 text-xl font-semibold text-[#edf3e9]">
               {value.mode === "insert" ? "插入图片" : "编辑图片"}
             </h2>
-            <p className="mt-1 text-xs leading-5 text-[#9aa79a]">{value.displayName}</p>
+            <p className="mt-1 text-xs leading-5 text-[#9aa79a]">
+              {value.displayName}
+            </p>
           </div>
         </div>
         <div className="mt-5 overflow-hidden border border-white/10 bg-black/20">
-          <img src={value.src} alt="" className="max-h-56 w-full object-contain" />
+          <img
+            src={value.src}
+            alt=""
+            className="max-h-56 w-full object-contain"
+          />
         </div>
         <div className="mt-5 grid gap-2">
-          <label htmlFor="article-image-alt" className="text-sm font-semibold text-[#dce6d8]">
+          <label
+            htmlFor="article-image-alt"
+            className="text-sm font-semibold text-[#dce6d8]"
+          >
             Alt 文本 <span className="text-[var(--admin-danger)]">*</span>
           </label>
           <Input
@@ -72,11 +86,17 @@ function ArticleImageDialog({
             autoFocus
             className="admin-input"
           />
-          {error ? <p className="text-xs text-[var(--admin-danger)]">{error}</p> : null}
+          {error ? (
+            <p className="text-xs text-[var(--admin-danger)]">{error}</p>
+          ) : null}
         </div>
         <div className="mt-6 flex justify-end gap-2">
-          <Button type="button" variant="ghost" onClick={onClose}>取消</Button>
-          <Button type="button" onClick={handleConfirm}>插入图片</Button>
+          <Button type="button" variant="ghost" onClick={onClose}>
+            取消
+          </Button>
+          <Button type="button" onClick={handleConfirm}>
+            插入图片
+          </Button>
         </div>
       </div>
     </div>

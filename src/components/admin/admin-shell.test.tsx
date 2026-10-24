@@ -5,12 +5,12 @@ import type { ComponentProps, ReactNode } from "react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 vi.mock("@/lib/navigation", async (importOriginal) => ({
-  ...await importOriginal<typeof import("@/lib/navigation")>(),
+  ...(await importOriginal<typeof import("@/lib/navigation")>()),
   usePathname: () => "/admin/articles",
 }))
 
 vi.mock("@/lib/navigation", async (importOriginal) => ({
-  ...await importOriginal<typeof import("@/lib/navigation")>(),
+  ...(await importOriginal<typeof import("@/lib/navigation")>()),
   default: ({ children, ...props }: ComponentProps<"a">) => (
     <a {...props}>{children}</a>
   ),
@@ -40,9 +40,7 @@ vi.mock("@/components/ui/sheet", () => ({
   SheetHeader: ({ children }: { children?: ReactNode }) => (
     <div>{children}</div>
   ),
-  SheetTitle: ({ children }: { children?: ReactNode }) => (
-    <h2>{children}</h2>
-  ),
+  SheetTitle: ({ children }: { children?: ReactNode }) => <h2>{children}</h2>,
   SheetDescription: ({ children }: { children?: ReactNode }) => (
     <p>{children}</p>
   ),
@@ -77,13 +75,13 @@ describe("AdminShell mobile navigation", () => {
     ).toBeTruthy()
     expect(screen.getAllByText("Custom Archive")).toHaveLength(2)
     expect(screen.getAllByTestId("admin-site-icon")).toHaveLength(2)
-    expect(screen.getAllByTestId("admin-site-icon")[0].style.backgroundImage).toContain(
-      "/icon.png"
-    )
+    expect(
+      screen.getAllByTestId("admin-site-icon")[0].style.backgroundImage
+    ).toContain("/icon.png")
     expect(screen.getAllByTestId("admin-user-avatar")).toHaveLength(2)
-    expect(screen.getAllByTestId("admin-user-avatar")[0].style.backgroundImage).toContain(
-      "https://example.com/admin-avatar.png"
-    )
+    expect(
+      screen.getAllByTestId("admin-user-avatar")[0].style.backgroundImage
+    ).toContain("https://example.com/admin-avatar.png")
     expect(screen.queryByText("运营总览")).toBeNull()
     expect(screen.queryByText("内容管理")).toBeNull()
 

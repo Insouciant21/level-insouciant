@@ -11,7 +11,10 @@ declare global {
 const prismaClientSignature = [
   process.env.DATABASE_URL ?? "DATABASE_URL:missing",
   Prisma.dmmf.datamodel.models
-    .map((model) => `${model.name}:${model.fields.map((field) => field.name).join(",")}`)
+    .map(
+      (model) =>
+        `${model.name}:${model.fields.map((field) => field.name).join(",")}`
+    )
     .join("|"),
 ].join("|")
 
@@ -37,7 +40,8 @@ function createPrismaClient() {
 }
 
 function getPrismaClient() {
-  const hasMatchingSignature = globalThis.__levelInsouciantPrismaSignature__ === prismaClientSignature
+  const hasMatchingSignature =
+    globalThis.__levelInsouciantPrismaSignature__ === prismaClientSignature
 
   if (!hasMatchingSignature) {
     void globalThis.__levelInsouciantPrisma__?.$disconnect()

@@ -236,7 +236,9 @@ export async function getOwnComments(userId: string) {
       })
     : []
 
-  const titleMap = new Map(articles.map((article) => [article.slug, article.title]))
+  const titleMap = new Map(
+    articles.map((article) => [article.slug, article.title])
+  )
 
   return comments.map((comment) => ({
     id: comment.id,

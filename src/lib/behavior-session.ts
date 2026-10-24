@@ -32,13 +32,17 @@ export function attachBehaviorViewerCookie(
     return response
   }
 
-  requestContext().context.cookies.set(BEHAVIOR_VISITOR_COOKIE, input.viewerId, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-  })
+  requestContext().context.cookies.set(
+    BEHAVIOR_VISITOR_COOKIE,
+    input.viewerId,
+    {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    }
+  )
 
   return response
 }

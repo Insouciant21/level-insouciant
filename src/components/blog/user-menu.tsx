@@ -79,7 +79,8 @@ function UserMenu({ user }: UserMenuProps) {
                 注销
               </button>
             </DropdownMenuItem>
-            <form method="post"
+            <form
+              method="post"
               id="site-user-logout"
               action={logoutAction}
               className="hidden"

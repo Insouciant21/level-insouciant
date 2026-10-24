@@ -94,7 +94,6 @@ function MdxEditor({
       const scrollElement = perfectScrollbarElementRef.current
       scrollElement?.classList.remove("perfect-scrollbar")
       perfectScrollbarElementRef.current = null
-
     }
   }, [])
 

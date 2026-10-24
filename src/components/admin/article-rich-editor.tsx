@@ -27,7 +27,9 @@ function ArticleRichEditor({
   ariaLabel = "文章可视化编辑器",
 }: ArticleRichEditorProps) {
   const lastEmittedValueRef = useRef(value)
-  const [pendingImages, setPendingImages] = useState<ArticleImageDialogValue[]>([])
+  const [pendingImages, setPendingImages] = useState<ArticleImageDialogValue[]>(
+    []
+  )
   const [uploadError, setUploadError] = useState<string | null>(null)
   const pendingImage = pendingImages[0] ?? null
 
@@ -176,7 +178,10 @@ function ArticleRichEditor({
   }
 
   return (
-    <div className="overflow-hidden border border-white/10 bg-[#10130f]" data-testid="article-rich-editor">
+    <div
+      className="overflow-hidden border border-white/10 bg-[#10130f]"
+      data-testid="article-rich-editor"
+    >
       <ArticleEditorToolbar
         editor={editor}
         onUploadFiles={(files) => void handleFiles(files)}

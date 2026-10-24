@@ -50,7 +50,11 @@ describe("site settings validation", () => {
     const result = normalizeSiteConfigData(input)
 
     expect(result.name).toBe("Custom Archive")
-    expect(result.contacts.map((item) => item.enabled)).toEqual([true, false, true])
+    expect(result.contacts.map((item) => item.enabled)).toEqual([
+      true,
+      false,
+      true,
+    ])
   })
 
   it("rejects unknown contact kinds", () => {

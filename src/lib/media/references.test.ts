@@ -36,18 +36,15 @@ describe("MDX image references", () => {
 
   it("counts a URL without treating a trailing slash as meaningful", () => {
     expect(
-      countImageReference(
-        `![First](${firstImageUrl}/)`,
-        `${firstImageUrl}/`
-      )
+      countImageReference(`![First](${firstImageUrl}/)`, `${firstImageUrl}/`)
     ).toBe(1)
   })
 
   it("detects image nodes that still need alt text", () => {
     expect(hasMissingImageAlt(`![](${firstImageUrl})`)).toBe(true)
-    expect(hasMissingImageAlt(`![A useful description](${firstImageUrl})`)).toBe(
-      false
-    )
+    expect(
+      hasMissingImageAlt(`![A useful description](${firstImageUrl})`)
+    ).toBe(false)
     expect(hasMissingImageAlt("```md\n![](" + firstImageUrl + ")\n```")).toBe(
       false
     )

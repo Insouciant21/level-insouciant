@@ -31,9 +31,7 @@ describe("AdminDatePicker", () => {
     expect(screen.getByRole("button", { name: "上个月" })).toBeTruthy()
     expect(screen.getByRole("button", { name: "下个月" })).toBeTruthy()
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "选择 2026年8月12日" })
-    )
+    fireEvent.click(screen.getByRole("button", { name: "选择 2026年8月12日" }))
 
     expect(onChange).toHaveBeenCalledWith("2026-08-12")
   })

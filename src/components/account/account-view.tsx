@@ -93,7 +93,11 @@ export function UserAccountView({
                 </h2>
               </div>
 
-              <form method="post" action={updateProfileAction} className="grid gap-4">
+              <form
+                method="post"
+                action={updateProfileAction}
+                className="grid gap-4"
+              >
                 <div className="grid gap-2">
                   <Label htmlFor="profile-name">昵称</Label>
                   <Input
@@ -147,7 +151,11 @@ export function UserAccountView({
                 </h2>
               </div>
 
-              <form method="post" action={changePasswordAction} className="grid gap-4">
+              <form
+                method="post"
+                action={changePasswordAction}
+                className="grid gap-4"
+              >
                 <div className="grid gap-2">
                   <Label htmlFor="current-password">原密码</Label>
                   <Input
@@ -252,7 +260,11 @@ export function UserAccountView({
                       {comment.content}
                     </p>
 
-                    <form method="post" action={deleteOwnCommentAction} className="mt-4">
+                    <form
+                      method="post"
+                      action={deleteOwnCommentAction}
+                      className="mt-4"
+                    >
                       <input
                         type="hidden"
                         name="commentId"
@@ -366,7 +378,11 @@ export function AdminAccountView({
               </h2>
             </div>
 
-            <form method="post" action={updateProfileAction} className="grid gap-4">
+            <form
+              method="post"
+              action={updateProfileAction}
+              className="grid gap-4"
+            >
               <div className="grid gap-2">
                 <Label htmlFor="admin-profile-name" className="text-[#dce6d8]">
                   昵称
@@ -433,7 +449,11 @@ export function AdminAccountView({
               </h2>
             </div>
 
-            <form method="post" action={changePasswordAction} className="grid gap-4">
+            <form
+              method="post"
+              action={changePasswordAction}
+              className="grid gap-4"
+            >
               <div className="grid gap-2">
                 <Label
                   htmlFor="admin-current-password"

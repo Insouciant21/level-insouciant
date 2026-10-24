@@ -41,7 +41,11 @@ function isCanonicalSiteUrl(value: string) {
 }
 
 function isSafeLinkHref(value: string) {
-  if (value.startsWith("/") && !value.startsWith("//") && !value.startsWith("/\\")) {
+  if (
+    value.startsWith("/") &&
+    !value.startsWith("//") &&
+    !value.startsWith("/\\")
+  ) {
     return true
   }
 
@@ -53,9 +57,12 @@ function isSafeLinkHref(value: string) {
   }
 }
 
-const canonicalSiteUrlSchema = normalizedText(2_048).refine(isCanonicalSiteUrl, {
-  message: "Must use an http or https URL",
-})
+const canonicalSiteUrlSchema = normalizedText(2_048).refine(
+  isCanonicalSiteUrl,
+  {
+    message: "Must use an http or https URL",
+  }
+)
 
 const safeLinkHrefSchema = normalizedText(2_048).refine(isSafeLinkHref, {
   message: "Must use a safe link URL",
@@ -81,7 +88,9 @@ const legacySiteLinkSchema = siteLinkSchema.extend({
     .trim()
     .min(1)
     .transform((kind): ContactKind =>
-      contactKinds.includes(kind as ContactKind) ? (kind as ContactKind) : "custom"
+      contactKinds.includes(kind as ContactKind)
+        ? (kind as ContactKind)
+        : "custom"
     ),
 })
 

@@ -76,7 +76,9 @@ function MobileNav({ user, config }: MobileNavProps) {
             <span
               className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#73766f]/45 bg-[#aaa891]/42 bg-cover bg-center text-muted-foreground"
               data-testid="mobile-nav-user-avatar"
-              style={avatarUrl ? { backgroundImage: `url(${avatarUrl})` } : undefined}
+              style={
+                avatarUrl ? { backgroundImage: `url(${avatarUrl})` } : undefined
+              }
               aria-hidden="true"
             >
               {avatarUrl ? null : <UserRound className="size-4" />}

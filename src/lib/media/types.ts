@@ -1,10 +1,7 @@
 export type MediaProviderKey = "oss" | "cos" | "r2"
 
 export type AcceptedImageMime =
-  | "image/jpeg"
-  | "image/png"
-  | "image/webp"
-  | "image/gif"
+  "image/jpeg" | "image/png" | "image/webp" | "image/gif"
 
 export type ObjectUploadInput = {
   objectKey: string
@@ -48,6 +45,4 @@ export type R2StorageConfig = {
 }
 
 export type MediaStorageConfig =
-  | OssStorageConfig
-  | CosStorageConfig
-  | R2StorageConfig
+  OssStorageConfig | CosStorageConfig | R2StorageConfig

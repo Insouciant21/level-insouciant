@@ -121,7 +121,9 @@ function formatUserName(user: Pick<User, "name" | "email"> | null | undefined) {
   return user.name?.trim() || user.email
 }
 
-function toManagedArticleSummary(record: ManagedArticleSummaryRecord): ManagedArticleSummary {
+function toManagedArticleSummary(
+  record: ManagedArticleSummaryRecord
+): ManagedArticleSummary {
   return {
     id: record.id,
     archiveCode: formatArchiveCode(record.archiveNumber),
@@ -139,7 +141,9 @@ function toManagedArticleSummary(record: ManagedArticleSummaryRecord): ManagedAr
   }
 }
 
-function toManagedArticleDetail(record: ManagedArticleDetailRecord): ManagedArticleDetail {
+function toManagedArticleDetail(
+  record: ManagedArticleDetailRecord
+): ManagedArticleDetail {
   return {
     ...toManagedArticleSummary(record),
     content: record.content,
@@ -165,7 +169,9 @@ function buildManagedTagsFromArticles(articles: ManagedArticleTagRecord[]) {
       count: entry.count,
       articleSlugs: entry.articleSlugs,
     }))
-    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)) satisfies ManagedTagSummary[]
+    .sort(
+      (a, b) => b.count - a.count || a.name.localeCompare(b.name)
+    ) satisfies ManagedTagSummary[]
 }
 
 function toManagedArticleRevisionSummary(
@@ -190,7 +196,10 @@ function deduplicateTags(tags: string[]) {
   return [...new Set(tags.map((tag) => tag.trim()).filter(Boolean))]
 }
 
-function normalizeArticleInput(input: ManagedArticleInput, options?: { requireSlug?: boolean }) {
+function normalizeArticleInput(
+  input: ManagedArticleInput,
+  options?: { requireSlug?: boolean }
+) {
   const result = managedArticleInputSchema.safeParse(input)
 
   if (!result.success) {
@@ -228,20 +237,25 @@ export const getManagedArticles = cache(async function getManagedArticles() {
   return articles.map(toManagedArticleSummary)
 })
 
-export const getManagedArticleBySlug = cache(async function getManagedArticleBySlug(slug: string) {
-  const article = await prisma.article.findUnique({
-    where: { slug },
-    select: managedArticleDetailSelect,
-  })
+export const getManagedArticleBySlug = cache(
+  async function getManagedArticleBySlug(slug: string) {
+    const article = await prisma.article.findUnique({
+      where: { slug },
+      select: managedArticleDetailSelect,
+    })
 
-  if (!article) {
-    return null
+    if (!article) {
+      return null
+    }
+
+    return toManagedArticleDetail(article)
   }
+)
 
-  return toManagedArticleDetail(article)
-})
-
-export async function createManagedArticle(input: ManagedArticleInput, editorUserId: string) {
+export async function createManagedArticle(
+  input: ManagedArticleInput,
+  editorUserId: string
+) {
   const normalized = normalizeArticleInput(input, { requireSlug: true })
   const existing = await prisma.article.findUnique({
     where: { slug: normalized.slug },
@@ -269,14 +283,23 @@ export async function createManagedArticle(input: ManagedArticleInput, editorUse
       },
     })
 
-    await createArticleRevisionSnapshot(tx, article, editorUserId, "Article created")
+    await createArticleRevisionSnapshot(
+      tx,
+      article,
+      editorUserId,
+      "Article created"
+    )
     return article
   })
   invalidatePublicPages()
   return result
 }
 
-export async function updateManagedArticle(slug: string, input: ManagedArticleInput, editorUserId: string) {
+export async function updateManagedArticle(
+  slug: string,
+  input: ManagedArticleInput,
+  editorUserId: string
+) {
   const normalized = normalizeArticleInput(input)
   const existing = await prisma.article.findUnique({
     where: { slug },
@@ -303,14 +326,23 @@ export async function updateManagedArticle(slug: string, input: ManagedArticleIn
       },
     })
 
-    await createArticleRevisionSnapshot(tx, article, editorUserId, "Article updated")
+    await createArticleRevisionSnapshot(
+      tx,
+      article,
+      editorUserId,
+      "Article updated"
+    )
     return article
   })
   invalidatePublicPages()
   return result
 }
 
-export async function setArticleDraftState(slug: string, draft: boolean, editorUserId: string) {
+export async function setArticleDraftState(
+  slug: string,
+  draft: boolean,
+  editorUserId: string
+) {
   const article = await prisma.article.findUnique({
     where: { slug },
   })
@@ -383,7 +415,11 @@ export const getManagedTags = cache(async function getManagedTags() {
   return buildManagedTagsFromArticles(articles)
 })
 
-export async function renameTagAcrossArticles(fromTag: string, toTag: string, editorUserId: string) {
+export async function renameTagAcrossArticles(
+  fromTag: string,
+  toTag: string,
+  editorUserId: string
+) {
   const sourceTag = fromTag.trim()
   const targetTag = toTag.trim()
 
@@ -429,7 +465,10 @@ export async function renameTagAcrossArticles(fromTag: string, toTag: string, ed
   invalidatePublicPages()
 }
 
-export async function removeTagAcrossArticles(tagToRemove: string, editorUserId: string) {
+export async function removeTagAcrossArticles(
+  tagToRemove: string,
+  editorUserId: string
+) {
   const normalizedTag = tagToRemove.trim()
 
   if (!normalizedTag) {
@@ -473,51 +512,59 @@ export async function removeTagAcrossArticles(tagToRemove: string, editorUserId:
   invalidatePublicPages()
 }
 
-export const getArticleRevisionHistory = cache(async function getArticleRevisionHistory(
-  slug: string
-): Promise<ManagedArticleRevisionHistory | null> {
-  const article = await prisma.article.findUnique({
-    where: { slug },
-    select: {
-      ...managedArticleSummarySelect,
-      revisions: {
-        select: managedArticleRevisionSummarySelect,
-        orderBy: {
-          createdAt: "desc",
+export const getArticleRevisionHistory = cache(
+  async function getArticleRevisionHistory(
+    slug: string
+  ): Promise<ManagedArticleRevisionHistory | null> {
+    const article = await prisma.article.findUnique({
+      where: { slug },
+      select: {
+        ...managedArticleSummarySelect,
+        revisions: {
+          select: managedArticleRevisionSummarySelect,
+          orderBy: {
+            createdAt: "desc",
+          },
         },
       },
-    },
-  })
+    })
 
-  if (!article) {
-    return null
+    if (!article) {
+      return null
+    }
+
+    return {
+      article: toManagedArticleSummary(article),
+      revisions: article.revisions.map(toManagedArticleRevisionSummary),
+    }
   }
+)
 
-  return {
-    article: toManagedArticleSummary(article),
-    revisions: article.revisions.map(toManagedArticleRevisionSummary),
-  }
-})
-
-export const getArticleRevisionBody = cache(async function getArticleRevisionBody(slug: string, revisionId: string) {
-  const revision = await prisma.articleRevision.findFirst({
-    where: {
-      id: revisionId,
-      article: {
-        is: {
-          slug,
+export const getArticleRevisionBody = cache(
+  async function getArticleRevisionBody(slug: string, revisionId: string) {
+    const revision = await prisma.articleRevision.findFirst({
+      where: {
+        id: revisionId,
+        article: {
+          is: {
+            slug,
+          },
         },
       },
-    },
-    select: {
-      content: true,
-    },
-  })
+      select: {
+        content: true,
+      },
+    })
 
-  return revision
-})
+    return revision
+  }
+)
 
-export async function restoreArticleRevision(slug: string, revisionId: string, editorUserId: string) {
+export async function restoreArticleRevision(
+  slug: string,
+  revisionId: string,
+  editorUserId: string
+) {
   const article = await prisma.article.findUnique({
     where: { slug },
   })

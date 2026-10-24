@@ -163,7 +163,6 @@ describe("MdxEditor", () => {
 
     expect(editor?.getAttribute("data-line-wrapping")).toBe("true")
   })
-
 })
 
 describe("AdminArticleEditorForm", () => {
@@ -187,9 +186,7 @@ describe("AdminArticleEditorForm", () => {
     expect(publishedAt?.value).toBe(values.publishedAt)
 
     fireEvent.click(screen.getByRole("button", { name: "打开日期选择器" }))
-    fireEvent.click(
-      screen.getByRole("button", { name: "选择 2026年8月12日" })
-    )
+    fireEvent.click(screen.getByRole("button", { name: "选择 2026年8月12日" }))
 
     expect(publishedAt?.value).toBe("2026-08-12")
   })
@@ -277,8 +274,9 @@ describe("AdminArticleEditorForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "源码" }))
 
     expect(
-      (await screen.findByTestId("codemirror-scroll"))
-        .classList.contains("perfect-scrollbar")
+      (await screen.findByTestId("codemirror-scroll")).classList.contains(
+        "perfect-scrollbar"
+      )
     ).toBe(true)
     expect(screen.queryByTestId("article-editor-preview-scroll")).toBeNull()
   })
@@ -297,7 +295,9 @@ describe("AdminArticleEditorForm", () => {
     expect(screen.queryByTestId("article-editor-preview-panel")).toBeNull()
     expect(screen.queryByRole("button", { name: "效果" })).toBeNull()
     expect(
-      screen.getByRole("button", { name: "可视化" }).getAttribute("aria-pressed")
+      screen
+        .getByRole("button", { name: "可视化" })
+        .getAttribute("aria-pressed")
     ).toBe("true")
 
     fireEvent.click(screen.getByRole("button", { name: "源码" }))
@@ -392,13 +392,18 @@ describe("AdminArticleEditorForm", () => {
       <AdminArticleEditorForm
         mode="create"
         action={action}
-        values={{ ...values, content: `![](${"https://cdn.example.com/image.png"})` }}
+        values={{
+          ...values,
+          content: `![](${"https://cdn.example.com/image.png"})`,
+        }}
         statusLabel="Draft"
       />
     )
 
     const submitted = fireEvent.submit(
-      screen.getByRole("button", { name: "保存草稿" }).closest("form") as HTMLFormElement
+      screen
+        .getByRole("button", { name: "保存草稿" })
+        .closest("form") as HTMLFormElement
     )
 
     expect(submitted).toBe(false)

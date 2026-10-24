@@ -5,7 +5,10 @@ import { MobileNav } from "@/components/blog/mobile-nav"
 import type { getCurrentUser } from "@/lib/auth"
 import type { getSiteConfig } from "@/lib/site-config"
 
-function SiteHeader({ user, siteConfig }: {
+function SiteHeader({
+  user,
+  siteConfig,
+}: {
   user: Awaited<ReturnType<typeof getCurrentUser>>
   siteConfig: Awaited<ReturnType<typeof getSiteConfig>>
 }) {

@@ -104,7 +104,8 @@ export const defaultSiteConfig: SiteConfig = {
     archiveNodeLabel: "Level Insouciant",
     statusLabel: "Status",
     statusValue: "Operational",
-    quote: "To map the unmappable. To survive the unlivable. To record what was meant to be forgotten.",
+    quote:
+      "To map the unmappable. To survive the unlivable. To record what was meant to be forgotten.",
     intro:
       "这里不只是一张个人主页，也是一份持续整理中的开放档案。Level Insouciant 记录经验、日常与学习，并将零散的经历整理成可以回看、验证和继续延伸的路径。",
     principles:
@@ -198,7 +199,16 @@ export const defaultSiteConfig: SiteConfig = {
     ],
   },
   seo: {
-    keywords: ["博客", "Backrooms", "技术", "日记", "前端", "后端", "写作", "档案"],
+    keywords: [
+      "博客",
+      "Backrooms",
+      "技术",
+      "日记",
+      "前端",
+      "后端",
+      "写作",
+      "档案",
+    ],
     defaultOgImageAlt: "Level Insouciant archive cover",
   },
 }

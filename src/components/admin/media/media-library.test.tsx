@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type {
@@ -91,7 +97,9 @@ describe("MediaLibrary", () => {
       })
     })
 
-    fireEvent.click(screen.getByRole("button", { name: "查看媒体详情 screen.png" }))
+    fireEvent.click(
+      screen.getByRole("button", { name: "查看媒体详情 screen.png" })
+    )
 
     await waitFor(() => {
       expect(fetchMediaAssetDetails).toHaveBeenCalledWith("asset-1")

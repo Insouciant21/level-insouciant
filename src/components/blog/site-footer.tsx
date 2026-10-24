@@ -2,7 +2,11 @@ import Link from "@/lib/navigation"
 
 import type { getSiteConfig } from "@/lib/site-config"
 
-function SiteFooter({ siteConfig }: {siteConfig: Awaited<ReturnType<typeof getSiteConfig>>}) {
+function SiteFooter({
+  siteConfig,
+}: {
+  siteConfig: Awaited<ReturnType<typeof getSiteConfig>>
+}) {
   const footerLinks = siteConfig.footer.links.filter((link) => link.enabled)
 
   return (

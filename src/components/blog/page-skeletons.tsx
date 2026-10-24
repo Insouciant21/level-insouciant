@@ -65,10 +65,7 @@ function PageIntroSkeleton({ action = false }: { action?: boolean } = {}) {
 function ArticlesPageSkeleton() {
   return (
     <PageShell>
-      <PageIntro
-        eyebrow="Archive"
-        title="层级档案"
-      />
+      <PageIntro eyebrow="Archive" title="层级档案" />
       <section className="grid min-w-0 gap-5">
         {Array.from({ length: 5 }).map((_, index) => (
           <ArticleCardSkeleton key={index} />
@@ -81,10 +78,7 @@ function ArticlesPageSkeleton() {
 function ArchiveDirectoryPageSkeleton() {
   return (
     <PageShell>
-      <PageIntro
-        eyebrow="Categories"
-        title="分类归档"
-      />
+      <PageIntro eyebrow="Categories" title="分类归档" />
       <section
         className={`${skeletonPanelClass} min-w-0 space-y-5 px-6 py-6 sm:px-7`}
       >
@@ -155,10 +149,7 @@ function TagAggregateBlockSkeleton() {
 function TagsPageSkeleton() {
   return (
     <PageShell>
-      <PageIntro
-        eyebrow="Tags"
-        title="标签归档"
-      />
+      <PageIntro eyebrow="Tags" title="标签归档" />
 
       <div className="grid min-w-0 gap-6">
         <section className={`${skeletonPanelClass} min-w-0 px-6 py-6`}>

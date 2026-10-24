@@ -3,7 +3,11 @@
 import { useMemo, useState } from "react"
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 type AdminDatePickerProps = {
@@ -90,7 +94,8 @@ function AdminDatePicker({
 
   function changeMonth(offset: number) {
     setVisibleMonth(
-      (current) => new Date(current.getFullYear(), current.getMonth() + offset, 1)
+      (current) =>
+        new Date(current.getFullYear(), current.getMonth() + offset, 1)
     )
   }
 
@@ -122,7 +127,10 @@ function AdminDatePicker({
             className="admin-input flex h-10 w-full items-center justify-between gap-3 text-left"
           >
             <span className="flex min-w-0 items-center gap-2">
-              <CalendarDays className="size-4 shrink-0 text-[#9aa79a]" aria-hidden="true" />
+              <CalendarDays
+                className="size-4 shrink-0 text-[#9aa79a]"
+                aria-hidden="true"
+              />
               <span className="truncate">
                 {selectedDate ? formatDateLabel(selectedDate) : "选择日期"}
               </span>

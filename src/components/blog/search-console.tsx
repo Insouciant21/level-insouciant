@@ -135,7 +135,8 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
           <Cpu className="h-5 w-5 text-[#73766f]" />
         </header>
 
-        <form method="post"
+        <form
+          method="post"
           onSubmit={(event) => {
             event.preventDefault()
 

@@ -42,12 +42,17 @@ function AdminSelect({
       >
         <SelectValue>
           <span className="flex min-w-0 items-center gap-2">
-            {SelectedIcon ? <SelectedIcon className="size-4 shrink-0" aria-hidden="true" /> : null}
+            {SelectedIcon ? (
+              <SelectedIcon className="size-4 shrink-0" aria-hidden="true" />
+            ) : null}
             <span className="truncate">{selectedOption?.label ?? value}</span>
           </span>
         </SelectValue>
         <SelectIcon>
-          <ChevronDown className="size-4 shrink-0 text-[#9aa79a]" aria-hidden="true" />
+          <ChevronDown
+            className="size-4 shrink-0 text-[#9aa79a]"
+            aria-hidden="true"
+          />
         </SelectIcon>
       </SelectTrigger>
 
@@ -58,10 +63,16 @@ function AdminSelect({
 
             return (
               <SelectItem key={option.value} value={option.value}>
-                <Icon className="size-4 shrink-0 text-[#9aa79a]" aria-hidden="true" />
+                <Icon
+                  className="size-4 shrink-0 text-[#9aa79a]"
+                  aria-hidden="true"
+                />
                 <SelectItemText>{option.label}</SelectItemText>
                 <SelectItemIndicator>
-                  <Check className="size-4 text-[var(--safety-exit-green-strong)]" aria-hidden="true" />
+                  <Check
+                    className="size-4 text-[var(--safety-exit-green-strong)]"
+                    aria-hidden="true"
+                  />
                 </SelectItemIndicator>
               </SelectItem>
             )

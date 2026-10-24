@@ -14,7 +14,10 @@ function normalizeEmail(email: string) {
   return email.trim().toLowerCase()
 }
 
-export function hashPassword(password: string, salt = randomBytes(16).toString("hex")) {
+export function hashPassword(
+  password: string,
+  salt = randomBytes(16).toString("hex")
+) {
   const derivedKey = scryptSync(password, salt, 64)
   return `scrypt:${salt}:${derivedKey.toString("hex")}`
 }
@@ -50,7 +53,11 @@ function getBootstrapAdminConfig() {
 async function maybeBootstrapAdmin(email: string, password: string) {
   const config = getBootstrapAdminConfig()
 
-  if (!config || normalizeEmail(email) !== config.email || password !== config.password) {
+  if (
+    !config ||
+    normalizeEmail(email) !== config.email ||
+    password !== config.password
+  ) {
     return null
   }
 

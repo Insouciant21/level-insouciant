@@ -20,7 +20,10 @@ const SAFE_EXTENSIONS: Record<string, AcceptedImageMime> = {
   webp: "image/webp",
 }
 
-export function buildPublicUrl(publicBaseUrl: string, objectKey: string): string {
+export function buildPublicUrl(
+  publicBaseUrl: string,
+  objectKey: string
+): string {
   const base = publicBaseUrl.trim().replace(/\/+$/, "")
   const key = objectKey
     .replace(/^\/+/, "")

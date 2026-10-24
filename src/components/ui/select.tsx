@@ -5,15 +5,21 @@ import { Select as SelectPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
-function Select({ ...props }: React.ComponentProps<typeof SelectPrimitive.Root>) {
+function Select({
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Root>) {
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 
-function SelectGroup({ ...props }: React.ComponentProps<typeof SelectPrimitive.Group>) {
+function SelectGroup({
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Group>) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
 }
 
-function SelectValue({ ...props }: React.ComponentProps<typeof SelectPrimitive.Value>) {
+function SelectValue({
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Value>) {
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
 }
 
@@ -33,7 +39,9 @@ function SelectTrigger({
   )
 }
 
-function SelectIcon({ ...props }: React.ComponentProps<typeof SelectPrimitive.Icon>) {
+function SelectIcon({
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Icon>) {
   return <SelectPrimitive.Icon data-slot="select-icon" {...props} />
 }
 
@@ -51,7 +59,7 @@ function SelectContent({
         position={position}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 max-h-(--radix-select-content-available-height) min-w-(--radix-select-trigger-width) overflow-hidden rounded-md border border-[#dce6d3]/20 bg-[#1b201a] p-1 text-[#edf3e9] shadow-[0_24px_60px_-30px_rgba(0,0,0,0.85)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+          "z-50 max-h-(--radix-select-content-available-height) min-w-(--radix-select-trigger-width) overflow-hidden rounded-md border border-[#dce6d3]/20 bg-[#1b201a] p-1 text-[#edf3e9] shadow-[0_24px_60px_-30px_rgba(0,0,0,0.85)] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           className
         )}
         {...props}

@@ -74,7 +74,9 @@ describe("validation form-data adapters", () => {
     expect(parsePasswordChangeFormData(password).nextPassword).toBe(
       "new-password"
     )
-    expect(parseCommentRequestBody({ content: " hello ", parentId: " " })).toEqual({
+    expect(
+      parseCommentRequestBody({ content: " hello ", parentId: " " })
+    ).toEqual({
       content: "hello",
       parentId: null,
     })

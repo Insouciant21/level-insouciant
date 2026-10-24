@@ -37,8 +37,12 @@ describe("SiteSettingsForm", () => {
     expect((screen.getByLabelText("站点名称") as HTMLInputElement).value).toBe(
       "Level Insouciant"
     )
-    expect(screen.getByLabelText("站点名称").classList.contains("admin-input")).toBe(true)
-    expect(screen.getByLabelText("站点描述").classList.contains("admin-input")).toBe(true)
+    expect(
+      screen.getByLabelText("站点名称").classList.contains("admin-input")
+    ).toBe(true)
+    expect(
+      screen.getByLabelText("站点描述").classList.contains("admin-input")
+    ).toBe(true)
     expect(screen.queryByLabelText("描述")).toBeNull()
     expect(screen.queryByLabelText("页脚结束语")).toBeNull()
     expect(screen.queryByLabelText("眉题")).toBeNull()
@@ -46,7 +50,9 @@ describe("SiteSettingsForm", () => {
     expect(screen.queryByLabelText("主按钮地址")).toBeNull()
     expect(screen.queryByLabelText("次按钮文字")).toBeNull()
     expect(screen.queryByLabelText("次按钮地址")).toBeNull()
-    expect((screen.getByLabelText("须知页标题") as HTMLInputElement).value).toBe("Moeblue")
+    expect(
+      (screen.getByLabelText("须知页标题") as HTMLInputElement).value
+    ).toBe("Moeblue")
     expect(screen.getByRole("button", { name: "添加联系方式" })).toBeTruthy()
 
     const settings = getSerializedSettings()
@@ -83,7 +89,9 @@ describe("SiteSettingsForm", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "添加联系方式" }))
     fireEvent.click(
-      screen.getAllByRole("button", { name: "上移" })[defaultSiteConfig.contacts.length]
+      screen.getAllByRole("button", { name: "上移" })[
+        defaultSiteConfig.contacts.length
+      ]
     )
 
     let settings = getSerializedSettings()
@@ -102,14 +110,20 @@ describe("SiteSettingsForm", () => {
     ])
 
     fireEvent.click(
-      screen.getAllByRole("button", { name: "禁用" })[defaultSiteConfig.contacts.length - 1]
+      screen.getAllByRole("button", { name: "禁用" })[
+        defaultSiteConfig.contacts.length - 1
+      ]
     )
 
     settings = getSerializedSettings()
-    expect((settings.contacts as Array<{ enabled: boolean }>)[2].enabled).toBe(false)
+    expect((settings.contacts as Array<{ enabled: boolean }>)[2].enabled).toBe(
+      false
+    )
 
     fireEvent.click(
-      screen.getAllByRole("button", { name: "删除" })[defaultSiteConfig.contacts.length - 1]
+      screen.getAllByRole("button", { name: "删除" })[
+        defaultSiteConfig.contacts.length - 1
+      ]
     )
 
     settings = getSerializedSettings()
@@ -123,11 +137,16 @@ describe("SiteSettingsForm", () => {
   it("disables moves that would exceed contact boundaries", () => {
     render(<SiteSettingsForm siteConfig={defaultSiteConfig} />)
 
-    expect((screen.getAllByRole("button", { name: "上移" })[0] as HTMLButtonElement).disabled).toBe(true)
     expect(
-      (screen.getAllByRole("button", { name: "下移" })[
-        defaultSiteConfig.contacts.length - 1
-      ] as HTMLButtonElement).disabled
+      (screen.getAllByRole("button", { name: "上移" })[0] as HTMLButtonElement)
+        .disabled
+    ).toBe(true)
+    expect(
+      (
+        screen.getAllByRole("button", { name: "下移" })[
+          defaultSiteConfig.contacts.length - 1
+        ] as HTMLButtonElement
+      ).disabled
     ).toBe(true)
   })
 
@@ -140,7 +159,9 @@ describe("SiteSettingsForm", () => {
 
     expect(document.querySelector('a[href="javascript:alert(1)"]')).toBeNull()
     expect(screen.getAllByRole("link", { name: "打开链接" })).toHaveLength(
-      defaultSiteConfig.contacts.length + defaultSiteConfig.footer.links.length - 1
+      defaultSiteConfig.contacts.length +
+        defaultSiteConfig.footer.links.length -
+        1
     )
   })
 
@@ -150,7 +171,8 @@ describe("SiteSettingsForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "添加页脚链接" }))
     fireEvent.click(
       screen.getAllByRole("button", { name: "上移" })[
-        defaultSiteConfig.contacts.length + defaultSiteConfig.footer.links.length
+        defaultSiteConfig.contacts.length +
+          defaultSiteConfig.footer.links.length
       ]
     )
 

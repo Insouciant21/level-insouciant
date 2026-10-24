@@ -43,7 +43,10 @@ export const getCurrentUser = cache(async function getCurrentUser() {
   }
 })
 
-export function getUserDisplayName(user: { name?: string | null; email?: string | null }) {
+export function getUserDisplayName(user: {
+  name?: string | null
+  email?: string | null
+}) {
   return getCredentialsUserDisplayName({
     name: user.name ?? null,
     email: user.email ?? "",
