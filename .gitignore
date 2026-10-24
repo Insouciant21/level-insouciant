@@ -11,10 +11,6 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
 # production
 /build
 
@@ -34,10 +30,6 @@ pnpm-debug.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
-
-# sample
-/*_sample/
 
 # local content and planning artifacts
 content/

@@ -1,5 +1,4 @@
 .git
-.next
 node_modules
 coverage
 .env*
@@ -8,7 +7,6 @@ coverage
 .superpowers
 .worktrees
 docs/
-ui_sample
 *.log
 *.tsbuildinfo
 

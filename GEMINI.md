@@ -1,1 +1,1 @@
-/home/int21/Workspace/blog/insous/AGENTS.md
+AGENTS.md
