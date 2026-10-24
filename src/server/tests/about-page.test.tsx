@@ -180,8 +180,8 @@ describe("AboutPage", () => {
     expect(customContact?.querySelector(".lucide-link")).not.toBeNull()
 
     for (const [label, iconClass] of [
-      ["Twitter", "lucide-twitter"],
-      ["LinkedIn", "lucide-linkedin"],
+      ["Twitter", "brand-twitter"],
+      ["LinkedIn", "brand-linkedin"],
       ["网易云音乐", "lucide-music-2"],
       ["哔哩哔哩", "lucide-tv-minimal"],
     ]) {

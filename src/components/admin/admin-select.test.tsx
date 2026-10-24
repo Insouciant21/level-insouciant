@@ -21,6 +21,6 @@ describe("AdminSelect", () => {
 
     expect(trigger.getAttribute("id")).toBe("contact-kind")
     expect(trigger.textContent).toContain("Twitter")
-    expect(trigger.querySelector(".lucide-twitter")).not.toBeNull()
+    expect(trigger.querySelector(".brand-twitter")).not.toBeNull()
   })
 })
