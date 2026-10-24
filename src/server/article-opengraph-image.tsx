@@ -1,4 +1,4 @@
-import { ImageResponse } from "@vercel/og"
+import { ImageResponse } from "@/server/vercel-og"
 import { notFound } from "@/server/request-context"
 
 import { getArticleSummaryBySlug } from "@/lib/content"

@@ -1,4 +1,4 @@
-import { ImageResponse } from "@vercel/og"
+import { ImageResponse } from "@/server/vercel-og"
 
 import { getSiteConfig } from "@/lib/site-config"
 
