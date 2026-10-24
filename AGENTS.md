@@ -1,31 +1,33 @@
 # AGENTS.md
 
 ## Project assumptions
-- This is a pnpm-based Next.js project.
+- This is a pnpm-based Astro 7 SSR project with React islands (not Next.js).
 - Prefer existing patterns and conventions already present in the repo.
 - If a task is ambiguous, inspect nearby similar implementations before proposing new patterns.
-- This is NOT the Next.js you know：This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+- This is NOT the Astro you know：Astro 7 APIs and conventions may differ from older versions in your training data. Verify against the installed `node_modules/astro` types or the official Astro docs before writing code.
 - This project is managed by pnpm.
 
 ## Project Structure
 - `src/` main application source
-  - `src/app/` Next.js App Router entries (pages, layouts, route handlers, metadata routes)
-  - `src/components/` reusable UI and feature components (`blog`, `admin`, `ui`, motion, layout)
-  - `src/lib/` domain/business logic and shared server/client utilities (auth, content, prisma access, SEO, helpers)
-  - `src/hooks/` shared React hooks
-  - `src/config/` site-level configuration and constants
+  - `src/pages/` Astro SSR pages (`.astro`), API route handlers (`.ts` under `api/`), and metadata routes (rss.xml, sitemap.xml, robots.txt, opengraph-image)
+  - `src/layouts/` HTML layout (`BaseLayout.astro`: SEO meta, site config, admin/public shell switch)
+  - `src/views/` React page views rendered as islands by the `.astro` routes
+  - `src/server/` server-side page data loaders (`server/pages/`, one per route), Astro Actions implementations (`server/actions/`), endpoints, public page cache, request context
+  - `src/actions/` Astro Actions entry (`index.ts`)
+  - `src/middleware.ts` origin check, request-scoped storage, public page cache integration
+  - `src/auth.ts` Auth.js Core handler config
+  - `src/components/` reusable UI and feature components (`blog`, `admin`, `account`, `ui`, motion, providers)
+  - `src/lib/` domain/business logic and shared server/client utilities (auth, content, prisma access, media, validation, SEO, MDX, helpers)
   - `src/styles/` style modules and cross-page styling helpers
   - `src/types/` shared TypeScript type declarations
-- `content/` content source files
-  - `content/posts/` published blog posts (MD/MDX)
-  - `content/article-seeds/` seed/import article sources used by content workflows
+- `content/` optional local article import sources (`article-seeds/` preferred, `articles/` fallback); git-ignored and not required to exist
 - `prisma/` database layer
   - `prisma/schema.prisma` Prisma schema definition
   - `prisma/migrations/` versioned database migrations
 - `scripts/` project maintenance/import scripts (for example article import)
-- `public/` static assets served directly by Next.js
+- `public/` static assets served directly by Astro
+- `docker/` container entrypoint and database URL normalization
 - `docs/` internal project documentation
-- `ui_sample/` standalone UI playground/sample app used for design exploration and references
 
 ## Working style
 - For feature work touching more than 3 files, start by proposing a plan.
@@ -40,7 +42,7 @@
 - Ubuntu 25.01 in WSL2
 
 ## Run
-- `pnpm run dev` to run as debug
+- `pnpm dev` to run as debug (Astro dev server on http://localhost:4321, bound to 0.0.0.0)
 
 ## Clean
 - After code changes, you should check whether there are codes no more functions and clear them.
