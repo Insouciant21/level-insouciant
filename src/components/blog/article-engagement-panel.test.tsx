@@ -53,7 +53,7 @@ function renderPanel() {
 }
 
 beforeAll(() => {
-  server.listen({ onUnhandledRequest: "error" })
+  server.listen({ onUnhandledFrame: "error" })
   interceptedFetch = globalThis.fetch
 })
 
