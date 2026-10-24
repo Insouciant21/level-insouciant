@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "astro dev --host 0.0.0.0",
+    "dev": "node --env-file-if-exists=.env --env-file-if-exists=.env.local node_modules/astro/bin/astro.mjs dev --host 0.0.0.0",
     "prebuild": "pnpm prisma generate",
     "build": "astro build",
     "start": "node dist/server/entry.mjs",
