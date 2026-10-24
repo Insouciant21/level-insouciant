@@ -4,8 +4,6 @@ allowBuilds:
   prisma: true
   sharp: true
   unrs-resolver: true
-patchedDependencies:
-  '@vercel/og@1.0.3': patches/@vercel__og@1.0.3.patch
 supportedArchitectures:
   os:
     - win32

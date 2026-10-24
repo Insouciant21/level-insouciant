@@ -1,4 +1,4 @@
-import { ImageResponse } from "@/server/vercel-og"
+import { createOgImageResponse } from "@/server/og-image"
 import { notFound } from "@/server/request-context"
 
 import { getArticleSummaryBySlug } from "@/lib/content"
@@ -35,7 +35,7 @@ export default async function ArticleOpenGraphImage({
     notFound()
   }
 
-  return new ImageResponse(
+  return createOgImageResponse(
     <div
       style={{
         width: "100%",

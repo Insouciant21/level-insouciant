@@ -1,4 +1,4 @@
-import { ImageResponse } from "@/server/vercel-og"
+import { createOgImageResponse } from "@/server/og-image"
 
 import { getSiteConfig } from "@/lib/site-config"
 
@@ -17,7 +17,7 @@ const responseHeaders = {
 export default async function OpenGraphImage() {
   const siteConfig = await getSiteConfig()
 
-  return new ImageResponse(
+  return createOgImageResponse(
     <div
       style={{
         width: "100%",
