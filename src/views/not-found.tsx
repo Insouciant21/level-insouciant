@@ -8,7 +8,7 @@ export default function NotFound() {
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a0a0a] p-6 font-mono text-amber-500">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-screen"
+        className="pointer-events-none absolute inset-0 bg-[url('/noise.svg')] opacity-[0.1] mix-blend-screen"
       />
       <div
         aria-hidden="true"

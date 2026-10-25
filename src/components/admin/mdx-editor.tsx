@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import CodeMirror, { EditorView } from "@uiw/react-codemirror"
 import { markdown } from "@codemirror/lang-markdown"

@@ -11,7 +11,8 @@ const require = createRequire(import.meta.url)
 // satori and @resvg/resvg-wasm mix ESM/CJS internals that Vite's dev module
 // runner cannot execute reliably; load them through native require instead.
 const satori = require("satori").default as typeof import("satori").default
-const { Resvg, initWasm } = require("@resvg/resvg-wasm") as typeof import("@resvg/resvg-wasm")
+const { Resvg, initWasm } =
+  require("@resvg/resvg-wasm") as typeof import("@resvg/resvg-wasm")
 
 let wasmPromise: Promise<void> | undefined
 let fontsPromise: Promise<SatoriFont[]> | undefined
@@ -63,11 +64,29 @@ function loadFonts(): Promise<SatoriFont[]> {
     readFileSync(barlowFontPath(400)),
     readFileSync(barlowFontPath(700)),
     readFileSync(notoFontPath()),
-  ]).then(([regular, bold, noto]) => [
-    { name: "Barlow Condensed", data: toArrayBuffer(regular), weight: 400, style: "normal" },
-    { name: "Barlow Condensed", data: toArrayBuffer(bold), weight: 700, style: "normal" },
-    { name: "Noto Sans SC", data: toArrayBuffer(noto), weight: 400, style: "normal" },
-  ] as SatoriFont[])
+  ]).then(
+    ([regular, bold, noto]) =>
+      [
+        {
+          name: "Barlow Condensed",
+          data: toArrayBuffer(regular),
+          weight: 400,
+          style: "normal",
+        },
+        {
+          name: "Barlow Condensed",
+          data: toArrayBuffer(bold),
+          weight: 700,
+          style: "normal",
+        },
+        {
+          name: "Noto Sans SC",
+          data: toArrayBuffer(noto),
+          weight: 400,
+          style: "normal",
+        },
+      ] as SatoriFont[]
+  )
   return fontsPromise
 }
 

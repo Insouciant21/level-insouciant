@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { Clipboard, ExternalLink, X } from "lucide-react"
 

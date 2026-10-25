@@ -58,7 +58,7 @@ The development server runs at <http://localhost:4321> by default. Set `SITE_URL
 | ------------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `DATABASE_URL`           | Yes      | PostgreSQL connection URL used by the application and, by default, migrations.                                             |
 | `DIRECT_URL`             | No       | Direct migration URL for providers where the runtime URL uses a connection pooler.                                         |
-| `SITE_URL`   | Yes      | Public site URL for SEO; restart after changing it. The legacy `NEXT_PUBLIC_SITE_URL` is also accepted. |
+| `SITE_URL`                | Yes      | Public site URL for SEO; restart after changing it.                                                                        |
 | `AUTH_SECRET`            | Yes      | Random secret used by Auth.js to protect sessions and tokens.                                                              |
 | `ADMIN_EMAIL`            | Yes      | Bootstrap administrator email address.                                                                                     |
 | `ADMIN_PASSWORD`         | Yes      | Bootstrap administrator password. The administrator is created on the first login with these credentials.                  |

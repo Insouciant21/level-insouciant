@@ -26,10 +26,7 @@ export const getSiteConfig = cache(async (): Promise<SiteConfig> => {
   if (!isAuthStorageEnabled()) {
     return {
       ...defaultSiteConfig,
-      url:
-        process.env.SITE_URL ??
-        process.env.NEXT_PUBLIC_SITE_URL ??
-        defaultSiteConfig.url,
+      url: process.env.SITE_URL ?? defaultSiteConfig.url,
     }
   }
 
@@ -42,8 +39,7 @@ export const getSiteConfig = cache(async (): Promise<SiteConfig> => {
     const config = parseStoredSiteConfig(stored?.data)
     return {
       ...config,
-      url:
-        process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? config.url,
+      url: process.env.SITE_URL ?? config.url,
     }
   } catch {
     return defaultSiteConfig

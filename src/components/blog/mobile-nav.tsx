@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "@/lib/navigation"
 import { ArrowUpRight, Menu, UserRound } from "lucide-react"
 

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { ImagePlus, LoaderCircle, Search, X } from "lucide-react"
 

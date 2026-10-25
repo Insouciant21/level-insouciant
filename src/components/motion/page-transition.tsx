@@ -1,5 +1,3 @@
-"use client"
-
 import type { ReactNode } from "react"
 import type { TargetAndTransition, Transition, Variant } from "motion/react"
 import { motion as Motion, useReducedMotion } from "motion/react"

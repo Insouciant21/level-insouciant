@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Copy, FilePenLine, LoaderCircle, Trash2 } from "lucide-react"
 

@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { CheckCircle2, Info, TriangleAlert, X, XCircle } from "lucide-react"
 import { usePathname, useSearchParams } from "@/lib/navigation"

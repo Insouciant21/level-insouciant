@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "@/lib/navigation"
 import { motion as Motion, useReducedMotion } from "motion/react"
 
