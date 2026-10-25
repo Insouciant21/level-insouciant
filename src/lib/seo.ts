@@ -55,9 +55,6 @@ export function createPageMetadata(
     keywords: [...config.seo.keywords],
     alternates: {
       canonical,
-      types: {
-        "application/rss+xml": absoluteUrl("/rss.xml", config),
-      },
     },
     openGraph: {
       type,

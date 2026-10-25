@@ -1,8 +1,8 @@
 export type Metadata = {
-  title?: string | { absolute?: string; default?: string; template?: string }
+  title?: string | { absolute?: string }
   description?: string
   keywords?: string[]
-  alternates?: { canonical?: string; types?: Record<string, string> }
+  alternates?: { canonical?: string }
   robots?: { index?: boolean; follow?: boolean }
   openGraph?: {
     type?: string

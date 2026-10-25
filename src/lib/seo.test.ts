@@ -67,9 +67,6 @@ describe("configured SEO helpers", () => {
       keywords: ["configured", "archive"],
       alternates: {
         canonical: "https://example.test/about",
-        types: {
-          "application/rss+xml": "https://example.test/rss.xml",
-        },
       },
       openGraph: {
         url: "https://example.test/about",
