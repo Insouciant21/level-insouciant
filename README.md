@@ -93,7 +93,7 @@ pnpm dev
 
 先列出工具，再用 `list_articles` 读取文章验证权限。该端点逐请求鉴权，不需要 Cookie 或会话 ID；仅支持 POST，在浏览器地址栏打开返回 405 是正常的。本方案不提供 OAuth 登录，也不是旧版独立 SSE 端点。
 
-MCP 提供 `list_articles`、`list_tags`、`get_article`、`create_draft`、`edit_article`、`publish_article` 和 `unpublish_article` 工具。修改文章时必须传入上一次读取或写入返回的 `version`；版本发生变化时服务端返回冲突，避免 Agent 覆盖人工修改。Agent 正文首版限定为 Markdown，禁止执行任意 MDX 表达式。新增数据库迁移后，先运行 `pnpm prisma migrate dev` 或部署时使用 Compose 迁移服务。
+MCP 提供 `list_articles`、`list_tags`、`get_article`、`create_draft`、`edit_article`、`publish_article` 和 `unpublish_article` 工具。修改文章时必须传入上一次读取或写入返回的 `version`；版本发生变化时服务端返回冲突，避免 Agent 覆盖人工修改。Agent 正文支持完整的 Markdown/MDX。新增数据库迁移后，先运行 `pnpm prisma migrate dev` 或部署时使用 Compose 迁移服务。
 
 ## 文章导入
 

@@ -1,6 +1,5 @@
 import type { Article } from "@prisma/client"
 import { ZodError } from "zod"
-import { visit } from "unist-util-visit"
 import { agentTools } from "@/lib/agent-contract"
 import type { authenticateAgent } from "@/lib/agent-tokens"
 import {
@@ -9,32 +8,10 @@ import {
   setArticleDraftState,
   getManagedTags,
 } from "@/lib/content-admin"
-import { normalizeMdxSource, parseMdxTree } from "@/lib/mdx"
 import { prisma } from "@/lib/prisma"
 
 type Principal = NonNullable<Awaited<ReturnType<typeof authenticateAgent>>>
 class AgentError extends Error {}
-
-export async function validateAgentMarkdown(source: string) {
-  try {
-    for (const input of new Set([source, normalizeMdxSource(source)])) {
-      visit(parseMdxTree(input), (node) => {
-        if (node.type.startsWith("mdx") || node.type === "html")
-          throw new Error("MDX")
-        if (
-          "url" in node &&
-          typeof node.url === "string" &&
-          !["https:", "http:", "mailto:"].includes(
-            new URL(node.url, "https://blog.invalid").protocol
-          )
-        )
-          throw new Error("URL")
-      })
-    }
-  } catch {
-    throw new AgentError("MARKDOWN_REQUIRED")
-  }
-}
 
 const summary = { slug: true, title: true, draft: true, version: true } as const
 
@@ -148,7 +125,6 @@ async function dispatchArticleTool(
     case "create_draft": {
       if (agent.access === "READ") throw new AgentError("DRAFT_ACCESS_REQUIRED")
       const input = agentTools.create_draft.schema.parse(args)
-      await validateAgentMarkdown(input.content)
       return receipt(
         await createManagedArticle(
           {
@@ -172,8 +148,6 @@ async function dispatchArticleTool(
       if (!current.draft && agent.access !== "PUBLISH")
         throw new AgentError("PUBLISH_ACCESS_REQUIRED")
       if (current.version !== version) throw new AgentError("VERSION_CONFLICT")
-      if (changes.content !== undefined)
-        await validateAgentMarkdown(changes.content)
       return receipt(
         await updateManagedArticle(
           slug,

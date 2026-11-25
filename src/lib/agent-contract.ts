@@ -7,7 +7,7 @@ const fields = {
   desc: text.max(5000),
   category: text.max(100),
   tags: z.array(text.max(100)).min(1).max(50),
-  content: text.max(250_000).describe("Markdown article body"),
+  content: text.max(250_000).describe("Markdown or MDX article body"),
 }
 const target = {
   slug,
@@ -34,7 +34,7 @@ export const agentTools = {
   },
   create_draft: {
     description:
-      "Create a Markdown draft. Use a stable slug for retries. An existing slug is never overwritten.",
+      "Create a Markdown or MDX draft. Use a stable slug for retries. An existing slug is never overwritten.",
     schema: z.strictObject({
       slug: slug.regex(/^[\p{L}\p{N}]+(?:[-_][\p{L}\p{N}]+)*$/u),
       ...fields,

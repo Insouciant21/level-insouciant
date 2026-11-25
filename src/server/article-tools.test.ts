@@ -1,6 +1,22 @@
 import { describe, expect, it, vi } from "vitest"
-import { runArticleTool, validateAgentMarkdown } from "./article-tools"
+import { runArticleTool } from "./article-tools"
 import { prisma } from "@/lib/prisma"
+
+const { createManagedArticleMock, updateManagedArticleMock } = vi.hoisted(
+  () => ({
+    createManagedArticleMock: vi.fn(),
+    updateManagedArticleMock: vi.fn(),
+  })
+)
+
+vi.mock("@/lib/content-admin", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/content-admin")>()
+  return {
+    ...actual,
+    createManagedArticle: createManagedArticleMock,
+    updateManagedArticle: updateManagedArticleMock,
+  }
+})
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
@@ -80,18 +96,83 @@ describe("personal agent access", () => {
     ).rejects.toThrow("INVALID_ARGUMENTS")
   })
 
-  it("accepts Markdown with code and math, and rejects executable MDX", async () => {
+  it("accepts full MDX content when creating and editing articles", async () => {
+    const mdxContent = [
+      'import { Callout } from "./callout"',
+      "",
+      "## MDX Example",
+      "",
+      "<Callout>{runtimeValue}</Callout>",
+      "",
+      '<a href="/notes">Relative link</a>',
+      "",
+      "export const meta = { order: 1 }",
+    ].join("\n")
+
+    createManagedArticleMock.mockResolvedValueOnce({
+      slug: "mdx-draft",
+      title: "MDX Draft",
+      draft: true,
+      version,
+    })
+
     await expect(
-      validateAgentMarkdown("## Example\n\n`{value}` and $x^{2}$")
-    ).resolves.toBeUndefined()
-    for (const source of [
-      "Hello {value}",
-      "<Widget />",
-      "export const value = 1",
-    ]) {
-      await expect(validateAgentMarkdown(source)).rejects.toThrow(
-        "MARKDOWN_REQUIRED"
-      )
-    }
+      runArticleTool(draftAgent, "create_draft", {
+        slug: "mdx-draft",
+        title: "MDX Draft",
+        desc: "Draft with MDX",
+        category: "Engineering",
+        tags: ["mdx"],
+        content: mdxContent,
+      })
+    ).resolves.toMatchObject({
+      slug: "mdx-draft",
+      draft: true,
+      version,
+    })
+
+    expect(createManagedArticleMock).toHaveBeenCalledWith(
+      expect.objectContaining({ content: mdxContent, draft: true }),
+      "admin",
+      "create_draft · editor (token)"
+    )
+
+    vi.mocked(prisma.article.findUnique).mockResolvedValueOnce({
+      slug: "mdx-draft",
+      title: "MDX Draft",
+      desc: "Draft with MDX",
+      category: "Engineering",
+      tags: ["mdx"],
+      cover: null,
+      publishedAt: new Date("2026-11-25T00:00:00.000Z"),
+      draft: true,
+      version,
+      content: "old",
+    } as never)
+
+    updateManagedArticleMock.mockResolvedValueOnce({
+      slug: "mdx-draft",
+      title: "MDX Draft",
+      draft: true,
+      version: "f263e2ae-18a0-4e5c-b5a5-f309d0866c38",
+    })
+
+    await expect(
+      runArticleTool(draftAgent, "edit_article", {
+        slug: "mdx-draft",
+        version,
+        content: mdxContent,
+      })
+    ).resolves.toMatchObject({
+      slug: "mdx-draft",
+      version: "f263e2ae-18a0-4e5c-b5a5-f309d0866c38",
+    })
+
+    expect(updateManagedArticleMock).toHaveBeenCalledWith(
+      "mdx-draft",
+      expect.objectContaining({ content: mdxContent }),
+      "admin",
+      { version, draft: true, reason: "edit_article · editor (token)" }
+    )
   })
 })

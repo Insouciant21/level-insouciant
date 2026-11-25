@@ -19,6 +19,51 @@ describe("article Tiptap configuration", () => {
     expect(canUseVisualEditor('import Chart from "./Chart"')).toBe(false)
     expect(canUseVisualEditor("<Chart data={points} />")).toBe(false)
     expect(canUseVisualEditor("A value: {runtimeValue}")).toBe(false)
+    expect(canUseVisualEditor("---\ntitle: Frontmatter\n---\n\nBody")).toBe(
+      false
+    )
+    expect(canUseVisualEditor("Before\n\n<!-- hidden -->\n\nAfter")).toBe(false)
+  })
+
+  it("allows code blocks, inline code, and horizontal rules in visual mode", () => {
+    const source = [
+      "Intro with `create_draft · <agentName> (<tokenId>)` and `` `{value}` ``.",
+      "",
+      "---",
+      "",
+      "```ts",
+      'import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"',
+      "export async function handleArticleMcp() {",
+      '  return Response.json({ error: "INVALID_TOKEN" })',
+      "}",
+      "```",
+      "",
+      "~~~sql",
+      "SELECT {a} FROM tbl WHERE tag = '<none>';",
+      "~~~",
+    ].join("\n")
+
+    expect(canUseVisualEditor(source)).toBe(true)
+    expect(
+      canUseVisualEditor(String.raw`Escaped backslash \\` + "`{value}`")
+    ).toBe(true)
+    expect(canUseVisualEditor(`${source}\n\n<Chart />`)).toBe(false)
+    expect(canUseVisualEditor(`${source}\n\n{runtimeValue}`)).toBe(false)
+
+    const editor = new Editor({
+      extensions: createArticleEditorExtensions({ onFiles: () => undefined }),
+      content: source,
+      contentType: "markdown",
+    })
+    try {
+      const saved = editor.getMarkdown()
+      expect(saved).toContain("handleArticleMcp")
+      expect(saved).toContain("<agentName>")
+      expect(saved).toContain("---")
+      expect(canUseVisualEditor(saved)).toBe(true)
+    } finally {
+      editor.destroy()
+    }
   })
 
   it("registers Markdown, image, file handling, link, and math extensions", () => {
