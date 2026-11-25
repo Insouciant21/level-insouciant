@@ -12,3 +12,12 @@ docs/
 
 dist
 .astro
+
+**/*.test.*
+*.test.*
+vitest.config.ts
+eslint.config.mjs
+.prettierrc
+.prettierignore
+scripts/validation/
+README*.md

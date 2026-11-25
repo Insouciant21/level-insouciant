@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Search } from "lucide-react"
 import Link from "@/lib/navigation"
 
 import { UserMenu } from "@/components/blog/user-menu"
@@ -144,19 +143,6 @@ function SiteHeader({
         </nav>
 
         <div className="flex shrink-0 items-center gap-2.5 justify-self-end">
-          <Link
-            href="/search"
-            aria-label="终端检索 (快捷键 /)"
-            title="终端检索 (按 / 或 Ctrl+K)"
-            className="chrome-pill hidden px-2.5 py-1.5 text-[0.65rem] text-muted-foreground hover:border-foreground/30 hover:bg-[#d9d1ad]/70 hover:text-foreground md:inline-flex"
-          >
-            <Search className="size-3.5 text-primary" aria-hidden="true" />
-            <span className="hidden xl:inline">检索</span>
-            <kbd className="border border-border/80 bg-[#eee9d6]/70 px-1 py-0.5 text-[0.6rem] leading-none text-foreground/80">
-              /
-            </kbd>
-          </Link>
-
           <span className="site-status-pill hidden xl:inline-flex">
             <span className="size-1.5 bg-primary" aria-hidden="true" />
             Archive Sync
