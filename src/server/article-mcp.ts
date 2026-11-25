@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js"
 import { agentTools } from "@/lib/agent-contract"
 import { authenticateAgent } from "@/lib/agent-tokens"
-import { runArticleTool } from "./agent-articles"
+import { runArticleTool } from "./article-tools"
 
 export async function handleArticleMcp(request: Request) {
   if (request.method !== "POST") {

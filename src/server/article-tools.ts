@@ -2,7 +2,7 @@ import type { Article } from "@prisma/client"
 import { ZodError } from "zod"
 import { visit } from "unist-util-visit"
 import { agentTools } from "@/lib/agent-contract"
-import { authenticateAgent } from "@/lib/agent-tokens"
+import type { authenticateAgent } from "@/lib/agent-tokens"
 import {
   createManagedArticle,
   updateManagedArticle,
@@ -13,14 +13,7 @@ import { normalizeMdxSource, parseMdxTree } from "@/lib/mdx"
 import { prisma } from "@/lib/prisma"
 
 type Principal = NonNullable<Awaited<ReturnType<typeof authenticateAgent>>>
-class AgentError extends Error {
-  constructor(
-    readonly status: number,
-    message: string
-  ) {
-    super(message)
-  }
-}
+class AgentError extends Error {}
 
 export async function validateAgentMarkdown(source: string) {
   try {
@@ -39,7 +32,7 @@ export async function validateAgentMarkdown(source: string) {
       })
     }
   } catch {
-    throw new AgentError(400, "MARKDOWN_REQUIRED")
+    throw new AgentError("MARKDOWN_REQUIRED")
   }
 }
 
@@ -67,20 +60,19 @@ export async function runArticleTool(
     return await dispatchArticleTool(agent, tool, args)
   } catch (error) {
     if (error instanceof AgentError) throw error
-    if (error instanceof ZodError)
-      throw new AgentError(400, "INVALID_ARGUMENTS")
+    if (error instanceof ZodError) throw new AgentError("INVALID_ARGUMENTS")
     if (error instanceof Error) {
       if (error.message === "ARTICLE_NOT_FOUND")
-        throw new AgentError(404, error.message)
+        throw new AgentError(error.message)
       if (
         error.message === "ARTICLE_SLUG_TAKEN" ||
         ("code" in error && error.code === "P2002")
       )
-        throw new AgentError(409, "ARTICLE_SLUG_TAKEN")
+        throw new AgentError("ARTICLE_SLUG_TAKEN")
       if ("code" in error && error.code === "P2025")
-        throw new AgentError(409, "VERSION_CONFLICT")
+        throw new AgentError("VERSION_CONFLICT")
     }
-    throw new AgentError(500, "AGENT_REQUEST_FAILED")
+    throw new AgentError("AGENT_REQUEST_FAILED")
   }
 }
 
@@ -98,7 +90,7 @@ async function dispatchArticleTool(
         offset = 0,
       } = agentTools.list_articles.schema.parse(args)
       if (agent.access === "READ" && draft === true) {
-        throw new AgentError(403, "DRAFT_ACCESS_REQUIRED")
+        throw new AgentError("DRAFT_ACCESS_REQUIRED")
       }
       const articles = await prisma.article.findMany({
         where: {
@@ -147,15 +139,14 @@ async function dispatchArticleTool(
           publishedAt: true,
         },
       })
-      if (!article) throw new AgentError(404, "ARTICLE_NOT_FOUND")
+      if (!article) throw new AgentError("ARTICLE_NOT_FOUND")
       if (article.draft && agent.access === "READ") {
-        throw new AgentError(403, "DRAFT_ACCESS_REQUIRED")
+        throw new AgentError("DRAFT_ACCESS_REQUIRED")
       }
       return { ...article, ...receipt(article) }
     }
     case "create_draft": {
-      if (agent.access === "READ")
-        throw new AgentError(403, "DRAFT_ACCESS_REQUIRED")
+      if (agent.access === "READ") throw new AgentError("DRAFT_ACCESS_REQUIRED")
       const input = agentTools.create_draft.schema.parse(args)
       await validateAgentMarkdown(input.content)
       return receipt(
@@ -172,17 +163,15 @@ async function dispatchArticleTool(
       )
     }
     case "edit_article": {
-      if (agent.access === "READ")
-        throw new AgentError(403, "DRAFT_ACCESS_REQUIRED")
+      if (agent.access === "READ") throw new AgentError("DRAFT_ACCESS_REQUIRED")
       const { slug, version, ...changes } =
         agentTools.edit_article.schema.parse(args)
-      if (!Object.keys(changes).length) throw new AgentError(400, "NO_CHANGES")
+      if (!Object.keys(changes).length) throw new AgentError("NO_CHANGES")
       const current = await prisma.article.findUnique({ where: { slug } })
-      if (!current) throw new AgentError(404, "ARTICLE_NOT_FOUND")
+      if (!current) throw new AgentError("ARTICLE_NOT_FOUND")
       if (!current.draft && agent.access !== "PUBLISH")
-        throw new AgentError(403, "PUBLISH_ACCESS_REQUIRED")
-      if (current.version !== version)
-        throw new AgentError(409, "VERSION_CONFLICT")
+        throw new AgentError("PUBLISH_ACCESS_REQUIRED")
+      if (current.version !== version) throw new AgentError("VERSION_CONFLICT")
       if (changes.content !== undefined)
         await validateAgentMarkdown(changes.content)
       return receipt(
@@ -202,7 +191,7 @@ async function dispatchArticleTool(
     case "publish_article":
     case "unpublish_article": {
       if (agent.access !== "PUBLISH")
-        throw new AgentError(403, "PUBLISH_ACCESS_REQUIRED")
+        throw new AgentError("PUBLISH_ACCESS_REQUIRED")
       const { slug, version } = agentTools[tool].schema.parse(args)
       return receipt(
         await setArticleDraftState(
@@ -214,37 +203,6 @@ async function dispatchArticleTool(
       )
     }
     default:
-      throw new AgentError(400, "UNKNOWN_TOOL")
-  }
-}
-
-function failure(status: number, error: string) {
-  return Response.json(
-    { error },
-    {
-      status,
-      headers:
-        status === 401
-          ? { "WWW-Authenticate": 'Bearer realm="blog-articles"' }
-          : {},
-    }
-  )
-}
-
-export async function handleAgentRequest(request: Request) {
-  try {
-    const agent = await authenticateAgent(request)
-    if (!agent) return failure(401, "INVALID_TOKEN")
-    if (
-      request.headers.get("content-type")?.split(";")[0].trim() !==
-      "application/json"
-    )
-      return failure(415, "JSON_REQUIRED")
-    const body = await request.json().catch(() => null)
-    if (typeof body?.tool !== "string") return failure(400, "INVALID_REQUEST")
-    return Response.json(await runArticleTool(agent, body.tool, body.arguments))
-  } catch (error) {
-    if (error instanceof AgentError) return failure(error.status, error.message)
-    return failure(500, "AGENT_REQUEST_FAILED")
+      throw new AgentError("UNKNOWN_TOOL")
   }
 }

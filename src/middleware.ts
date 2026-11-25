@@ -11,7 +11,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context
   const agentRequest =
     request.method === "POST" &&
-    (url.pathname === "/api/agent/articles" || url.pathname === "/mcp") &&
+    url.pathname === "/mcp" &&
     !url.search &&
     request.headers.get("content-type")?.split(";")[0].trim() ===
       "application/json"

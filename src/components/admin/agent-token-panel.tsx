@@ -16,7 +16,7 @@ const accessLabels = { READ: "只读", DRAFT: "读写草稿", PUBLISH: "可发�
 
 export function AgentTokenPanel() {
   const [tokens, setTokens] = useState<AgentToken[]>([])
-  const [name, setName] = useState("本地写作 Agent")
+  const [name, setName] = useState("写作 Agent")
   const [access, setAccess] = useState<AgentToken["access"]>("DRAFT")
   const [secret, setSecret] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -106,7 +106,7 @@ export function AgentTokenPanel() {
       {secret ? (
         <div className="grid gap-3 border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/8 p-4">
           <p className="text-sm text-[#edf3e9]">
-            请立即复制到本机 Agent 的密钥配置中。
+            请在 MCP 客户端为本站的 /mcp 地址设置 Bearer 令牌。此密钥只显示一次。
           </p>
           <div className="flex gap-2">
             <Input

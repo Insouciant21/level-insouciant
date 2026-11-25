@@ -15,8 +15,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "articles:import": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/import-articles.mjs",
-    "agent:mcp": "node scripts/agent-mcp.mjs"
+    "articles:import": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/import-articles.mjs"
   },
   "dependencies": {
     "@astrojs/node": "11.1.9",

@@ -1,21 +1,43 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
 import { expect, it, vi } from "vitest"
-import { authenticateAgent } from "@/lib/agent-tokens"
 import { agentTools } from "@/lib/agent-contract"
 import { prisma } from "@/lib/prisma"
 import { handleArticleMcp } from "./article-mcp"
 
-vi.mock("@/lib/agent-tokens", () => ({ authenticateAgent: vi.fn() }))
-vi.mock("@/lib/prisma", () => ({ prisma: { article: { findMany: vi.fn() } } }))
+vi.mock("@/lib/prisma", () => ({
+  prisma: {
+    article: { findMany: vi.fn() },
+    agentToken: { findFirst: vi.fn() },
+  },
+}))
 
 const url = new URL("https://blog.example/mcp")
+const authorization = `Bearer li_${"a".repeat(43)}`
 
 it("requires a bearer credential before protocol negotiation", async () => {
-  vi.mocked(authenticateAgent).mockResolvedValue(null)
-  const response = await handleArticleMcp(new Request(url, { method: "POST" }))
+  const response = await handleArticleMcp(
+    new Request(url, { method: "POST", headers: { cookie: "session=test" } })
+  )
   expect(response.status).toBe(401)
   expect(response.headers.get("www-authenticate")).toMatch(/^Bearer /)
+})
+
+it("requires an active credential belonging to a current administrator", async () => {
+  vi.mocked(prisma.agentToken.findFirst).mockResolvedValueOnce(null)
+  const response = await handleArticleMcp(
+    new Request(url, { method: "POST", headers: { authorization } })
+  )
+  expect(response.status).toBe(401)
+  expect(prisma.agentToken.findFirst).toHaveBeenCalledWith(
+    expect.objectContaining({
+      where: expect.objectContaining({
+        revokedAt: null,
+        expiresAt: { gt: expect.any(Date) },
+        owner: { role: "ADMIN" },
+      }),
+    })
+  )
 })
 
 it("supports discovery and calls with the standard HTTP client and rechecks authorization between requests", async () => {
@@ -26,14 +48,15 @@ it("supports discovery and calls with the standard HTTP client and rechecks auth
     version: "revision",
   }
   vi.mocked(prisma.article.findMany).mockResolvedValue([article] as never)
-  vi.mocked(authenticateAgent).mockResolvedValue({
+  vi.mocked(prisma.agentToken.findFirst).mockResolvedValue({
     id: "token",
     name: "writer",
     ownerId: "admin",
     access: "DRAFT",
-  })
+  } as never)
   const client = new Client({ name: "article-mcp-test", version: "1" })
   const transport = new StreamableHTTPClientTransport(url, {
+    requestInit: { headers: { authorization } },
     fetch: (input, init) => handleArticleMcp(new Request(input, init)),
   })
   try {
@@ -64,7 +87,7 @@ it("supports discovery and calls with the standard HTTP client and rechecks auth
     expect(denied.content).toEqual([
       { type: "text", text: "PUBLISH_ACCESS_REQUIRED" },
     ])
-    vi.mocked(authenticateAgent).mockResolvedValue(null)
+    vi.mocked(prisma.agentToken.findFirst).mockResolvedValue(null)
     await expect(client.listTools()).rejects.toThrow()
   } finally {
     await client.close()
