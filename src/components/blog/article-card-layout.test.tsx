@@ -79,8 +79,11 @@ describe("article card spacing", () => {
 
     render(<HomeDoorGrid articles={sixArticles} />)
 
-    const deadEndLink = screen.getByRole("link", { name: /进入完整档案室/ })
-    expect(classNames(deadEndLink.parentElement)).toContain("lg:col-span-4")
+    const deadEndBlock = screen
+      .getByText(/Dead End/)
+      .closest("div")?.parentElement
+    expect(classNames(deadEndBlock)).toContain("lg:col-span-4")
+    expect(screen.queryByRole("link", { name: /进入完整档案室/ })).toBeNull()
   })
 
   it("balances the 2-article home grid without leaving an empty top-right cell", () => {

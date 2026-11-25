@@ -163,19 +163,14 @@ function HomeDoorGrid({ articles }: HomeDoorGridProps) {
           delay: reducedMotion ? 0 : 0.1 + articles.length * 0.05,
         }}
         className={cn(
-          "relative flex overflow-hidden rounded-[0.25rem] border border-[#8a4f34]/55 bg-[#181b17] text-[#d9d1ad] shadow-[inset_0_0_48px_rgba(0,0,0,0.8)]",
+          "relative flex flex-col items-center justify-center overflow-hidden rounded-[0.25rem] border border-[#8a4f34]/55 bg-[#181b17] text-center text-[#d9d1ad] shadow-[inset_0_0_48px_rgba(0,0,0,0.8)]",
           getDeadEndLayoutClass(articles.length),
           isCompactTerminusRow
-            ? "flex-col justify-between gap-4 px-5 py-5 sm:flex-row sm:items-center sm:px-6 lg:min-h-0"
-            : "min-h-[16.5rem] flex-col items-center justify-center px-5 py-6 text-center sm:min-h-[18rem]"
+            ? "min-h-[7.5rem] px-5 py-6 sm:px-6"
+            : "min-h-[16.5rem] px-5 py-6 sm:min-h-[18rem]"
         )}
       >
-        <div
-          className={cn(
-            "space-y-1.5",
-            isCompactTerminusRow ? "text-left" : "text-center"
-          )}
-        >
+        <div className="space-y-1.5 text-center">
           <p className="font-mono text-[0.68rem] tracking-[0.26em] text-[#8a4f34] uppercase">
             SEC-ERR-902 // CORRIDOR SEALED
           </p>
@@ -183,14 +178,6 @@ function HomeDoorGrid({ articles }: HomeDoorGridProps) {
             Dead End — 前方通道封锁
           </p>
         </div>
-
-        <Link
-          href="/articles"
-          className="inline-flex shrink-0 items-center gap-2 rounded-[var(--radius)] border border-[var(--safety-exit-green)]/55 bg-[var(--safety-exit-green)]/14 px-4 py-2 font-mono text-xs font-medium tracking-[0.16em] text-[var(--safety-exit-green-strong)] uppercase transition hover:border-[var(--safety-exit-green-strong)] hover:bg-[var(--safety-exit-green)]/24"
-        >
-          <span>进入完整档案室</span>
-          <ArrowRight className="size-3.5" aria-hidden="true" />
-        </Link>
       </Motion.div>
     </div>
   )
