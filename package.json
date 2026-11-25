@@ -15,7 +15,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "articles:import": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/import-articles.mjs"
+    "articles:import": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/import-articles.mjs",
+    "agent:mcp": "node scripts/agent-mcp.mjs"
   },
   "dependencies": {
     "@astrojs/node": "11.1.9",
@@ -75,6 +76,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
+    "@modelcontextprotocol/sdk": "1.32.1",
     "@tailwindcss/vite": "4.3.3",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^25.9.9",

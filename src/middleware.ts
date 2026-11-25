@@ -9,10 +9,16 @@ import {
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context
+  const agentRequest =
+    request.method === "POST" &&
+    url.pathname === "/api/agent/articles" &&
+    !url.search &&
+    request.headers.get("content-type")?.split(";")[0].trim() ===
+      "application/json"
   if (!["GET", "HEAD", "OPTIONS"].includes(request.method)) {
     const origin = request.headers.get("origin")
     if (
-      origin !== url.origin ||
+      (origin !== url.origin && !(agentRequest && origin === null)) ||
       request.headers.get("sec-fetch-site") === "cross-site"
     ) {
       return new Response("Forbidden origin", { status: 403 })
@@ -26,7 +32,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
         try {
           const { action, setActionResult, serializeActionResult } =
             getActionContext(context)
-          if (action?.calledFrom === "form") {
+          if (!agentRequest && action?.calledFrom === "form") {
             const result = await action.handler()
             if (result.error)
               return new Response("表单提交失败", {

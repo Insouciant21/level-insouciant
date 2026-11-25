@@ -85,6 +85,20 @@ pnpm dev
 
 普通用户可以从 `/register` 注册；初始管理员邮箱被保留，不能通过普通注册流程占用。
 
+## 自用 Agent
+
+管理员可以在 `/admin/account` 创建个人 Agent 令牌。令牌只显示一次，服务端只保存摘要；权限分为只读、读写草稿和可发布，令牌也可以在同一页面撤销。文章 Agent API 不使用浏览器会话，令牌通过 HTTPS `Authorization: Bearer ...` 请求头发送。
+
+本地 MCP 连接器通过 `BLOG_URL` 和 `BLOG_AGENT_TOKEN` 连接博客：
+
+```bash
+export BLOG_URL=http://127.0.0.1:4321
+export BLOG_AGENT_TOKEN=li_...
+pnpm agent:mcp
+```
+
+连接器提供 `list_articles`、`list_tags`、`get_article`、`create_draft`、`edit_article`、`publish_article` 和 `unpublish_article` 工具。修改文章时必须传入上一次读取或写入返回的 `version`；版本发生变化时服务端返回冲突，避免 Agent 覆盖人工修改。Agent 正文首版限定为 Markdown，禁止执行任意 MDX 表达式。新增数据库迁移后，先运行 `pnpm prisma migrate dev` 或部署时使用 Compose 迁移服务。
+
 ## 文章导入
 
 后台可以直接创建和编辑文章。项目还提供批量导入脚本，它优先读取 `content/article-seeds/`，不存在时读取 `content/articles/`，并按照 `slug` 更新或创建文章：

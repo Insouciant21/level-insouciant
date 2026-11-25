@@ -254,7 +254,8 @@ export const getManagedArticleBySlug = cache(
 
 export async function createManagedArticle(
   input: ManagedArticleInput,
-  editorUserId: string
+  editorUserId: string,
+  reason = "Article created"
 ) {
   const normalized = normalizeArticleInput(input, { requireSlug: true })
   const existing = await prisma.article.findUnique({
@@ -283,12 +284,7 @@ export async function createManagedArticle(
       },
     })
 
-    await createArticleRevisionSnapshot(
-      tx,
-      article,
-      editorUserId,
-      "Article created"
-    )
+    await createArticleRevisionSnapshot(tx, article, editorUserId, reason)
     return article
   })
   invalidatePublicPages()
@@ -298,7 +294,8 @@ export async function createManagedArticle(
 export async function updateManagedArticle(
   slug: string,
   input: ManagedArticleInput,
-  editorUserId: string
+  editorUserId: string,
+  guard?: { version: string; draft: boolean; reason: string }
 ) {
   const normalized = normalizeArticleInput(input)
   const existing = await prisma.article.findUnique({
@@ -311,7 +308,9 @@ export async function updateManagedArticle(
 
   const result = await prisma.$transaction(async (tx) => {
     const article = await tx.article.update({
-      where: { slug },
+      where: guard
+        ? { slug, version: guard.version, draft: guard.draft }
+        : { slug },
       data: {
         title: normalized.title,
         desc: normalized.desc,
@@ -330,7 +329,7 @@ export async function updateManagedArticle(
       tx,
       article,
       editorUserId,
-      "Article updated"
+      guard?.reason ?? "Article updated"
     )
     return article
   })
@@ -341,7 +340,8 @@ export async function updateManagedArticle(
 export async function setArticleDraftState(
   slug: string,
   draft: boolean,
-  editorUserId: string
+  editorUserId: string,
+  guard?: { version: string; reason: string }
 ) {
   const article = await prisma.article.findUnique({
     where: { slug },
@@ -353,7 +353,7 @@ export async function setArticleDraftState(
 
   const result = await prisma.$transaction(async (tx) => {
     const updated = await tx.article.update({
-      where: { slug },
+      where: guard ? { slug, version: guard.version, draft: !draft } : { slug },
       data: {
         draft,
         lastEditedByUserId: editorUserId,
@@ -364,7 +364,7 @@ export async function setArticleDraftState(
       tx,
       updated,
       editorUserId,
-      draft ? "Article hidden" : "Article published"
+      guard?.reason ?? (draft ? "Article hidden" : "Article published")
     )
     return updated
   })
@@ -407,8 +407,11 @@ export type ManagedTagSummary = {
   articleSlugs: string[]
 }
 
-export const getManagedTags = cache(async function getManagedTags() {
+export const getManagedTags = cache(async function getManagedTags(
+  includeDrafts = true
+) {
   const articles = await prisma.article.findMany({
+    where: includeDrafts ? undefined : { draft: false },
     select: managedArticleTagSelect,
   })
 

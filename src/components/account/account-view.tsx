@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import type { AccountCommentItem, AccountProfile } from "@/lib/account"
 import { formatAccountCommentDate } from "@/lib/account-page"
+import { AgentTokenPanel } from "@/components/admin/agent-token-panel"
 
 type AccountViewProps = {
   profile: AccountProfile
@@ -614,6 +615,9 @@ export function AdminAccountView({
             )}
           </div>
         </Card>
+      </div>
+      <div className="mt-6 border border-white/10 bg-black/10 p-5 sm:p-6">
+        <AgentTokenPanel />
       </div>
     </section>
   )

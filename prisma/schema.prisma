@@ -41,10 +41,32 @@ model User {
   articleRevisions   ArticleRevision[] @relation("ArticleRevisionCreatedBy")
   mediaAssets        MediaAsset[]
   comments           Comment[]
+  agentTokens        AgentToken[]
+}
+
+enum AgentAccess {
+  READ
+  DRAFT
+  PUBLISH
+}
+
+model AgentToken {
+  id        String      @id @default(cuid())
+  ownerId   String
+  owner     User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name      String
+  digest    String      @unique
+  access    AgentAccess @default(DRAFT)
+  createdAt DateTime    @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  @@index([ownerId, createdAt])
 }
 
 model Article {
   id                 String            @id @default(cuid())
+  version            String            @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   archiveNumber      BigInt            @unique @default(autoincrement())
   slug               String            @unique
   title              String
