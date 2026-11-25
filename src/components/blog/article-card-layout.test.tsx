@@ -13,10 +13,20 @@ vi.mock("@/lib/navigation", async (importOriginal) => ({
 
 vi.mock("motion/react", () => ({
   motion: {
-    article: ({ children }: { children?: ReactNode }) => (
-      <article>{children}</article>
-    ),
-    div: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+    article: ({
+      children,
+      className,
+    }: {
+      children?: ReactNode
+      className?: string
+    }) => <article className={className}>{children}</article>,
+    div: ({
+      children,
+      className,
+    }: {
+      children?: ReactNode
+      className?: string
+    }) => <div className={className}>{children}</div>,
   },
   useReducedMotion: () => true,
 }))
@@ -46,12 +56,31 @@ function classNames(element: Element | null | undefined) {
 }
 
 describe("article card spacing", () => {
-  it("keeps the designation and category badge visibly separated", () => {
+  it("keeps the designation and category badge visibly separated and clickable above card link", () => {
     render(<ArticleCard article={article} />)
 
     const categoryBadge = screen.getByRole("link", { name: "世界观档案" })
+    const tagLink = screen.getByRole("link", { name: "BACKROOMS" })
+    const titleLink = screen.getByRole("link", { name: article.title })
 
     expect(classNames(categoryBadge.parentElement)).toContain("gap-3")
+    expect(classNames(categoryBadge)).toContain("z-20")
+    expect(classNames(tagLink.closest(".relative"))).toContain("z-20")
+    expect(classNames(titleLink)).toContain("after:z-10")
+  })
+
+  it("fills the home grid row cleanly without orphan gaps for 6 articles", () => {
+    const sixArticles = Array.from({ length: 6 }, (_, index) => ({
+      ...article,
+      archiveCode: `A-000${index + 1}`,
+      slug: `entry-${index + 1}`,
+      title: `Entry ${index + 1}`,
+    }))
+
+    render(<HomeDoorGrid articles={sixArticles} />)
+
+    const deadEndLink = screen.getByRole("link", { name: /进入完整档案室/ })
+    expect(classNames(deadEndLink.parentElement)).toContain("lg:col-span-4")
   })
 
   it("keeps a visible gap between the home designation row and content panel", () => {

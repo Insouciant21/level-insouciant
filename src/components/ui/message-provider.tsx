@@ -266,10 +266,10 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
             open={open}
             onOpenChange={setOpen}
             className={cn(
-              "pointer-events-auto grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 border px-4 py-4 shadow-[0_24px_48px_-30px_rgba(0,0,0,0.5)] transition outline-none data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
+              "pointer-events-auto grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 rounded-[var(--radius)] border px-4 py-4 shadow-[0_24px_48px_-30px_rgba(0,0,0,0.5)] transition outline-none data-[state=closed]:opacity-0 data-[state=open]:opacity-100",
               isAdminRoute
-                ? "border-[#333333] bg-[#111111] text-[#e0e0e0]"
-                : "border-[#73766f]/55 bg-[#d9d1ad]/95 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_24px_48px_-34px_rgba(0,0,0,0.42)]"
+                ? "border-[var(--admin-border-strong)] bg-[var(--admin-surface)] text-[var(--admin-foreground)]"
+                : "border-[#73766f]/60 bg-[#ded7b8]/96 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.24),0_24px_48px_-34px_rgba(0,0,0,0.42)]"
             )}
           >
             <Icon
@@ -277,22 +277,24 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
                 "mt-0.5 size-4",
                 isAdminRoute
                   ? message.tone === "error"
-                    ? "text-[#ff8d82]"
+                    ? "text-[var(--admin-danger)]"
                     : message.tone === "warning"
-                      ? "text-[#f59e0b]"
+                      ? "text-[var(--admin-warning)]"
                       : "text-[var(--safety-exit-green-strong)]"
                   : message.tone === "error"
                     ? "text-[#8a4f34]"
                     : message.tone === "warning"
                       ? "text-[#c58b2f]"
-                      : "text-primary-foreground"
+                      : "text-primary"
               )}
             />
             <div className="min-w-0">
               <Toast.Title
                 className={cn(
                   "text-sm font-semibold tracking-[0.22em] uppercase",
-                  isAdminRoute ? "text-[#e0e0e0]" : "text-foreground"
+                  isAdminRoute
+                    ? "text-[var(--admin-foreground)]"
+                    : "text-foreground"
                 )}
               >
                 {message.title}
@@ -301,7 +303,9 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
                 <Toast.Description
                   className={cn(
                     "mt-2 text-sm leading-6",
-                    isAdminRoute ? "text-[#8c8c8c]" : "text-muted-foreground"
+                    isAdminRoute
+                      ? "text-[var(--admin-muted)]"
+                      : "text-muted-foreground"
                   )}
                 >
                   {message.description}
@@ -311,9 +315,9 @@ function MessageProvider({ children }: { children: React.ReactNode }) {
             <Toast.Close
               aria-label="关闭消息"
               className={cn(
-                "inline-flex size-7 items-center justify-center border transition",
+                "inline-flex size-7 items-center justify-center rounded-[var(--radius)] border transition",
                 isAdminRoute
-                  ? "border-[#333333] text-[#8c8c8c] hover:bg-[#1a1a1a] hover:text-[#e0e0e0]"
+                  ? "border-[var(--admin-border)] text-[var(--admin-muted)] hover:bg-white/8 hover:text-[var(--admin-foreground)]"
                   : "border-[#73766f]/45 bg-[#d9d1ad]/50 text-muted-foreground hover:bg-[#c6bd99]/62 hover:text-foreground"
               )}
             >

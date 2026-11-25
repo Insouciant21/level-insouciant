@@ -1,4 +1,5 @@
 import Link from "@/lib/navigation"
+import { ArrowRight } from "lucide-react"
 
 import { getArchiveHref } from "@/lib/content-presentation"
 import { cn } from "@/lib/utils"
@@ -10,9 +11,14 @@ type HomeTagCloudProps = {
 
 const tagCloudPanelClass = "public-summary-panel px-6 py-6 sm:px-7"
 const tagCloudChipClass =
-  "public-summary-card-muted inline-flex items-center gap-2 px-4 py-2 font-medium text-foreground transition duration-500 hover:-translate-y-0.5 hover:border-foreground/20 hover:bg-[#d9d1ad]/46"
+  "public-summary-card-muted inline-flex items-center gap-2 px-3 py-1.5 font-medium text-foreground transition duration-200 hover:border-foreground/30 hover:bg-[#d9d1ad]/58"
 
-const densityClasses = ["text-xs", "text-sm", "text-base", "text-lg"] as const
+const densityClasses = [
+  "text-xs",
+  "text-sm",
+  "text-[0.94rem]",
+  "text-base",
+] as const
 
 function getDensityClass(count: number, min: number, max: number) {
   if (min === max) {
@@ -47,10 +53,16 @@ function HomeTagCloud({ items }: HomeTagCloudProps) {
             关键词索引
           </h2>
         </div>
-        <span className="chrome-pill">{items.length} 项</span>
+        <Link
+          href="/tags"
+          className="chrome-pill hover:border-foreground/35 hover:bg-[#d9d1ad]/65"
+        >
+          <span>{items.length} 项</span>
+          <ArrowRight className="size-3.5" aria-hidden="true" />
+        </Link>
       </header>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2.5">
         {visibleItems.map((item) => (
           <Link
             key={item.slug}
@@ -61,7 +73,9 @@ function HomeTagCloud({ items }: HomeTagCloudProps) {
             )}
           >
             <span>{item.name}</span>
-            <span className="text-xs text-muted-foreground">{item.count}</span>
+            <span className="border-l border-border/70 pl-2 font-mono text-[0.68rem] text-muted-foreground tabular-nums">
+              {item.count}
+            </span>
           </Link>
         ))}
       </div>

@@ -1,25 +1,27 @@
 import Link from "@/lib/navigation"
 import {
-  Anchor,
   Contact,
   ExternalLink,
   FileStack,
   Link as LinkIcon,
+  Radio,
   Zap,
 } from "lucide-react"
 import { MotionReveal } from "@/components/motion/page-transition"
 import { PageShell } from "@/components/blog/page-shell"
 import { contactIconByKind } from "@/lib/contact-kinds"
+import type { load } from "@/server/pages/about-index"
+import { IslandProvider } from "@/components/providers/island-provider"
+
 const aboutArticleClass =
-  "public-summary-panel-document px-7 py-8 sm:px-10 sm:py-10"
+  "public-summary-panel-document px-6 py-7 sm:px-10 sm:py-9"
 const aboutQuoteClass =
-  "border-l-4 border-[#8a4f34]/80 bg-[#d9d1ad]/52 px-5 py-4 text-2xl font-semibold italic text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
+  "border-l-[3px] border-[#8a4f34]/80 bg-[#d9d1ad]/60 px-5 py-4 font-serif text-xl font-semibold italic text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)] sm:text-2xl"
 const aboutHighlightClass =
-  "public-summary-card-muted px-5 py-4 transition duration-700 hover:border-foreground/20 hover:bg-[#d9d1ad]/48"
-const aboutWarningHighlightClass =
-  "border border-[#8a4f34]/70 bg-[#181b17] px-5 py-4 text-[#d9d1ad] shadow-[inset_0_1px_0_rgba(255,252,225,0.08),0_18px_38px_-30px_rgba(0,0,0,0.46)]"
+  "public-summary-card-muted px-5 py-4 transition duration-200 hover:border-foreground/28 hover:bg-[#d9d1ad]/58"
 const aboutAccessLinkClass =
-  "flex items-center justify-between border-b border-[#73766f]/42 pb-2 transition duration-500 hover:border-[#8a4f34]/48 hover:text-destructive"
+  "flex items-center justify-between border-b border-[#73766f]/45 pb-2.5 transition duration-200 hover:border-[#8a4f34]/60 hover:text-destructive"
+
 function isExternalHttpHref(href: string) {
   try {
     const url = new URL(href)
@@ -28,17 +30,16 @@ function isExternalHttpHref(href: string) {
     return false
   }
 }
-import type { load } from "@/server/pages/about-index"
-import { IslandProvider } from "@/components/providers/island-provider"
+
 function View({ siteConfig, contactItems }: Awaited<ReturnType<typeof load>>) {
   return (
     <PageShell>
       <section className="grid gap-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
         <MotionReveal variant="left">
-          <aside className="grid gap-8 lg:sticky lg:top-28">
-            <div className="space-y-4 border-r-4 border-foreground/80 pr-6">
+          <aside className="grid gap-6 lg:sticky lg:top-28">
+            <div className="space-y-4 border-l-[3px] border-foreground/75 pl-4 lg:border-r-[3px] lg:border-l-0 lg:pr-5 lg:pl-0">
               <p className="utility-kicker">Official Designation</p>
-              <h1 className="text-5xl font-semibold tracking-tight uppercase">
+              <h1 className="text-4xl font-semibold tracking-tight uppercase sm:text-5xl">
                 {siteConfig.about.displayTitle}
               </h1>
               <p className="font-mono text-xs leading-7 text-muted-foreground">
@@ -51,73 +52,88 @@ function View({ siteConfig, contactItems }: Awaited<ReturnType<typeof load>>) {
               </p>
             </div>
 
-            <div className="flex h-56 items-center justify-center bg-[#1a1a1a] text-[#4a4a4a] shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]">
-              <Anchor className="size-24" />
+            <div className="terminal-panel rounded-[0.25rem] border p-5 text-[#d9d1ad]">
+              <div className="relative z-10 space-y-4">
+                <div className="flex items-center justify-between border-b border-primary/20 pb-3 font-mono text-[0.65rem] tracking-[0.2em] text-[#9aa79a] uppercase">
+                  <span className="inline-flex items-center gap-2 text-[var(--safety-exit-green-strong)]">
+                    <Radio className="size-3.5" aria-hidden="true" />
+                    M.E.G. BEACON
+                  </span>
+                  <span>NODE ACTIVE</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 py-2 font-mono text-[0.65rem] tracking-[0.14em] uppercase">
+                  <div className="border border-white/10 bg-black/25 px-2.5 py-2">
+                    <span className="block text-[#748073]">LVL</span>
+                    <span className="mt-1 block text-[#edf3e9]">00-IN</span>
+                  </div>
+                  <div className="border border-white/10 bg-black/25 px-2.5 py-2">
+                    <span className="block text-[#748073]">LIGHT</span>
+                    <span className="mt-1 block text-[#edf3e9]">60Hz</span>
+                  </div>
+                  <div className="border border-white/10 bg-black/25 px-2.5 py-2">
+                    <span className="block text-[#748073]">CLASS</span>
+                    <span className="mt-1 block text-[var(--safety-exit-green-strong)]">
+                      SAFE
+                    </span>
+                  </div>
+                </div>
+
+                <p className="font-mono text-[0.68rem] leading-6 text-[#9aa79a]">
+                  记录边界、坐标与留存之物。所有公开条目均处于持续校准中。
+                </p>
+              </div>
             </div>
 
-            <div className="grid gap-4 font-mono text-sm text-muted-foreground">
+            <div className="grid gap-3.5 font-mono text-sm text-muted-foreground">
               <Link
                 href={siteConfig.about.archiveAccess.href}
                 className={aboutAccessLinkClass}
               >
-                <span className="font-semibold tracking-[0.24em] uppercase">
+                <span className="text-xs font-semibold tracking-[0.22em] uppercase">
                   {siteConfig.about.archiveAccess.label}
                 </span>
-                <FileStack className="size-4" />
+                <FileStack className="size-4" aria-hidden="true" />
               </Link>
               <Link
                 href={siteConfig.about.transmission.href}
                 className={aboutAccessLinkClass}
               >
-                <span className="font-semibold tracking-[0.24em] uppercase">
+                <span className="text-xs font-semibold tracking-[0.22em] uppercase">
                   {siteConfig.about.transmission.label}
                 </span>
-                <Zap className="size-4" />
+                <Zap className="size-4" aria-hidden="true" />
               </Link>
             </div>
           </aside>
         </MotionReveal>
 
-        <MotionReveal variant="right" delay={0.3}>
+        <MotionReveal variant="right" delay={0.12}>
           <article className={aboutArticleClass}>
             <p className={aboutQuoteClass}>{siteConfig.about.quote}</p>
 
-            <div className="mt-8 space-y-6 text-base leading-8 text-foreground/84">
+            <div className="mt-8 space-y-6 text-base leading-8 text-foreground/86">
               <p>{siteConfig.about.intro}</p>
               <p>{siteConfig.about.principles}</p>
             </div>
 
-            <div className="mt-12">
-              <h2 className="flex items-center gap-3 border-b-2 border-foreground/80 pb-3 text-xl font-semibold tracking-[0.2em] uppercase">
+            <div className="mt-10">
+              <h2 className="flex items-center gap-3 border-b border-foreground/65 pb-3 text-xl font-semibold tracking-[0.18em] uppercase">
                 <Contact className="size-5 text-destructive" />
                 {siteConfig.about.contactHeading}
               </h2>
 
-              <ul className="mt-6 grid gap-4">
-                {contactItems.map((contact, index) => {
-                  const isWarning = index === contactItems.length - 1
+              <ul className="mt-5 grid gap-3">
+                {contactItems.map((contact) => {
                   const Icon = contactIconByKind[contact.kind] ?? LinkIcon
                   const external = isExternalHttpHref(contact.href)
 
                   return (
-                    <li
-                      key={contact.id}
-                      className={
-                        isWarning
-                          ? aboutWarningHighlightClass
-                          : aboutHighlightClass
-                      }
-                    >
-                      <div className="grid gap-3 md:grid-cols-[180px_minmax(0,1fr)] md:items-center">
-                        <div
-                          className={
-                            isWarning
-                              ? "flex items-center gap-2 text-sm font-semibold tracking-[0.16em] text-[#d9d1ad]"
-                              : "flex items-center gap-2 text-sm font-semibold tracking-[0.16em] text-foreground/80"
-                          }
-                        >
+                    <li key={contact.id} className={aboutHighlightClass}>
+                      <div className="grid gap-2.5 md:grid-cols-[180px_minmax(0,1fr)] md:items-center">
+                        <div className="flex items-center gap-2 font-mono text-xs font-semibold tracking-[0.14em] text-foreground/82 uppercase">
                           <Icon
-                            className="size-4 shrink-0"
+                            className="size-4 shrink-0 text-primary"
                             aria-hidden="true"
                           />
                           <span>{contact.label}</span>
@@ -126,11 +142,7 @@ function View({ siteConfig, contactItems }: Awaited<ReturnType<typeof load>>) {
                           href={contact.href}
                           target={external ? "_blank" : undefined}
                           rel={external ? "noreferrer" : undefined}
-                          className={
-                            isWarning
-                              ? "inline-flex min-w-0 items-center gap-2 text-sm leading-7 break-all text-[#d9d1ad]/90 underline decoration-[#d9d1ad]/40 underline-offset-4 transition hover:text-white"
-                              : "inline-flex min-w-0 items-center gap-2 text-sm leading-7 break-all text-foreground/76 underline decoration-foreground/25 underline-offset-4 transition hover:text-destructive"
-                          }
+                          className="inline-flex min-w-0 items-center gap-2 text-sm leading-7 break-all text-foreground/82 underline decoration-foreground/25 underline-offset-4 transition hover:text-destructive"
                         >
                           <span>{contact.value}</span>
                           <ExternalLink
@@ -150,6 +162,7 @@ function View({ siteConfig, contactItems }: Awaited<ReturnType<typeof load>>) {
     </PageShell>
   )
 }
+
 export default function Page(
   props: Awaited<ReturnType<typeof load>> & { location: string }
 ) {

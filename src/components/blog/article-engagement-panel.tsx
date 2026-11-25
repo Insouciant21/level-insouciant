@@ -32,15 +32,15 @@ type Comment = {
 }
 
 const outlineActionClass =
-  "border-[#73766f]/55 bg-[#d9d1ad]/52 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_14px_26px_-24px_rgba(0,0,0,0.32)] hover:border-foreground/22 hover:bg-[#c6bd99]/62"
+  "border-[#73766f]/55 bg-[#d9d1ad]/58 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_12px_22px_-20px_rgba(0,0,0,0.3)] hover:border-foreground/28 hover:bg-[#c6bd99]/72"
 const primaryActionClass =
-  "border-primary/65 bg-primary text-primary-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_14px_28px_-24px_rgba(0,0,0,0.32)] hover:border-primary/80 hover:bg-primary/85"
+  "border-primary/65 bg-primary text-primary-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_12px_24px_-20px_rgba(0,0,0,0.3)] hover:border-primary/80 hover:bg-primary/85"
 const fieldTextareaClass =
-  "field-textarea rounded-none border-[#73766f]/55 bg-[#eee9d6]/62 text-foreground placeholder:text-muted-foreground/80 focus:border-foreground/35 focus:bg-[#eee9d6]/82"
+  "field-textarea border-[#73766f]/55 bg-[#eee9d6]/70 text-foreground placeholder:text-muted-foreground/80 focus:border-foreground/45 focus:bg-[#eee9d6]/90"
 const engagementPanelClass = "public-summary-panel"
 const engagementCardClass = "public-summary-card"
 const engagementChipClass =
-  "public-summary-chip gap-2 border-[#73766f]/55 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.2),0_12px_24px_-22px_rgba(0,0,0,0.3)]"
+  "public-summary-chip gap-2 border-[#73766f]/55 px-3 py-1.5 text-[0.68rem] font-medium uppercase tracking-[0.2em] text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.2),0_10px_20px_-20px_rgba(0,0,0,0.28)]"
 
 type CommentCardProps = {
   comment: Comment
@@ -255,29 +255,32 @@ function CommentCard({
   const isReplying = activeReplyId === comment.id
 
   return (
-    <article className={`${engagementCardClass} px-5 py-5`}>
-      <div className="flex flex-col gap-3 border-b border-border/55 pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm font-semibold tracking-[0.22em] text-foreground uppercase">
+    <article className={`${engagementCardClass} px-5 py-4`}>
+      <div className="flex flex-col gap-2.5 border-b border-border/55 pb-3.5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <p className="font-mono text-xs font-semibold tracking-[0.16em] text-foreground uppercase">
             {comment.authorName}
           </p>
-          <p className="mt-1 text-xs tracking-[0.2em] text-muted-foreground uppercase">
+          <span className="font-mono text-[0.65rem] tracking-[0.14em] text-muted-foreground uppercase">
             {comment.replyToAuthorName
-              ? `Reply To ${comment.replyToAuthorName}`
-              : "Comment Entry"}
-          </p>
+              ? `// Reply To ${comment.replyToAuthorName}`
+              : "// Field Entry"}
+          </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <p className="text-sm text-muted-foreground">
+          <time
+            dateTime={comment.createdAt}
+            className="font-mono text-xs text-muted-foreground"
+          >
             {formatCommentDate(comment.createdAt)}
-          </p>
+          </time>
           {canReply ? (
             isReplying ? (
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
+                size="xs"
                 className={outlineActionClass}
                 onClick={onReplyCancel}
               >
@@ -287,7 +290,7 @@ function CommentCard({
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
+                size="xs"
                 className={outlineActionClass}
                 onClick={() => onReplyStart(comment.id)}
               >
@@ -298,14 +301,14 @@ function CommentCard({
         </div>
       </div>
 
-      <p className="mt-4 text-sm leading-7 break-words whitespace-pre-line text-foreground/78">
+      <p className="mt-3.5 text-sm leading-7 break-words whitespace-pre-line text-foreground/84">
         {comment.content}
       </p>
 
       {isReplying ? (
         <form
           method="post"
-          className="mt-4 grid gap-4 border-t border-border/55 pt-4"
+          className="mt-4 grid gap-3 border-t border-border/55 pt-4"
           onSubmit={(event) => {
             event.preventDefault()
             void onReplySubmit(comment.id)
@@ -320,14 +323,14 @@ function CommentCard({
               value={replyContent}
               onChange={(event) => onReplyContentChange(event.target.value)}
               maxLength={2000}
-              rows={4}
+              rows={3}
               placeholder={`回复 ${comment.authorName}...`}
               className={fieldTextareaClass}
             />
           </div>
 
           {replyError ? (
-            <div className="border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
+            <div className="border-l-2 border-destructive bg-destructive/8 px-4 py-2.5 text-sm text-destructive">
               {replyError}
             </div>
           ) : null}
@@ -350,7 +353,7 @@ function CommentCard({
       ) : null}
 
       {comment.replies.length > 0 ? (
-        <div className="mt-4 grid gap-3 border-l border-border/55 pl-4 sm:pl-5">
+        <div className="mt-4 grid gap-2.5 border-l-2 border-primary/35 pl-4 sm:pl-5">
           {comment.replies.map((reply) => (
             <CommentCard
               key={reply.id}
@@ -557,7 +560,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
     likeMutation.mutate()
   }
 
-  function handleSubmitComment(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmitComment(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault()
     setCommentError(null)
     commentMutation.mutate({ content })
@@ -576,24 +579,28 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
   return (
     <section
       id="article-engagement"
-      className={`${engagementPanelClass} mx-auto w-full max-w-4xl scroll-mt-28 px-6 py-6 md:px-8 md:py-8`}
+      className={`${engagementPanelClass} mx-auto w-full max-w-4xl scroll-mt-28 px-5 py-6 sm:px-8 sm:py-8`}
     >
       <div className="flex flex-col gap-4 border-b border-border/70 pb-5 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="utility-kicker">Engagement</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
-            互动数据
+            互动记录
           </h2>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <div
             className={engagementChipClass}
             role="status"
+            title="阅读次数"
             aria-label={`阅读次数：${loading ? "加载中" : snapshot.views}`}
           >
             <span className="inline-flex items-center gap-2">
-              <Eye className="size-4" aria-hidden="true" />
+              <Eye
+                className="size-4 text-muted-foreground"
+                aria-hidden="true"
+              />
               <span aria-hidden="true">{loading ? "..." : snapshot.views}</span>
             </span>
           </div>
@@ -601,10 +608,14 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
           <div
             className={engagementChipClass}
             role="status"
+            title="评论数"
             aria-label={`评论数：${loading ? "加载中" : snapshot.commentsCount}`}
           >
             <span className="inline-flex items-center gap-2">
-              <MessageSquare className="size-4" aria-hidden="true" />
+              <MessageSquare
+                className="size-4 text-muted-foreground"
+                aria-hidden="true"
+              />
               <span aria-hidden="true">
                 {loading ? "..." : snapshot.commentsCount}
               </span>
@@ -616,6 +627,7 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
               type="button"
               variant="outline"
               size="sm"
+              title="点赞支持"
               className={
                 snapshot.likedByViewer ? primaryActionClass : outlineActionClass
               }
@@ -632,10 +644,14 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             <div
               className={engagementChipClass}
               role="status"
+              title="点赞数"
               aria-label={`点赞数：${loading ? "加载中" : snapshot.likes}`}
             >
               <span className="inline-flex items-center gap-2">
-                <Heart className="size-4" aria-hidden="true" />
+                <Heart
+                  className="size-4 text-muted-foreground"
+                  aria-hidden="true"
+                />
                 <span aria-hidden="true">
                   {loading ? "..." : snapshot.likes}
                 </span>
@@ -645,13 +661,115 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
+      <div className="mt-6 grid gap-6">
+        {snapshot.isAuthenticated ? (
+          <div className={`${engagementCardClass} px-5 py-5`}>
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/55 pb-3.5">
+              <div>
+                <p className="utility-kicker">Transmission</p>
+                <h3 className="mt-1.5 text-lg font-semibold tracking-tight text-foreground">
+                  写一条评论
+                </h3>
+              </div>
+              <p className="font-mono text-xs text-muted-foreground">
+                当前身份：{snapshot.currentUserName ?? "已登录用户"}
+              </p>
+            </div>
+
+            <form
+              method="post"
+              className="mt-4 grid gap-4"
+              onSubmit={handleSubmitComment}
+            >
+              <div className="grid gap-2">
+                <Label htmlFor="article-comment" className="text-foreground">
+                  评论内容
+                </Label>
+                <Textarea
+                  id="article-comment"
+                  value={content}
+                  onChange={(event) => {
+                    setContent(event.target.value)
+                    if (commentError) {
+                      setCommentError(null)
+                    }
+                  }}
+                  maxLength={2000}
+                  rows={4}
+                  placeholder="欢迎分享你的想法、问题或者补充。"
+                  className={fieldTextareaClass}
+                />
+              </div>
+
+              {commentError ? (
+                <div className="border-l-2 border-destructive bg-destructive/8 px-4 py-2.5 text-sm text-destructive">
+                  {commentError}
+                </div>
+              ) : null}
+
+              <div className="flex items-center justify-between gap-3">
+                <span className={engagementChipClass}>
+                  {content.length}/2000
+                </span>
+                <Button
+                  type="submit"
+                  size="sm"
+                  className={primaryActionClass}
+                  disabled={commentMutation.isPending}
+                >
+                  <SendHorizonal className="size-4" />
+                  {commentMutation.isPending ? "提交中..." : "提交评论"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        ) : (
+          <div className={`${engagementCardClass} border-dashed px-5 py-5`}>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="utility-kicker">Access Gate</p>
+                <h3 className="mt-1.5 text-lg font-semibold tracking-tight text-foreground">
+                  登录后参与互动
+                </h3>
+                <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                  游客只能查看评论、点赞数和阅读数。登录后才能点赞与评论。
+                </p>
+              </div>
+
+              <div className="flex shrink-0 flex-wrap gap-2.5">
+                <Button asChild size="sm" className={primaryActionClass}>
+                  <Link href={loginHref}>登录后评论</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className={outlineActionClass}
+                >
+                  <Link href={loginHref}>登录后点赞</Link>
+                </Button>
+              </div>
+            </div>
+
+            {commentError ? (
+              <div className="mt-4 border-l-2 border-destructive bg-destructive/8 px-4 py-2.5 text-sm text-destructive">
+                {commentError}
+              </div>
+            ) : null}
+          </div>
+        )}
+
         <div className="grid gap-4">
-          <div>
-            <p className="utility-kicker">Field Notes</p>
-            <h3 className="mt-2 text-lg font-semibold tracking-tight text-foreground">
-              最新评论
-            </h3>
+          <div className="flex items-baseline justify-between gap-3">
+            <div>
+              <p className="utility-kicker">Field Notes</p>
+              <h3 className="mt-1.5 text-lg font-semibold tracking-tight text-foreground">
+                最新评论
+              </h3>
+            </div>
+            <span className="font-mono text-xs text-muted-foreground">
+              {comments.length} 条主题留言
+            </span>
           </div>
 
           {comments.length > 0 ? (
@@ -688,106 +806,12 @@ function ArticleEngagementPanel({ slug }: ArticleEngagementPanelProps) {
             </div>
           ) : (
             <div
-              className={`${engagementCardClass} border-dashed px-5 py-8 text-sm text-muted-foreground`}
+              className={`${engagementCardClass} border-dashed px-5 py-8 text-center text-sm text-muted-foreground`}
             >
               还没有评论，欢迎留下第一条反馈。
             </div>
           )}
         </div>
-
-        {snapshot.isAuthenticated ? (
-          <div className={`${engagementCardClass} px-5 py-5`}>
-            <div className="border-b border-border/55 pb-4">
-              <p className="utility-kicker">Transmission</p>
-              <h3 className="mt-2 text-lg font-semibold tracking-tight text-foreground">
-                写一条评论
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                当前登录身份：{snapshot.currentUserName ?? "已登录用户"}
-                。评论将以这个身份显示。
-              </p>
-            </div>
-
-            <form
-              method="post"
-              className="mt-5 grid gap-4"
-              onSubmit={handleSubmitComment}
-            >
-              <div className="grid gap-2">
-                <Label htmlFor="article-comment" className="text-foreground">
-                  评论内容
-                </Label>
-                <Textarea
-                  id="article-comment"
-                  value={content}
-                  onChange={(event) => {
-                    setContent(event.target.value)
-                    if (commentError) {
-                      setCommentError(null)
-                    }
-                  }}
-                  maxLength={2000}
-                  rows={6}
-                  placeholder="欢迎分享你的想法、问题或者补充。"
-                  className={fieldTextareaClass}
-                />
-              </div>
-
-              {commentError ? (
-                <div className="border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
-                  {commentError}
-                </div>
-              ) : null}
-
-              <div className="flex items-center justify-between gap-3">
-                <span className={engagementChipClass}>
-                  {content.length}/2000
-                </span>
-                <Button
-                  type="submit"
-                  size="sm"
-                  className={primaryActionClass}
-                  disabled={commentMutation.isPending}
-                >
-                  <SendHorizonal className="size-4" />
-                  {commentMutation.isPending ? "提交中..." : "提交评论"}
-                </Button>
-              </div>
-            </form>
-          </div>
-        ) : (
-          <div className={`${engagementCardClass} border-dashed px-5 py-5`}>
-            <div className="border-b border-border/55 pb-4">
-              <p className="utility-kicker">Access Gate</p>
-              <h3 className="mt-2 text-lg font-semibold tracking-tight text-foreground">
-                登录后参与互动
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                游客只能查看评论、点赞数和阅读数。登录后才能点赞与评论。
-              </p>
-            </div>
-
-            {commentError ? (
-              <div className="mt-4 border-l-2 border-destructive bg-destructive/6 px-4 py-3 text-sm text-destructive">
-                {commentError}
-              </div>
-            ) : null}
-
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Button asChild size="sm" className={primaryActionClass}>
-                <Link href={loginHref}>登录后评论</Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className={outlineActionClass}
-              >
-                <Link href={loginHref}>登录后点赞</Link>
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   )

@@ -122,7 +122,12 @@ const location = Astro.url.pathname + Astro.url.search
         class:list={["flex min-h-svh flex-col", !isAdmin && "relative z-10"]}
       >
         {!isAdmin && (
-          <SiteHeader user={user} siteConfig={siteConfig} client:load />
+          <SiteHeader
+            user={user}
+            siteConfig={siteConfig}
+            location={location}
+            client:load
+          />
         )}
         {protectedAdmin && user ? (
           <AdminLayout

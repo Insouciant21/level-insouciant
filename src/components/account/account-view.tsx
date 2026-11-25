@@ -26,7 +26,7 @@ const accountPanelClass = "public-summary-panel-document px-6 py-6 sm:px-7"
 const accountCardClass =
   "public-summary-card-muted bg-[#aaa891]/28 px-5 py-5 shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_14px_28px_-28px_rgba(0,0,0,0.26)]"
 const accountEntryClass =
-  "public-summary-card-muted px-4 py-4 transition duration-700 hover:border-foreground/20 hover:bg-[#d9d1ad]/46"
+  "public-summary-card-muted px-4 py-4 transition duration-200 hover:border-foreground/28 hover:bg-[#d9d1ad]/54"
 const accountChipClass =
   "h-auto public-summary-chip px-3 py-1 text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
 
@@ -58,7 +58,7 @@ export function UserAccountView({
             <Card size="sm" className={accountCardClass}>
               <div className="flex items-start gap-4">
                 <div
-                  className="flex size-16 shrink-0 items-center justify-center border border-[#73766f]/48 bg-[#d9d1ad]/52 text-lg font-semibold text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)]"
+                  className="flex size-16 shrink-0 items-center justify-center rounded-[var(--radius)] border border-[#73766f]/48 bg-[#d9d1ad]/52 text-lg font-semibold text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)]"
                   style={
                     profile.avatarUrl
                       ? {
@@ -288,7 +288,7 @@ export function UserAccountView({
                   </article>
                 ))
               ) : (
-                <div className="rounded-3xl border border-dashed border-[#73766f]/48 bg-[#d9d1ad]/24 px-4 py-8 text-sm text-muted-foreground">
+                <div className="rounded-[0.25rem] border border-dashed border-[#73766f]/52 bg-[#d9d1ad]/24 px-4 py-8 text-sm text-muted-foreground">
                   你还没有发出过评论。
                 </div>
               )}

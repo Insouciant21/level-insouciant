@@ -101,4 +101,20 @@ describe("SiteHeader", () => {
     expect(navigation.className).toContain("justify-self-center")
     expect(userMenu.closest("nav")).toBeNull()
   })
+
+  it("marks the active navigation link based on current location", () => {
+    render(
+      <SiteHeader
+        user={null}
+        location="/articles/level-0"
+        siteConfig={defaultSiteConfig}
+      />
+    )
+
+    const archiveLink = screen.getByRole("link", { name: "档案" })
+    const homeLink = screen.getByRole("link", { name: "首页" })
+
+    expect(archiveLink.getAttribute("aria-current")).toBe("page")
+    expect(homeLink.getAttribute("aria-current")).toBeNull()
+  })
 })

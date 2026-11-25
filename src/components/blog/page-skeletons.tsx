@@ -11,18 +11,19 @@ function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
   return (
     <article
       className={[
-        "door-card relative flex min-w-0 flex-col overflow-hidden rounded-md border",
+        "door-card relative flex min-w-0 flex-col overflow-hidden rounded-[0.25rem] border",
         featured
-          ? "min-h-[16rem] border-foreground/20 sm:min-h-[18rem] lg:col-span-2 lg:row-span-2 lg:min-h-[24rem]"
-          : "min-h-[16rem] border-foreground/15 sm:min-h-[18rem]",
+          ? "min-h-[16.5rem] border-foreground/20 sm:min-h-[18rem] lg:col-span-2 lg:row-span-2 lg:min-h-[24rem]"
+          : "min-h-[16.5rem] border-foreground/15 sm:min-h-[18rem]",
       ].join(" ")}
     >
+      <div className="door-card__transom pointer-events-none absolute inset-x-0 top-0 z-10 h-1" />
       <div className="door-card__shade absolute inset-0" />
 
       <div className="relative z-10 flex h-full min-w-0 flex-col gap-3 px-4 py-4 sm:px-5 sm:py-5">
         <div className="flex min-w-0 flex-wrap items-start justify-between gap-3 sm:gap-4">
           <Skeleton tone="accent" className="h-5 w-16" />
-          <span className="facility-signage-chip border px-2.5 py-1 text-[0.56rem] font-semibold tracking-[0.28em] uppercase shadow-sm sm:text-[0.6rem] sm:tracking-[0.3em]">
+          <span className="facility-signage-chip border px-2.5 py-1 font-mono text-[0.58rem] font-medium tracking-[0.22em] uppercase shadow-sm sm:text-[0.62rem]">
             Archive
           </span>
         </div>
@@ -30,12 +31,13 @@ function DoorCardSkeleton({ featured = false }: { featured?: boolean }) {
         <div className="mt-auto min-w-0">
           <div className="door-card__panel min-w-0 border px-4 py-4">
             <Skeleton tone="soft" className="h-3 w-32 max-w-full" />
-            <Skeleton tone="neutral" className="mt-4 h-10 w-full max-w-lg" />
-            <Skeleton tone="neutral" className="mt-2 h-10 w-4/5 max-w-md" />
+            <Skeleton tone="neutral" className="mt-3 h-8 w-full max-w-lg" />
+            <Skeleton tone="neutral" className="mt-2 h-8 w-4/5 max-w-md" />
+            <Skeleton tone="soft" className="mt-3 h-4 w-full max-w-md" />
 
-            <div className="mt-5 flex min-w-0 flex-wrap items-center gap-3 border-t border-black/10 pt-4">
+            <div className="mt-4 flex min-w-0 flex-wrap items-center justify-between gap-3 border-t border-black/10 pt-3">
               <Skeleton tone="soft" className="h-3 w-28" />
-              <Skeleton tone="soft" className="h-3 w-24" />
+              <Skeleton tone="accent" className="h-3 w-16" />
             </div>
           </div>
         </div>
@@ -191,46 +193,41 @@ function TagsPageSkeleton() {
 function SearchPageSkeleton() {
   return (
     <PageShell className="gap-0 py-0">
-      <section className="mx-auto w-full max-w-[800px] min-w-0 px-5 py-12 sm:px-6 sm:py-20">
-        <div className="terminal-panel relative min-w-0 overflow-hidden border-[3px] px-5 py-6 sm:px-8 sm:py-8 md:px-12 md:py-12">
-          <header className="relative z-10 flex min-w-0 items-center justify-between gap-4 border-b-2 border-primary/20 pb-4">
-            <div className="flex min-w-0 items-center gap-4">
-              <Skeleton tone="accent" className="size-5 shrink-0" />
-              <Skeleton tone="inverse" className="h-4 w-44 max-w-full" />
+      <section className="mx-auto w-full max-w-[840px] min-w-0 px-0 py-6 sm:px-4 sm:py-10">
+        <div className="terminal-panel relative min-w-0 overflow-hidden rounded-[0.25rem] border p-5 sm:p-8 md:p-10">
+          <header className="relative z-10 mb-8 flex min-w-0 items-center justify-between gap-4 border-b border-primary/25 pb-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <Skeleton tone="accent" className="size-4 shrink-0" />
+              <Skeleton tone="inverse" className="h-4 w-52 max-w-full" />
             </div>
-            <Skeleton tone="inverse" className="size-5 shrink-0" />
+            <Skeleton tone="inverse" className="h-4 w-20 shrink-0" />
           </header>
 
-          <div className="relative z-10 mt-10 grid min-w-0 gap-6 sm:mt-12">
-            <Skeleton tone="inverse" className="h-4 w-60 max-w-full" />
+          <div className="relative z-10 grid min-w-0 gap-5">
+            <Skeleton tone="inverse" className="h-4 w-64 max-w-full" />
 
-            <div className="flex min-w-0 items-center gap-4 border-l-4 border-primary bg-[#12140f] px-4 py-4">
-              <Skeleton tone="accent" className="size-6 shrink-0" />
-              <Skeleton tone="inverse" className="h-12 w-full min-w-0" />
+            <div className="flex min-w-0 items-center gap-3 rounded-[var(--radius)] border border-primary/35 bg-[#12140f] px-3.5 py-3">
+              <Skeleton tone="accent" className="size-5 shrink-0" />
+              <Skeleton tone="inverse" className="h-8 w-full min-w-0" />
             </div>
 
             <Skeleton
               tone="accent"
-              className="h-12 w-full max-w-full sm:ml-auto sm:w-44"
+              className="h-10 w-full max-w-full sm:ml-auto sm:w-32"
             />
           </div>
 
-          <div className="relative z-10 mt-10 min-w-0 space-y-4 sm:mt-12">
-            <Skeleton tone="inverse" className="h-4 w-48 max-w-full" />
-            <Skeleton tone="inverse" className="h-4 w-44 max-w-full" />
-            <div className="pt-4">
-              <Skeleton tone="inverse" className="h-px w-full" />
-            </div>
-
-            <div className="grid min-w-0 gap-4 pt-4">
+          <div className="relative z-10 mt-10 min-w-0 space-y-4">
+            <Skeleton tone="inverse" className="h-px w-full" />
+            <div className="grid min-w-0 gap-3 pt-2">
               {Array.from({ length: 3 }).map((_, index) => (
                 <div
                   key={index}
-                  className="flex min-w-0 items-center gap-4 border border-primary/10 p-4"
+                  className="flex min-w-0 flex-col gap-2 rounded-[var(--radius)] border border-primary/15 p-4"
                 >
-                  <Skeleton tone="accent" className="h-4 w-8 shrink-0" />
-                  <Skeleton tone="inverse" className="h-4 w-full min-w-0" />
-                  <Skeleton tone="inverse" className="h-4 w-8 shrink-0" />
+                  <Skeleton tone="accent" className="h-3 w-36" />
+                  <Skeleton tone="inverse" className="h-5 w-2/3" />
+                  <Skeleton tone="inverse" className="h-4 w-full" />
                 </div>
               ))}
             </div>
@@ -381,60 +378,55 @@ function AccountPageSkeleton() {
 function ArticleEngagementPanelSkeleton() {
   return (
     <section
-      className={`${skeletonPanelClass} mx-auto w-full max-w-4xl min-w-0 px-6 py-6`}
+      className={`${skeletonPanelClass} mx-auto w-full max-w-4xl min-w-0 px-5 py-6 sm:px-8 sm:py-8`}
     >
       <div className="flex min-w-0 flex-col gap-4 border-b border-border/60 pb-5 md:flex-row md:items-end md:justify-between">
-        <div className="min-w-0 space-y-3">
+        <div className="min-w-0 space-y-2">
           <Skeleton tone="accent" className="h-4 w-28" />
           <Skeleton tone="neutral" className="h-8 w-36 max-w-full" />
-          <Skeleton tone="soft" className="h-5 w-full max-w-xl" />
         </div>
 
-        <div className="flex min-w-0 flex-wrap gap-3">
-          <Skeleton tone="soft" className="h-10 w-28" />
-          <Skeleton tone="accent" className="h-10 w-28" />
-          <Skeleton tone="soft" className="h-10 w-28" />
+        <div className="flex min-w-0 flex-wrap gap-2.5">
+          <Skeleton tone="soft" className="h-9 w-20" />
+          <Skeleton tone="soft" className="h-9 w-20" />
+          <Skeleton tone="accent" className="h-9 w-20" />
         </div>
       </div>
 
-      <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)]">
+      <div className="mt-6 grid min-w-0 gap-6">
+        <div className={`${skeletonCardClass} min-w-0 px-5 py-5`}>
+          <div className="min-w-0 space-y-2 border-b border-border/60 pb-3.5">
+            <Skeleton tone="accent" className="h-4 w-24" />
+            <Skeleton tone="neutral" className="h-6 w-28" />
+          </div>
+          <Skeleton tone="soft" className="mt-4 h-28 w-full" />
+          <div className="mt-4 flex min-w-0 items-center justify-between gap-3">
+            <Skeleton tone="soft" className="h-8 w-20" />
+            <Skeleton tone="accent" className="h-9 w-28" />
+          </div>
+        </div>
+
         <div className="grid min-w-0 gap-3">
           <div className="flex min-w-0 items-center justify-between gap-4">
             <div className="space-y-2">
               <Skeleton tone="soft" className="h-4 w-24" />
               <Skeleton tone="neutral" className="h-6 w-24" />
             </div>
-            <Skeleton tone="soft" className="h-8 w-24 shrink-0" />
+            <Skeleton tone="soft" className="h-4 w-24 shrink-0" />
           </div>
           {Array.from({ length: 3 }).map((_, index) => (
             <div
               key={index}
-              className={`${skeletonCardClass} min-w-0 px-5 py-5`}
+              className={`${skeletonCardClass} min-w-0 px-5 py-4`}
             >
-              <div className="flex min-w-0 items-center justify-between gap-4 border-b border-border/60 pb-4">
-                <div className="min-w-0 space-y-2">
-                  <Skeleton tone="neutral" className="h-4 w-24 max-w-full" />
-                  <Skeleton tone="soft" className="h-3 w-20" />
-                </div>
+              <div className="flex min-w-0 items-center justify-between gap-4 border-b border-border/60 pb-3.5">
+                <Skeleton tone="neutral" className="h-4 w-32 max-w-full" />
                 <Skeleton tone="soft" className="h-4 w-28 shrink-0" />
               </div>
-              <Skeleton tone="soft" className="mt-4 h-4 w-full max-w-2xl" />
+              <Skeleton tone="soft" className="mt-3.5 h-4 w-full max-w-2xl" />
               <Skeleton tone="soft" className="mt-2 h-4 w-5/6 max-w-xl" />
             </div>
           ))}
-        </div>
-
-        <div className={`${skeletonCardClass} min-w-0 px-5 py-5`}>
-          <div className="min-w-0 space-y-2 border-b border-border/60 pb-4">
-            <Skeleton tone="accent" className="h-4 w-24" />
-            <Skeleton tone="neutral" className="h-6 w-28" />
-            <Skeleton tone="soft" className="h-5 w-full max-w-xl" />
-          </div>
-          <Skeleton tone="soft" className="mt-5 h-40 w-full" />
-          <div className="mt-4 flex min-w-0 items-center justify-between gap-3">
-            <Skeleton tone="soft" className="h-8 w-20" />
-            <Skeleton tone="accent" className="h-9 w-28" />
-          </div>
         </div>
       </div>
     </section>

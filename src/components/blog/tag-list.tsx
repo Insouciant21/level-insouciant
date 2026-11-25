@@ -8,7 +8,7 @@ type TagListProps = {
 }
 
 const tagListChipClass =
-  "h-auto max-w-full whitespace-normal break-words public-summary-chip px-3 py-1 text-[0.66rem] font-semibold tracking-[0.26em] text-muted-foreground uppercase transition duration-500 hover:border-foreground/20 hover:bg-[#c6bd99]/56 hover:text-foreground"
+  "h-auto max-w-full whitespace-normal break-words public-summary-chip px-2.5 py-1 text-[0.64rem] font-medium tracking-[0.18em] text-muted-foreground uppercase transition duration-200 hover:border-foreground/30 hover:bg-[#c6bd99]/68 hover:text-foreground"
 
 function TagList({ tags }: TagListProps) {
   return (

@@ -11,15 +11,15 @@ function ReadingProgressBar({ targetRef }: ReadingProgressBarProps) {
     offset: ["start 96px", "end 35vh"],
   })
   const progress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 28,
+    stiffness: 140,
+    damping: 30,
     restDelta: 0.001,
   })
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-50 h-1 bg-transparent">
+    <div className="pointer-events-none fixed inset-x-0 top-0 z-50 h-[3px] bg-transparent">
       <Motion.div
-        className="h-full origin-left bg-primary/85 shadow-[0_0_28px_rgba(154,90,62,0.26)] transition-transform duration-150 ease-out"
+        className="h-full origin-left bg-primary shadow-[0_0_12px_rgb(var(--safety-exit-green-rgb)/45%)] transition-transform duration-150 ease-out"
         style={{ scaleX: progress }}
       />
     </div>

@@ -69,23 +69,27 @@ export function AgentTokenPanel() {
       </div>
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_9rem_auto] sm:items-end">
         <div className="grid gap-2">
-          <Label htmlFor="agent-token-name">名称</Label>
+          <Label htmlFor="agent-token-name" className="text-[#dce6d8]">
+            名称
+          </Label>
           <Input
             id="agent-token-name"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            className="field-input h-11"
+            className="admin-input h-11"
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="agent-token-access">权限</Label>
+          <Label htmlFor="agent-token-access" className="text-[#dce6d8]">
+            权限
+          </Label>
           <select
             id="agent-token-access"
             value={access}
             onChange={(event) =>
               setAccess(event.target.value as AgentToken["access"])
             }
-            className="field-input h-11 px-3 text-sm"
+            className="admin-input h-11 px-3 text-sm"
           >
             {Object.entries(accessLabels).map(([value, label]) => (
               <option key={value} value={value}>
@@ -104,15 +108,16 @@ export function AgentTokenPanel() {
         </Button>
       </div>
       {secret ? (
-        <div className="grid gap-3 border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/8 p-4">
+        <div className="grid gap-3 rounded-[var(--radius)] border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/8 p-4">
           <p className="text-sm text-[#edf3e9]">
-            请在 MCP 客户端为本站的 /mcp 地址设置 Bearer 令牌。此密钥只显示一次。
+            请在 MCP 客户端为本站的 /mcp 地址设置 Bearer
+            令牌。此密钥只显示一次。
           </p>
           <div className="flex gap-2">
             <Input
               readOnly
               value={secret}
-              className="field-input h-11 font-mono text-xs"
+              className="admin-input h-11 font-mono text-xs"
             />
             <Button
               type="button"
@@ -125,7 +130,7 @@ export function AgentTokenPanel() {
           </div>
         </div>
       ) : null}
-      {error ? <p className="text-sm text-red-300">{error}</p> : null}
+      {error ? <p className="text-sm text-[#f08b81]">{error}</p> : null}
       <div className="grid gap-2">
         {tokens.map((token) => (
           <div

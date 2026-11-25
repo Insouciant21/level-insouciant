@@ -20,9 +20,23 @@ import { createArticleMetadata, createArticleJsonLd } from "@/lib/seo"
 import { getSiteConfig } from "@/lib/site-config"
 import { extractTableOfContents } from "@/lib/toc"
 import { notFound } from "@/server/request-context"
+
 const articleDocumentPanelClass = "public-summary-panel-document"
 const articleHeaderBadgeClass =
-  "public-summary-chip border-[#73766f]/55 bg-[#d9d1ad]/58 px-3 py-1.5 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.16)]"
+  "public-summary-chip border-[#73766f]/55 bg-[#d9d1ad]/64 px-3 py-1 text-foreground shadow-[inset_0_1px_0_rgba(255,252,225,0.18)]"
+
+function estimateReadingMinutes(source: string) {
+  const plain = source
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/[#>*_~\-\[\]()!]/g, " ")
+  const cjkCount = (plain.match(/[\u4e00-\u9fa5]/g) ?? []).length
+  const wordCount = (
+    plain.replace(/[\u4e00-\u9fa5]/g, " ").match(/[A-Za-z0-9_]+/g) ?? []
+  ).length
+
+  return Math.max(1, Math.ceil((cjkCount + wordCount * 1.4) / 380))
+}
 
 const { slug } = Astro.params
 if (!slug) notFound()
@@ -41,46 +55,47 @@ const [relatedArticles, pagination] = await Promise.all([
 ])
 const tocItems = extractTableOfContents(article.content)
 const signal = getArchiveSignal(article)
+const readingMinutes = estimateReadingMinutes(article.content)
 ---
 
 <BaseLayout metadata={createArticleMetadata(article, siteConfig)}>
-  <main class="relative z-10 mx-auto flex w-full max-w-[88rem] flex-1 flex-col gap-12 px-5 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+  <main class="relative z-10 mx-auto flex w-full max-w-[88rem] flex-1 flex-col gap-10 px-5 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
     <script
       type="application/ld+json"
       set:html={createArticleJsonLd(article, siteConfig)}
     />
-    <div class="pointer-events-none fixed inset-0 opacity-[0.02]">
-      <div class="h-full w-full bg-[radial-gradient(ellipse_at_top,#ffbf00_0%,transparent_60%)]" />
-    </div>
-
-    <div class="mx-auto grid w-full max-w-[1200px] gap-8 md:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
+    <div class="mx-auto grid w-full max-w-[1200px] gap-8 md:gap-10 xl:grid-cols-[minmax(0,1fr)_310px] xl:items-start">
       <ArticleReadingSurface client:idle>
         <div
-          class={`${articleDocumentPanelClass} mx-auto w-full max-w-4xl px-4 py-6 sm:px-8 sm:py-8 md:px-16 md:py-12`}
+          class={`${articleDocumentPanelClass} mx-auto w-full max-w-4xl px-5 py-6 sm:px-8 sm:py-8 md:px-14 md:py-11`}
         >
           <a
             href="/articles"
-            class="inline-flex items-center gap-2 text-sm font-semibold tracking-[0.22em] text-muted-foreground uppercase transition duration-500 hover:text-foreground"
+            class="inline-flex items-center gap-2 font-mono text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase transition duration-200 hover:text-foreground"
           >
-            <ArrowLeft className="size-4" />
+            <ArrowLeft className="size-3.5" />
             返回档案索引
           </a>
 
-          <header class="mt-6 border-b border-[#181b17]/72 pb-8 shadow-[0_1px_0_rgba(255,252,225,0.14)]">
-            <div class="flex flex-wrap items-center justify-between gap-4 text-[0.72rem] font-bold tracking-[0.28em] text-muted-foreground uppercase">
+          <header class="mt-6 border-b border-[#181b17]/65 pb-8 shadow-[0_1px_0_rgba(255,252,225,0.16)]">
+            <div class="flex flex-wrap items-center justify-between gap-3 font-mono text-[0.68rem] font-medium tracking-[0.22em] text-muted-foreground uppercase">
               <span>M.E.G. Database // Archive File</span>
-              <span>{formatDisplayDate(article.date)}</span>
+              <span>
+                {formatDisplayDate(article.date)} · 约 {readingMinutes} 分钟阅读
+              </span>
             </div>
 
-            <h1 class="mt-5 font-serif text-4xl leading-[0.95] font-bold tracking-tight text-balance break-words text-foreground sm:text-5xl md:text-7xl">
+            <h1 class="mt-5 font-serif text-3xl leading-[1.15] font-bold tracking-tight text-balance break-words text-foreground sm:text-5xl md:text-[3.35rem]">
               {article.title}
             </h1>
-            <p class="mt-5 max-w-3xl text-base leading-8 text-foreground/78 md:text-lg">
-              {article.desc}
-            </p>
+            {article.desc ? (
+              <p class="mt-5 max-w-3xl text-base leading-8 text-foreground/78 md:text-lg">
+                {article.desc}
+              </p>
+            ) : null}
 
-            <div class="mt-6 flex flex-wrap gap-3 text-[0.72rem] font-semibold tracking-[0.26em] uppercase">
-              <span class="border border-[#181b17] bg-[#181b17] px-3 py-1.5 text-[#d9d1ad]">
+            <div class="mt-6 flex flex-wrap gap-2.5 font-mono text-[0.7rem] font-medium tracking-[0.2em] uppercase">
+              <span class="utility-charcoal-chip border border-[#181b17] px-3 py-1">
                 Code: {signal.designation}
               </span>
               <span class={articleHeaderBadgeClass}>
@@ -88,20 +103,26 @@ const signal = getArchiveSignal(article)
               </span>
             </div>
 
-            <div class="mt-6">
-              <TagList tags={article.tags} />
-            </div>
+            {article.tags.length > 0 ? (
+              <div class="mt-5">
+                <TagList tags={article.tags} />
+              </div>
+            ) : null}
           </header>
 
           {article.cover ? (
-            <div class="group relative mt-8 overflow-hidden rounded-md border border-[#73766f]/38 bg-[#c6bd99] shadow-[inset_0_1px_0_rgba(255,252,225,0.14),0_18px_42px_-34px_rgba(0,0,0,0.34)] grayscale-[0.24] sepia-[0.22]">
+            <figure class="mt-8 overflow-hidden rounded-[0.25rem] border border-[#73766f]/52 bg-[#c6bd99]/45 p-2 shadow-[inset_0_1px_0_rgba(255,252,225,0.16),0_14px_32px_-28px_rgba(0,0,0,0.34)] sm:p-2.5">
               {/* Object-storage domains are runtime-configured, so this URL cannot be statically allowlisted. */}
               <img
                 src={article.cover}
                 alt={article.title}
-                class="h-[14rem] w-full object-cover opacity-85 mix-blend-multiply transition duration-[3000ms] group-hover:scale-105 group-hover:opacity-100 sm:h-[18rem] md:h-[22rem]"
+                class="max-h-[24rem] w-full rounded-[0.1875rem] object-cover"
               />
-            </div>
+              <figcaption class="mt-2 flex items-center justify-between px-1 font-mono text-[0.62rem] tracking-[0.18em] text-muted-foreground uppercase">
+                <span>SPECIMEN // {signal.designation}</span>
+                <span>ARCHIVE COVER PLATE</span>
+              </figcaption>
+            </figure>
           ) : null}
 
           <ArticleTableOfContents
@@ -123,7 +144,7 @@ const signal = getArchiveSignal(article)
       />
     </div>
 
-    <MotionReveal client:visible delay={0.2}>
+    <MotionReveal client:visible delay={0.1}>
       <ArticleEngagementIsland
         slug={article.slug}
         location={Astro.url.pathname}
@@ -131,7 +152,7 @@ const signal = getArchiveSignal(article)
       />
     </MotionReveal>
 
-    <MotionReveal client:visible delay={0.25}>
+    <MotionReveal client:visible delay={0.15}>
       <ArticlePaginationNav
         previous={pagination?.previous ?? null}
         next={pagination?.next ?? null}
@@ -139,15 +160,22 @@ const signal = getArchiveSignal(article)
     </MotionReveal>
 
     {relatedArticles.length > 0 ? (
-      <MotionReveal client:visible delay={0.3}>
-        <section class="grid gap-5">
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-xl font-semibold tracking-tight">相关文章</h2>
+      <MotionReveal client:visible delay={0.2}>
+        <section class="mx-auto grid w-full max-w-[1200px] gap-4">
+          <div class="site-section-header pb-3">
+            <div>
+              <p class="utility-kicker">Cross Reference</p>
+              <h2 class="mt-1 text-xl font-semibold tracking-tight">
+                相关文章
+              </h2>
+            </div>
             <p class="text-sm text-muted-foreground">根据标签与分类自动关联</p>
           </div>
-          {relatedArticles.map((entry) => (
-            <ArticleCard article={entry} />
-          ))}
+          <div class="grid gap-4">
+            {relatedArticles.map((entry) => (
+              <ArticleCard article={entry} />
+            ))}
+          </div>
         </section>
       </MotionReveal>
     ) : null}

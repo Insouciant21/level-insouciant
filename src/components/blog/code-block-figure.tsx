@@ -91,24 +91,25 @@ function CodeBlockFigure({ children }: CodeBlockFigureProps) {
   const label = title || language
 
   return (
-    <figure className="code-block my-8 w-full max-w-full overflow-hidden rounded-md border shadow-[0_28px_80px_-45px_rgba(20,16,13,0.3)]">
-      <div className="code-block-toolbar flex items-center justify-between gap-3 border-b px-4 py-3">
-        <div className="min-w-0">
-          <p className="code-block-label truncate font-mono text-xs tracking-[0.12em] uppercase">
+    <figure className="code-block my-8 w-full max-w-full overflow-hidden rounded-[0.25rem] border shadow-[0_22px_60px_-42px_rgba(20,16,13,0.34)]">
+      <div className="code-block-toolbar flex items-center justify-between gap-3 border-b px-4 py-2.5">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="size-1.5 shrink-0 bg-primary" aria-hidden="true" />
+          <p className="code-block-label truncate font-mono text-xs tracking-[0.14em] uppercase">
             {label}
           </p>
         </div>
         <Button
           type="button"
-          size="sm"
+          size="xs"
           variant="ghost"
           data-copy-code={code}
           data-copied="false"
           aria-label="复制代码"
-          className="code-block-copy-button group h-8 rounded-full border px-3"
+          className="code-block-copy-button group h-7 rounded-[0.1875rem] border px-2.5 font-mono text-[0.68rem] tracking-[0.08em] uppercase data-[copied=true]:border-primary/60 data-[copied=true]:bg-primary/12 data-[copied=true]:text-foreground"
         >
-          <Copy className="size-4 group-data-[copied=true]:hidden" />
-          <Check className="hidden size-4 group-data-[copied=true]:block" />
+          <Copy className="size-3.5 group-data-[copied=true]:hidden" />
+          <Check className="hidden size-3.5 text-primary group-data-[copied=true]:block" />
           <span data-copy-label>复制</span>
         </Button>
       </div>
