@@ -13,6 +13,7 @@ type HomeDoorGridProps = {
 type HomeDoorCardProps = {
   article: ArticleSummary
   featured: boolean
+  wide?: boolean
   index: number
   reducedMotion: boolean
 }
@@ -53,6 +54,7 @@ function getDeadEndLayoutClass(articleCount: number) {
 function HomeDoorCard({
   article,
   featured,
+  wide = false,
   index,
   reducedMotion,
 }: HomeDoorCardProps) {
@@ -71,7 +73,9 @@ function HomeDoorCard({
         "door-card group relative flex flex-col overflow-hidden border shadow-[0_18px_42px_-34px_rgba(0,0,0,0.42)] hover:shadow-[0_26px_54px_-32px_rgba(0,0,0,0.46)]",
         featured
           ? "min-h-[16.5rem] border-[#73766f]/65 sm:min-h-[18rem] lg:col-span-2 lg:row-span-2 lg:min-h-[24rem]"
-          : "min-h-[16.5rem] border-[#73766f]/55 sm:min-h-[18rem]"
+          : wide
+            ? "min-h-[16.5rem] border-[#73766f]/55 sm:min-h-[18rem] lg:col-span-2"
+            : "min-h-[16.5rem] border-[#73766f]/55 sm:min-h-[18rem]"
       )}
     >
       <Link
@@ -145,6 +149,7 @@ function HomeDoorGrid({ articles }: HomeDoorGridProps) {
           key={article.slug}
           article={article}
           featured={index === 0 || (articles.length >= 4 && index === 3)}
+          wide={articles.length === 2 && index === 1}
           index={index}
           reducedMotion={Boolean(reducedMotion)}
         />

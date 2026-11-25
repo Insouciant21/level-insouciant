@@ -83,6 +83,26 @@ describe("article card spacing", () => {
     expect(classNames(deadEndLink.parentElement)).toContain("lg:col-span-4")
   })
 
+  it("balances the 2-article home grid without leaving an empty top-right cell", () => {
+    const twoArticles = [
+      article,
+      {
+        ...article,
+        archiveCode: "A-0002",
+        slug: "second-entry",
+        title: "Second Entry",
+      },
+    ]
+
+    render(<HomeDoorGrid articles={twoArticles} />)
+
+    const secondCard = screen
+      .getByRole("heading", { name: "Second Entry" })
+      .closest("article")
+
+    expect(classNames(secondCard)).toContain("lg:col-span-2")
+  })
+
   it("keeps a visible gap between the home designation row and content panel", () => {
     render(<HomeDoorGrid articles={[article]} />)
 
