@@ -89,7 +89,11 @@ pnpm dev
 
 管理员可以在 `/admin/account` 创建个人 Agent 令牌。令牌只显示一次，服务端只保存摘要；权限分为只读、读写草稿和可发布，令牌也可以在同一页面撤销。文章 Agent API 不使用浏览器会话，令牌通过 HTTPS `Authorization: Bearer ...` 请求头发送。
 
-本地 MCP 连接器通过 `BLOG_URL` 和 `BLOG_AGENT_TOKEN` 连接博客：
+**远程直连（推荐）**：在支持 Streamable HTTP 和自定义 Bearer 令牌的客户端中新增 MCP 服务，URL 填 `https://你的博客域名/mcp`，认证方式选 Bearer Token，密钥填上面签发的令牌（若客户端要求配置请求头，则填写 `Authorization: Bearer <令牌>`）。无需在客户端安装 Node.js 或下载脚本。生产环境使用 HTTPS，反向代理需保留 `Authorization`。不要把令牌写入 URL 或提交到版本库。
+
+先列出工具，再用 `list_articles` 读取文章验证权限。该端点逐请求鉴权，不需要 Cookie 或会话 ID；仅支持 POST，在浏览器地址栏打开返回 405 是正常的。本方案不提供 OAuth 登录，也不是旧版独立 SSE 端点。
+
+**本地兼容模式**：仅支持 stdio 的客户端仍可通过 `BLOG_URL` 和 `BLOG_AGENT_TOKEN` 启动连接器：
 
 ```bash
 export BLOG_URL=http://127.0.0.1:4321

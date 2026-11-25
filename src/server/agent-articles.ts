@@ -58,7 +58,37 @@ function receipt(article: Pick<Article, keyof typeof summary>) {
   }
 }
 
-async function runTool(agent: Principal, tool: string, args: unknown) {
+export async function runArticleTool(
+  agent: Principal,
+  tool: string,
+  args: unknown
+) {
+  try {
+    return await dispatchArticleTool(agent, tool, args)
+  } catch (error) {
+    if (error instanceof AgentError) throw error
+    if (error instanceof ZodError)
+      throw new AgentError(400, "INVALID_ARGUMENTS")
+    if (error instanceof Error) {
+      if (error.message === "ARTICLE_NOT_FOUND")
+        throw new AgentError(404, error.message)
+      if (
+        error.message === "ARTICLE_SLUG_TAKEN" ||
+        ("code" in error && error.code === "P2002")
+      )
+        throw new AgentError(409, "ARTICLE_SLUG_TAKEN")
+      if ("code" in error && error.code === "P2025")
+        throw new AgentError(409, "VERSION_CONFLICT")
+    }
+    throw new AgentError(500, "AGENT_REQUEST_FAILED")
+  }
+}
+
+async function dispatchArticleTool(
+  agent: Principal,
+  tool: string,
+  args: unknown
+) {
   const reason = `${tool} · ${agent.name} (${agent.id})`
   switch (tool) {
     case "list_articles": {
@@ -212,21 +242,9 @@ export async function handleAgentRequest(request: Request) {
       return failure(415, "JSON_REQUIRED")
     const body = await request.json().catch(() => null)
     if (typeof body?.tool !== "string") return failure(400, "INVALID_REQUEST")
-    return Response.json(await runTool(agent, body.tool, body.arguments))
+    return Response.json(await runArticleTool(agent, body.tool, body.arguments))
   } catch (error) {
     if (error instanceof AgentError) return failure(error.status, error.message)
-    if (error instanceof ZodError) return failure(400, "INVALID_ARGUMENTS")
-    if (error instanceof Error) {
-      if (error.message === "ARTICLE_NOT_FOUND")
-        return failure(404, error.message)
-      if (
-        error.message === "ARTICLE_SLUG_TAKEN" ||
-        ("code" in error && error.code === "P2002")
-      )
-        return failure(409, "ARTICLE_SLUG_TAKEN")
-      if ("code" in error && error.code === "P2025")
-        return failure(409, "VERSION_CONFLICT")
-    }
     return failure(500, "AGENT_REQUEST_FAILED")
   }
 }
