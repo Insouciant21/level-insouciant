@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { ImagePlus, LoaderCircle, Search, X } from "lucide-react"
 
 import { fetchMediaAssets } from "@/components/admin/media/media-api"
@@ -12,44 +12,89 @@ type MediaPickerProps = {
   className?: string
 }
 
+const PICKER_SEARCH_DEBOUNCE_MS = 250
+
 function MediaPicker({
   onSelect,
   buttonLabel = "从媒体库选择",
   className,
 }: MediaPickerProps) {
+  const abortControllerRef = useRef<AbortController | null>(null)
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [items, setItems] = useState<MediaAssetSummary[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function loadItems(nextQuery = query) {
+  const loadItems = useCallback(async (nextQuery: string) => {
+    abortControllerRef.current?.abort()
+    const controller = new AbortController()
+    abortControllerRef.current = controller
     setIsLoading(true)
     setError(null)
 
     try {
-      const result = await fetchMediaAssets({
-        query: nextQuery,
-        status: "all",
-        page: 1,
-        pageSize: 12,
-      })
-      setItems(result.items)
+      const result = await fetchMediaAssets(
+        {
+          query: nextQuery,
+          status: "all",
+          page: 1,
+          pageSize: 12,
+        },
+        { signal: controller.signal }
+      )
+      if (!controller.signal.aborted) {
+        setItems(result.items)
+      }
     } catch (fetchError) {
+      if (
+        fetchError instanceof DOMException &&
+        fetchError.name === "AbortError"
+      ) {
+        return
+      }
       setError(
         fetchError instanceof Error ? fetchError.message : "媒体读取失败"
       )
     } finally {
-      setIsLoading(false)
+      if (abortControllerRef.current === controller) {
+        setIsLoading(false)
+      }
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    const trimmed = query.trim()
+
+    if (!trimmed) {
+      void loadItems("")
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      void loadItems(trimmed)
+    }, PICKER_SEARCH_DEBOUNCE_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [loadItems, open, query])
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort()
+    }
+  }, [])
 
   function openPicker() {
+    setQuery("")
     setOpen(true)
-    void loadItems("")
   }
 
   function closePicker() {
+    abortControllerRef.current?.abort()
     setOpen(false)
   }
 
@@ -86,11 +131,7 @@ function MediaPicker({
             <Input
               type="search"
               value={query}
-              onChange={(event) => {
-                const nextQuery = event.target.value
-                setQuery(nextQuery)
-                void loadItems(nextQuery)
-              }}
+              onChange={(event) => setQuery(event.target.value)}
               placeholder="搜索显示名称…"
               aria-label="搜索媒体资源"
               className="admin-input h-9 pl-8 text-xs"
@@ -120,6 +161,8 @@ function MediaPicker({
                     <img
                       src={asset.publicUrl}
                       alt=""
+                      loading="lazy"
+                      decoding="async"
                       className="size-full object-cover transition group-hover:scale-105"
                     />
                   </div>

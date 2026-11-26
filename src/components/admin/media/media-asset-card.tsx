@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { memo, useState } from "react"
 import { Copy, FilePenLine, LoaderCircle, Trash2 } from "lucide-react"
 
 import {
@@ -12,13 +12,15 @@ import type { MediaAssetSummary } from "@/lib/media/assets"
 
 type MediaAssetCardProps = {
   asset: MediaAssetSummary
-  onOpen: () => void
-  onChanged: () => void
-  onDeleted: () => void
+  priority?: boolean
+  onOpen: (asset: MediaAssetSummary) => void
+  onChanged: (updatedAsset?: MediaAssetSummary) => void
+  onDeleted: (assetId: string) => void
 }
 
-function MediaAssetCard({
+const MediaAssetCard = memo(function MediaAssetCard({
   asset,
+  priority = false,
   onOpen,
   onChanged,
   onDeleted,
@@ -38,9 +40,9 @@ function MediaAssetCard({
     setError(null)
 
     try {
-      await renameMediaAsset(asset.id, displayName)
+      const updated = await renameMediaAsset(asset.id, displayName)
       setIsRenaming(false)
-      onChanged()
+      onChanged(updated)
     } catch (renameError) {
       setError(renameError instanceof Error ? renameError.message : "改名失败")
     } finally {
@@ -72,7 +74,7 @@ function MediaAssetCard({
         setError("对象存储删除失败，可稍后重试。")
         onChanged()
       } else {
-        onDeleted()
+        onDeleted(asset.id)
       }
     } catch (deleteError) {
       setError(deleteError instanceof Error ? deleteError.message : "删除失败")
@@ -95,13 +97,15 @@ function MediaAssetCard({
       <button
         type="button"
         className="group block w-full text-left"
-        onClick={onOpen}
+        onClick={() => onOpen(asset)}
         aria-label={`查看媒体详情 ${asset.displayName}`}
       >
         <div className="aspect-[16/10] overflow-hidden bg-black/20">
           <img
             src={asset.publicUrl}
             alt={asset.displayName}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
             className="size-full object-cover transition duration-300 group-hover:scale-[1.03]"
           />
         </div>
@@ -113,6 +117,15 @@ function MediaAssetCard({
             <Input
               value={displayName}
               onChange={(event) => setDisplayName(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !isBusy) {
+                  event.preventDefault()
+                  void handleRename()
+                } else if (event.key === "Escape") {
+                  setIsRenaming(false)
+                  setDisplayName(asset.displayName)
+                }
+              }}
               aria-label={`媒体名称 ${asset.displayName}`}
               autoFocus
               className="admin-input h-9"
@@ -157,7 +170,15 @@ function MediaAssetCard({
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => setIsRenaming((current) => !current)}
+            onClick={() =>
+              setIsRenaming((current) => {
+                if (!current) {
+                  setDisplayName(asset.displayName)
+                  setError(null)
+                }
+                return !current
+              })
+            }
             disabled={isBusy}
           >
             <FilePenLine className="size-3.5" aria-hidden="true" />
@@ -205,7 +226,7 @@ function MediaAssetCard({
       </div>
     </article>
   )
-}
+})
 
 function formatSize(sizeBytes: number) {
   if (sizeBytes < 1024 * 1024) {

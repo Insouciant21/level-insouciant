@@ -24,7 +24,10 @@ type QueueItem = {
 
 type MediaUploadQueueProps = {
   onUploaded: (asset: MediaAssetSummary) => void
+  onQueueSettled?: (uploadedCount: number) => void
 }
+
+const MAX_CONCURRENT_UPLOADS = 3
 
 const acceptedTypes = new Set([
   "image/jpeg",
@@ -58,60 +61,84 @@ function createQueueItem(file: File): QueueItem {
   }
 }
 
-function MediaUploadQueue({ onUploaded }: MediaUploadQueueProps) {
+function MediaUploadQueue({
+  onUploaded,
+  onQueueSettled,
+}: MediaUploadQueueProps) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const processingRef = useRef(false)
+  const activeWorkersRef = useRef(0)
+  const uploadedInBatchRef = useRef(0)
   const pendingRef = useRef<QueueItem[]>([])
   const [isDragging, setIsDragging] = useState(false)
   const [queue, setQueue] = useState<QueueItem[]>([])
 
-  const processQueue = useCallback(async () => {
-    if (processingRef.current) {
-      return
-    }
+  const runWorker = useCallback(async () => {
+    activeWorkersRef.current += 1
 
-    processingRef.current = true
+    try {
+      while (pendingRef.current.length > 0) {
+        const nextItem = pendingRef.current.shift()
 
-    while (pendingRef.current.length > 0) {
-      const nextItem = pendingRef.current.shift()
+        if (!nextItem) {
+          continue
+        }
 
-      if (!nextItem) {
-        continue
-      }
-
-      setQueue((current) =>
-        current.map((item) =>
-          item.id === nextItem.id ? { ...item, status: "uploading" } : item
-        )
-      )
-
-      try {
-        const asset = await uploadMediaFile(nextItem.file)
         setQueue((current) =>
           current.map((item) =>
-            item.id === nextItem.id
-              ? { ...item, status: "success", asset }
-              : item
+            item.id === nextItem.id ? { ...item, status: "uploading" } : item
           )
         )
-        onUploaded(asset)
-      } catch (error: unknown) {
-        setQueue((current) =>
-          current.map((item) =>
-            item.id === nextItem.id
-              ? {
-                  ...item,
-                  status: "error",
-                  error: error instanceof Error ? error.message : "上传失败",
-                }
-              : item
+
+        try {
+          const asset = await uploadMediaFile(nextItem.file)
+          uploadedInBatchRef.current += 1
+          setQueue((current) =>
+            current.map((item) =>
+              item.id === nextItem.id
+                ? { ...item, status: "success", asset }
+                : item
+            )
           )
-        )
+          onUploaded(asset)
+        } catch (error: unknown) {
+          setQueue((current) =>
+            current.map((item) =>
+              item.id === nextItem.id
+                ? {
+                    ...item,
+                    status: "error",
+                    error: error instanceof Error ? error.message : "上传失败",
+                  }
+                : item
+            )
+          )
+        }
+      }
+    } finally {
+      activeWorkersRef.current -= 1
+
+      if (activeWorkersRef.current === 0 && pendingRef.current.length === 0) {
+        const uploadedCount = uploadedInBatchRef.current
+        uploadedInBatchRef.current = 0
+
+        if (uploadedCount > 0) {
+          onQueueSettled?.(uploadedCount)
+        }
       }
     }
+  }, [onQueueSettled, onUploaded])
 
-    processingRef.current = false
-  }, [onUploaded])
+  const processQueue = useCallback(() => {
+    const availableSlots = Math.max(
+      0,
+      MAX_CONCURRENT_UPLOADS - activeWorkersRef.current
+    )
+    const workersToStart = Math.min(availableSlots, pendingRef.current.length)
+
+    for (let index = 0; index < workersToStart; index += 1) {
+      void runWorker()
+    }
+  }, [runWorker])
 
   const enqueueFiles = useCallback(
     (files: File[]) => {

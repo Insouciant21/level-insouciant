@@ -1,47 +1,47 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Clipboard, ExternalLink, X } from "lucide-react"
 
 import { fetchMediaAssetDetails } from "@/components/admin/media/media-api"
 import { Button } from "@/components/ui/button"
-import type { MediaAssetDetails } from "@/lib/media/assets"
+import type { MediaAssetDetails, MediaAssetSummary } from "@/lib/media/assets"
 
 type MediaAssetDetailsProps = {
   assetId: string
+  initialSummary?: MediaAssetSummary
   onClose: () => void
 }
 
-function MediaAssetDetailsPanel({ assetId, onClose }: MediaAssetDetailsProps) {
-  const [details, setDetails] = useState<MediaAssetDetails | null>(null)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    let active = true
-
-    void fetchMediaAssetDetails(assetId)
-      .then((result) => {
-        if (active) {
-          setDetails(result)
-        }
-      })
-      .catch((fetchError: unknown) => {
-        if (active) {
-          setError(
-            fetchError instanceof Error ? fetchError.message : "加载详情失败"
-          )
-        }
-      })
-
-    return () => {
-      active = false
-    }
-  }, [assetId])
+function MediaAssetDetailsPanel({
+  assetId,
+  initialSummary,
+  onClose,
+}: MediaAssetDetailsProps) {
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null)
+  const detailsQuery = useQuery<MediaAssetDetails>({
+    queryKey: ["admin-media-details", assetId],
+    queryFn: ({ signal }) => fetchMediaAssetDetails(assetId, { signal }),
+  })
+  const details = detailsQuery.data
+  const preview = details ?? initialSummary
+  const error =
+    detailsQuery.error instanceof Error
+      ? detailsQuery.error.message
+      : detailsQuery.isError
+        ? "加载详情失败"
+        : null
 
   async function copyUrl() {
-    if (!details) {
+    if (!preview) {
       return
     }
 
-    await navigator.clipboard.writeText(details.publicUrl)
+    try {
+      await navigator.clipboard.writeText(preview.publicUrl)
+      setCopyFeedback("公开 URL 已复制")
+    } catch {
+      setCopyFeedback("复制失败，请手动复制上方 URL")
+    }
   }
 
   return (
@@ -67,48 +67,49 @@ function MediaAssetDetailsPanel({ assetId, onClose }: MediaAssetDetailsProps) {
         </Button>
       </div>
 
-      {error ? (
+      {error && !preview ? (
         <p className="mt-5 text-sm text-[var(--admin-danger)]">{error}</p>
       ) : null}
-      {!details && !error ? (
+      {!preview && !error ? (
         <p className="mt-5 text-sm text-[#9aa79a]">正在读取媒体记录…</p>
       ) : null}
 
-      {details ? (
+      {preview ? (
         <div className="mt-5 grid gap-4">
           <div className="overflow-hidden border border-white/10 bg-black/20">
             <img
-              src={details.publicUrl}
-              alt={details.displayName}
+              src={preview.publicUrl}
+              alt={preview.displayName}
+              decoding="async"
               className="max-h-64 w-full object-contain"
             />
           </div>
           <div>
             <p className="text-sm font-semibold text-[#edf3e9]">
-              {details.displayName}
+              {preview.displayName}
             </p>
             <p className="mt-1 text-xs leading-5 break-all text-[#748073]">
-              原始文件：{details.originalFilename}
+              原始文件：{preview.originalFilename}
             </p>
           </div>
           <dl className="grid gap-2 text-xs text-[#9aa79a]">
             <div className="flex justify-between gap-3">
               <dt>供应商</dt>
-              <dd>{details.provider.toUpperCase()}</dd>
+              <dd>{preview.provider.toUpperCase()}</dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt>对象 Key</dt>
-              <dd className="text-right break-all">{details.objectKey}</dd>
+              <dd className="text-right break-all">{preview.objectKey}</dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt>状态</dt>
-              <dd>{details.status}</dd>
+              <dd>{preview.status}</dd>
             </div>
           </dl>
           <div>
             <p className="admin-kicker">Public URL</p>
             <p className="mt-2 border border-white/10 bg-black/10 p-2.5 text-xs leading-5 break-all text-[#9aa79a]">
-              {details.publicUrl}
+              {preview.publicUrl}
             </p>
             <Button
               type="button"
@@ -120,39 +121,56 @@ function MediaAssetDetailsPanel({ assetId, onClose }: MediaAssetDetailsProps) {
               <Clipboard className="size-3.5" aria-hidden="true" />
               复制公开 URL
             </Button>
+            {copyFeedback ? (
+              <p className="mt-1 text-xs text-[var(--admin-warning)]">
+                {copyFeedback}
+              </p>
+            ) : null}
           </div>
           <div>
             <div className="flex items-center justify-between gap-3">
               <p className="admin-kicker">关联文章</p>
               <span className="text-xs text-[#9aa79a]">
-                {details.articles.length} 篇
+                {details
+                  ? `${details.articles.length} 篇`
+                  : `${preview.linkedArticleCount} 篇`}
               </span>
             </div>
-            {details.articles.length > 0 ? (
-              <ul className="mt-2 grid gap-2">
-                {details.articles.map((article) => (
-                  <li
-                    key={article.id}
-                    className="border border-white/10 bg-black/10 p-2.5"
-                  >
-                    <a
-                      className="admin-link inline-flex items-center gap-1.5 text-xs"
-                      href={`/admin/articles/${article.slug}/edit`}
+            {details ? (
+              details.articles.length > 0 ? (
+                <ul className="mt-2 grid gap-2">
+                  {details.articles.map((article) => (
+                    <li
+                      key={article.id}
+                      className="border border-white/10 bg-black/10 p-2.5"
                     >
-                      {article.title}
-                      <ExternalLink className="size-3" aria-hidden="true" />
-                    </a>
-                    <p className="mt-1 text-[0.68rem] text-[#748073]">
-                      {article.contentReferenceCount > 0
-                        ? `正文 ${article.contentReferenceCount} 次`
-                        : "仅封面引用"}
-                      {article.draft ? " · 草稿" : " · 已发布"}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+                      <a
+                        className="admin-link inline-flex items-center gap-1.5 text-xs"
+                        href={`/admin/articles/${article.slug}/edit`}
+                      >
+                        {article.title}
+                        <ExternalLink className="size-3" aria-hidden="true" />
+                      </a>
+                      <p className="mt-1 text-[0.68rem] text-[#748073]">
+                        {article.contentReferenceCount > 0
+                          ? `正文 ${article.contentReferenceCount} 次`
+                          : "仅封面引用"}
+                        {article.draft ? " · 草稿" : " · 已发布"}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-2 text-sm text-[#748073]">
+                  当前没有关联文章。
+                </p>
+              )
+            ) : error ? (
+              <p className="mt-2 text-sm text-[var(--admin-danger)]">{error}</p>
             ) : (
-              <p className="mt-2 text-sm text-[#748073]">当前没有关联文章。</p>
+              <p className="mt-2 text-sm text-[#748073]">
+                正在读取关联文章…
+              </p>
             )}
           </div>
         </div>

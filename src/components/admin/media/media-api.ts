@@ -20,8 +20,13 @@ async function parseResponse<T>(response: Response): Promise<T> {
   return payload as T
 }
 
+type RequestOptions = {
+  signal?: AbortSignal
+}
+
 export async function fetchMediaAssets(
-  query: MediaListQuery = {}
+  query: MediaListQuery = {},
+  options?: RequestOptions
 ): Promise<MediaListResult> {
   const params = new URLSearchParams()
 
@@ -46,6 +51,7 @@ export async function fetchMediaAssets(
     `/api/admin/media${search ? `?${search}` : ""}`,
     {
       cache: "no-store",
+      signal: options?.signal,
     }
   )
 
@@ -53,10 +59,12 @@ export async function fetchMediaAssets(
 }
 
 export async function fetchMediaAssetDetails(
-  id: string
+  id: string,
+  options?: RequestOptions
 ): Promise<MediaAssetDetails> {
   const response = await fetch(`/api/admin/media/${encodeURIComponent(id)}`, {
     cache: "no-store",
+    signal: options?.signal,
   })
 
   return parseResponse<MediaAssetDetails>(response)

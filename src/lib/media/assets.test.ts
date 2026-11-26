@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { prisma } from "@/lib/prisma"
+import * as mediaReferences from "@/lib/media/references"
 import { publicPageCache } from "@/server/public-page-cache"
 import {
   createMediaAsset,
   deleteMediaAsset,
+  getMediaAssetDetails,
   listMediaAssets,
   renameMediaAsset,
   retryMediaAssetDeletion,
@@ -18,6 +20,7 @@ import {
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     mediaAsset: {
+      count: vi.fn(),
       create: vi.fn(),
       delete: vi.fn(),
       findMany: vi.fn(),
@@ -188,6 +191,81 @@ describe("media asset service", () => {
       total: 1,
       items: [{ id: "asset-2", linkedArticleCount: 0 }],
     })
+  })
+
+  it("paginates in the database and skips article queries when empty for status=all", async () => {
+    vi.mocked(prisma.mediaAsset.findMany).mockResolvedValue([])
+    vi.mocked(prisma.mediaAsset.count).mockResolvedValue(0)
+
+    const emptyResult = await listMediaAssets({
+      query: "screen",
+      status: "all",
+      page: 2,
+      pageSize: 12,
+    })
+
+    expect(prisma.mediaAsset.findMany).toHaveBeenCalledWith({
+      where: {
+        status: { in: ["ACTIVE", "DELETE_FAILED"] },
+        displayName: { contains: "screen", mode: "insensitive" },
+      },
+      orderBy: { createdAt: "desc" },
+      skip: 12,
+      take: 12,
+    })
+    expect(prisma.article.findMany).not.toHaveBeenCalled()
+    expect(emptyResult).toMatchObject({
+      items: [],
+      page: 2,
+      pageSize: 12,
+      total: 0,
+      totalPages: 1,
+    })
+  })
+
+  it("parses each article MDX once across multiple assets and reuses cache until content changes", async () => {
+    const extractSpy = vi.spyOn(mediaReferences, "extractImageReferences")
+    const cachedArticle = {
+      ...article,
+      id: "article-cache-test",
+      content: `![Screen](${asset.publicUrl})\n`,
+    }
+
+    vi.mocked(prisma.mediaAsset.findMany).mockResolvedValue([
+      asset,
+      {
+        ...asset,
+        id: "asset-2",
+        displayName: "second.png",
+        publicUrl: "https://cdn.example.com/second.png",
+      },
+    ] as never)
+    vi.mocked(prisma.mediaAsset.count).mockResolvedValue(2)
+    vi.mocked(prisma.article.findMany).mockResolvedValue([cachedArticle] as never)
+
+    await listMediaAssets({ status: "all", page: 1, pageSize: 24 })
+    expect(extractSpy).toHaveBeenCalledTimes(1)
+
+    await listMediaAssets({ status: "all", page: 1, pageSize: 24 })
+    expect(extractSpy).toHaveBeenCalledTimes(1)
+
+    vi.mocked(prisma.mediaAsset.findUnique).mockResolvedValue(asset as never)
+    const details = await getMediaAssetDetails(asset.id)
+    expect(details?.articles).toHaveLength(1)
+    expect(extractSpy).toHaveBeenCalledTimes(1)
+
+    vi.mocked(prisma.article.findMany).mockResolvedValue([
+      {
+        ...cachedArticle,
+        content: `![Screen](${asset.publicUrl})\n![Second](https://cdn.example.com/second.png)\n`,
+      },
+    ] as never)
+
+    const updated = await listMediaAssets({ status: "all", page: 1, pageSize: 24 })
+    expect(extractSpy).toHaveBeenCalledTimes(2)
+    expect(updated.items[1]?.linkedArticleCount).toBe(1)
+
+    extractSpy.mockRestore()
   })
 
   it("removes references and cover before deleting the object", async () => {

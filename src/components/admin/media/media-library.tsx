@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,72 +14,208 @@ import { MediaAssetDetailsPanel } from "@/components/admin/media/media-asset-det
 import { MediaUploadQueue } from "@/components/admin/media/media-upload-queue"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type { MediaListResult, MediaListStatus } from "@/lib/media/assets"
+import type {
+  MediaAssetDetails,
+  MediaAssetSummary,
+  MediaListResult,
+  MediaListStatus,
+} from "@/lib/media/assets"
 
 type MediaLibraryProps = {
   initialData: MediaListResult
 }
 
+const SEARCH_DEBOUNCE_MS = 250
+const PRIORITY_THUMBNAIL_COUNT = 6
+
 function MediaLibrary({ initialData }: MediaLibraryProps) {
-  const [data, setData] = useState(initialData)
-  const [query, setQuery] = useState("")
+  const queryClient = useQueryClient()
+  const [initialLoadedAt] = useState(() => Date.now())
+  const [searchInput, setSearchInput] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
   const [status, setStatus] = useState<MediaListStatus>("all")
   const [page, setPage] = useState(initialData.page)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  const reload = useCallback(
-    async (nextPage = page, nextQuery = query, nextStatus = status) => {
-      setIsLoading(true)
-      setError(null)
+  useEffect(() => {
+    const trimmed = searchInput.trim()
 
-      try {
-        const result = await fetchMediaAssets({
-          query: nextQuery,
-          status: nextStatus,
-          page: nextPage,
+    if (!trimmed) {
+      if (debouncedQuery !== "") {
+        setDebouncedQuery("")
+        setPage(1)
+      }
+      return
+    }
+
+    if (trimmed === debouncedQuery) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      setDebouncedQuery(trimmed)
+      setPage(1)
+    }, SEARCH_DEBOUNCE_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [debouncedQuery, searchInput])
+
+  const queryKey = useMemo(
+    () =>
+      [
+        "admin-media-list",
+        {
+          query: debouncedQuery,
+          status,
+          page,
           pageSize: initialData.pageSize,
+        },
+      ] as const,
+    [debouncedQuery, initialData.pageSize, page, status]
+  )
+
+  const isInitialDefaultQuery =
+    debouncedQuery === "" && status === "all" && page === initialData.page
+
+  const listQuery = useQuery<MediaListResult>({
+    queryKey,
+    queryFn: ({ signal }) =>
+      fetchMediaAssets(
+        {
+          query: debouncedQuery,
+          status,
+          page,
+          pageSize: initialData.pageSize,
+        },
+        { signal }
+      ),
+    initialData: isInitialDefaultQuery ? initialData : undefined,
+    initialDataUpdatedAt: isInitialDefaultQuery ? initialLoadedAt : undefined,
+    placeholderData: keepPreviousData,
+  })
+
+  const data = listQuery.data ?? initialData
+  const isLoading = listQuery.isFetching
+  const error =
+    listQuery.error instanceof Error
+      ? listQuery.error.message
+      : listQuery.isError
+        ? "媒体库加载失败"
+        : null
+
+  const selectedSummary = useMemo(
+    () =>
+      selectedId
+        ? data.items.find((item) => item.id === selectedId)
+        : undefined,
+    [data.items, selectedId]
+  )
+
+  const handleStatusChange = useCallback((nextStatus: MediaListStatus) => {
+    setStatus(nextStatus)
+    setPage(1)
+  }, [])
+
+  const handleUploaded = useCallback(
+    (asset: MediaAssetSummary) => {
+      if (debouncedQuery === "" && status !== "linked" && page === 1) {
+        queryClient.setQueryData<MediaListResult>(queryKey, (current) => {
+          const base = current ?? initialData
+          const nextTotal = base.total + 1
+
+          return {
+            ...base,
+            items: [
+              asset,
+              ...base.items.filter((item) => item.id !== asset.id),
+            ].slice(0, base.pageSize),
+            total: nextTotal,
+            totalPages: Math.max(1, Math.ceil(nextTotal / base.pageSize)),
+          }
         })
-        setData(result)
-        setPage(result.page)
-      } catch (fetchError) {
-        setError(
-          fetchError instanceof Error ? fetchError.message : "媒体库加载失败"
-        )
-      } finally {
-        setIsLoading(false)
       }
     },
-    [initialData.pageSize, page, query, status]
+    [debouncedQuery, initialData, page, queryClient, queryKey, status]
   )
 
-  const handleFilterChange = useCallback(
-    (nextQuery: string, nextStatus: MediaListStatus = status) => {
-      setQuery(nextQuery)
-      setStatus(nextStatus)
+  const handleQueueSettled = useCallback(() => {
+    if (debouncedQuery !== "" || status === "linked" || page !== 1) {
       setPage(1)
-      void reload(1, nextQuery, nextStatus)
+      void queryClient.invalidateQueries({ queryKey: ["admin-media-list"] })
+      return
+    }
+
+    void queryClient.invalidateQueries({
+      queryKey: ["admin-media-list"],
+      refetchType: "none",
+    })
+  }, [debouncedQuery, page, queryClient, status])
+
+  const handleOpenAsset = useCallback((asset: MediaAssetSummary) => {
+    setSelectedId(asset.id)
+  }, [])
+
+  const handleAssetChanged = useCallback(
+    (updatedAsset?: MediaAssetSummary) => {
+      if (updatedAsset) {
+        queryClient.setQueryData<MediaListResult>(queryKey, (current) => {
+          if (!current) {
+            return current
+          }
+
+          return {
+            ...current,
+            items: current.items.map((item) =>
+              item.id === updatedAsset.id ? updatedAsset : item
+            ),
+          }
+        })
+        queryClient.setQueryData<MediaAssetDetails>(
+          ["admin-media-details", updatedAsset.id],
+          (current) => (current ? { ...current, ...updatedAsset } : current)
+        )
+        void queryClient.invalidateQueries({
+          queryKey: ["admin-media-list"],
+          refetchType: "none",
+        })
+        return
+      }
+
+      void queryClient.invalidateQueries({ queryKey: ["admin-media-list"] })
     },
-    [reload, status]
+    [queryClient, queryKey]
   )
-
-  const handleUploaded = useCallback(() => {
-    void reload(1)
-  }, [reload])
-
-  const handleAssetChanged = useCallback(() => {
-    void reload()
-  }, [reload])
 
   const handleAssetDeleted = useCallback(
     (assetId: string) => {
-      if (selectedId === assetId) {
-        setSelectedId(null)
+      setSelectedId((current) => (current === assetId ? null : current))
+      queryClient.removeQueries({
+        queryKey: ["admin-media-details", assetId],
+        exact: true,
+      })
+
+      const currentItemsCount = data.items.length
+      if (currentItemsCount <= 1 && page > 1) {
+        setPage((current) => Math.max(1, current - 1))
+      } else {
+        queryClient.setQueryData<MediaListResult>(queryKey, (current) => {
+          if (!current) {
+            return current
+          }
+
+          const nextTotal = Math.max(0, current.total - 1)
+          return {
+            ...current,
+            items: current.items.filter((item) => item.id !== assetId),
+            total: nextTotal,
+            totalPages: Math.max(1, Math.ceil(nextTotal / current.pageSize)),
+          }
+        })
       }
-      void reload()
+
+      void queryClient.invalidateQueries({ queryKey: ["admin-media-list"] })
     },
-    [reload, selectedId]
+    [data.items.length, page, queryClient, queryKey]
   )
 
   return (
@@ -110,8 +247,8 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
             />
             <Input
               type="search"
-              value={query}
-              onChange={(event) => handleFilterChange(event.target.value)}
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
               placeholder="按显示名称搜索…"
               aria-label="搜索媒体"
               className="admin-input pl-9"
@@ -122,7 +259,7 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
             <select
               value={status}
               onChange={(event) =>
-                handleFilterChange(query, event.target.value as MediaListStatus)
+                handleStatusChange(event.target.value as MediaListStatus)
               }
               aria-label="关联状态"
               className="admin-input h-10 w-full"
@@ -135,7 +272,7 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
           <Button
             type="button"
             variant="outline"
-            onClick={() => void reload()}
+            onClick={() => void listQuery.refetch()}
             disabled={isLoading}
           >
             <RefreshCw
@@ -147,7 +284,10 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
         </div>
       </div>
 
-      <MediaUploadQueue onUploaded={handleUploaded} />
+      <MediaUploadQueue
+        onUploaded={handleUploaded}
+        onQueueSettled={handleQueueSettled}
+      />
 
       {error ? (
         <div className="border border-[var(--admin-danger)]/30 bg-[var(--admin-danger)]/10 px-4 py-3 text-sm text-[var(--admin-danger)]">
@@ -163,13 +303,14 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
         <div>
           {data.items.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
-              {data.items.map((asset) => (
+              {data.items.map((asset, index) => (
                 <MediaAssetCard
                   key={asset.id}
                   asset={asset}
-                  onOpen={() => setSelectedId(asset.id)}
+                  priority={index < PRIORITY_THUMBNAIL_COUNT}
+                  onOpen={handleOpenAsset}
                   onChanged={handleAssetChanged}
-                  onDeleted={() => handleAssetDeleted(asset.id)}
+                  onDeleted={handleAssetDeleted}
                 />
               ))}
             </div>
@@ -190,11 +331,9 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
                   variant="ghost"
                   size="sm"
                   disabled={data.page <= 1 || isLoading}
-                  onClick={() => {
-                    const nextPage = Math.max(1, data.page - 1)
-                    setPage(nextPage)
-                    void reload(nextPage)
-                  }}
+                  onClick={() =>
+                    setPage((current) => Math.max(1, current - 1))
+                  }
                 >
                   <ChevronLeft className="size-3.5" aria-hidden="true" />
                   上一页
@@ -204,11 +343,9 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
                   variant="ghost"
                   size="sm"
                   disabled={data.page >= data.totalPages || isLoading}
-                  onClick={() => {
-                    const nextPage = Math.min(data.totalPages, data.page + 1)
-                    setPage(nextPage)
-                    void reload(nextPage)
-                  }}
+                  onClick={() =>
+                    setPage((current) => Math.min(data.totalPages, current + 1))
+                  }
                 >
                   下一页
                   <ChevronRight className="size-3.5" aria-hidden="true" />
@@ -222,6 +359,7 @@ function MediaLibrary({ initialData }: MediaLibraryProps) {
           <MediaAssetDetailsPanel
             key={selectedId}
             assetId={selectedId}
+            initialSummary={selectedSummary}
             onClose={() => setSelectedId(null)}
           />
         ) : null}
