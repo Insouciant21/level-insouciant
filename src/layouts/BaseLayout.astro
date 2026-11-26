@@ -122,6 +122,7 @@ const location = Astro.url.pathname + Astro.url.search
       <div
         class:list={["flex min-h-svh flex-col", !isAdmin && "relative z-10"]}
       >
+        {!isAdmin && <Fragment set:html="<!--email_off-->" />}
         {!isAdmin && (
           <SiteHeader
             user={user}
@@ -149,6 +150,7 @@ const location = Astro.url.pathname + Astro.url.search
         ) : (
           <slot />
         )}
+        {!isAdmin && <Fragment set:html="<!--/email_off-->" />}
       </div>
     </div>
   </body>
