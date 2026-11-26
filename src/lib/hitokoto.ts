@@ -1,22 +1,81 @@
-const custodianDispatches = [
+const hitokotoCategories = ["a", "b", "c", "d", "e", "i"] as const
+
+const fallbackQuotes = [
   "先整理命名、边界和证据，再决定是否继续深入。",
   "记录那些会重复出现的结构，路径才不会只依赖记忆。",
   "给后来抵达的人留下足够诚实的说明，而不是夸张的传奇。",
-  "荧光灯仍在稳定嗡鸣；在无法确认出口前，先标记好走过的门牌。",
-  "当走廊看似完全相同时，编号与日期就是唯一的坐标锚点。",
-  "把零散的观察拆成可核对的条目，混乱的空间也会慢慢显出秩序。",
 ] as const
 
-function selectCustodianDispatches(count: number): string[] {
-  const hourBucket = Math.floor(Date.now() / 3_600_000)
-  const startIndex = hourBucket % custodianDispatches.length
-
-  return Array.from({ length: count }, (_, offset) => {
-    const index = (startIndex + offset) % custodianDispatches.length
-    return custodianDispatches[index]
-  })
+type HitokotoResponse = {
+  hitokoto?: unknown
 }
 
+function createHitokotoUrl(slot: number) {
+  const url = new URL("https://v1.hitokoto.cn/")
+
+  for (const category of hitokotoCategories) {
+    url.searchParams.append("c", category)
+  }
+
+  url.searchParams.set("encode", "json")
+  url.searchParams.set("min_length", String(slot))
+  url.searchParams.set("max_length", "80")
+
+  return url.toString()
+}
+
+async function fetchHitokoto(slot: number) {
+  try {
+    const response = await fetch(createHitokotoUrl(slot), {
+      signal: AbortSignal.timeout(4000),
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const data = (await response.json()) as HitokotoResponse
+
+    return typeof data.hitokoto === "string" && data.hitokoto.trim()
+      ? data.hitokoto.trim()
+      : null
+  } catch {
+    return null
+  }
+}
+
+async function fetchHitokotoQuotes(count: number) {
+  const resolved: string[] = []
+  const seen = new Set<string>()
+
+  for (let slot = 0; slot < count; slot += 1) {
+    const fetched = await fetchHitokoto(slot)
+    const candidate =
+      fetched && !seen.has(fetched)
+        ? fetched
+        : (fallbackQuotes.find((quote) => !seen.has(quote)) ??
+          fallbackQuotes[slot % fallbackQuotes.length])
+
+    seen.add(candidate)
+    resolved.push(candidate)
+
+    if (slot < count - 1) {
+      await new Promise((resolve) => setTimeout(resolve, 550))
+    }
+  }
+
+  return resolved
+}
+
+let cached: { expires: number; quotes: Promise<string[]> } | undefined
+
 export async function getHitokotoQuotes(count = 3) {
-  return selectCustodianDispatches(count)
+  if (count !== 3) return fetchHitokotoQuotes(count)
+  if (!cached || cached.expires <= Date.now()) {
+    cached = {
+      expires: Date.now() + 3_600_000,
+      quotes: fetchHitokotoQuotes(count),
+    }
+  }
+  return cached.quotes
 }
