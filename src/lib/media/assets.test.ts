@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { prisma } from "@/lib/prisma"
-import * as mediaReferences from "@/lib/media/references"
 import { publicPageCache } from "@/server/public-page-cache"
 import {
   createMediaAsset,
@@ -79,6 +78,9 @@ const tx = {
   mediaAsset: {
     update: vi.fn(),
   },
+  articleMediaReference: {
+    deleteMany: vi.fn(),
+  },
   article: {
     update: vi.fn(),
   },
@@ -100,6 +102,7 @@ function resetMocks() {
     callback(tx as never)
   )
   tx.mediaAsset.update.mockResolvedValue({ ...asset, status: "DELETING" })
+  tx.articleMediaReference.deleteMany.mockResolvedValue({ count: 0 })
   tx.article.update.mockResolvedValue({ ...article, content: "Intro\n" })
   tx.articleRevision.create.mockResolvedValue({})
 }
@@ -148,124 +151,139 @@ describe("media asset service", () => {
     expect(storageProvider.delete).toHaveBeenCalledWith(asset.objectKey)
   })
 
-  it("renames only the display name", async () => {
+  it("renames only the display name without scanning articles", async () => {
     vi.mocked(prisma.mediaAsset.findUnique).mockResolvedValue(asset as never)
     vi.mocked(prisma.mediaAsset.update).mockResolvedValue({
       ...asset,
       displayName: "Renamed screen",
+      _count: { articleReferences: 2 },
     } as never)
-    vi.mocked(prisma.article.findMany).mockResolvedValue([article] as never)
 
     const result = await renameMediaAsset("asset-1", "  Renamed screen  ")
 
     expect(prisma.mediaAsset.update).toHaveBeenCalledWith({
       where: { id: "asset-1" },
       data: { displayName: "Renamed screen" },
+      include: {
+        _count: {
+          select: {
+            articleReferences: true,
+          },
+        },
+      },
     })
+    expect(prisma.article.findMany).not.toHaveBeenCalled()
     expect(result).toMatchObject({
       displayName: "Renamed screen",
       objectKey: asset.objectKey,
       publicUrl: asset.publicUrl,
+      linkedArticleCount: 2,
     })
   })
 
-  it("lists assets with linked and unlinked filters", async () => {
-    vi.mocked(prisma.mediaAsset.findMany).mockResolvedValue([
-      asset,
+  it("lists assets with DB-level linked, unlinked, and paginated queries", async () => {
+    vi.mocked(prisma.mediaAsset.findMany).mockResolvedValueOnce([
       {
         ...asset,
-        id: "asset-2",
-        displayName: "unused.png",
-        publicUrl: "https://cdn.example.com/unused.png",
+        _count: { articleReferences: 1 },
       },
     ] as never)
-    vi.mocked(prisma.article.findMany).mockResolvedValue([article] as never)
+    vi.mocked(prisma.mediaAsset.count).mockResolvedValueOnce(1)
 
     await expect(listMediaAssets({ status: "linked" })).resolves.toMatchObject({
       total: 1,
       items: [{ id: asset.id, linkedArticleCount: 1 }],
     })
-    await expect(
-      listMediaAssets({ status: "unlinked" })
-    ).resolves.toMatchObject({
-      total: 1,
-      items: [{ id: "asset-2", linkedArticleCount: 0 }],
-    })
-  })
-
-  it("paginates in the database and skips article queries when empty for status=all", async () => {
-    vi.mocked(prisma.mediaAsset.findMany).mockResolvedValue([])
-    vi.mocked(prisma.mediaAsset.count).mockResolvedValue(0)
-
-    const emptyResult = await listMediaAssets({
-      query: "screen",
-      status: "all",
-      page: 2,
-      pageSize: 12,
-    })
-
-    expect(prisma.mediaAsset.findMany).toHaveBeenCalledWith({
+    expect(prisma.mediaAsset.findMany).toHaveBeenLastCalledWith({
       where: {
         status: { in: ["ACTIVE", "DELETE_FAILED"] },
-        displayName: { contains: "screen", mode: "insensitive" },
+        articleReferences: { some: {} },
+      },
+      orderBy: { createdAt: "desc" },
+      skip: 0,
+      take: 24,
+      include: {
+        _count: {
+          select: {
+            articleReferences: true,
+          },
+        },
+      },
+    })
+
+    vi.mocked(prisma.mediaAsset.findMany).mockResolvedValueOnce([
+      {
+        ...asset,
+        id: "asset-2",
+        displayName: "unused.png",
+        publicUrl: "https://cdn.example.com/unused.png",
+        _count: { articleReferences: 0 },
+      },
+    ] as never)
+    vi.mocked(prisma.mediaAsset.count).mockResolvedValueOnce(1)
+
+    await expect(
+      listMediaAssets({ status: "unlinked", query: "unused", page: 2, pageSize: 12 })
+    ).resolves.toMatchObject({
+      total: 1,
+      page: 2,
+      pageSize: 12,
+      items: [{ id: "asset-2", linkedArticleCount: 0 }],
+    })
+    expect(prisma.mediaAsset.findMany).toHaveBeenLastCalledWith({
+      where: {
+        status: { in: ["ACTIVE", "DELETE_FAILED"] },
+        displayName: { contains: "unused", mode: "insensitive" },
+        articleReferences: { none: {} },
       },
       orderBy: { createdAt: "desc" },
       skip: 12,
       take: 12,
+      include: {
+        _count: {
+          select: {
+            articleReferences: true,
+          },
+        },
+      },
     })
     expect(prisma.article.findMany).not.toHaveBeenCalled()
-    expect(emptyResult).toMatchObject({
-      items: [],
-      page: 2,
-      pageSize: 12,
-      total: 0,
-      totalPages: 1,
-    })
   })
 
-  it("parses each article MDX once across multiple assets and reuses cache until content changes", async () => {
-    const extractSpy = vi.spyOn(mediaReferences, "extractImageReferences")
-    const cachedArticle = {
-      ...article,
-      id: "article-cache-test",
-      content: `![Screen](${asset.publicUrl})\n`,
-    }
+  it("loads asset details from ArticleMediaReference without reading article content", async () => {
+    vi.mocked(prisma.mediaAsset.findUnique).mockResolvedValue({
+      ...asset,
+      articleReferences: [
+        {
+          contentReferenceCount: 2,
+          coverReference: true,
+          article: {
+            id: article.id,
+            slug: article.slug,
+            title: article.title,
+            draft: article.draft,
+          },
+        },
+      ],
+    } as never)
 
-    vi.mocked(prisma.mediaAsset.findMany).mockResolvedValue([
-      asset,
-      {
-        ...asset,
-        id: "asset-2",
-        displayName: "second.png",
-        publicUrl: "https://cdn.example.com/second.png",
-      },
-    ] as never)
-    vi.mocked(prisma.mediaAsset.count).mockResolvedValue(2)
-    vi.mocked(prisma.article.findMany).mockResolvedValue([cachedArticle] as never)
-
-    await listMediaAssets({ status: "all", page: 1, pageSize: 24 })
-    expect(extractSpy).toHaveBeenCalledTimes(1)
-
-    await listMediaAssets({ status: "all", page: 1, pageSize: 24 })
-    expect(extractSpy).toHaveBeenCalledTimes(1)
-
-    vi.mocked(prisma.mediaAsset.findUnique).mockResolvedValue(asset as never)
     const details = await getMediaAssetDetails(asset.id)
-    expect(details?.articles).toHaveLength(1)
-    expect(extractSpy).toHaveBeenCalledTimes(1)
 
-    vi.mocked(prisma.article.findMany).mockResolvedValue([
-      {
-        ...cachedArticle,
-        content: `![Screen](${asset.publicUrl})\n![Second](https://cdn.example.com/second.png)\n`,
-      },
-    ] as never)
-
-    const updated = await listMediaAssets({ status: "all", page: 1, pageSize: 24 })
-    expect(extractSpy).toHaveBeenCalledTimes(2)
-    expect(updated.items[1]?.linkedArticleCount).toBe(1)
-
-    extractSpy.mockRestore()
+    expect(prisma.article.findMany).not.toHaveBeenCalled()
+    expect(details).toMatchObject({
+      id: asset.id,
+      linkedArticleCount: 1,
+      articles: [
+        {
+          id: article.id,
+          slug: article.slug,
+          title: article.title,
+          draft: article.draft,
+          contentReferenceCount: 2,
+          coverReference: true,
+        },
+      ],
+    })
   })
 
   it("removes references and cover before deleting the object", async () => {
@@ -275,9 +293,26 @@ describe("media asset service", () => {
 
     const result = await deleteMediaAsset("asset-1", "admin-1")
 
+    expect(prisma.article.findMany).toHaveBeenCalledWith({
+      where: {
+        mediaReferences: {
+          some: {
+            mediaAssetId: asset.id,
+          },
+        },
+      },
+      select: expect.objectContaining({
+        id: true,
+        content: true,
+        cover: true,
+      }),
+    })
     expect(tx.mediaAsset.update).toHaveBeenCalledWith({
       where: { id: asset.id },
       data: { status: "DELETING" },
+    })
+    expect(tx.articleMediaReference.deleteMany).toHaveBeenCalledWith({
+      where: { mediaAssetId: asset.id },
     })
     expect(tx.article.update).toHaveBeenCalledWith({
       where: { id: article.id },

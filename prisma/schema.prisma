@@ -82,8 +82,9 @@ model Article {
   lastEditedByUserId String?
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @updatedAt
-  lastEditedBy       User?             @relation("ArticleLastEditedBy", fields: [lastEditedByUserId], references: [id], onDelete: SetNull)
+  lastEditedBy       User?                   @relation("ArticleLastEditedBy", fields: [lastEditedByUserId], references: [id], onDelete: SetNull)
   revisions          ArticleRevision[]
+  mediaReferences    ArticleMediaReference[]
 
   @@index([draft, publishedAt])
   @@index([category, publishedAt])
@@ -171,8 +172,25 @@ model MediaAsset {
   uploadedByUserId String?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-  uploadedBy       User?            @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+  uploadedBy        User?                   @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+  articleReferences ArticleMediaReference[]
 
   @@index([status, createdAt])
   @@index([displayName])
+}
+
+model ArticleMediaReference {
+  id                    String     @id @default(cuid())
+  articleId             String
+  mediaAssetId          String
+  contentReferenceCount Int        @default(0)
+  coverReference        Boolean    @default(false)
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+  article               Article    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  mediaAsset            MediaAsset @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, mediaAssetId])
+  @@index([mediaAssetId])
+  @@index([articleId])
 }

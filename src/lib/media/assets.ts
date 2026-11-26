@@ -12,10 +12,8 @@ import {
 } from "@/lib/content-search"
 import { prisma } from "@/lib/prisma"
 import { invalidatePublicPages } from "@/server/public-page-cache"
-import {
-  extractImageReferences,
-  removeImageReferences,
-} from "@/lib/media/references"
+import { normalizeAssetUrl } from "@/lib/media/reference-sync"
+import { removeImageReferences } from "@/lib/media/references"
 import {
   createObjectKey,
   getActiveMediaProvider,
@@ -75,13 +73,19 @@ export type DeleteMediaResult = {
   affectedArticleCount: number
 }
 
-type ArticleReferenceRecord = Pick<
+type ArticleForMedia = Pick<
   Article,
-  "id" | "slug" | "title" | "content" | "cover" | "draft"
+  | "id"
+  | "slug"
+  | "title"
+  | "desc"
+  | "category"
+  | "tags"
+  | "content"
+  | "cover"
+  | "draft"
+  | "publishedAt"
 >
-
-type ArticleForMedia = ArticleReferenceRecord &
-  Pick<Article, "desc" | "category" | "tags" | "publishedAt">
 
 type ArticleRewrite = {
   article: ArticleForMedia
@@ -89,109 +93,20 @@ type ArticleRewrite = {
   cover: string | null
 }
 
-const articleReferenceSelect = {
+const articleForMediaSelect = {
   id: true,
   slug: true,
   title: true,
-  content: true,
-  cover: true,
-  draft: true,
-} as const
-
-const articleForMediaSelect = {
-  ...articleReferenceSelect,
   desc: true,
   category: true,
   tags: true,
+  content: true,
+  cover: true,
+  draft: true,
   publishedAt: true,
 } as const
 
 const listableAssetStatuses: MediaAssetStatus[] = ["ACTIVE", "DELETE_FAILED"]
-const MAX_ARTICLE_IMAGE_CACHE_ENTRIES = 1000
-const EMPTY_IMAGE_COUNTS = new Map<string, number>()
-
-type CachedArticleImageCounts = {
-  content: string
-  urlCounts: Map<string, number>
-}
-
-const articleImageCountCache = new Map<string, CachedArticleImageCounts>()
-
-function normalizeAssetUrl(url: string): string {
-  const trimmed = url.trim()
-
-  if (trimmed.endsWith("://")) {
-    return trimmed
-  }
-
-  return trimmed.replace(/([^:])\/+$/, "$1")
-}
-
-function getArticleContentImageCounts(
-  article: Pick<ArticleReferenceRecord, "id" | "content">
-): ReadonlyMap<string, number> {
-  if (!article.content.includes("![")) {
-    return EMPTY_IMAGE_COUNTS
-  }
-
-  const cached = articleImageCountCache.get(article.id)
-
-  if (cached && cached.content === article.content) {
-    articleImageCountCache.delete(article.id)
-    articleImageCountCache.set(article.id, cached)
-    return cached.urlCounts
-  }
-
-  const urlCounts = new Map<string, number>()
-
-  try {
-    for (const reference of extractImageReferences(article.content)) {
-      const normalized = normalizeAssetUrl(reference.url)
-      urlCounts.set(normalized, (urlCounts.get(normalized) ?? 0) + reference.count)
-    }
-  } catch {
-    // Ignore unparseable MDX during listing/detail scans, matching non-strict behavior.
-  }
-
-  if (articleImageCountCache.size >= MAX_ARTICLE_IMAGE_CACHE_ENTRIES) {
-    const oldestKey = articleImageCountCache.keys().next().value
-    if (oldestKey !== undefined) {
-      articleImageCountCache.delete(oldestKey)
-    }
-  }
-
-  articleImageCountCache.set(article.id, {
-    content: article.content,
-    urlCounts,
-  })
-
-  return urlCounts
-}
-
-function buildUrlLinkedCountMap(
-  articles: ArticleReferenceRecord[]
-): Map<string, number> {
-  const urlToLinkedCount = new Map<string, number>()
-
-  for (const article of articles) {
-    const seenUrls = new Set<string>()
-    const contentCounts = getArticleContentImageCounts(article)
-
-    for (const url of contentCounts.keys()) {
-      seenUrls.add(url)
-    }
-
-    if (article.cover !== null) {
-      seenUrls.add(normalizeAssetUrl(article.cover))
-    }
-
-    for (const url of seenUrls) {
-      urlToLinkedCount.set(url, (urlToLinkedCount.get(url) ?? 0) + 1)
-    }
-  }
-
-  return urlToLinkedCount
-}
 
 function toProviderKey(provider: MediaProvider): MediaProviderKey {
   const normalized = provider.toLowerCase()
@@ -223,54 +138,6 @@ function toMediaAssetSummary(
   }
 }
 
-function toMediaArticleReference(
-  article: ArticleReferenceRecord,
-  normalizedPublicUrl: string
-): MediaArticleReference | null {
-  const contentReferenceCount =
-    getArticleContentImageCounts(article).get(normalizedPublicUrl) ?? 0
-  const coverReference =
-    article.cover !== null &&
-    normalizeAssetUrl(article.cover) === normalizedPublicUrl
-
-  if (contentReferenceCount === 0 && !coverReference) {
-    return null
-  }
-
-  return {
-    id: article.id,
-    slug: article.slug,
-    title: article.title,
-    draft: article.draft,
-    contentReferenceCount,
-    coverReference,
-  }
-}
-
-function getMediaArticleReferences(
-  asset: MediaAssetRecord,
-  articles: ArticleReferenceRecord[]
-): MediaArticleReference[] {
-  const normalizedPublicUrl = normalizeAssetUrl(asset.publicUrl)
-
-  return articles.flatMap((article) => {
-    const reference = toMediaArticleReference(article, normalizedPublicUrl)
-    return reference ? [reference] : []
-  })
-}
-
-async function findArticleReferences(): Promise<ArticleReferenceRecord[]> {
-  return prisma.article.findMany({
-    select: articleReferenceSelect,
-  })
-}
-
-async function findArticlesForMedia(): Promise<ArticleForMedia[]> {
-  return prisma.article.findMany({
-    select: articleForMediaSelect,
-  })
-}
-
 function clampPage(value: number | undefined, fallback: number): number {
   if (!Number.isFinite(value)) {
     return fallback
@@ -294,7 +161,7 @@ export async function listMediaAssets(
   const status = query.status ?? "all"
   const page = clampPage(query.page, 1)
   const pageSize = clampPageSize(query.pageSize)
-  const assetWhere: Prisma.MediaAssetWhereInput = {
+  const where: Prisma.MediaAssetWhereInput = {
     status: {
       in: listableAssetStatuses,
     },
@@ -306,74 +173,50 @@ export async function listMediaAssets(
           },
         }
       : {}),
+    ...(status === "linked"
+      ? {
+          articleReferences: {
+            some: {},
+          },
+        }
+      : status === "unlinked"
+        ? {
+            articleReferences: {
+              none: {},
+            },
+          }
+        : {}),
   }
 
-  if (status === "all") {
-    const [assets, total] = await Promise.all([
-      prisma.mediaAsset.findMany({
-        where: assetWhere,
-        orderBy: {
-          createdAt: "desc",
-        },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
-      prisma.mediaAsset.count({
-        where: assetWhere,
-      }),
-    ])
-
-    const urlToLinkedCount =
-      assets.length > 0
-        ? buildUrlLinkedCountMap(await findArticleReferences())
-        : new Map<string, number>()
-
-    return {
-      items: assets.map((asset) =>
-        toMediaAssetSummary(
-          asset,
-          urlToLinkedCount.get(normalizeAssetUrl(asset.publicUrl)) ?? 0
-        )
-      ),
-      page,
-      pageSize,
-      total,
-      totalPages: Math.max(1, Math.ceil(total / pageSize)),
-    }
-  }
-
-  const [assets, articles] = await Promise.all([
+  const [assets, total] = await Promise.all([
     prisma.mediaAsset.findMany({
-      where: assetWhere,
+      where,
       orderBy: {
         createdAt: "desc",
       },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        _count: {
+          select: {
+            articleReferences: true,
+          },
+        },
+      },
     }),
-    findArticleReferences(),
+    prisma.mediaAsset.count({
+      where,
+    }),
   ])
-  const urlToLinkedCount = buildUrlLinkedCountMap(articles)
-  const filtered = assets.flatMap((asset) => {
-    const linkedArticleCount =
-      urlToLinkedCount.get(normalizeAssetUrl(asset.publicUrl)) ?? 0
-    const matchesStatus =
-      status === "linked" ? linkedArticleCount > 0 : linkedArticleCount === 0
-
-    return matchesStatus ? [{ asset, linkedArticleCount }] : []
-  })
-  const total = filtered.length
-  const totalPages = Math.max(1, Math.ceil(total / pageSize))
-  const start = (page - 1) * pageSize
 
   return {
-    items: filtered
-      .slice(start, start + pageSize)
-      .map(({ asset, linkedArticleCount }) =>
-        toMediaAssetSummary(asset, linkedArticleCount)
-      ),
+    items: assets.map((asset) =>
+      toMediaAssetSummary(asset, asset._count.articleReferences)
+    ),
     page,
     pageSize,
     total,
-    totalPages,
+    totalPages: Math.max(1, Math.ceil(total / pageSize)),
   }
 }
 
@@ -382,18 +225,45 @@ export async function getMediaAssetDetails(
 ): Promise<MediaAssetDetails | null> {
   const asset = await prisma.mediaAsset.findUnique({
     where: { id },
+    include: {
+      articleReferences: {
+        orderBy: {
+          article: {
+            publishedAt: "desc",
+          },
+        },
+        include: {
+          article: {
+            select: {
+              id: true,
+              slug: true,
+              title: true,
+              draft: true,
+            },
+          },
+        },
+      },
+    },
   })
 
   if (!asset) {
     return null
   }
 
-  const articles = await findArticleReferences()
-  const references = getMediaArticleReferences(asset, articles)
+  const articles: MediaArticleReference[] = asset.articleReferences.map(
+    (reference) => ({
+      id: reference.article.id,
+      slug: reference.article.slug,
+      title: reference.article.title,
+      draft: reference.article.draft,
+      contentReferenceCount: reference.contentReferenceCount,
+      coverReference: reference.coverReference,
+    })
+  )
 
   return {
-    ...toMediaAssetSummary(asset, references.length),
-    articles: references,
+    ...toMediaAssetSummary(asset, articles.length),
+    articles,
   }
 }
 
@@ -456,16 +326,19 @@ export async function renameMediaAsset(
     throw new Error("MEDIA_ASSET_NOT_AVAILABLE")
   }
 
-  const [asset, articles] = await Promise.all([
-    prisma.mediaAsset.update({
-      where: { id },
-      data: { displayName: normalizedDisplayName },
-    }),
-    findArticleReferences(),
-  ])
-  const references = getMediaArticleReferences(asset, articles)
+  const asset = await prisma.mediaAsset.update({
+    where: { id },
+    data: { displayName: normalizedDisplayName },
+    include: {
+      _count: {
+        select: {
+          articleReferences: true,
+        },
+      },
+    },
+  })
 
-  return toMediaAssetSummary(asset, references.length)
+  return toMediaAssetSummary(asset, asset._count.articleReferences)
 }
 
 async function buildArticleRewrites(
@@ -518,13 +391,26 @@ export async function deleteMediaAsset(
     throw new Error("MEDIA_ASSET_NOT_AVAILABLE")
   }
 
-  const articles = await findArticlesForMedia()
-  const rewrites = await buildArticleRewrites(asset, articles)
+  const linkedArticles = await prisma.article.findMany({
+    where: {
+      mediaReferences: {
+        some: {
+          mediaAssetId: id,
+        },
+      },
+    },
+    select: articleForMediaSelect,
+  })
+  const rewrites = await buildArticleRewrites(asset, linkedArticles)
 
   await prisma.$transaction(async (tx) => {
     await tx.mediaAsset.update({
       where: { id },
       data: { status: "DELETING" },
+    })
+
+    await tx.articleMediaReference.deleteMany({
+      where: { mediaAssetId: id },
     })
 
     for (const rewrite of rewrites) {

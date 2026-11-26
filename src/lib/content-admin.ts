@@ -7,6 +7,7 @@ import {
   buildSearchDocument,
   createArticleRevisionSnapshot,
 } from "@/lib/content-search"
+import { syncArticleMediaReferences } from "@/lib/media/reference-sync"
 import { prisma } from "@/lib/prisma"
 import { formatArchiveCode } from "@/lib/archive-presentation"
 import {
@@ -285,6 +286,7 @@ export async function createManagedArticle(
     })
 
     await createArticleRevisionSnapshot(tx, article, editorUserId, reason)
+    await syncArticleMediaReferences(tx, article)
     return article
   })
   invalidatePublicPages()
@@ -331,6 +333,7 @@ export async function updateManagedArticle(
       editorUserId,
       guard?.reason ?? "Article updated"
     )
+    await syncArticleMediaReferences(tx, article)
     return article
   })
   invalidatePublicPages()
@@ -616,6 +619,7 @@ export async function restoreArticleRevision(
       editorUserId,
       `Restored revision ${revision.id}`
     )
+    await syncArticleMediaReferences(tx, updated)
     return updated
   })
   invalidatePublicPages()

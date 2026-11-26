@@ -58,6 +58,13 @@ const tx = {
   articleRevision: {
     create: vi.fn(),
   },
+  mediaAsset: {
+    findMany: vi.fn(),
+  },
+  articleMediaReference: {
+    deleteMany: vi.fn(),
+    createMany: vi.fn(),
+  },
 }
 
 beforeEach(() => {
@@ -72,6 +79,9 @@ beforeEach(() => {
   tx.article.create.mockResolvedValue(article)
   tx.article.update.mockResolvedValue(article)
   tx.articleRevision.create.mockResolvedValue({})
+  tx.mediaAsset.findMany.mockResolvedValue([])
+  tx.articleMediaReference.deleteMany.mockResolvedValue({ count: 0 })
+  tx.articleMediaReference.createMany.mockResolvedValue({ count: 0 })
   vi.mocked(prisma.$transaction).mockImplementation(async (callback) =>
     typeof callback === "function"
       ? callback(tx as never)
@@ -173,5 +183,61 @@ describe("managed article content helpers", () => {
         reason: "Article created",
       }),
     })
+  })
+
+  it("syncs article media references when creating, updating, or restoring articles", async () => {
+    const assetUrl = "https://cdn.example.com/images/hero.png"
+    const articleWithMedia = {
+      ...article,
+      content: `![Hero](${assetUrl})\n`,
+      cover: assetUrl,
+    }
+    tx.article.create.mockResolvedValueOnce(articleWithMedia)
+    tx.article.update.mockResolvedValue(articleWithMedia)
+    tx.mediaAsset.findMany.mockResolvedValue([
+      { id: "asset-1", publicUrl: assetUrl },
+    ])
+
+    await createManagedArticle(
+      {
+        ...input,
+        content: articleWithMedia.content,
+        cover: assetUrl,
+      },
+      "admin-1"
+    )
+    expect(tx.articleMediaReference.deleteMany).toHaveBeenCalledWith({
+      where: { articleId: article.id },
+    })
+    expect(tx.articleMediaReference.createMany).toHaveBeenCalledWith({
+      data: [
+        {
+          articleId: article.id,
+          mediaAssetId: "asset-1",
+          contentReferenceCount: 1,
+          coverReference: true,
+        },
+      ],
+    })
+
+    vi.mocked(prisma.article.findUnique).mockResolvedValueOnce(article as never)
+    await updateManagedArticle(
+      article.slug,
+      {
+        ...input,
+        content: articleWithMedia.content,
+        cover: assetUrl,
+      },
+      "admin-1"
+    )
+    expect(tx.articleMediaReference.createMany).toHaveBeenCalledTimes(2)
+
+    vi.mocked(prisma.article.findUnique).mockResolvedValueOnce(article as never)
+    vi.mocked(prisma.articleRevision.findFirst).mockResolvedValueOnce({
+      ...articleWithMedia,
+      id: "revision-1",
+    } as never)
+    await restoreArticleRevision(article.slug, "revision-1", "admin-1")
+    expect(tx.articleMediaReference.createMany).toHaveBeenCalledTimes(3)
   })
 })

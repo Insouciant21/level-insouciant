@@ -6,6 +6,8 @@ import { PrismaPg } from "@prisma/adapter-pg"
 import { PrismaClient } from "@prisma/client"
 import { Pool } from "pg"
 
+import { syncArticleMediaReferences } from "./media-reference-sync.mjs"
+
 const cwd = process.cwd()
 const sourceDirectories = [
   path.join(cwd, "content", "article-seeds"),
@@ -90,7 +92,7 @@ async function main() {
         content: parsed.content,
       })
 
-      await prisma.article.upsert({
+      const saved = await prisma.article.upsert({
         where: {
           slug: frontmatter.slug,
         },
@@ -119,7 +121,14 @@ async function main() {
           publishedAt: new Date(frontmatter.date),
           legacySourcePath: path.relative(cwd, filePath),
         },
+        select: {
+          id: true,
+          content: true,
+          cover: true,
+        },
       })
+
+      await syncArticleMediaReferences(prisma, saved)
     }
 
     console.log(`Imported ${files.length} article(s) from ${path.relative(cwd, articlesDirectory)}.`)
