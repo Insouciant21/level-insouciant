@@ -29,81 +29,75 @@ type MotionStaggerProps = {
   stagger?: number
 }
 
-const industrialEase: [number, number, number, number] = [0.18, 0.82, 0.16, 1]
+const industrialEase: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 const transitionStates: Record<TransitionVariant, TransitionState> = {
   fade: {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
-    duration: 0.8,
+    duration: 0.24,
+    ease: industrialEase,
   },
   fadeUp: {
-    initial: { opacity: 0, y: 20 },
+    initial: { opacity: 0, y: 10 },
     animate: { opacity: 1, y: 0 },
-    duration: 0.8,
+    duration: 0.32,
+    ease: industrialEase,
   },
   left: {
-    initial: { opacity: 0, x: -20 },
+    initial: { opacity: 0, x: -12 },
     animate: { opacity: 1, x: 0 },
-    duration: 0.8,
+    duration: 0.32,
+    ease: industrialEase,
   },
   right: {
-    initial: { opacity: 0, x: 20 },
+    initial: { opacity: 0, x: 12 },
     animate: { opacity: 1, x: 0 },
-    duration: 0.8,
+    duration: 0.32,
+    ease: industrialEase,
   },
   scale: {
-    initial: { opacity: 0, scale: 0.98 },
+    initial: { opacity: 0, scale: 0.985 },
     animate: { opacity: 1, scale: 1 },
-    duration: 0.6,
+    duration: 0.28,
+    ease: industrialEase,
   },
   panel: {
     initial: {
       opacity: 0,
-      y: 18,
-      clipPath: "polygon(0 0, 82% 0, 68% 100%, 0 100%)",
-      filter: "brightness(0.94) contrast(1.04)",
+      y: 10,
+      scale: 0.992,
     },
     animate: {
       opacity: 1,
       y: 0,
-      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-      filter: "brightness(1) contrast(1)",
-      transitionEnd: { clipPath: "none", filter: "none" },
+      scale: 1,
     },
-    duration: 0.75,
+    duration: 0.34,
     ease: industrialEase,
   },
   terminal: {
     initial: {
       opacity: 0,
-      x: -16,
-      clipPath: "inset(0 100% 0 0)",
-      filter: "brightness(0.92) contrast(1.08)",
+      y: 8,
     },
     animate: {
       opacity: 1,
-      x: 0,
-      clipPath: "inset(0 0% 0 0)",
-      filter: "brightness(1) contrast(1)",
-      transitionEnd: { clipPath: "none", filter: "none" },
+      y: 0,
     },
-    duration: 0.62,
+    duration: 0.28,
     ease: industrialEase,
   },
   wipe: {
     initial: {
       opacity: 0,
-      clipPath: "inset(0 0 100% 0)",
-      filter: "brightness(0.96)",
+      y: 6,
     },
     animate: {
       opacity: 1,
-      clipPath: "inset(0 0 0% 0)",
-      filter: "brightness(1)",
-      transitionEnd: { clipPath: "none", filter: "none" },
+      y: 0,
     },
-    duration: 0.68,
+    duration: 0.28,
     ease: industrialEase,
   },
 }
@@ -138,8 +132,8 @@ function MotionStagger({
   children,
   className,
   delay = 0,
-  duration = 0.6,
-  stagger = 0.1,
+  duration = 0.3,
+  stagger = 0.045,
 }: MotionStaggerProps) {
   const reducedMotion = useReducedMotion()
 
@@ -151,14 +145,14 @@ function MotionStagger({
         hidden: {},
         visible: {
           transition: {
-            delayChildren: delay,
-            staggerChildren: stagger,
+            delayChildren: reducedMotion ? 0 : delay,
+            staggerChildren: reducedMotion ? 0 : stagger,
           },
         },
       }}
       transition={{
         duration: reducedMotion ? 0 : duration,
-        ease: "easeOut",
+        ease: industrialEase,
       }}
       className={className}
     >

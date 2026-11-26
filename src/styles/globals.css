@@ -443,12 +443,17 @@
   }
 
   .site-header-shell {
+    view-transition-name: site-header;
     border-color: rgb(27 27 22 / 20%);
     background: rgb(210 202 164 / 88%);
     box-shadow:
       inset 0 1px 0 rgb(255 252 225 / 26%),
       inset 0 -1px 0 rgb(24 27 23 / 8%),
       0 14px 34px -32px rgb(24 27 23 / 44%);
+  }
+
+  .page-transition-stage {
+    view-transition-name: page-stage;
   }
 
   .site-section-header {
@@ -550,7 +555,7 @@
     transform: scaleX(0);
     transform-origin: left;
     opacity: 0.8;
-    transition: transform 220ms cubic-bezier(0.2, 0.7, 0.14, 1);
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .utility-nav-link:hover,
@@ -574,9 +579,9 @@
         transparent 16rem
       );
     transition:
-      transform 240ms cubic-bezier(0.2, 0.7, 0.14, 1),
-      border-color 220ms ease,
-      box-shadow 240ms ease;
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 200ms ease,
+      box-shadow 220ms ease;
   }
 
   .door-card:hover {
@@ -619,9 +624,9 @@
     background: rgb(238 233 214 / 62%);
     border-color: rgb(27 27 22 / 16%);
     transition:
-      transform 220ms cubic-bezier(0.2, 0.7, 0.14, 1),
-      background-color 220ms ease,
-      border-color 220ms ease,
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 200ms ease,
+      border-color 200ms ease,
       box-shadow 220ms ease;
   }
 
@@ -766,6 +771,57 @@
     }
   }
 
+  @keyframes page-stage-out {
+    from {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      opacity: 0;
+      transform: translate3d(0, -4px, 0);
+    }
+  }
+
+  @keyframes page-stage-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(site-header),
+  ::view-transition-new(site-header) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-group(page-stage) {
+    overflow: clip;
+  }
+
+  ::view-transition-old(page-stage),
+  ::view-transition-new(page-stage) {
+    width: 100%;
+    height: auto;
+    transform-origin: top center;
+  }
+
+  ::view-transition-old(page-stage) {
+    animation: 110ms cubic-bezier(0.4, 0, 1, 1) both page-stage-out;
+  }
+
+  ::view-transition-new(page-stage) {
+    animation: 220ms cubic-bezier(0.22, 1, 0.36, 1) both page-stage-in;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .signal-beacon__halo,
     .signal-beacon__core {
@@ -777,17 +833,29 @@
       opacity: 0;
     }
 
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
+
     .door-card,
     .door-card__shade,
     .door-card__transom,
     .door-card__panel,
     .door-card__enter,
+    .archive-card-interactive,
+    .chrome-pill,
+    .toc-link,
     .utility-nav-link,
     .utility-nav-link::after,
     .utility-brand-link {
       transition-duration: 1ms;
     }
 
+    .archive-card-interactive:hover,
+    .archive-card-interactive:active,
+    .chrome-pill:active,
     .door-card:hover,
     .door-card:hover .door-card__panel,
     .door-card:hover .door-card__enter {
@@ -795,16 +863,33 @@
     }
   }
 
+  .archive-card-interactive {
+    transition:
+      transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 200ms ease,
+      border-color 200ms ease,
+      box-shadow 220ms ease;
+  }
+
+  .archive-card-interactive:active {
+    transform: translateY(0) scale(0.995);
+  }
+
   .utility-kicker {
     @apply font-mono text-[0.68rem] font-medium tracking-[0.28em] text-muted-foreground uppercase;
   }
 
   .chrome-pill {
-    @apply inline-flex items-center justify-center gap-2 border px-2.5 py-1.5 text-center font-mono text-[0.68rem] leading-none font-medium tracking-[0.1em] uppercase transition-colors duration-200;
+    @apply inline-flex items-center justify-center gap-2 border px-2.5 py-1.5 text-center font-mono text-[0.68rem] leading-none font-medium tracking-[0.1em] uppercase active:scale-[0.985];
     border-radius: 0.1875rem;
     border-color: rgb(115 118 111 / 46%);
     background: rgb(170 168 145 / 24%);
     color: var(--foreground);
+    transition:
+      color 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease,
+      transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
     box-shadow:
       inset 0 1px 0 rgb(255 252 225 / 14%),
       0 10px 22px -20px rgb(0 0 0 / 26%);

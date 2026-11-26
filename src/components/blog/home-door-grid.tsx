@@ -63,12 +63,12 @@ function HomeDoorCard({
 
   return (
     <Motion.article
-      initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
-        duration: reducedMotion ? 0 : 0.42,
-        delay: reducedMotion ? 0 : 0.06 + index * 0.05,
-        ease: [0.2, 0.7, 0.14, 1],
+        duration: reducedMotion ? 0 : 0.34,
+        delay: reducedMotion ? 0 : 0.02 + Math.min(index, 5) * 0.04,
+        ease: [0.22, 1, 0.36, 1],
       }}
       className={cn(
         "door-card group relative flex flex-col overflow-hidden border shadow-[0_18px_42px_-34px_rgba(0,0,0,0.42)] hover:shadow-[0_26px_54px_-32px_rgba(0,0,0,0.46)]",
@@ -158,11 +158,14 @@ function HomeDoorGrid({ articles, showDeadEnd = true }: HomeDoorGridProps) {
 
       {showDeadEnd ? (
         <Motion.div
-          initial={reducedMotion ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{
-            duration: reducedMotion ? 0 : 0.45,
-            delay: reducedMotion ? 0 : 0.1 + articles.length * 0.05,
+            duration: reducedMotion ? 0 : 0.32,
+            delay: reducedMotion
+              ? 0
+              : 0.04 + Math.min(articles.length, 6) * 0.04,
+            ease: [0.22, 1, 0.36, 1],
           }}
           className={cn(
             "relative flex flex-col items-center justify-center overflow-hidden rounded-[0.25rem] border border-[#8a4f34]/55 bg-[#181b17] text-center text-[#d9d1ad] shadow-[inset_0_0_48px_rgba(0,0,0,0.8)]",

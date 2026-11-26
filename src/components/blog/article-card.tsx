@@ -16,7 +16,7 @@ function ArticleCard({ article }: ArticleCardProps) {
   const signal = getArchiveSignal(article)
 
   return (
-    <Card className="group relative rounded-[0.25rem] border border-[#73766f]/58 bg-[#c6bd99]/82 py-0 shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_18px_40px_-34px_rgba(0,0,0,0.46)] transition duration-200 before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-[linear-gradient(180deg,rgba(255,252,225,0.12),transparent_42%,rgba(24,27,23,0.1)),radial-gradient(circle_at_16%_20%,rgba(24,27,23,0.06)_0_1px,transparent_1.6px)] before:opacity-50 before:content-[''] hover:-translate-y-0.5 hover:border-foreground/32 hover:shadow-[0_24px_52px_-36px_rgba(0,0,0,0.52)]">
+    <Card className="archive-card-interactive group relative rounded-[0.25rem] border border-[#73766f]/58 bg-[#c6bd99]/82 py-0 shadow-[inset_0_1px_0_rgba(255,252,225,0.22),0_18px_40px_-34px_rgba(0,0,0,0.46)] before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-[linear-gradient(180deg,rgba(255,252,225,0.12),transparent_42%,rgba(24,27,23,0.1)),radial-gradient(circle_at_16%_20%,rgba(24,27,23,0.06)_0_1px,transparent_1.6px)] before:opacity-50 before:content-[''] hover:-translate-y-0.5 hover:border-foreground/32 hover:shadow-[0_24px_52px_-36px_rgba(0,0,0,0.52)]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 bg-[linear-gradient(90deg,transparent,rgb(var(--safety-exit-green-rgb)/45%),transparent)] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
       <div className="relative flex min-w-0 flex-col gap-4 px-5 py-5 sm:px-6 sm:py-5">

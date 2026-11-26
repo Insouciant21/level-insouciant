@@ -141,10 +141,14 @@ const location = Astro.url.pathname + Astro.url.search
           >
             <slot />
           </AdminLayout>
+        ) : !isAdmin ? (
+          <div class="page-transition-stage flex min-h-0 flex-1 flex-col">
+            <slot />
+            <SiteFooter siteConfig={siteConfig} />
+          </div>
         ) : (
           <slot />
         )}
-        {!isAdmin && <SiteFooter siteConfig={siteConfig} />}
       </div>
     </div>
   </body>

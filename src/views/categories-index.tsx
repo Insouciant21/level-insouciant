@@ -2,6 +2,7 @@ import { ArchiveSection } from "@/components/blog/archive-section"
 import { EmptyState } from "@/components/blog/empty-state"
 import { PageIntro } from "@/components/blog/page-intro"
 import { PageShell } from "@/components/blog/page-shell"
+import { MotionReveal } from "@/components/motion/page-transition"
 
 import type { load } from "@/server/pages/categories-index"
 import { IslandProvider } from "@/components/providers/island-provider"
@@ -11,7 +12,13 @@ function View({ categories }: Awaited<ReturnType<typeof load>>) {
       <PageIntro eyebrow="Categories" title="分类归档" />
 
       {categories.length > 0 ? (
-        <ArchiveSection items={categories} title="全部分类" type="categories" />
+        <MotionReveal variant="fadeUp" duration={0.28} delay={0.02}>
+          <ArchiveSection
+            items={categories}
+            title="全部分类"
+            type="categories"
+          />
+        </MotionReveal>
       ) : (
         <EmptyState
           title="暂时还没有分类"

@@ -5,6 +5,7 @@ import { HomeProfileCard } from "@/components/blog/home-profile-card"
 import { HomeTagCloud } from "@/components/blog/home-tag-cloud"
 import { HomeTimeline } from "@/components/blog/home-timeline"
 import { PageShell } from "@/components/blog/page-shell"
+import { MotionReveal } from "@/components/motion/page-transition"
 
 import type { load } from "@/server/pages/index"
 import { IslandProvider } from "@/components/providers/island-provider"
@@ -34,18 +35,24 @@ function View({
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
-        <HomeTimeline articles={allArticles} />
+        <MotionReveal variant="fadeUp" duration={0.3} delay={0.06}>
+          <HomeTimeline articles={allArticles} />
+        </MotionReveal>
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-          <HomeTagCloud items={archiveOverview.tags} />
-          <HomeProfileCard
-            title={siteConfig.profile.title}
-            summary={siteConfig.profile.summary}
-            status={siteConfig.profile.status}
-            location={siteConfig.profile.location}
-            quotes={hitokotoQuotes}
-            email={siteConfig.email}
-          />
+          <MotionReveal variant="fadeUp" duration={0.3} delay={0.1}>
+            <HomeTagCloud items={archiveOverview.tags} />
+          </MotionReveal>
+          <MotionReveal variant="fadeUp" duration={0.3} delay={0.14}>
+            <HomeProfileCard
+              title={siteConfig.profile.title}
+              summary={siteConfig.profile.summary}
+              status={siteConfig.profile.status}
+              location={siteConfig.profile.location}
+              quotes={hitokotoQuotes}
+              email={siteConfig.email}
+            />
+          </MotionReveal>
         </div>
       </section>
     </PageShell>

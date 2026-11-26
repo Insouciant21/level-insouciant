@@ -12,7 +12,7 @@ type ArchiveSectionProps = {
 
 const archivePanelClass = "public-summary-panel"
 const archiveEntryClass =
-  "public-summary-card group flex flex-col justify-between gap-4 px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-foreground/28 hover:bg-[#d9d1ad]/58 hover:shadow-[inset_0_1px_0_rgba(255,252,225,0.18),0_18px_36px_-30px_rgba(0,0,0,0.4)]"
+  "public-summary-card archive-card-interactive group flex flex-col justify-between gap-4 px-5 py-4 hover:-translate-y-0.5 hover:border-foreground/28 hover:bg-[#d9d1ad]/58 hover:shadow-[inset_0_1px_0_rgba(255,252,225,0.18),0_18px_36px_-30px_rgba(0,0,0,0.4)]"
 
 function ArchiveSection({ title, items, type }: ArchiveSectionProps) {
   return (

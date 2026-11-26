@@ -144,7 +144,7 @@ const readingMinutes = estimateReadingMinutes(article.content)
       />
     </div>
 
-    <MotionReveal client:visible delay={0.1}>
+    <MotionReveal client:visible variant="fadeUp" duration={0.3}>
       <ArticleEngagementIsland
         slug={article.slug}
         location={Astro.url.pathname}
@@ -152,7 +152,7 @@ const readingMinutes = estimateReadingMinutes(article.content)
       />
     </MotionReveal>
 
-    <MotionReveal client:visible delay={0.15}>
+    <MotionReveal client:visible variant="fadeUp" duration={0.3} delay={0.04}>
       <ArticlePaginationNav
         previous={pagination?.previous ?? null}
         next={pagination?.next ?? null}
@@ -160,7 +160,7 @@ const readingMinutes = estimateReadingMinutes(article.content)
     </MotionReveal>
 
     {relatedArticles.length > 0 ? (
-      <MotionReveal client:visible delay={0.2}>
+      <MotionReveal client:visible variant="fadeUp" duration={0.3} delay={0.08}>
         <section class="mx-auto grid w-full max-w-[1200px] gap-4">
           <div class="site-section-header pb-3">
             <div>

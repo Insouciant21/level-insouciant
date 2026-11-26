@@ -15,7 +15,7 @@ type TagAggregateSectionProps = {
 
 const tagPanelClass = "public-summary-panel"
 const tagEntryClass =
-  "public-summary-card group px-4 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-foreground/28 hover:bg-[#d9d1ad]/56 hover:shadow-[inset_0_1px_0_rgba(255,252,225,0.18),0_18px_36px_-30px_rgba(0,0,0,0.4)]"
+  "public-summary-card archive-card-interactive group px-4 py-4 hover:-translate-y-0.5 hover:border-foreground/28 hover:bg-[#d9d1ad]/56 hover:shadow-[inset_0_1px_0_rgba(255,252,225,0.18),0_18px_36px_-30px_rgba(0,0,0,0.4)]"
 
 function TagAggregateSection({ tag }: TagAggregateSectionProps) {
   return (

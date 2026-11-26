@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react"
 import Link from "@/lib/navigation"
-import { motion as Motion } from "motion/react"
+import {
+  AnimatePresence,
+  motion as Motion,
+  useReducedMotion,
+} from "motion/react"
 import { ArrowRight, Cpu, DatabaseZap, Terminal, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -29,6 +33,7 @@ const searchResultClass =
   "group flex flex-col gap-2 rounded-[var(--radius)] border border-primary/15 bg-[#12140f]/60 p-4 text-[#d9d1ad] transition duration-200 hover:border-primary/45 hover:bg-primary/10"
 
 function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
+  const reducedMotion = useReducedMotion()
   const normalizedInitialQuery = initialQuery.trim()
   const [query, setQuery] = useState(initialQuery)
   const [isSearching, setIsSearching] = useState(
@@ -105,9 +110,12 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
   return (
     <div className="mx-auto w-full max-w-[840px] px-0 py-6 font-mono text-[#d9d1ad] sm:px-4 sm:py-10">
       <Motion.div
-        initial={{ opacity: 0, scale: 0.99 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.35 }}
+        initial={reducedMotion ? false : { opacity: 0, y: 8, scale: 0.992 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{
+          duration: reducedMotion ? 0 : 0.28,
+          ease: [0.22, 1, 0.36, 1],
+        }}
         className={searchConsoleClass}
       >
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,1)_50%)] bg-[length:100%_4px] opacity-[0.05]" />
@@ -212,93 +220,128 @@ function SearchConsole({ initialQuery = "" }: SearchConsoleProps) {
           className="relative z-10 mt-10 min-h-[180px] text-sm"
           aria-live="polite"
         >
-          {!isSearching && !results && (
-            <div className="flex flex-col gap-2 border-t border-primary/20 pt-6 text-xs text-[#9aa79a]">
-              <div>&gt; AWAITING INPUT // 等待检索指令</div>
-              <div>&gt; SYSTEM READY // 已连接公开档案索引</div>
-            </div>
-          )}
-
-          {isSearching && (
-            <div className="flex flex-col gap-2 border-t border-primary/20 pt-6 text-xs">
-              <div className="text-[var(--warning-amber)]">
-                &gt; PROCESSING QUERY: {activeQuery}
-              </div>
-              <div className="text-primary">
-                &gt; ACCESSING ARCHIVE STORAGE...
-              </div>
-            </div>
-          )}
-
-          {results && !isSearching && (
-            <Motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col gap-3 border-t border-primary/25 pt-6"
-            >
-              {error ? (
-                <div className="text-xs text-[#f08b81]">
-                  &gt; CONSOLE ERROR: {error}
+          <AnimatePresence mode="wait" initial={false}>
+            {!isSearching && !results ? (
+              <Motion.div
+                key="idle"
+                initial={reducedMotion ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reducedMotion ? undefined : { opacity: 0, y: -2 }}
+                transition={{
+                  duration: reducedMotion ? 0 : 0.16,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="flex flex-col gap-2 border-t border-primary/20 pt-6 text-xs text-[#9aa79a]"
+              >
+                <div>&gt; AWAITING INPUT // 等待检索指令</div>
+                <div>&gt; SYSTEM READY // 已连接公开档案索引</div>
+              </Motion.div>
+            ) : isSearching ? (
+              <Motion.div
+                key="searching"
+                initial={reducedMotion ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reducedMotion ? undefined : { opacity: 0, y: -2 }}
+                transition={{
+                  duration: reducedMotion ? 0 : 0.16,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="flex flex-col gap-2 border-t border-primary/20 pt-6 text-xs"
+              >
+                <div className="text-[var(--warning-amber)]">
+                  &gt; PROCESSING QUERY: {activeQuery}
                 </div>
-              ) : (
-                <div className="text-xs tracking-[0.12em] text-[#9aa79a] uppercase">
-                  &gt; FOUND {results.length} MATCHES FOR &ldquo;{activeQuery}
-                  &rdquo;
+                <div className="text-primary">
+                  &gt; ACCESSING ARCHIVE STORAGE...
                 </div>
-              )}
+              </Motion.div>
+            ) : results ? (
+              <Motion.div
+                key={`results-${searchRun}`}
+                initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reducedMotion ? undefined : { opacity: 0, y: -2 }}
+                transition={{
+                  duration: reducedMotion ? 0 : 0.2,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="flex flex-col gap-3 border-t border-primary/25 pt-6"
+              >
+                {error ? (
+                  <div className="text-xs text-[#f08b81]">
+                    &gt; CONSOLE ERROR: {error}
+                  </div>
+                ) : (
+                  <div className="text-xs tracking-[0.12em] text-[#9aa79a] uppercase">
+                    &gt; FOUND {results.length} MATCHES FOR &ldquo;{activeQuery}
+                    &rdquo;
+                  </div>
+                )}
 
-              {!error && results.length === 0 ? (
-                <div className="rounded-[var(--radius)] border border-dashed border-white/15 bg-black/25 px-4 py-6 text-xs leading-6 text-[#9aa79a]">
-                  &gt; NO RECORDS FOUND //
-                  未检索到匹配的公开档案，请尝试更换关键词。
-                </div>
-              ) : null}
+                {!error && results.length === 0 ? (
+                  <div className="rounded-[var(--radius)] border border-dashed border-white/15 bg-black/25 px-4 py-6 text-xs leading-6 text-[#9aa79a]">
+                    &gt; NO RECORDS FOUND //
+                    未检索到匹配的公开档案，请尝试更换关键词。
+                  </div>
+                ) : null}
 
-              {!error
-                ? results.map((article, index) => {
-                    const signal = getArchiveSignal(article)
+                {!error
+                  ? results.map((article, index) => {
+                      const signal = getArchiveSignal(article)
 
-                    return (
-                      <Link
-                        key={article.slug}
-                        href={`/articles/${article.slug}`}
-                        className={searchResultClass}
-                      >
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-[0.68rem] tracking-[0.16em] text-[#9aa79a] uppercase">
-                          <div className="flex items-center gap-2">
-                            <span className="text-primary">
-                              [{String(index + 1).padStart(2, "0")}]
-                            </span>
-                            <span className="border border-primary/35 bg-primary/12 px-1.5 py-0.5 text-[var(--safety-exit-green-strong)]">
-                              {signal.designation}
-                            </span>
-                            <span>{article.category}</span>
-                          </div>
-                          <span>{formatDisplayDate(article.date)}</span>
-                        </div>
+                      return (
+                        <Motion.div
+                          key={article.slug}
+                          initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: reducedMotion ? 0 : 0.22,
+                            delay: reducedMotion
+                              ? 0
+                              : Math.min(index, 7) * 0.03,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                        >
+                          <Link
+                            href={`/articles/${article.slug}`}
+                            className={searchResultClass}
+                          >
+                            <div className="flex flex-wrap items-center justify-between gap-2 text-[0.68rem] tracking-[0.16em] text-[#9aa79a] uppercase">
+                              <div className="flex items-center gap-2">
+                                <span className="text-primary">
+                                  [{String(index + 1).padStart(2, "0")}]
+                                </span>
+                                <span className="border border-primary/35 bg-primary/12 px-1.5 py-0.5 text-[var(--safety-exit-green-strong)]">
+                                  {signal.designation}
+                                </span>
+                                <span>{article.category}</span>
+                              </div>
+                              <span>{formatDisplayDate(article.date)}</span>
+                            </div>
 
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="font-sans text-base font-semibold tracking-tight text-[#edf3e9] transition-colors group-hover:text-[var(--safety-exit-green-strong)] sm:text-lg">
-                            {article.title}
-                          </span>
-                          <ArrowRight
-                            className="size-4 shrink-0 text-[#9aa79a] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--safety-exit-green-strong)]"
-                            aria-hidden="true"
-                          />
-                        </div>
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="font-sans text-base font-semibold tracking-tight text-[#edf3e9] transition-colors group-hover:text-[var(--safety-exit-green-strong)] sm:text-lg">
+                                {article.title}
+                              </span>
+                              <ArrowRight
+                                className="size-4 shrink-0 text-[#9aa79a] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--safety-exit-green-strong)]"
+                                aria-hidden="true"
+                              />
+                            </div>
 
-                        {article.desc ? (
-                          <p className="line-clamp-2 font-sans text-xs leading-6 text-[#9aa79a]">
-                            {article.desc}
-                          </p>
-                        ) : null}
-                      </Link>
-                    )
-                  })
-                : null}
-            </Motion.div>
-          )}
+                            {article.desc ? (
+                              <p className="line-clamp-2 font-sans text-xs leading-6 text-[#9aa79a]">
+                                {article.desc}
+                              </p>
+                            ) : null}
+                          </Link>
+                        </Motion.div>
+                      )
+                    })
+                  : null}
+              </Motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
       </Motion.div>
     </div>

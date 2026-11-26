@@ -44,8 +44,8 @@ function View({
 
       <MotionStagger
         className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
-        delay={0.1}
-        stagger={0.08}
+        delay={0.03}
+        stagger={0.04}
       >
         <MotionStaggerItem variant="fade">
           <AdminStatCard
@@ -82,7 +82,7 @@ function View({
       </MotionStagger>
 
       <section className="grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
-        <MotionReveal variant="fade" delay={0.15}>
+        <MotionReveal variant="fade" delay={0.06}>
           <article className="admin-surface px-5 py-5 sm:px-6 sm:py-6">
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -128,7 +128,7 @@ function View({
           </article>
         </MotionReveal>
 
-        <MotionReveal variant="fade" delay={0.25}>
+        <MotionReveal variant="fade" delay={0.1}>
           <article className="admin-surface-muted px-5 py-5 sm:px-6 sm:py-6">
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -173,8 +173,8 @@ function View({
 
       <MotionStagger
         className="grid gap-4 md:grid-cols-3"
-        delay={0.2}
-        stagger={0.08}
+        delay={0.08}
+        stagger={0.04}
       >
         <MotionStaggerItem variant="fade">
           <AdminStatCard

@@ -11,7 +11,7 @@ type HomeTimelineProps = {
 
 const timelinePanelClass = "public-summary-panel px-6 py-6 sm:px-7"
 const timelineEntryClass =
-  "public-summary-card-muted group block border-[#73766f]/48 bg-[#aaa891]/26 px-4 py-3.5 transition duration-200 hover:border-foreground/28 hover:bg-[#d9d1ad]/52"
+  "public-summary-card-muted archive-card-interactive group block border-[#73766f]/48 bg-[#aaa891]/26 px-4 py-3.5 hover:border-foreground/28 hover:bg-[#d9d1ad]/52"
 
 function HomeTimeline({ articles }: HomeTimelineProps) {
   return (

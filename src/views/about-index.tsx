@@ -35,7 +35,7 @@ function View({ siteConfig, contactItems }: Awaited<ReturnType<typeof load>>) {
   return (
     <PageShell>
       <section className="grid gap-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
-        <MotionReveal variant="left">
+        <MotionReveal variant="left" duration={0.34}>
           <aside className="grid gap-6 lg:sticky lg:top-28">
             <div className="space-y-4 border-l-[3px] border-foreground/75 pl-4 lg:border-r-[3px] lg:border-l-0 lg:pr-5 lg:pl-0">
               <p className="utility-kicker">Official Designation</p>
@@ -108,7 +108,7 @@ function View({ siteConfig, contactItems }: Awaited<ReturnType<typeof load>>) {
           </aside>
         </MotionReveal>
 
-        <MotionReveal variant="right" delay={0.12}>
+        <MotionReveal variant="right" duration={0.34} delay={0.06}>
           <article className={aboutArticleClass}>
             <p className={aboutQuoteClass}>{siteConfig.about.quote}</p>
 

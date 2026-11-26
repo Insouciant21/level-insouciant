@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { MotionReveal } from "@/components/motion/page-transition"
 import type { load } from "@/server/pages/login-index"
 import { IslandProvider } from "@/components/providers/island-provider"
 
@@ -15,76 +16,78 @@ const authNoteClass =
 function View({ next, error }: Awaited<ReturnType<typeof load>>) {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 py-12 sm:px-6 lg:px-8">
-      <section className={`grid w-full gap-8 ${authPanelClass}`}>
-        <div className="space-y-4">
-          <p className="utility-kicker">Sign In // Clearance</p>
-          <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
-            登录后参与互动
-          </h1>
-          <p className="max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">
-            游客只能浏览文章、阅读评论和查看互动数据。登录后才可以点赞与评论。
-          </p>
-          <div className={authNoteClass}>
-            <p className="utility-kicker">Permission</p>
-            <p className="mt-2.5 text-sm leading-7 text-muted-foreground">
-              登录后会回到你原本访问的页面，评论与点赞入口会直接解锁。
+      <MotionReveal variant="scale" className="w-full">
+        <section className={`grid w-full gap-8 ${authPanelClass}`}>
+          <div className="space-y-4">
+            <p className="utility-kicker">Sign In // Clearance</p>
+            <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
+              登录后参与互动
+            </h1>
+            <p className="max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">
+              游客只能浏览文章、阅读评论和查看互动数据。登录后才可以点赞与评论。
             </p>
-          </div>
-        </div>
-
-        <form method="post" action={userLoginAction} className="grid gap-4">
-          <input type="hidden" name="redirectTo" value={next} />
-
-          <div className="grid gap-2">
-            <Label htmlFor="login-email">邮箱</Label>
-            <Input
-              id="login-email"
-              type="email"
-              name="email"
-              required
-              placeholder="you@example.com"
-              className="field-input h-11"
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="login-password">密码</Label>
-            <Input
-              id="login-password"
-              type="password"
-              name="password"
-              required
-              placeholder="输入你的密码"
-              className="field-input h-11"
-            />
-          </div>
-
-          {error ? (
-            <div
-              role="alert"
-              className="border-l-2 border-destructive bg-destructive/8 px-4 py-2.5 text-sm text-destructive"
-            >
-              {error}
+            <div className={authNoteClass}>
+              <p className="utility-kicker">Permission</p>
+              <p className="mt-2.5 text-sm leading-7 text-muted-foreground">
+                登录后会回到你原本访问的页面，评论与点赞入口会直接解锁。
+              </p>
             </div>
-          ) : null}
+          </div>
 
-          <Button type="submit" className="justify-center">
-            登录
-          </Button>
+          <form method="post" action={userLoginAction} className="grid gap-4">
+            <input type="hidden" name="redirectTo" value={next} />
 
-          <Separator className="bg-border/70" />
+            <div className="grid gap-2">
+              <Label htmlFor="login-email">邮箱</Label>
+              <Input
+                id="login-email"
+                type="email"
+                name="email"
+                required
+                placeholder="you@example.com"
+                className="field-input h-11"
+              />
+            </div>
 
-          <p className="text-sm text-muted-foreground">
-            还没有账号？
-            <Link
-              href={`/register?next=${encodeURIComponent(next)}`}
-              className="ml-2 text-[#8a4f34] underline underline-offset-4 transition hover:text-[#6f3f28]"
-            >
-              去注册
-            </Link>
-          </p>
-        </form>
-      </section>
+            <div className="grid gap-2">
+              <Label htmlFor="login-password">密码</Label>
+              <Input
+                id="login-password"
+                type="password"
+                name="password"
+                required
+                placeholder="输入你的密码"
+                className="field-input h-11"
+              />
+            </div>
+
+            {error ? (
+              <div
+                role="alert"
+                className="border-l-2 border-destructive bg-destructive/8 px-4 py-2.5 text-sm text-destructive"
+              >
+                {error}
+              </div>
+            ) : null}
+
+            <Button type="submit" className="justify-center">
+              登录
+            </Button>
+
+            <Separator className="bg-border/70" />
+
+            <p className="text-sm text-muted-foreground">
+              还没有账号？
+              <Link
+                href={`/register?next=${encodeURIComponent(next)}`}
+                className="ml-2 text-[#8a4f34] underline underline-offset-4 transition hover:text-[#6f3f28]"
+              >
+                去注册
+              </Link>
+            </p>
+          </form>
+        </section>
+      </MotionReveal>
     </main>
   )
 }
