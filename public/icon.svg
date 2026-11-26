@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="40" y1="20" x2="472" y2="492" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e221b"/>
+      <stop offset="100%" stop-color="#10120e"/>
+    </linearGradient>
+    <linearGradient id="topFace" x1="256" y1="64" x2="256" y2="244" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f5f1e3"/>
+      <stop offset="100%" stop-color="#d9d1ad"/>
+    </linearGradient>
+    <linearGradient id="leftWall" x1="88" y1="154" x2="256" y2="448" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#d8ce95"/>
+      <stop offset="100%" stop-color="#a29863"/>
+    </linearGradient>
+    <linearGradient id="rightWall" x1="256" y1="154" x2="424" y2="448" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2c3127"/>
+      <stop offset="100%" stop-color="#1a1d17"/>
+    </linearGradient>
+    <linearGradient id="exitDoor" x1="340" y1="198" x2="340" y2="424" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#62d99a"/>
+      <stop offset="50%" stop-color="#009b4e"/>
+      <stop offset="100%" stop-color="#0c3c22"/>
+    </linearGradient>
+    <clipPath id="alcoveClip">
+      <polygon points="128,204 162,222 162,346 226,380 226,408 128,356"/>
+    </clipPath>
+  </defs>
+
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#bg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="108" stroke="#cfc58b" stroke-opacity="0.32" stroke-width="6"/>
+
+  <!-- Top illuminated plane -->
+  <polygon points="256,64 424,154 256,244 88,154" fill="url(#topFace)"/>
+  <!-- Left cream-yellow Level-0 wall -->
+  <polygon points="88,154 256,244 256,448 88,358" fill="url(#leftWall)"/>
+  <!-- Right shadowed concrete wall -->
+  <polygon points="256,244 424,154 424,358 256,448" fill="url(#rightWall)"/>
+
+  <!-- Highlight ridges -->
+  <polyline points="88,154 256,244 424,154" stroke="#f7f4e8" stroke-opacity="0.72" stroke-width="3" stroke-linejoin="round"/>
+  <line x1="256" y1="244" x2="256" y2="448" stroke="#181b17" stroke-opacity="0.5" stroke-width="3"/>
+
+  <!-- Recessed 3D L-shaped alcove -->
+  <g clip-path="url(#alcoveClip)">
+    <polygon points="128,204 162,222 162,346 226,380 226,408 128,356" fill="#131611"/>
+    <polygon points="128,204 146,194 146,346 128,356" fill="#2c3025"/>
+    <polygon points="128,356 146,346 244,398 226,408" fill="#827a52"/>
+  </g>
+
+  <!-- Right face: Safety Exit beacon + ajar doorway -->
+  <polygon points="322,209 358,190 358,199 322,218" fill="#62d99a"/>
+  <polygon points="292,248 386,198 386,378 292,428" fill="#10130e"/>
+  <polygon points="300,253 378,211 378,382 300,424" fill="url(#exitDoor)"/>
+  <polygon points="330,237 378,211 378,382 330,408" fill="#131711" fill-opacity="0.9"/>
+</svg>

@@ -86,10 +86,16 @@ function AdminSiteIcon({ siteIconUrl }: { siteIconUrl: string }) {
   return (
     <span
       aria-hidden="true"
-      className="flex size-9 shrink-0 items-center justify-center rounded-md border border-[var(--safety-exit-green)]/35 bg-[var(--safety-exit-green)]/10 bg-contain bg-center bg-no-repeat p-1.5"
+      className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg"
       data-testid="admin-site-icon"
-      style={{ backgroundImage: `url(${siteIconUrl})` }}
-    />
+    >
+      <img
+        src={siteIconUrl}
+        alt=""
+        className="size-full object-contain"
+        decoding="async"
+      />
+    </span>
   )
 }
 

@@ -52,7 +52,8 @@ const location = Astro.url.pathname + Astro.url.search
     <meta name="keywords" content={metadata.keywords?.join(", ")} />
     <meta name="author" content={siteConfig.author} />
     <meta name="application-name" content={siteConfig.name} />
-    <link rel="icon" href="/icon.png" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon.png" sizes="512x512" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-icon.png" />
     <link rel="canonical" href={metadata.alternates?.canonical} />
     <link
@@ -132,7 +133,7 @@ const location = Astro.url.pathname + Astro.url.search
         {protectedAdmin && user ? (
           <AdminLayout
             location={location}
-            siteIconUrl="/icon.png"
+            siteIconUrl="/icon.svg"
             userImage={user.image}
             userName={getUserDisplayName(user)}
             siteName={siteConfig.name}
