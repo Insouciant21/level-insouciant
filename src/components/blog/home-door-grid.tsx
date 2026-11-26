@@ -8,6 +8,7 @@ import type { ArticleSummary } from "@/types/blog"
 
 type HomeDoorGridProps = {
   articles: ArticleSummary[]
+  showDeadEnd?: boolean
 }
 
 type HomeDoorCardProps = {
@@ -138,7 +139,7 @@ function HomeDoorCard({
   )
 }
 
-function HomeDoorGrid({ articles }: HomeDoorGridProps) {
+function HomeDoorGrid({ articles, showDeadEnd = true }: HomeDoorGridProps) {
   const reducedMotion = useReducedMotion()
   const isCompactTerminusRow = articles.length >= 6
 
@@ -155,30 +156,32 @@ function HomeDoorGrid({ articles }: HomeDoorGridProps) {
         />
       ))}
 
-      <Motion.div
-        initial={reducedMotion ? false : { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: reducedMotion ? 0 : 0.45,
-          delay: reducedMotion ? 0 : 0.1 + articles.length * 0.05,
-        }}
-        className={cn(
-          "relative flex flex-col items-center justify-center overflow-hidden rounded-[0.25rem] border border-[#8a4f34]/55 bg-[#181b17] text-center text-[#d9d1ad] shadow-[inset_0_0_48px_rgba(0,0,0,0.8)]",
-          getDeadEndLayoutClass(articles.length),
-          isCompactTerminusRow
-            ? "min-h-[7.5rem] px-5 py-6 sm:px-6"
-            : "min-h-[16.5rem] px-5 py-6 sm:min-h-[18rem]"
-        )}
-      >
-        <div className="space-y-1.5 text-center">
-          <p className="font-mono text-[0.68rem] tracking-[0.26em] text-[#8a4f34] uppercase">
-            SEC-ERR-902 // CORRIDOR SEALED
-          </p>
-          <p className="text-base font-semibold tracking-[0.2em] text-[#eee9d6] uppercase sm:text-lg">
-            Dead End — 前方通道封锁
-          </p>
-        </div>
-      </Motion.div>
+      {showDeadEnd ? (
+        <Motion.div
+          initial={reducedMotion ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: reducedMotion ? 0 : 0.45,
+            delay: reducedMotion ? 0 : 0.1 + articles.length * 0.05,
+          }}
+          className={cn(
+            "relative flex flex-col items-center justify-center overflow-hidden rounded-[0.25rem] border border-[#8a4f34]/55 bg-[#181b17] text-center text-[#d9d1ad] shadow-[inset_0_0_48px_rgba(0,0,0,0.8)]",
+            getDeadEndLayoutClass(articles.length),
+            isCompactTerminusRow
+              ? "min-h-[7.5rem] px-5 py-6 sm:px-6"
+              : "min-h-[16.5rem] px-5 py-6 sm:min-h-[18rem]"
+          )}
+        >
+          <div className="space-y-1.5 text-center">
+            <p className="font-mono text-[0.68rem] tracking-[0.26em] text-[#8a4f34] uppercase">
+              SEC-ERR-902 // CORRIDOR SEALED
+            </p>
+            <p className="text-base font-semibold tracking-[0.2em] text-[#eee9d6] uppercase sm:text-lg">
+              Dead End — 前方通道封锁
+            </p>
+          </div>
+        </Motion.div>
+      ) : null}
     </div>
   )
 }

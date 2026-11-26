@@ -21,7 +21,10 @@ function View({
 
       <section>
         {doorArticles.length > 0 ? (
-          <HomeDoorGrid articles={doorArticles} />
+          <HomeDoorGrid
+            articles={doorArticles}
+            showDeadEnd={allArticles.length <= 6}
+          />
         ) : (
           <EmptyState
             title="档案仍在整理中"
